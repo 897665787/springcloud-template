@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,5 +45,12 @@ public class UserController {
 			list.add(new User().setId(Long.valueOf(i)).setUsername(String.valueOf(System.currentTimeMillis())));
 		}
 		return list;
+	}
+	
+	@PostMapping(value = "/save")
+	public User save() {
+		log.info("provider-6001");
+		userService.save();
+		return new User();
 	}
 }

@@ -9,17 +9,13 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("sys_user")
-public class User {
+@TableName("sc_city")
+public class City {
 	private Long id;
+	private Long provinceId;
 	private String name;
-	private String username;
-	private String password;
-	private Integer deleted;
-	private String avatar;
 	private Integer status;
-	private String creator;
+	private Integer seq;
 	private LocalDateTime createTime;
-	private String updater;
 	private LocalDateTime updateTime;
 }
