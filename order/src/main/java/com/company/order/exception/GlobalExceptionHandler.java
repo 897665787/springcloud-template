@@ -11,15 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.company.common.api.Result;
-import com.company.order.util.ServletUtils;
+import com.company.common.exception.BusinessException;
 
 /**
  * 全局异常处理器
  */
-//@RestControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
@@ -53,7 +52,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(BusinessException.class)
 	public Object handleBusinessException(HttpServletRequest request, BusinessException e) {
-		logger.warn("业务异常", e);
+		logger.warn("业务异常:{}", e.getMessage());
 		return Result.fail(ExceptionUtils.getStackTrace(e));
 		// if (ServletUtils.isAjaxRequest(request)) {
 		// return Result.fail(ExceptionUtils.getStackTrace(e));

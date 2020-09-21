@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.order.api.feign.OrderFeign;
+import com.company.order.api.response.OrderResp;
 import com.company.user.entity.User;
 import com.company.user.service.UserService;
 import com.google.common.collect.Lists;
@@ -22,10 +24,21 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private OrderFeign orderFeign;
 
 	@Value("${server.port}")
 	private String port;
 
+	@GetMapping(value = "/onoff")
+	public OrderResp onoff() {
+		for (int i = 0; i < 100; i++) {
+			OrderResp byId = orderFeign.getById((long)i);
+			log.info("onoff:{}",byId);
+		}
+		return new OrderResp();
+	}
+	
 	@GetMapping(value = "/info")
 	public String info() {
 		return "{}";
@@ -34,8 +47,11 @@ public class UserController {
 	@GetMapping(value = "/getById")
 	public User getById(Long id) {
 		log.info("provider-6001");
-		User byId = userService.getById(id);
-		return byId;
+//		User byId = userService.getById(id);
+		OrderResp byId = orderFeign.getById(id);
+		System.out.println("byId:"+byId);
+//		userService.saveTs();
+		return new User();
 	}
 
 	@GetMapping(value = "/list")
