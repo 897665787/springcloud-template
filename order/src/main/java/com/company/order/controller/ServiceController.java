@@ -29,7 +29,6 @@ public class ServiceController {
     
     @RequestMapping(value = "/offline", method = RequestMethod.GET)
     public void offLine(){
-    	DiscoveryManager.getInstance();
         DiscoveryManager.getInstance().shutdownComponent();
     } 
 }

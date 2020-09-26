@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.exception.BusinessException;
 import com.company.common.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
-import com.company.order.elasticsearch.Product;
-import com.company.order.elasticsearch.ProductESDAO;
 import com.company.order.entity.Order;
 import com.company.order.event.AfterOrderAddEvent;
 import com.company.order.event.BeforeOrderAddEvent;
@@ -26,9 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 public class OrderController implements OrderFeign {
-
-	@Autowired
-	private ProductESDAO productESDAO;
 	
 	@Value("${server.port}")
 	private String port;
@@ -43,11 +37,6 @@ public class OrderController implements OrderFeign {
 	
 	@GetMapping(value = "/list")
 	public List<Order> list() {
-		MyEvent myEvent = new MyEvent(1);
-		applicationContext.publishEvent(myEvent);
-		MyEvent2 myEvent2 = new MyEvent2(2);
-		applicationContext.publishEvent(myEvent2);
-		
 		Order payload = new Order().setId(Long.valueOf(1));
 		System.out.println("payload:"+payload);
 		BeforeOrderAddEvent beforeOrderAddEvent = new BeforeOrderAddEvent(payload);
@@ -101,9 +90,6 @@ public class OrderController implements OrderFeign {
 	
 	@Override
 	public OrderResp save(@RequestBody OrderReq orderReq) {
-		Product aa = PropertyUtils.copyProperties(orderReq, Product.class);
-		aa.setOrderCode(String.valueOf(System.currentTimeMillis()));
-		productESDAO.save(aa);
 		return PropertyUtils.copyProperties(orderReq, OrderResp.class);
 	}
 }
