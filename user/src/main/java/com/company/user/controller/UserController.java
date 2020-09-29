@@ -1,15 +1,17 @@
 package com.company.user.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
 
 @RestController
+@RequestMapping("/user")
 public class UserController implements UserFeign {
 
 	@Override
 	public UserResp getById(Long id) {
-		return new UserResp().setOrderCode(System.currentTimeMillis() + "");
+		return new UserResp().setOrderCode(System.currentTimeMillis() + " " + "id:" + id);
 	}
 }

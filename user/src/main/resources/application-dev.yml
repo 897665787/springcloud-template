@@ -4,6 +4,11 @@ eureka:
     lease-renewal-interval-in-seconds: 10 #服务刷新时间配置，每隔这个时间会主动心跳一次
     
 spring:
+  rabbitmq:
+    addresses: 172.16.1.52:5672,172.16.1.52:5674
+    username: lssq
+    password: lssq@xxx1
+    virtual-host: lssq
   datasource:
     ds1:
       driver-class-name: com.mysql.jdbc.Driver

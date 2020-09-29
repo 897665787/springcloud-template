@@ -28,6 +28,12 @@
             <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
         </dependency>
          -->
+         
+        <dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-common</artifactId>
+			<version>1.0.0</version>
+		</dependency>
         
         <dependency>
 		    <groupId>org.projectlombok</groupId>

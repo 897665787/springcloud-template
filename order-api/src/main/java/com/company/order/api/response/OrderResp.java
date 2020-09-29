@@ -8,4 +8,5 @@ import lombok.experimental.Accessors;
 public class OrderResp {
 	private Long id;
 	private String orderCode;
+	private Integer port;
 }

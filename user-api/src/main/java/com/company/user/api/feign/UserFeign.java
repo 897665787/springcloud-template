@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.company.user.api.feign.fallback.UserFeignFallback;
 import com.company.user.api.response.UserResp;
 
-@FeignClient(value = "template-user", fallbackFactory = UserFeignFallback.class)
-@RequestMapping("/user")
+@FeignClient(value = "template-user", path = "/user", fallbackFactory = UserFeignFallback.class)
 public interface UserFeign {
 
 	@RequestMapping("/getById")

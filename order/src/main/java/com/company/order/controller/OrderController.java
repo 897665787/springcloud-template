@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.util.PropertyUtils;
@@ -22,10 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping("/order")
 public class OrderController implements OrderFeign {
 	
 	@Value("${server.port}")
-	private String port;
+	private Integer port;
 
 	@GetMapping(value = "/info")
 	public String info() {
@@ -85,7 +87,7 @@ public class OrderController implements OrderFeign {
 		System.out.println("page:" + page);
 		System.out.println("page.getContent():" + page.getContent());
 		*/
-		return new OrderResp().setId(id).setOrderCode(String.valueOf(System.currentTimeMillis()));
+		return new OrderResp().setId(id).setOrderCode(String.valueOf(System.currentTimeMillis())).setPort(port);
 	}
 	
 	@Override

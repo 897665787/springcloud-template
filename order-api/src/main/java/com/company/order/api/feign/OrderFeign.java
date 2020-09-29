@@ -9,8 +9,7 @@ import com.company.order.api.feign.fallback.OrderFeignFallback;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 
-@FeignClient(value = "template-order", fallbackFactory = OrderFeignFallback.class)
-@RequestMapping("/order")
+@FeignClient(value = "template-order", path = "/order", fallbackFactory = OrderFeignFallback.class)
 public interface OrderFeign {
 
 	@RequestMapping("/getById")

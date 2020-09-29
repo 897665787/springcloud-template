@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.response.OrderResp;
+import com.company.user.deploy.RabbitMqHandler;
 import com.company.user.entity.User;
 import com.company.user.service.UserService;
 import com.google.common.collect.Lists;
@@ -26,19 +27,29 @@ public class ApiController {
 	private UserService userService;
 	@Autowired
 	private OrderFeign orderFeign;
+	@Autowired
+	private RabbitMqHandler rabbitMqHandler;
 
+	
+	
 	@Value("${server.port}")
 	private String port;
 
 	@GetMapping(value = "/onoff")
 	public OrderResp onoff() {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10000; i++) {
 			OrderResp byId = orderFeign.getById((long)i);
 			log.info("onoff:{}",byId);
 		}
 		return new OrderResp();
 	}
-	
+
+	@GetMapping(value = "/send")
+	public String send() {
+		rabbitMqHandler.notify2Refresh("test");
+		return "{}";
+	}
+
 	@GetMapping(value = "/info")
 	public String info() {
 		return "{}";
