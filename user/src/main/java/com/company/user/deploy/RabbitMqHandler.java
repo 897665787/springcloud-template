@@ -37,15 +37,14 @@ public class RabbitMqHandler {
     private RabbitTemplate rabbitTemplate;
 	
 	/**
-	 * 队列名由deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}构成
+	 * 临时队列名由deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}构成
 	 * 每个服务（包括同个服务的集群部署）都要有单独的队列来监听fanout exchange的消息
 	 * （用于监听其他服务下线或上线事件，重新拉取注册信息）
 	 * 
 	 * @param msg
 	 */
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = "deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}"), exchange = @Exchange(value = EXCHANGE, type = ExchangeTypes.FANOUT)))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = "deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}", durable = "false", autoDelete = "true", exclusive = "true"), exchange = @Exchange(value = EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
 	public void handler(String msg) {
-		log.info("#### receive,msg:{}", msg);
 		boolean result = refreshRegistry();
 		log.info("#### refresh msg:{},result:{}", msg, result);
 	}
