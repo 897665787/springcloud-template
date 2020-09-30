@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.response.OrderResp;
-import com.company.user.deploy.RabbitMqHandler;
+import com.company.user.deploy.RefreshHandler;
 import com.company.user.entity.User;
 import com.company.user.service.UserService;
 import com.google.common.collect.Lists;
@@ -28,7 +28,7 @@ public class ApiController {
 	@Autowired
 	private OrderFeign orderFeign;
 	@Autowired
-	private RabbitMqHandler rabbitMqHandler;
+	private RefreshHandler refreshHandler;
 
 	
 	
@@ -46,7 +46,7 @@ public class ApiController {
 
 	@GetMapping(value = "/send")
 	public String send() {
-		rabbitMqHandler.notify2Refresh("test");
+		refreshHandler.notify2Refresh("test");
 		return "{}";
 	}
 

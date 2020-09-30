@@ -18,9 +18,9 @@ import com.netflix.discovery.DiscoveryClient;
  */
 @RestController
 public class DeployController {
-	
+
 	@Autowired
-	private RabbitMqHandler rabbitMqHandler;
+	private RefreshHandler refreshHandler;
 
 	/**
 	 * 服务下线
@@ -28,18 +28,18 @@ public class DeployController {
 	 * @return
 	 */
 	@RequestMapping(value = "/offline", method = RequestMethod.GET)
-	public Result offLine() {
+	public Result offline() {
 		try {
 			DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
 			client.shutdown();
 			// 通知其他服务刷新服务列表，即时中断请求流量
-			rabbitMqHandler.notify2Refresh("offline");
+			refreshHandler.notify2Refresh("offline");
 			return Result.success();
 		} catch (Exception e) {
 			return Result.fail(ExceptionUtils.getMessage(e));
 		}
 	}
-	
+
 	/**
 	 * 刷新注册列表
 	 * 
@@ -47,6 +47,6 @@ public class DeployController {
 	 */
 	@RequestMapping(value = "/refreshRegistry", method = RequestMethod.GET)
 	public Result refreshRegistry() {
-		return Result.success(rabbitMqHandler.refreshRegistry());
+		return Result.success(refreshHandler.refreshRegistry());
 	}
 }

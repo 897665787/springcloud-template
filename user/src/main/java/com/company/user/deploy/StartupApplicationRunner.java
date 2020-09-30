@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class StartupApplicationRunner implements ApplicationRunner {
 
 	@Autowired
-	private RabbitMqHandler rabbitMqHandler;
+	private RefreshHandler refreshHandler;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		rabbitMqHandler.notify2Refresh("startup");
+		refreshHandler.notify2Refresh("startup");
 	}
 
 }
