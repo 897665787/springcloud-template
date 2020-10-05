@@ -1,4 +1,4 @@
-package com.company.user.deploy;
+package com.company.framework.deploy;
 
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;

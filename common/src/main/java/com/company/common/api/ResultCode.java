@@ -1,5 +1,7 @@
 package com.company.common.api;
 
+import com.company.common.exception.BusinessException;
+
 public enum ResultCode {
 	SUCCESS(0, "成功"), FAIL(99, "失败"),
 	/* 自定义结果码 */
@@ -19,5 +21,12 @@ public enum ResultCode {
 
 	public String getMessage() {
 		return message;
+	}
+	
+	public static ResultCode of(BusinessException businessException) {
+		ResultCode resultCode = ResultCode.FAIL;
+		resultCode.code = businessException.getCode();
+		resultCode.message = businessException.getMessage();
+		return resultCode;
 	}
 }

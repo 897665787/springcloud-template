@@ -1,5 +1,7 @@
 package com.company.common.api;
 
+import com.company.common.exception.BusinessException;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -12,6 +14,12 @@ public class Result {
 	private String message;// 响应信息
 	private Object data;// 数据
 
+//	public Result of(Integer code, String message) {
+//		this.code = code;
+//		this.message = message;
+//		return this;
+//	}
+	
 	public Result setResultCode(ResultCode resultCode) {
 		this.code = resultCode.getCode();
 		this.message = resultCode.getMessage();
@@ -44,5 +52,9 @@ public class Result {
 
 	public static Result fail(ResultCode resultCode, Object data) {
 		return new Result().setResultCode(resultCode).setData(data);
+	}
+
+	public static Result fail(BusinessException businessException) {
+		return new Result().setCode(businessException.getCode()).setMessage(businessException.getMessage());
 	}
 }

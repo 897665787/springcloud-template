@@ -8,51 +8,41 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>template-order</artifactId>
+	<artifactId>template-framework</artifactId>
 	<packaging>jar</packaging>
 
-	<description>订单服务</description>
+	<description>框架代码</description>
 
 	<build>
 		<finalName>${artifactId}</finalName>
 	</build>
 
 	<dependencies>
-		<!-- <dependency>
+        <dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-common</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency> -->
-		<!-- rabbitMQ -->
-		<!-- <dependency>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        
+        <!-- rabbitMQ -->
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency> -->
-
-		<dependency>
-			<groupId>com.company</groupId>
-			<artifactId>template-framework</artifactId>
-			<version>1.0.0</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.company</groupId>
-			<artifactId>template-common</artifactId>
-			<version>1.0.0</version>
-		</dependency> -->
-		<dependency>
-			<groupId>com.company</groupId>
-			<artifactId>template-order-api</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.company</groupId>
-			<artifactId>template-user-api</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
+		
 	</dependencies>
 
 </project>

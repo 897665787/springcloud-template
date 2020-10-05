@@ -1,11 +1,11 @@
-package com.company.user.deploy;
+package com.company.framework.deploy;
 
 import java.lang.reflect.Method;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.user.util.SpringContextUtil;
+import com.company.framework.context.SpringContextUtil;
 import com.netflix.discovery.DiscoveryClient;
 
 import lombok.extern.slf4j.Slf4j;
