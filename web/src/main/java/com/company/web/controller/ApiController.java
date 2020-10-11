@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.exception.BusinessException;
+import com.company.framework.context.HttpContextUtil;
 import com.company.framework.deploy.RefreshHandler;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.response.OrderResp;
@@ -31,9 +31,10 @@ public class ApiController {
 	
 	@GetMapping(value = "/getOrderById")
 	public OrderResp getOrderById(Long id) {
-		if (true)
-			throw new BusinessException(1, "aaaaaaaaaaa");
+//		if (true)
+//			throw new BusinessException(1, "aaaaaaaaaaa");
 		OrderResp byId = orderFeign.getById(id);
+		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 		return byId;
 	}
 	

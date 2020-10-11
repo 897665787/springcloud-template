@@ -1,6 +1,9 @@
 package com.company.order.controller;
 
+import java.util.Enumeration;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.util.PropertyUtils;
+import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.order.entity.Order;
 import com.company.order.event.AfterOrderAddEvent;
 import com.company.order.event.BeforeOrderAddEvent;
+import com.company.user.api.feign.UserFeign;
+import com.company.user.api.response.UserResp;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +42,8 @@ public class OrderController implements OrderFeign {
 	
 	@Autowired
 	private ApplicationContext applicationContext;
+	@Autowired
+	private UserFeign userFeign;
 	
 	@GetMapping(value = "/list")
 	public List<Order> list() {
@@ -58,6 +66,19 @@ public class OrderController implements OrderFeign {
 	@Override
 	public OrderResp getById(Long id) {
 		log.info("provider-6001:{}-{}", id, System.currentTimeMillis());
+		System.out.println("OrderController thread:"+Thread.currentThread());
+		HttpServletRequest request = HttpContextUtil.request();
+		System.out.println("request:" + request);
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String headerName = headerNames.nextElement();
+//			System.out.println("headerName:" + headerName);
+			String headerValue = request.getHeader(headerName);
+			System.out.println("headerName:" + headerName + " headerValue:" + headerValue);
+		}
+		UserResp userResp = userFeign.getById(1L);
+		System.out.println("userResp:" + userResp);
+		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 		
 //		if(true){
 //			throw new BusinessException("asdsad");
