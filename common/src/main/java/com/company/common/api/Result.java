@@ -13,6 +13,7 @@ public class Result {
 	private Integer code;// 响应码
 	private String message;// 响应信息
 	private Object data;// 数据
+	private String traceId = null;// 日志追踪ID
 
 //	public Result of(Integer code, String message) {
 //		this.code = code;

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.BusinessException;
+import com.company.framework.filter.MdcUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public Result error(Exception e) {
 		log.error("未知异常:", e);
-		return Result.fail(ResultCode.SYSTEM_ERROR);
+		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
 	
 	/**
@@ -56,7 +57,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	public Result runtime(RuntimeException e) {
 		log.error("未处理运行时异常", e);
-		return Result.fail(ResultCode.SYSTEM_ERROR);
+		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
 	
 	/**
