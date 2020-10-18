@@ -22,16 +22,6 @@ eureka:
 feign:
   hystrix:
     enabled: true
-hystrix:
-  command:
-    default:
-      execution:
-        timeout:
-          enabled: true
-        isolation:
-          strategy: SEMAPHORE #隔离策略,默认THREAD
-          thread:
-            timeoutInMilliseconds: 60000
 
 mybatis:
   mapper-locations: classpath*:mapper/**/*Mapper.xml

@@ -10,7 +10,8 @@ import feign.RequestTemplate;
 
 /**
  * feign调用过程中传递header值
- * Hystrix 提供两种执行隔离策略(SEMAPHORE ：信号量，命令在调用线程执行,THREAD ：线程池，命令在线程池执行), 默认配置的为THREAD，因为不在同一个线程中，无法获得请求的上下文对象
+ * 
+ * 依赖Hystrix自定义并发策略:RequestAttributeHystrixConcurrencyStrategy
  */
 @Component
 public class FeignHeaderInterceptor implements RequestInterceptor {
