@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -66,20 +67,27 @@ public class AutoDescJsonSerializer extends JsonSerializer<Object> implements Co
 		}
 		List<CodeDesc> codeDescList = Optional.ofNullable(enumList).map(v -> Arrays.asList(v))
 				.orElse(Collections.emptyList()).stream()
-				.map(enumObj -> codeDesc(enumObj, autoDesc.code(), autoDesc.desc())).collect(Collectors.toList());
+				.map(enumObj -> codeDesc(enumObj, autoDesc.code(), autoDesc.desc())).filter(Objects::nonNull)
+				.collect(Collectors.toList());
 		return build(propertyName, codeDescList);
 	}
 
 	private AutoDescJsonSerializer build(String propertyName, List<CodeDesc> codeDescList) {
 		propertyName = propertyName + PROPERTY_NAME_SUFFIX;
 		Map<String, String> dictionary = codeDescList.stream().filter(v -> v.getCode() != null && v.getDesc() != null)
-				.collect(Collectors.toMap(CodeDesc::getCode, CodeDesc::getDesc));
+				.collect(Collectors.toMap(CodeDesc::getCode, CodeDesc::getDesc, (a, b) -> b));
 		return new AutoDescJsonSerializer(propertyName, dictionary);
 	}
-	
+
 	private CodeDesc codeDesc(Object enumObj, String codeField, String descField) {
 		String code = getFieldValue(enumObj, codeField);
+		if (code == null) {
+			return null;
+		}
 		String desc = getFieldValue(enumObj, descField);
+		if (desc == null) {
+			return null;
+		}
 		return new CodeDesc().setCode(code).setDesc(desc);
 	}
 
