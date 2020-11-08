@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.company.common.jackson.annotation.AutoDesc;
+import com.company.user.api.enums.UserStatus;
 
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class User {
 	private Integer deleted;
 	private String avatar;
 	
-	@AutoDesc({ "1:正常", "2:冻结" })
+	@AutoDesc(UserStatus.class)
 	private Integer status;
 	private String creator;
 	private LocalDateTime createTime;

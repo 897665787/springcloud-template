@@ -1,6 +1,7 @@
 package com.company.order.entity;
 
 import com.company.common.jackson.annotation.AutoDesc;
+import com.company.order.api.enums.OrderType;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,6 +12,6 @@ public class Order {
 	private Long id;
 	private String orderCode;
 	
-	@AutoDesc({ "1:权益", "2:购买会员" })
+	@AutoDesc(value = OrderType.class, code = "type")
 	private Integer type;
 }

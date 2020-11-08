@@ -10,11 +10,30 @@ import com.company.common.jackson.serializer.AutoDescJsonSerializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @JacksonAnnotationsInside
 @JsonSerialize(using = AutoDescJsonSerializer.class)
 public @interface AutoDesc {
-    String[] value() default {};
+	/**
+	 * 枚举class
+	 * 
+	 * @return
+	 */
+	Class<? extends Enum<?>> value();
+
+	/**
+	 * 对应Class中作为code的属性
+	 * 
+	 * @return
+	 */
+	String code() default "code";
+
+	/**
+	 * 对应Class中作为desc的属性
+	 * 
+	 * @return
+	 */
+	String desc() default "desc";
 }

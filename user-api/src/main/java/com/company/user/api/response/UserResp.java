@@ -3,6 +3,7 @@ package com.company.user.api.response;
 import java.time.LocalDateTime;
 
 import com.company.common.jackson.annotation.AutoDesc;
+import com.company.user.api.enums.UserStatus;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -17,7 +18,7 @@ public class UserResp {
 	private Integer deleted;
 	private String avatar;
 	
-	@AutoDesc({ "1:正常", "2:冻结" })
+	@AutoDesc(UserStatus.class)
 	private Integer status;
 	private String creator;
 	private LocalDateTime createTime;
