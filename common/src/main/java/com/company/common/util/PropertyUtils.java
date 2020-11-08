@@ -3,10 +3,8 @@ package com.company.common.util;
 import java.util.Collection;
 import java.util.List;
 
-import com.alibaba.fastjson.JSON;
-
 /**
- * 属性工具类.
+ * 属性工具类
  */
 public class PropertyUtils {
 	/**
@@ -20,7 +18,8 @@ public class PropertyUtils {
 		if(srcObj == null){
 			return null;
 		}
-		return JSON.parseObject(JSON.toJSONString(srcObj), targetClass);
+//		return JSON.parseObject(JSON.toJSONString(srcObj), targetClass);
+		return JsonUtil.toEntity(JsonUtil.toJsonString(srcObj), targetClass);
 	}
 
 	/**
@@ -34,6 +33,7 @@ public class PropertyUtils {
 		if(srcArray == null){
 			return null;
 		}
-		return JSON.parseArray(JSON.toJSONString(srcArray), targetClass);
+//		return JSON.parseArray(JSON.toJSONString(srcArray), targetClass);
+		return JsonUtil.toList(JsonUtil.toJsonString(srcArray), targetClass);
 	}
 }

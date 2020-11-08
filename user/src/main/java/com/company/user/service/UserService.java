@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.request.OrderReq;
-import com.company.order.api.response.OrderResp;
 import com.company.user.entity.City;
 import com.company.user.entity.User;
 import com.company.user.mapper.common.CityMapper;
@@ -42,14 +40,14 @@ public class UserService {
 //		OrderReq orderReq = new OrderReq().setId(3L).setOrderCode(String.valueOf(System.currentTimeMillis()));
 //		OrderResp save = orderFeign.save(orderReq);
 //		System.out.println("save:" + save);
-		return new User().setId(id).setUsername(String.valueOf(System.currentTimeMillis()));
+		return User.builder().build().setId(id).setUsername(String.valueOf(System.currentTimeMillis()));
 	}
 
 //	@Transactional
 	public void save() {
 //		System.out.println("sqlSessionFactory:" + sqlSessionFactory);
 		
-		User entity = new User().setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
+		User entity = User.builder().build().setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
 				.setAvatar("http://demo.ruoyi.vip/img/profile.jpg")
 				.setStatus(0);
 		int insert = userMapper.insert(entity);
@@ -60,7 +58,7 @@ public class UserService {
 	
 	@Transactional(transactionManager = "ds2TransactionManager")
 	public void saveTs() {
-		User user = new User().setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
+		User user = User.builder().build().setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
 				.setAvatar("http://demo.ruoyi.vip/img/profile.jpg")
 				.setStatus(0);
 		int insert = userMapper.insert(user);

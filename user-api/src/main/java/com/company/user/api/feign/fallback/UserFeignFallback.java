@@ -17,7 +17,7 @@ public class UserFeignFallback implements FallbackFactory<UserFeign> {
 		return new UserFeign() {
 			public UserResp getById(Long id) {
 				log.error("getById error", e);
-				return new UserResp().setOrderCode("Fallback");
+				return new UserResp().setAvatar("Fallback");
 			}
 		};
 	}

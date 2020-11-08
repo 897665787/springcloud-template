@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.deploy.RefreshHandler;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.response.OrderResp;
+import com.company.user.api.feign.UserFeign;
+import com.company.user.api.response.UserResp;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +24,8 @@ public class ApiController {
 
 	@Autowired
 	private OrderFeign orderFeign;
+	@Autowired
+	private UserFeign userFeign;
 	@Autowired
 	private RefreshHandler refreshHandler;
 
@@ -35,6 +40,13 @@ public class ApiController {
 //			throw new BusinessException(1, "aaaaaaaaaaa");
 		OrderResp byId = orderFeign.getById(id);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
+		return byId;
+	}
+	
+	@GetMapping(value = "/getUserById")
+	public UserResp getUserById(Long id) {
+		UserResp byId = userFeign.getById(1L);
+		System.out.println(JsonUtil.toJsonString(byId));
 		return byId;
 	}
 	
@@ -55,7 +67,7 @@ public class ApiController {
 	
 	@GetMapping(value = "/onoff")
 	public OrderResp onoff() {
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 3000; i++) {
 			OrderResp byId = orderFeign.getById((long)i);
 			log.info("onoff:{}",byId);
 		}

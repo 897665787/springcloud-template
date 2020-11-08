@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
+import com.company.common.util.JsonUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,7 @@ public class FeignCostTimeAspect {
 			long end = System.currentTimeMillis();
 			Signature signature = joinPoint.getSignature();
 			log.info("request feign:{},mills:{},args:{},result:{}", signature.toShortString(), end - start,
-					JSON.toJSONString(joinPoint.getArgs()), JSON.toJSONString(result));
+					JsonUtil.toJsonString(joinPoint.getArgs()), JsonUtil.toJsonString(result));
 		} catch (Exception e) {
 			log.error("request feign error", e);
 		}
