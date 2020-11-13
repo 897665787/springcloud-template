@@ -1,6 +1,9 @@
 package com.company.framework.deploy;
 
+import java.util.Optional;
+
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +24,8 @@ public class DeployController {
 
 	@Autowired
 	private RefreshHandler refreshHandler;
+	@Autowired(required = false)
+	private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
 	/**
 	 * 服务下线
@@ -34,6 +39,8 @@ public class DeployController {
 			client.shutdown();
 			// 通知其他服务刷新服务列表，即时中断请求流量
 			refreshHandler.notify2Refresh("offline");
+			// 下线MQ消费者
+			Optional.ofNullable(rabbitListenerEndpointRegistry).ifPresent(RabbitListenerEndpointRegistry::stop);
 			return Result.success();
 		} catch (Exception e) {
 			return Result.fail(ExceptionUtils.getMessage(e));
