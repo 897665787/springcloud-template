@@ -1,6 +1,8 @@
 package com.company.web.controller;
 
 import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,8 @@ public class ApiController {
 	private UserFeign userFeign;
 	@Autowired
 	private RefreshHandler refreshHandler;
+	@Autowired(required = false)
+	private ThreadPoolExecutor threadPoolExecutor;
 
 	@GetMapping(value = "/info")
 	public String info() {
@@ -95,5 +99,23 @@ public class ApiController {
 		OrderResp byId = orderFeign.retryPost(new OrderReq().setId(id));
 		log.info("retryPost:{}", byId);
 		return byId;
+	}
+	
+	@GetMapping(value = "/threadpool")
+	public Integer threadpool() {
+		System.out.println("threadPoolExecutor:"+threadPoolExecutor);
+		for (int i = 0; i < 3; i++) {
+			int n = i;
+			threadPoolExecutor.submit(() -> {
+				System.out.println("execute:"+n);
+				try {
+					Thread.sleep(new Random().nextInt(1000));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+			System.out.println("submit:"+n);
+		}
+		return 1;
 	}
 }

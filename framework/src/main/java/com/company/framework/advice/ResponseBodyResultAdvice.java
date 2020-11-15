@@ -20,16 +20,13 @@ public class ResponseBodyResultAdvice implements ResponseBodyAdvice<Object> {
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {
 		// 如果接口返回的类型本身就是Result那就没有必要进行额外的操作，返回false
-		System.out.println("ResponseBodyResultAdvice.supports():" + returnType);
 		boolean equals = returnType.getGenericParameterType().equals(Result.class);
-		System.out.println("ResponseBodyResultAdvice.supports() equals:" + equals);
 		return !equals;
 	}
 
 	@Override
 	public Object beforeBodyWrite(Object data, MethodParameter returnType, MediaType mediaType,
 			Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest request, ServerHttpResponse response) {
-		System.out.println("ResponseBodyResultAdvice.beforeBodyWrite():" + data);
 		if (returnType.getGenericParameterType().equals(String.class)) {
 			// String类型不能直接包装，所以要进行些特别的处理
 			return JsonUtil.toJsonString(Result.success(data));
