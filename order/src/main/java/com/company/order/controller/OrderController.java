@@ -2,6 +2,7 @@ package com.company.order.controller;
 
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +23,7 @@ import com.company.order.entity.Order;
 import com.company.order.event.AfterOrderAddEvent;
 import com.company.order.event.BeforeOrderAddEvent;
 import com.company.user.api.feign.UserFeign;
+import com.company.user.api.request.UserReq;
 import com.company.user.api.response.UserResp;
 import com.google.common.collect.Lists;
 
@@ -114,5 +116,29 @@ public class OrderController implements OrderFeign {
 	@Override
 	public OrderResp save(@RequestBody OrderReq orderReq) {
 		return PropertyUtils.copyProperties(orderReq, OrderResp.class);
+	}
+
+	@Override
+	public OrderResp retryGet(Long id) {
+		log.info("retryGet");
+		try {
+			int aa = new Random().nextInt(3) <2 ? 1000:2000;
+			System.out.println("aa:"+aa);
+			Thread.sleep(aa);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		UserResp userResp = userFeign.retryGet(1L);
+		log.info("retryGet:{}", userResp);
+		return new OrderResp().setOrderCode(userResp.getName());
+	}
+
+	@Override
+	public OrderResp retryPost(@RequestBody OrderReq orderReq) {
+		log.info("retryGet");
+		UserResp userResp = userFeign.retryPost(new UserReq());
+		log.info("retryGet:{}", userResp);
+		return new OrderResp().setOrderCode(userResp.getUsername());
 	}
 }

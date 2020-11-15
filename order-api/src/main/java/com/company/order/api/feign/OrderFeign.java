@@ -17,4 +17,10 @@ public interface OrderFeign {
 
 	@RequestMapping("/save")
 	OrderResp save(@RequestBody OrderReq orderReq);
+
+	@RequestMapping("/retryGet")
+	OrderResp retryGet(@RequestParam("id") Long id);
+	
+	@RequestMapping("/retryPost")
+	OrderResp retryPost(@RequestBody OrderReq orderReq);
 }

@@ -15,8 +15,6 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 	@Override
 	public OrderFeign create(final Throwable e) {
-//		log.error("aaaaaaaaaaaaaaaaaaaaa2222222 error", e);
-//		System.out.println(e.getMessage());
 		return new OrderFeign() {
 			public OrderResp getById(Long id) {
 				log.error("aaaaaaaaaaaaaaaaaaaaa error", e);
@@ -25,6 +23,18 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 			public OrderResp save(OrderReq orderReq) {
 				log.error("save error", e);
+				return new OrderResp().setOrderCode("Fallback");
+			}
+
+			@Override
+			public OrderResp retryGet(Long id) {
+				log.error("retryGet error", e);
+				return new OrderResp().setOrderCode("Fallback");
+			}
+
+			@Override
+			public OrderResp retryPost(OrderReq orderReq) {
+				log.error("retryPost error", e);
 				return new OrderResp().setOrderCode("Fallback");
 			}
 		};

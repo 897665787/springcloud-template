@@ -11,6 +11,7 @@ import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.deploy.RefreshHandler;
 import com.company.order.api.feign.OrderFeign;
+import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
@@ -80,5 +81,19 @@ public class ApiController {
 		return "{}";
 	}
 
-	
+	@GetMapping(value = "/retryGet")
+	public OrderResp retryGet(Long id) {
+		log.info("retryGet");
+		OrderResp byId = orderFeign.retryGet(id);
+		log.info("retryGet:{}", byId);
+		return byId;
+	}
+
+	@GetMapping(value = "/retryPost")
+	public OrderResp retryPost(Long id) {
+		log.info("retryPost");
+		OrderResp byId = orderFeign.retryPost(new OrderReq().setId(id));
+		log.info("retryPost:{}", byId);
+		return byId;
+	}
 }

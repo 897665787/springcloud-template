@@ -1,6 +1,7 @@
 package com.company.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,9 +9,13 @@ import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
 import com.company.user.api.feign.UserFeign;
+import com.company.user.api.request.UserReq;
 import com.company.user.api.response.UserResp;
 import com.company.user.entity.User;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController implements UserFeign {
@@ -36,6 +41,34 @@ public class UserController implements UserFeign {
 		*/
 		User user = User.builder().id(1L).name("adasd").status(2).build();
 		System.out.println(JsonUtil.toJsonString(user));
+		return PropertyUtils.copyProperties(user, UserResp.class);
+	}
+
+	@Override
+	public UserResp retryGet(Long id) {
+		log.info("retryGet");
+		User user = User.builder().id(1L).name("retryGet1").status(2).build();
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		log.info("retryGet:{}", user);
+		return PropertyUtils.copyProperties(user, UserResp.class);
+	}
+
+	@Override
+	public UserResp retryPost(@RequestBody UserReq userReq) {
+		log.info("retryGet");
+		User user = User.builder().id(1L).name("adasd").status(2).build();
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		log.info("retryGet:{}", user);
 		return PropertyUtils.copyProperties(user, UserResp.class);
 	}
 }

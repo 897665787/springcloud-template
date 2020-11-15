@@ -6,7 +6,7 @@
 	<property name="LOG_HOME" value="${log.dir:-logs}/${APP_NAME}" />
 	<!-- 日志输出格式 -->
 	<property name="ENCODER_PATTERN"
-		value="%date{yyyy-MM-dd HH:mm:ss.SSS} [%t] %5p [%c:%L] [%X{trace-id}] - %m%n" />
+		value="%date{yyyy-MM-dd HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p [%c:%L] - %m%n" />
 	<contextName>${APP_NAME}</contextName>
 
 	<!-- 控制台日志：输出全部日志到控制台 -->
