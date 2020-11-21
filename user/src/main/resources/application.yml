@@ -94,3 +94,7 @@ mybatis-plus:
       #meta-object-handler: com.baomidou.springboot.xxx
       #自定义SQL注入器
       #sql-injector: com.baomidou.mybatisplus.extension.injector.LogicSqlInjector
+      
+template:
+  sequence:
+    datacenterId: 2

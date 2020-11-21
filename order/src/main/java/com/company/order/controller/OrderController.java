@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
@@ -36,6 +37,9 @@ public class OrderController implements OrderFeign {
 	
 	@Value("${server.port}")
 	private Integer port;
+	
+	@Autowired
+	private SequenceGenerator sequenceGenerator;
 
 	@GetMapping(value = "/info")
 	public String info() {
@@ -110,7 +114,7 @@ public class OrderController implements OrderFeign {
 		System.out.println("page:" + page);
 		System.out.println("page.getContent():" + page.getContent());
 		*/
-		return new OrderResp().setId(id).setOrderCode(String.valueOf(System.currentTimeMillis())).setPort(port);
+		return new OrderResp().setId(id).setOrderCode(String.valueOf(sequenceGenerator.nextId())).setPort(port);
 	}
 	
 	@Override

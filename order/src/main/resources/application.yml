@@ -62,3 +62,6 @@ ribbon:
   #ReadTimeout >= Ribbon重试次数(包含首次) * feign.client.config.default.connectTimeout
   ReadTimeout: 1000 #读取超时时间，默认无
   
+template:
+  sequence:
+    datacenterId: 1
