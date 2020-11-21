@@ -1,4 +1,4 @@
-package com.company.framework.config;
+package com.company.framework.autoconfigure;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -10,7 +10,7 @@ import com.company.framework.sequence.snowflake.HutoolSnowflake;
 
 @Configuration
 @ConditionalOnProperty(prefix = "template", name = "sequence.datacenterId")
-public class SequenceGeneratorAutoConfig {
+public class SequenceGeneratorAutoConfiguration {
 
 	@Bean
 	public SequenceGenerator sequenceGenerator(@Value("${server.port}") Integer port,

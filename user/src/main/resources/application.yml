@@ -98,3 +98,11 @@ mybatis-plus:
 template:
   sequence:
     datacenterId: 2
+  threadpool:
+    corePoolSize: 10
+    maxPoolSize: 20
+    queueCapacity: 200
+    keepAliveSeconds: 60
+    threadNamePrefix: t-subTask-
+    waitForTasksToCompleteOnShutdown: 60
+    awaitTerminationSeconds: 60

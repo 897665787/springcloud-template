@@ -83,3 +83,11 @@ ribbon:
 template:
   sequence:
     datacenterId: 0
+  threadpool:
+    corePoolSize: 10
+    maxPoolSize: 20
+    queueCapacity: 200
+    keepAliveSeconds: 60
+    threadNamePrefix: t-subTask-
+    waitForTasksToCompleteOnShutdown: 60
+    awaitTerminationSeconds: 60

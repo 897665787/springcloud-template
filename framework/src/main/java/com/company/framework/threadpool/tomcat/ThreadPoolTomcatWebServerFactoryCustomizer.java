@@ -1,4 +1,4 @@
-package com.company.framework.tomcat;
+package com.company.framework.threadpool.tomcat;
 
 import org.springframework.boot.web.embedded.tomcat.ConfigurableTomcatWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;

@@ -1,4 +1,4 @@
-package com.company.framework.tomcat;
+package com.company.framework.threadpool.tomcat;
 
 import java.util.concurrent.TimeUnit;
 

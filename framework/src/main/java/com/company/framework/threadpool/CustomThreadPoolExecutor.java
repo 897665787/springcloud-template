@@ -1,4 +1,4 @@
-package com.company.framework.config;
+package com.company.framework.threadpool;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;

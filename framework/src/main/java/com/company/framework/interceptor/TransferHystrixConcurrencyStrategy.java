@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Component;
 
-import com.company.framework.config.CustomThreadPoolExecutor;
+import com.company.framework.threadpool.CustomThreadPoolExecutor;
 import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.netflix.hystrix.strategy.HystrixPlugins;
