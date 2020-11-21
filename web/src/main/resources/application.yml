@@ -1,5 +1,8 @@
 server:
   port: 6001
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
 
 spring:
   application:

@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +34,8 @@ public class ApiController {
 	private RefreshHandler refreshHandler;
 	@Autowired(required = false)
 	private ThreadPoolExecutor threadPoolExecutor;
+	@Autowired(required = false)
+	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	@GetMapping(value = "/info")
 	public String info() {
@@ -116,6 +119,44 @@ public class ApiController {
 			});
 			System.out.println("submit:"+n);
 		}
+		return 1;
+	}
+	
+	@GetMapping(value = "/threadpooltask")
+	public Integer threadpooltask() {
+		System.out.println("threadPoolTaskExecutor:"+threadPoolTaskExecutor);
+		for (int i = 0; i < 3; i++) {
+			int n = i;
+			threadPoolTaskExecutor.submit(() -> {
+				System.out.println("execute:"+n);
+				try {
+					Thread.sleep(new Random().nextInt(1000));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+			System.out.println("submit:"+n);
+		}
+		
+		threadPoolTaskExecutor.getActiveCount();
+		return 1;
+	}
+	
+	@GetMapping(value = "/log")
+	public Integer log() {
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < 1; i++) {
+			try{
+				
+				int j = i/0;
+			}catch(Exception e){
+				log.error("log error", e);
+			}
+			log.info("log:{}", i);
+		}
+		long end = System.currentTimeMillis();
+		System.out.println("cost:"+(end-start));
+		log.info("cost:{}", (end-start));
 		return 1;
 	}
 }
