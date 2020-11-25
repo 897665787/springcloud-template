@@ -15,16 +15,16 @@ public class Transfer {
 	// 请求参数
 	private RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 	// MDC日志追踪ID
-	private String traceId = MdcUtil.get();
+//	private String traceId = MdcUtil.get();
 	// 其他传递数据
 
 	public void beforeCall() {
 		RequestContextHolder.setRequestAttributes(requestAttributes);
-		MdcUtil.put(traceId);
+//		MdcUtil.put(traceId);
 	}
 
 	public void afterCall() {
 		RequestContextHolder.resetRequestAttributes();
-		MdcUtil.remove();
+//		MdcUtil.remove();
 	}
 }
