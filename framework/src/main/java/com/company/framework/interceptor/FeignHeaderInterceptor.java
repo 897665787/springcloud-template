@@ -11,7 +11,7 @@ import feign.RequestTemplate;
 /**
  * feign调用过程中传递header值
  * 
- * 依赖Hystrix自定义并发策略:RequestAttributeHystrixConcurrencyStrategy
+ * 依赖Hystrix自定义并发策略:TransferHystrixConcurrencyStrategy
  */
 @Component
 public class FeignHeaderInterceptor implements RequestInterceptor {

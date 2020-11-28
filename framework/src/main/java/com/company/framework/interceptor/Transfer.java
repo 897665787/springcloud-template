@@ -3,14 +3,9 @@ package com.company.framework.interceptor;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-import com.company.framework.filter.MdcUtil;
-
-import lombok.Data;
-
 /**
  * http请求线程与Hystrix线程 传输对象
  */
-@Data
 public class Transfer {
 	// 请求参数
 	private RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
