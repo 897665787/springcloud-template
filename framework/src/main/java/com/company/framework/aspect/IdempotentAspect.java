@@ -43,7 +43,6 @@ public class IdempotentAspect implements InitializingBean {
 	 */
 	@Around("@within(org.springframework.cloud.openfeign.FeignClient) && @annotation(idempotent)")
 	public Object server(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable {
-		System.out.println("IdempotentAspect.execute()1111");
 		if (!needIdempotent) {
 			return joinPoint.proceed();
 		}
@@ -64,7 +63,6 @@ public class IdempotentAspect implements InitializingBean {
 	 */
 	@Around("(@within(org.springframework.web.bind.annotation.RestController) || @within(org.springframework.stereotype.Controller)) && @annotation(idempotent)")
 	public Object client(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable {
-		System.out.println("IdempotentAspect.execute()2222");
 		String idempotentId = IdempotentUtil.idempotentId();
 		if (idempotentId == null) {
 			return joinPoint.proceed();

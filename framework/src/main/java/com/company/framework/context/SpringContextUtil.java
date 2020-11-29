@@ -28,7 +28,6 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	}
 
 	public static ApplicationContext getContext() {
-		assertApplicationContext();
 		return context;
 	}
 
@@ -59,23 +58,15 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getBean(String name) {
-		assertApplicationContext();
 		return (T) context.getBean(name);
 	}
 
 	public static <T> T getBean(Class<T> requiredType) {
-		assertApplicationContext();
 		return context.getBean(requiredType);
 	}
 
 	public static <T> T getBean(String name, Class<T> requiredType) {
 		return context.getBean(name, requiredType);
-	}
-
-	private static void assertApplicationContext() {
-		if (SpringContextUtil.context == null) {
-			throw new RuntimeException("context属性为null,请检查是否注入了SpringContextUtil!");
-		}
 	}
 
 	public static String getProperty(String key, String defaultValue) {
