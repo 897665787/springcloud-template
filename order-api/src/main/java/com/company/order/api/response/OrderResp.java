@@ -1,5 +1,7 @@
 package com.company.order.api.response;
 
+import java.util.Date;
+
 import com.company.common.jackson.annotation.AutoDesc;
 import com.company.order.api.enums.OrderType;
 
@@ -15,4 +17,6 @@ public class OrderResp {
 	
 	@AutoDesc(value = OrderType.class, code = "type")
 	private Integer type;
+	
+	private Date date;
 }

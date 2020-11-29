@@ -1,22 +1,30 @@
 package com.company.framework.context;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 
-@Component
-public class SpringContextUtil implements ApplicationContextAware {
+public class SpringContextUtil implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
 	private final static Logger logger = LoggerFactory.getLogger(SpringContextUtil.class);
 
 	private static ApplicationContext context;
 
+	private SpringContextUtil() {
+	}
+	
+	public static SpringContextUtil newInstance() {
+		return new SpringContextUtil();
+	}
+	
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		SpringContextUtil.context = applicationContext;
+	public void initialize(ConfigurableApplicationContext applicationContext) {
+		context = applicationContext;
+		logger.info("initialize applicationContext");
 	}
 
 	public static ApplicationContext getContext() {
@@ -76,6 +84,10 @@ public class SpringContextUtil implements ApplicationContextAware {
 
 	public static String getProperty(String key) {
 		return context.getEnvironment().getProperty(key);
+	}
+
+	public static int getIntegerProperty(String key, int defaultValue) {
+		return Optional.ofNullable(getProperty(key)).map(Integer::valueOf).orElse(defaultValue);
 	}
 
 }

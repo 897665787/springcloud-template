@@ -27,7 +27,7 @@ public class FeignCostTimeAspect {
 		try {
 			long end = System.currentTimeMillis();
 			Signature signature = joinPoint.getSignature();
-			log.info("request feign:{},mills:{},args:{},result:{}", signature.toShortString(), end - start,
+			log.info("request feign:{},mills:{},args:{},result:{}", signature.toShortString().replace("(..)", ""), end - start,
 					JsonUtil.toJsonString(joinPoint.getArgs()), JsonUtil.toJsonString(result));
 		} catch (Exception e) {
 			log.error("request feign error", e);

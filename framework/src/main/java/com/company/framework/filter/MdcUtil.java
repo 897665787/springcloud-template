@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -15,8 +15,16 @@ public class MdcUtil {
 
 	public final static String UNIQUE_KEY = "trace-id";
 
+	/**
+	 * 1.Random是线程安全的<br/>
+	 * 2.高并发情况下，单实例的性能不如每个线程持有一个实例<br/>
+	 * 3.经粗略测试，并发数少于200情况下性能是单实例优，按需来说项目目前并发量在200内<br/>
+	 */
+	private static Random random = new Random();
+	
 	public static void put() {
-		MDC.put(UNIQUE_KEY, UUID.randomUUID().toString().replace("-", ""));
+		String uuid = "" + System.currentTimeMillis() + (1000 + random.nextInt(9000));
+		MDC.put(UNIQUE_KEY, uuid);
 	}
 	
 	public static void put(String traceId) {

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.filter.MdcUtil;
+import com.company.framework.redis.RedisHolder;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
@@ -24,7 +26,6 @@ import com.company.order.entity.Order;
 import com.company.order.event.AfterOrderAddEvent;
 import com.company.order.event.BeforeOrderAddEvent;
 import com.company.user.api.feign.UserFeign;
-import com.company.user.api.request.UserReq;
 import com.company.user.api.response.UserResp;
 import com.google.common.collect.Lists;
 
@@ -122,27 +123,41 @@ public class OrderController implements OrderFeign {
 		return PropertyUtils.copyProperties(orderReq, OrderResp.class);
 	}
 
+	@Autowired
+	RedisHolder redisHolder;
+	
 	@Override
 	public OrderResp retryGet(Long id) {
-		log.info("retryGet");
+		log.info("retryGet:"+MdcUtil.get());
 		try {
-			int aa = new Random().nextInt(3) <2 ? 1000:2000;
+			int aa = new Random().nextInt(3) <2 ? 500:1000;
 			System.out.println("aa:"+aa);
 			Thread.sleep(aa);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		UserResp userResp = userFeign.retryGet(1L);
-		log.info("retryGet:{}", userResp);
-		return new OrderResp().setOrderCode(userResp.getName());
+		Long increment = redisHolder.increment("jiang", 1);
+		System.out.println("increment:"+increment);
+//		UserResp userResp = userFeign.retryGet(1L);
+//		log.info("retryGet:{}", userResp);
+//		return new OrderResp().setOrderCode(userResp.getName());
+		return new OrderResp().setOrderCode("" + increment);
 	}
 
 	@Override
 	public OrderResp retryPost(@RequestBody OrderReq orderReq) {
-		log.info("retryGet");
-		UserResp userResp = userFeign.retryPost(new UserReq());
-		log.info("retryGet:{}", userResp);
-		return new OrderResp().setOrderCode(userResp.getUsername());
+		log.info("retryPost");
+		try {
+			int aa = new Random().nextInt(3) <2 ? 500:1000;
+			System.out.println("aa:"+aa);
+			Thread.sleep(aa);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		UserResp userResp = userFeign.retryPost(new UserReq());
+//		log.info("retryPost:{}", userResp);
+		return new OrderResp().setOrderCode(System.currentTimeMillis()+"");
 	}
 }

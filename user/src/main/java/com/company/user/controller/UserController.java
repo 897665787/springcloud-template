@@ -1,12 +1,16 @@
 package com.company.user.controller;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.annotation.Idempotent;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
+import com.company.framework.redis.RedisHolder;
 import com.company.order.api.feign.OrderFeign;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.request.UserReq;
@@ -22,6 +26,8 @@ public class UserController implements UserFeign {
 
 	@Autowired
 	private OrderFeign orderFeign;
+	@Autowired
+	private RedisHolder redisHolder;
 	
 	@Override
 	public UserResp getById(Long id) {
@@ -70,5 +76,30 @@ public class UserController implements UserFeign {
 //		}
 		log.info("retryGet:{}", user);
 		return PropertyUtils.copyProperties(user, UserResp.class);
+	}
+	
+	@Override
+	@Idempotent
+	public UserResp idempotent(@RequestBody UserReq userReq) {
+		String value = System.currentTimeMillis() + "";
+		System.out.println("value:" + value);
+		try {
+			Thread.sleep(new Random().nextInt(2) == 0 ? 500 : 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return new UserResp().setUsername(value);
+	}
+
+	@Override
+	@Idempotent
+	public void noreturn() {
+		String value = System.currentTimeMillis() + "";
+		System.out.println(" value:" + value);
+		try {
+			Thread.sleep(new Random().nextInt(2) == 0 ? 500 : 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

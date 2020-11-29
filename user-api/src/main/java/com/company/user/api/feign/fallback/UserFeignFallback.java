@@ -32,6 +32,17 @@ public class UserFeignFallback implements FallbackFactory<UserFeign> {
 				log.error("retryPost error", e);
 				return new UserResp().setAvatar("Fallback");
 			}
+
+			@Override
+			public UserResp idempotent(UserReq userReq) {
+				log.error("idempotent error", e);
+				return new UserResp().setAvatar("Fallback");
+			}
+
+			@Override
+			public void noreturn() {
+				log.error("noreturn error", e);
+			}
 		};
 	}
 }

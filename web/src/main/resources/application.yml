@@ -47,7 +47,7 @@ hystrix:
           strategy: THREAD #默认线程池方式。还有一种信号量的方式SEMAPHORE
           thread:
             #Hystrix的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
-            timeoutInMilliseconds: 1000 #方法执行超时时间，默认1000ms
+            timeoutInMilliseconds: 3000 #方法执行超时时间，默认1000ms
             interruptOnTimeout: true #发生超时时是否中断方法的执行，默认true
             interruptOnCancel: false #是否在方法执行被取消时中断方法，默认false
   threadpool:
@@ -72,7 +72,7 @@ ribbon:
     clients: template-order,template-user #@FeignClient value值，多个逗号分隔
   #Ribbon重试次数(包含首次) = 1 + ribbon.MaxAutoRetries + ribbon.MaxAutoRetriesNextServer + (ribbon.MaxAutoRetries * ribbon.MaxAutoRetriesNextServer)
   MaxAutoRetries: 0 #同一实例最大重试次数，不包括首次调用。默认0
-  MaxAutoRetriesNextServer: 0 #同一个微服务其他实例的最大重试次数，不包括第一次调用的实例。默认1
+  MaxAutoRetriesNextServer: 1 #同一个微服务其他实例的最大重试次数，不包括第一次调用的实例。默认1
   OkToRetryOnAllOperations: false #是否所有操作（GET、POST等）都允许重试。默认false
   ServerListRefreshInterval: 2000 #从注册中心刷新服务器列表信息的时间间隔，默认2000ms
   #ConnectTimeout = feign.client.config.default.connectTimeout

@@ -41,4 +41,8 @@ public class HttpContextUtil {
 		headers.put(HEADER_CURRENT_USER_ID, Arrays.asList(currentUserId()));
 		return headers;
 	}
+
+	public static String head(String name) {
+		return Optional.ofNullable(request()).map(request -> request.getHeader(name)).orElse(null);
+	}
 }
