@@ -8,12 +8,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.common.annotation.Idempotent;
 import com.company.common.util.JsonUtil;
-import com.company.framework.redis.RedisHolder;
+import com.company.framework.redis.RedisUtils;
 import com.company.framework.redis.redisson.DistributeLockUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 public class IdempotentAspect implements InitializingBean {
 
 	private boolean needIdempotent = false;
-
-	@Autowired
-	private RedisHolder redisHolder;
 
 	/**
 	 * 发起feign请求的服务
@@ -68,7 +64,7 @@ public class IdempotentAspect implements InitializingBean {
 			return joinPoint.proceed();
 		}
 		return DistributeLockUtils.doInDistributeLockThrow(IdempotentUtil.lock(), () -> {
-			Boolean success = redisHolder.del(IdempotentUtil.head(idempotentId));// 删除成功代表首次执行
+			Boolean success = RedisUtils.del(IdempotentUtil.head(idempotentId));// 删除成功代表首次执行
 			if (success) {
 				Object result = null;
 				try {
@@ -78,7 +74,7 @@ public class IdempotentAspect implements InitializingBean {
 				}
 				if (result != null) {
 					// 将结果保存在redis，供重试请求直接从redis获取
-					redisHolder.set(IdempotentUtil.data(), result, IdempotentUtil.idempotentExpireMillis(),
+					RedisUtils.set(IdempotentUtil.data(), result, IdempotentUtil.idempotentExpireMillis(),
 							TimeUnit.MILLISECONDS);
 				}
 				return result;
@@ -91,7 +87,7 @@ public class IdempotentAspect implements InitializingBean {
 					log.info("already execute:{}", idempotentId);
 					return null;
 				}
-				Object result = redisHolder.get(IdempotentUtil.data(), returnType);
+				Object result = RedisUtils.get(IdempotentUtil.data(), returnType);
 				log.info("already execute:{},result:{}", idempotentId, JsonUtil.toJsonString(result));
 				return result;
 			}

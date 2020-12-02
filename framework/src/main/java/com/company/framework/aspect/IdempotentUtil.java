@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.redis.RedisHolder;
+import com.company.framework.redis.RedisUtils;
 import com.google.common.collect.Maps;
 
 public class IdempotentUtil {
@@ -53,8 +53,7 @@ public class IdempotentUtil {
 		headers.put(HEADER_IDEMPOTENT_ID, Arrays.asList(idempotentId));
 		int expireMillis = expireMillis();
 		headers.put(HEADER_IDEMPOTENT_EXPIRE_MILLIS, Arrays.asList(String.valueOf(expireMillis)));
-		RedisHolder redisHolder = SpringContextUtil.getBean(RedisHolder.class);
-		redisHolder.set(IdempotentUtil.head(idempotentId), StringUtils.EMPTY, expireMillis, TimeUnit.MILLISECONDS);
+		RedisUtils.set(IdempotentUtil.head(idempotentId), StringUtils.EMPTY, expireMillis, TimeUnit.MILLISECONDS);
 		return headers;
 	}
 	

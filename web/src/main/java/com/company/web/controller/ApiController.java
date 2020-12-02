@@ -6,9 +6,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.deploy.RefreshHandler;
-import com.company.framework.redis.RedisHolder;
+import com.company.framework.redis.RedisUtils;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
@@ -96,28 +93,26 @@ public class ApiController {
 	}
 
 	@Autowired
-	RedisHolder redisHolder;
-	@Autowired
 	SequenceGenerator sequenceGenerator;
 	
 	@GetMapping(value = "/retryGet")
 	public OrderResp retryGet(Long id) {
 		OrderResp aa = new OrderResp().setId(1L).setOrderCode(sequenceGenerator.nextId()+"").setType(1).setDate(new Date());
-		redisHolder.set("aaaa", JsonUtil.toJsonString(aa));
+		RedisUtils.set("aaaa", JsonUtil.toJsonString(aa));
 		
 //		ValueOperations opsForValue2 = redisTemplate.opsForValue();
-		redisHolder.set("aa2", aa);
+		RedisUtils.set("aa2", aa);
 		
-		redisHolder.set("aa4", "sadsd");
+		RedisUtils.set("aa4", "sadsd");
 		
-		OrderResp aaa = redisHolder.get("aa2", OrderResp.class);
+		OrderResp aaa = RedisUtils.get("aa2", OrderResp.class);
 		System.out.println(aaa);
 		
 		List<OrderResp> list = Lists.newArrayList();
 		list.add(aa);
-		redisHolder.set("aa3", list);
+		RedisUtils.set("aa3", list);
 		
-		List<OrderResp> list2 = redisHolder.getList("aa3",OrderResp.class);
+		List<OrderResp> list2 = RedisUtils.getList("aa3",OrderResp.class);
 		System.out.println(list2);
 		
 		log.info("retryGet");

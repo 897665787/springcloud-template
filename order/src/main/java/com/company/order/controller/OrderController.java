@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.MdcUtil;
-import com.company.framework.redis.RedisHolder;
+import com.company.framework.redis.RedisUtils;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
@@ -122,9 +122,6 @@ public class OrderController implements OrderFeign {
 	public OrderResp save(@RequestBody OrderReq orderReq) {
 		return PropertyUtils.copyProperties(orderReq, OrderResp.class);
 	}
-
-	@Autowired
-	RedisHolder redisHolder;
 	
 	@Override
 	public OrderResp retryGet(Long id) {
@@ -137,7 +134,7 @@ public class OrderController implements OrderFeign {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Long increment = redisHolder.increment("jiang", 1);
+		Long increment = RedisUtils.increment("jiang", 1);
 		System.out.println("increment:"+increment);
 //		UserResp userResp = userFeign.retryGet(1L);
 //		log.info("retryGet:{}", userResp);

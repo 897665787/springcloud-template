@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.annotation.Idempotent;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
-import com.company.framework.redis.RedisHolder;
 import com.company.order.api.feign.OrderFeign;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.request.UserReq;
@@ -26,8 +25,6 @@ public class UserController implements UserFeign {
 
 	@Autowired
 	private OrderFeign orderFeign;
-	@Autowired
-	private RedisHolder redisHolder;
 	
 	@Override
 	public UserResp getById(Long id) {
