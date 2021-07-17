@@ -5,13 +5,18 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
+import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
+import com.company.framework.autoconfigure.RedissionAutoConfiguration.RedissonCondition;
+import com.company.framework.redis.redisson.DistributeLockUtils;
+
 @Configuration
-@ConfigurationProperties(prefix = "spring.redis")
+@Conditional(RedissonCondition.class)
 public class RedissionAutoConfiguration {
 
 	@Bean(destroyMethod = "shutdown")
@@ -25,6 +30,24 @@ public class RedissionAutoConfiguration {
 		if (StringUtils.isNotBlank(redisProperties.getPassword())) {
 			serverConfig.setPassword(redisProperties.getPassword());
 		}
-		return Redisson.create(config);
+		RedissonClient redissonClient = Redisson.create(config);
+		DistributeLockUtils.init(redissonClient);
+		return redissonClient;
+	}
+	
+	static class RedissonCondition extends AllNestedConditions {
+
+		RedissonCondition() {
+			super(ConfigurationPhase.PARSE_CONFIGURATION);
+		}
+
+		@ConditionalOnProperty(prefix = "template.enable", name = "redisson", havingValue = "true")
+		static class EnableProperty {
+		}
+
+		@ConditionalOnProperty(prefix = "spring.redis", name = "host")
+		static class HostProperty {
+		}
+
 	}
 }

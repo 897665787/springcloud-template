@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "prefix", name = "openRabbitMq", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(prefix = "template.enable", name = "rabbitmq", havingValue = "true", matchIfMissing = false)
 public class MQAutoRefresh {
 	public static final String EXCHANGE = "deploy";
 

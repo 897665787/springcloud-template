@@ -1,0 +1,6 @@
+template:
+  enable:
+    redis: true
+    redisson: true
+    idempotent: true
+    rabbitmq: true

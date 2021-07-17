@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.company.common.annotation.Idempotent;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Aspect
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "idempotent", havingValue = "true", matchIfMissing = false)
 public class IdempotentAspect implements InitializingBean {
 
 	private boolean needIdempotent = false;
