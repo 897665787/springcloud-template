@@ -1,0 +1,6 @@
+spring:
+  rabbitmq:
+    addresses: 172.16.1.52:5672,172.16.1.52:5674
+    username: lssq
+    password: lssq@xxx1
+    virtual-host: lssq

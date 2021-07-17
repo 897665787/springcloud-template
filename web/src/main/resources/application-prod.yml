@@ -4,3 +4,7 @@ template:
     redisson: true
     idempotent: true
     rabbitmq: true
+    
+spring:
+  profiles:
+    include: redis-prod,rabbitmq-prod
