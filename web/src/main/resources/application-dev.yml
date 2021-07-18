@@ -9,7 +9,7 @@ spring:
     
 template:
   enable:
-    redis: true
-    redisson: true
+    redis: false
+    redisson: false
     idempotent: false
     rabbitmq: false
