@@ -44,7 +44,8 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	 * @return
 	 */
 	public static Boolean isTestProfile() {
-		return false;
+		String profile = getActiveProfile();
+		return Environment.TEST_ENVIRONMENT.contains(profile);
 	}
 
 	/**
@@ -53,7 +54,8 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	 * @return
 	 */
 	public static Boolean isProduceProfile() {
-		return false;
+		String profile = getActiveProfile();
+		return Environment.PRODUCE_ENVIRONMENT.contains(profile);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -13,3 +13,5 @@ template:
     redisson: false
     idempotent: false
     rabbitmq: false
+  mock:
+    time: false

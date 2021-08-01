@@ -21,6 +21,7 @@ import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
+import com.company.web.service.TimeService;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,14 @@ public class ApiController {
 	private ThreadPoolExecutor threadPoolExecutor;
 	@Autowired(required = false)
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-
+	@Autowired
+	private TimeService timeService;
+	
+	@GetMapping(value = "/timestr")
+	public String timestr() {
+		return timeService.getTime();
+	}
+	
 	@GetMapping(value = "/info")
 	public String info() {
 		return "{}";
