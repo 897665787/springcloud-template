@@ -11,10 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.util.JsonUtil;
+import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +37,18 @@ public class RequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		long start = System.currentTimeMillis();
+		String contentType = request.getContentType();
+		String paramsStr;
+		if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
+			paramsStr = requestWrapper.getBodyStr();
+			request = requestWrapper;
+		} else {
+			paramsStr = JsonUtil.toJsonString(getReqParam(request));
+		}
 		chain.doFilter(request, response);
-		log.info("{} {} {} {}", request.getMethod(), request.getRequestURI(), JsonUtil.toJsonString(getReqParam(request)), System.currentTimeMillis() - start);
+		log.info("{} {} {} {}", request.getMethod(), request.getRequestURI(), paramsStr,
+				System.currentTimeMillis() - start);
 	}
 
 	/**
