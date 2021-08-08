@@ -8,6 +8,7 @@ spring:
     include: redis-dev,rabbitmq-dev
     
 template:
+  domain: http://d-domain.com
   enable:
     redis: false
     redisson: false

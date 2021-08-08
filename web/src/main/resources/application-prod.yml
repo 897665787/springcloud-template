@@ -1,4 +1,5 @@
 template:
+  domain: http://domain.com
   enable:
     redis: true
     redisson: true
