@@ -24,7 +24,8 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	@Override
 	public void initialize(ConfigurableApplicationContext applicationContext) {
 		context = applicationContext;
-		logger.info("initialize applicationContext");
+		String profile = getActiveProfile();
+		logger.info(">>>当前环境变量为...{}", profile);
 	}
 
 	public static ApplicationContext getContext() {
@@ -33,8 +34,7 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 
 	/// 获取当前环境
 	public static String getActiveProfile() {
-		String profile = context.getEnvironment().getActiveProfiles()[0];
-		logger.info(">>>当前环境变量为...{}", profile);
+		String profile = context.getEnvironment().getProperty("spring.profiles.active");
 		return profile;
 	}
 
