@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class ThreadPoolAutoConfiguration {
 
-	@Bean
+	@Bean(destroyMethod = "destroy")
 	ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties properties) {
 		ThreadPoolTaskExecutor executor = new CustomThreadPoolTaskExecutor();
 		// 设置线程池核心容量
