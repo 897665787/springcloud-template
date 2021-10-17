@@ -1,6 +1,10 @@
 package com.company.framework.deploy;
 
+import java.io.IOException;
+
 import org.springframework.amqp.core.ExchangeTypes;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -9,8 +13,11 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
+
+import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
+import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +29,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-@ConditionalOnProperty(prefix = "template.enable", name = "rabbitmq", havingValue = "true", matchIfMissing = false)
+@Conditional(RabbitCondition.class)
 public class MQAutoRefresh {
-	public static final String EXCHANGE = "deploy";
+	public static final String EXCHANGE = "exchange.deploy";
 
 	@Value("${spring.application.name}")
 	private String applicationName;
@@ -56,8 +63,14 @@ public class MQAutoRefresh {
 	 * @param msg
 	 */
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = "deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}", durable = "false", autoDelete = "true", exclusive = "true"), exchange = @Exchange(value = EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
-	public void handler(String msg) {
+	public void handle(String msg, Channel channel, Message message) {
 		boolean result = refreshHandler.refreshRegistry();
 		log.info("#### refresh msg:{},result:{}", msg, result);
+		try {
+			MessageProperties messageProperties = message.getMessageProperties();
+			channel.basicAck(messageProperties.getDeliveryTag(), false);
+		} catch (IOException e) {
+			log.error("basicAck error", e);
+		}
 	}
 }

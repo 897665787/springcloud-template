@@ -2,17 +2,21 @@ package com.company.web.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.util.JsonUtil;
+import com.company.framework.amqp.MessageSender;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.SpringContextUtil;
 import com.company.framework.deploy.RefreshHandler;
 import com.company.framework.redis.RedisUtils;
 import com.company.framework.sequence.SequenceGenerator;
@@ -21,8 +25,10 @@ import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
+import com.company.web.rabbitmq.QueueConstant;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +49,35 @@ public class ApiController {
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private TimeService timeService;
+	@Autowired
+	private MessageSender messageSender;
+	
+	@GetMapping(value = "/sendMessage")
+	public String sendMessage(String message) {
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("open", message);
+
+		messageSender.sendMessage(params, QueueConstant.EXCHANGE, QueueConstant.COMMON_QUEUE.ROUTING_KEY);
+		return "success";
+	}
+
+	@GetMapping(value = "/sendDelayMessage")
+	public String sendDelayMessage(String message) {
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("open", message);
+
+		messageSender.sendMessage(params, QueueConstant.EXCHANGE, QueueConstant.DELAY_QUEUE.ROUTING_KEY, 3);
+		return "success";
+	}
+
+	@GetMapping(value = "/beans")
+	public Map<?,?> beans() {
+		ApplicationContext context = SpringContextUtil.getContext();
+		String[] beanDefinitionNames = context.getBeanDefinitionNames();
+		Map<String, Object> map = Maps.newHashMap();
+		map.put("beanDefinitionNames", beanDefinitionNames);
+		return map;
+	}
 	
 	@GetMapping(value = "/timestr")
 	public String timestr() {
