@@ -4,10 +4,14 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SpringContextUtil implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
 	private final static Logger logger = LoggerFactory.getLogger(SpringContextUtil.class);
@@ -68,7 +72,12 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	}
 
 	public static <T> T getBean(String name, Class<T> requiredType) {
-		return context.getBean(name, requiredType);
+		try {
+			return context.getBean(name, requiredType);
+		} catch (BeansException e) {
+			log.error("has not been", e);
+		}
+		return null;
 	}
 
 	public static String getProperty(String key, String defaultValue) {

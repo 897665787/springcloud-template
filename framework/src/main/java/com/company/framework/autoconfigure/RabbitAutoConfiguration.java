@@ -11,8 +11,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate.ConfirmCallback;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ReturnCallback;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.amqp.support.converter.SimpleMessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
@@ -39,7 +39,7 @@ public class RabbitAutoConfiguration {
 
 	@Bean
 	public MessageConverter messageConverter() {
-		return new ContentTypeDelegatingMessageConverter(new Jackson2JsonMessageConverter(JsonUtil.mapper()));
+		return new ContentTypeDelegatingMessageConverter(new SimpleMessageConverter());
 	}
 
 	@Primary // 先注册的connectionFactory才可以创建队列
@@ -83,6 +83,7 @@ public class RabbitAutoConfiguration {
 			@Override
 			public void returnedMessage(Message message, int replyCode, String replyText, String exchange,
 					String routingKey) {
+				// 当消息通过交换器无法匹配到队列会返回给生产者，就会打印这个日志
 				log.info("message:{},replyCode:{},replyText:{},exchange:{},routingKey:{}",
 						JsonUtil.toJsonString(message), replyCode, replyText, exchange, routingKey);
 			}

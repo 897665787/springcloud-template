@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.deploy.RefreshHandler;
@@ -25,7 +26,9 @@ import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
-import com.company.web.rabbitmq.QueueConstant;
+import com.company.web.rabbitmq.Constants;
+import com.company.web.rabbitmq.consumer.strategy.StrategyConstants;
+import com.company.web.rabbitmq.dto.UserMQDto;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -51,22 +54,45 @@ public class ApiController {
 	private TimeService timeService;
 	@Autowired
 	private MessageSender messageSender;
+//	private RabbitMessageSender messageSender;
 	
 	@GetMapping(value = "/sendMessage")
 	public String sendMessage(String message) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("open", message);
+		params.put("open2", message);
 
-		messageSender.sendMessage(params, QueueConstant.EXCHANGE, QueueConstant.COMMON_QUEUE.ROUTING_KEY);
+		messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY,params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.ROUTING_KEY);
+		
+		messageSender.sendFanoutMessage(params, FanoutConstants.ORDER_CREATE.EXCHANGE);
+		
+		UserMQDto param = new UserMQDto();
+		param.setP1("p1");
+		param.setP2("p2");
+		param.setP3("p3");
+		messageSender.sendNormalMessage(StrategyConstants.USER_STRATEGY, param, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.ROUTING_KEY);
 		return "success";
 	}
 
 	@GetMapping(value = "/sendDelayMessage")
-	public String sendDelayMessage(String message) {
+	public String sendDelayMessage(String message, Integer delaySeconds) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("open", message);
+		params.put("delaySeconds", delaySeconds);
 
-		messageSender.sendMessage(params, QueueConstant.EXCHANGE, QueueConstant.DELAY_QUEUE.ROUTING_KEY, 3);
+		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+				Constants.QUEUE.DEAD_LETTER.ROUTING_KEY, delaySeconds);
+		return "success";
+	}
+	
+	@GetMapping(value = "/sendXDelayMessage")
+	public String sendXDelayMessage(String message, Integer delaySeconds) {
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("open", message);
+		params.put("delaySeconds", delaySeconds);
+
+		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
+				Constants.QUEUE.XDELAYED.ROUTING_KEY, delaySeconds);
 		return "success";
 	}
 

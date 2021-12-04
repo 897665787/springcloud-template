@@ -1,21 +1,21 @@
 package com.company.framework.deploy;
 
-import java.io.IOException;
+import java.util.function.Consumer;
 
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
+import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
 import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 import com.rabbitmq.client.Channel;
 
@@ -31,14 +31,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Conditional(RabbitCondition.class)
 public class MQAutoRefresh {
-	public static final String EXCHANGE = "exchange.deploy";
 
 	@Value("${spring.application.name}")
 	private String applicationName;
 	
-	@Autowired(required = false)
-    @Qualifier("rabbitTemplate")
-    private RabbitTemplate rabbitTemplate;
+	@Autowired
+	private MessageSender messageSender;
 	
 	@Autowired
 	private RefreshHandler refreshHandler;
@@ -49,28 +47,23 @@ public class MQAutoRefresh {
 	public void send(String msg) {
 		String message = applicationName + "->" + msg;
 		log.info("#### send,msg:{}", message);
-		if (rabbitTemplate == null) {
-			log.info("rabbitTemplate is null");
-			return;
-		}
-		this.rabbitTemplate.convertAndSend(MQAutoRefresh.EXCHANGE, "", message);
+		messageSender.sendFanoutMessage(message, FanoutConstants.DEPLOY.EXCHANGE);
 	}
 	
 	/**
-	 * 临时队列名由deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}构成
+	 * 临时队列名由fanout.deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}构成
 	 * 每个服务（包括同个服务的集群部署）都要有单独的队列来监听fanout exchange的消息（用于监听其他服务下线或上线事件，重新拉取注册信息）
 	 * 
 	 * @param msg
 	 */
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = "deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}", durable = "false", autoDelete = "true", exclusive = "true"), exchange = @Exchange(value = EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.PREFIX + "deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}", durable = "false", autoDelete = "true", exclusive = "true"), exchange = @Exchange(value = FanoutConstants.DEPLOY.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
 	public void handle(String msg, Channel channel, Message message) {
-		boolean result = refreshHandler.refreshRegistry();
-		log.info("#### refresh msg:{},result:{}", msg, result);
-		try {
-			MessageProperties messageProperties = message.getMessageProperties();
-			channel.basicAck(messageProperties.getDeliveryTag(), false);
-		} catch (IOException e) {
-			log.error("basicAck error", e);
-		}
+		ConsumerUtils.handleByConsumer(msg, channel, message, new Consumer<String>() {
+			@Override
+			public void accept(String params) {
+				boolean result = refreshHandler.refreshRegistry();
+				log.info("#### refresh msg:{},result:{}", params, result);
+			}
+		});
 	}
 }

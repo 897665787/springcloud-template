@@ -1,17 +1,33 @@
 package com.company.framework.amqp;
 
-import java.util.Map;
-
 public interface MessageSender {
 
 	/**
-	 * 发送消息
+	 * 发送普通消息
 	 * 
-	 * @param params
+	 * @param strategyName
+	 * @param toJson
 	 * @param exchange
 	 * @param routingKey
 	 */
-	void sendMessage(Map<String, Object> params, String exchange, String routingKey);
+	void sendNormalMessage(String strategyName, Object toJson, String exchange, String routingKey);
 
-	void sendMessage(Map<String, Object> params, String exchange, String routingKey, Integer delaySeconds);
+	/**
+	 * 发送广播消息
+	 * 
+	 * @param toJson
+	 * @param exchange
+	 */
+	void sendFanoutMessage(Object toJson, String exchange);
+
+	/**
+	 * 发送延时消息
+	 * 
+	 * @param strategyName
+	 * @param toJson
+	 * @param exchange
+	 * @param routingKey
+	 * @param delaySeconds
+	 */
+	void sendDelayMessage(String strategyName, Object toJson, String exchange, String routingKey, Integer delaySeconds);
 }
