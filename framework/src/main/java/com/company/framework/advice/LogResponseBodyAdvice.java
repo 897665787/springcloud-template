@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Order(99)
 @RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
-public class ResponseBodyLogAdvice implements ResponseBodyAdvice<Object> {
+public class LogResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {
