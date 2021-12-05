@@ -116,18 +116,4 @@ public class ReqLogController {
 		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
 		return param;
 	}
-	
-	@PostMapping(value = "/post-body-row-noresult")
-	@NoResultWrapper
-	public Map<String, Object> postbodyrownoresult(@RequestBody Map<String, Object> param) {
-		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
-		return param;
-	}
-	
-	@PostMapping(value = "/post-body-row-noresult2")
-	@NoResultWrapper
-	public String postbodyrownoresult2(@RequestBody Map<String, Object> param) {
-		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
-		return "SUCCESS";
-	}
 }

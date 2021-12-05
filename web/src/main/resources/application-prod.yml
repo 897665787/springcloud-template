@@ -5,6 +5,7 @@ template:
     redisson: true
     idempotent: true
     rabbitmq: true
+    data-encypt: true
     
 spring:
   profiles:
