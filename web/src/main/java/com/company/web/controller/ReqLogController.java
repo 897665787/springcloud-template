@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.annotation.NoResultWrapper;
 import com.company.web.req.Param;
 import com.google.common.collect.Maps;
 
@@ -114,5 +115,19 @@ public class ReqLogController {
 	public Map<String, Object> postbodyrow(@RequestBody Map<String, Object> param) {
 		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
 		return param;
+	}
+	
+	@PostMapping(value = "/post-body-row-noresult")
+	@NoResultWrapper
+	public Map<String, Object> postbodyrownoresult(@RequestBody Map<String, Object> param) {
+		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
+		return param;
+	}
+	
+	@PostMapping(value = "/post-body-row-noresult2")
+	@NoResultWrapper
+	public String postbodyrownoresult2(@RequestBody Map<String, Object> param) {
+		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
+		return "SUCCESS";
 	}
 }

@@ -56,7 +56,7 @@ public class RabbitAutoConfiguration {
 	@Bean
 	public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
 			CachingConnectionFactory connectionFactory, MessageConverter messageConverter) {
-		connectionFactory.setPublisherConfirms(true);
+		connectionFactory.setPublisherConfirms(true);// publiser-confirm模式可以确保生产者到交换器exchange消息有没有发送成功
 		SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
 		factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		factory.setConnectionFactory(connectionFactory);
@@ -71,11 +71,12 @@ public class RabbitAutoConfiguration {
 	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
 		rabbitTemplate.setMessageConverter(messageConverter);
-		rabbitTemplate.setMandatory(true);// Mandatory为true时,消息通过交换器无法匹配到队列会返回给生产者,为false时,匹配不到会直接被丢弃
+		rabbitTemplate.setMandatory(true);// 使用publiser-confirm，publisher-returns属性
 
 		rabbitTemplate.setConfirmCallback(new ConfirmCallback() {
 			@Override
 			public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+				// publiser-confirm模式可以确保生产者到交换器exchange消息有没有发送成功
 				log.info("correlationData:{},ack:{},cause:{}", JsonUtil.toJsonString(correlationData), ack, cause);
 			}
 		});
