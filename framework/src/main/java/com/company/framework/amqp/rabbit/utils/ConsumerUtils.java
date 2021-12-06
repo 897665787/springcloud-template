@@ -49,15 +49,12 @@ public class ConsumerUtils {
 	private static void handle(String jsonStrMsg, Channel channel, Message message, Function<Object, Void> function) {
 		try {
 			if (jsonStrMsg == null) {
+				basicAck(channel, message);
 				return;
 			}
-			MessageProperties messageProperties = message.getMessageProperties();
-			if (messageProperties == null) {
-				return;
-			}
-			MdcUtil.put(messageProperties.getMessageId());
-
 			try {
+				MessageProperties messageProperties = message.getMessageProperties();
+				MdcUtil.put(messageProperties.getMessageId());
 				Map<String, Object> headers = messageProperties.getHeaders();
 				String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
 				Class<?> paramsClass = null;
@@ -76,13 +73,17 @@ public class ConsumerUtils {
 				throw e;
 			}
 
-			try {
-				channel.basicAck(messageProperties.getDeliveryTag(), false);
-			} catch (IOException e) {
-				log.error("basicAck error", e);
-			}
+			basicAck(channel, message);
 		} finally {
 			MdcUtil.remove();
+		}
+	}
+	
+	private static void basicAck(Channel channel, Message message) {
+		try {
+			channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+		} catch (IOException e) {
+			log.error("basicAck error", e);
 		}
 	}
 }
