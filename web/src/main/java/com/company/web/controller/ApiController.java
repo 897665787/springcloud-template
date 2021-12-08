@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.annotation.PublicUrl;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
@@ -35,6 +36,7 @@ import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 
+@PublicUrl
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -131,6 +133,7 @@ public class ApiController {
 		return byId;
 	}
 	
+	@PublicUrl
 	@GetMapping(value = "/getInt")
 	public Integer getInt() {
 		return 1;

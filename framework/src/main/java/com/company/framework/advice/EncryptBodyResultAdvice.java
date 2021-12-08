@@ -16,7 +16,7 @@ import com.company.common.api.Result;
 import cn.hutool.crypto.SecureUtil;
 
 /**
- * 对响应的Result中的data进行加密
+ * 对响应的Result中的data进行加密（该类一般用于最外层，最可能用于网关）
  */
 @Order(1)
 @RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
