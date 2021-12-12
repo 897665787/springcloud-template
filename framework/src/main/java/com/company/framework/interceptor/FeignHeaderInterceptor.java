@@ -25,16 +25,16 @@ public class FeignHeaderInterceptor implements RequestInterceptor {
 	public void apply(RequestTemplate template) {
 		Map<String, Collection<String>> headers = Maps.newHashMap();
 
-		// 当前登录用户相关headers
-		headers.putAll(HttpContextUtil.currentUserHeaders());
+		// 请求上下文中传递到下游的相关headers
+		headers.putAll(HttpContextUtil.httpContextHeaders());
 		// 日志追踪ID
 		headers.putAll(MdcUtil.headers());
 		// 幂等
 		headers.putAll(IdempotentUtil.headers());
 		// 其他headers
 		// headers.putAll();
-		if (!headers.isEmpty()) {
-			template.headers(headers); // 如果集合为空，template.headers会清空header
+		if (!headers.isEmpty()) {// 如果集合为空，template.headers会清空header
+			template.headers(headers);
 		}
 	}
 }

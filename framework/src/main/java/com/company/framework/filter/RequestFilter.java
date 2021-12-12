@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.util.JsonUtil;
+import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-@Order(2)
+@Order(10)
 public class RequestFilter extends OncePerRequestFilter {
 
 	@Override
@@ -47,7 +48,8 @@ public class RequestFilter extends OncePerRequestFilter {
 			paramsStr = JsonUtil.toJsonString(getReqParam(request));
 		}
 		chain.doFilter(request, response);
-		log.info("{} {} {} {}", request.getMethod(), request.getRequestURI(), paramsStr,
+		log.info("{} {} header:{} params:{} {}", request.getMethod(), request.getRequestURI(),
+				JsonUtil.toJsonString(HttpContextUtil.httpContextHeader()), paramsStr,
 				System.currentTimeMillis() - start);
 	}
 

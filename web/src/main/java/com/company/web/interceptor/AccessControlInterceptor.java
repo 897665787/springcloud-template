@@ -1,4 +1,4 @@
-package com.company.framework.interceptor;
+package com.company.web.interceptor;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.framework.context.HttpContextUtil;
 
 @Component
 public class AccessControlInterceptor extends HandlerInterceptorAdapter {
@@ -44,10 +46,12 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		// 判断是否已登录
-		String token = request.getHeader("token");
-		if ("111".equals(token)) {
+		String userId = request.getHeader(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		if (StringUtils.isNotBlank(userId)) {
 			return true;
 		}
+		
+		// 判断是否有访问权限？
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
