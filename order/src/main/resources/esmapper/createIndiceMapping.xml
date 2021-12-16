@@ -1,0 +1,68 @@
+<properties>
+	<property name="mapping4lsq.candi_test_v2">
+    <![CDATA[
+{
+	"settings": { /*定义分片数和备份数*/
+		"number_of_shards": 3,
+		"number_of_replicas": 1
+	},
+	"mappings": {
+		"properties": {
+			"accessCount": {
+				"type": "long"
+			},
+			"addr": {
+				"type": "text",
+				"fields": {
+					"keyword": {
+						"type": "keyword",
+						"ignore_above": 128
+					}
+				}
+			},
+			"businessType": {
+				"type": "text",
+				"index": false /*定义分片数和备份数*/
+			},
+			"id": {
+				"type": "text",
+				"fields": {
+					"keyword": {
+						"type": "keyword",
+						"ignore_above": 256
+					}
+				}
+			},
+			"latitude": {
+				"type": "float"
+			},
+			"longitude": {
+				"type": "float"
+			},
+			"remark": {
+				"type": "text",
+				"fields": {
+					"keyword": {
+						"type": "keyword",
+						"ignore_above": 256
+					}
+				}
+			},
+			"searchTxt": {
+				"type": "text",
+				"fields": {
+					"keyword": {
+						"type": "keyword",
+						"ignore_above": 256
+					}
+				}
+			},
+			"updateDate": {
+				"type": "date"
+			}
+		}
+	}
+}
+    ]]>
+    </property>
+</properties>

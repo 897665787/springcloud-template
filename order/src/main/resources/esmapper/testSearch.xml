@@ -1,0 +1,15 @@
+<properties>
+	<property name="search">
+    <![CDATA[
+    {
+		"sort": [
+			{
+				"_score": "desc"
+			}
+		],
+		"from": #[from],
+		"size": #[size]
+	}
+    ]]>
+    </property>
+</properties>

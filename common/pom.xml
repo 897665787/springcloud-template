@@ -79,5 +79,12 @@
 			<artifactId>hutool-all</artifactId>
 			<version>4.1.2</version>
 		</dependency>
+		
+		<!-- 造数工具 -->
+		<dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.18</version>
+        </dependency>
 	</dependencies>
 </project>
