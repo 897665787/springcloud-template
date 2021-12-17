@@ -55,7 +55,8 @@
 						"type": "keyword",
 						"ignore_above": 256
 					}
-				}
+				},
+				"analyzer": "ik_max_word" /*定义分词器*/
 			},
 			"updateDate": {
 				"type": "date"
