@@ -18,11 +18,12 @@ public class EsTestDto {
 	private String businessType;
 
 	private String searchTxt;
+	
+	private Boolean big;
 
-	/**
-	 * 访问量
-	 */
 	private Integer accessCount;
+	
+	private Long visitCount;
 
 	/**
 	 * 详细地址

@@ -1,15 +1,35 @@
 <properties>
 	<property name="search">
     <![CDATA[
-    {
-		"sort": [
-			{
-				"_score": "desc"
-			}
-		],
-		"from": #[from],
-		"size": #[size]
+{
+	"query": {
+		"multi_match": {
+			"query": "王烨华",
+			"fields": [
+				"searchTxt",
+				"productList.name",
+				"productList.addressList.city"
+			]
+		}
+	},
+	"sort": [
+		{
+			"_score": "desc"
+		}
+	],
+	"from": 0,
+	"size": 10,
+	"highlight": {
+        "pre_tags": "<em>", /* 全局 */
+        "post_tags": "</em>",
+		"fields": {
+			"*": { /* *代表所有字段，也可以填字段名 */
+                "pre_tags": "<em>", /* 某个字段 */
+                "post_tags": "</em>"
+            }
+		}
 	}
+}
     ]]>
     </property>
 </properties>

@@ -79,7 +79,21 @@ public class ESController {
 		// 查看索引结构：http://172.20.33.24:8705/lsq.candi_test_v2/_mapping?pretty
 		return Result.success(createIndiceMapping);
 	}
-
+	
+	/**
+	 * 添加或修改索引属性
+	 * 
+	 * @param indexName
+	 * @return
+	 */
+	@GetMapping(value = "/updateIndiceMappingByDSL")
+	public Object updateIndiceMappingByDSL(String indexName) {
+		ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/updateIndiceMapping.xml");
+		String updateIndiceMapping = clientUtil.updateIndiceMapping(indexName + "/_mapping",
+				"mapping4lsq.candi_test_v2");
+		return Result.success(updateIndiceMapping);
+	}
+	
 	/**
 	 * 删除索引（没有权限）
 	 * 
@@ -110,11 +124,13 @@ public class ESController {
 		EsTestDto estestdto = new EsTestDto();
 		estestdto.setId(id);
 		estestdto.setBusinessType("A");
-		estestdto.setSearchTxt(faker.name().fullName());
+		estestdto.setSearchTxt(faker.name().fullName()+faker.name().fullName()+faker.name().fullName());
+		estestdto.setBig(true);
 		estestdto.setAccessCount(11);
+		estestdto.setVisitCount(12L);
 		estestdto.setAddr(faker.address().fullAddress());
-		estestdto.setLongitude(new BigDecimal("113.93041"));
-		estestdto.setLatitude(new BigDecimal("22.53332"));
+		estestdto.setLongitude(new BigDecimal(faker.address().longitude()));
+		estestdto.setLatitude(new BigDecimal(faker.address().latitude()));
 		estestdto.setUpdateDate(new Date());
 		estestdto.setRemark(faker.name().title());
 		estestdto.setDistance(BigDecimal.ONE);
@@ -125,7 +141,7 @@ public class ESController {
 		String addDocument = clientUtil.addDocument(indexName, estestdto);
 		return Result.success(addDocument);
 	}
-
+	
 	@GetMapping(value = "/getDocumentById")
 	public Object getDocumentById(String indexName, String id) {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();

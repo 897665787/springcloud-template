@@ -22,11 +22,11 @@ spring:
         max-wait: 2000 # 连接池最大阻塞等待时间 ,默认-1（使用负值表示没有限制）
   elasticsearch:
     bboss:
-      elasticUser: 
-      elasticPassword: 
+      #elasticUser: 
+      #elasticPassword: 
       elasticsearch:
         rest:
-          hostNames: localhost:9200
+          hostNames: 127.0.0.1:9200
         dateFormat: yyyy.MM.dd
         timeZone: Asia/Shanghai
         showTemplate: true

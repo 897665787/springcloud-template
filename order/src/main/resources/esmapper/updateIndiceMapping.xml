@@ -1,0 +1,19 @@
+<properties>
+	<property name="mapping4lsq.candi_test_v2">
+    <![CDATA[
+{
+	"properties": {
+		"addr": {
+			"type": "text",
+			"fields": {
+				"keyword": {
+					"type": "keyword",
+					"ignore_above": 64
+				}
+			}
+		}
+	}
+}
+    ]]>
+    </property>
+</properties>
