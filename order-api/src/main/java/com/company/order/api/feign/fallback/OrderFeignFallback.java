@@ -2,6 +2,8 @@ package com.company.order.api.feign.fallback;
 
 import org.springframework.stereotype.Component;
 
+import com.company.common.api.Result;
+import com.company.common.api.ResultCode;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
@@ -16,26 +18,26 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 	@Override
 	public OrderFeign create(final Throwable e) {
 		return new OrderFeign() {
-			public OrderResp getById(Long id) {
-				log.error("aaaaaaaaaaaaaaaaaaaaa error", e);
-				return new OrderResp().setOrderCode("Fallback");
+			public Result<OrderResp> getById(Long id) {
+				log.error("getById error", e);
+				return Result.fail(ResultCode.FALLBACK);
 			}
 
-			public OrderResp save(OrderReq orderReq) {
+			public Result<OrderResp> save(OrderReq orderReq) {
 				log.error("save error", e);
-				return new OrderResp().setOrderCode("Fallback");
+				return Result.fail(ResultCode.FALLBACK);
 			}
 
 			@Override
-			public OrderResp retryGet(Long id) {
+			public Result<OrderResp> retryGet(Long id) {
 				log.error("retryGet error", e);
-				return new OrderResp().setOrderCode("Fallback");
+				return Result.fail(ResultCode.FALLBACK);
 			}
 
 			@Override
-			public OrderResp retryPost(OrderReq orderReq) {
+			public Result<OrderResp> retryPost(OrderReq orderReq) {
 				log.error("retryPost error", e);
-				return new OrderResp().setOrderCode("Fallback");
+				return Result.fail(ResultCode.FALLBACK);
 			}
 		};
 	}

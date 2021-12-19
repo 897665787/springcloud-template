@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.NoResultWrapper;
 import com.company.web.req.Param;
 import com.google.common.collect.Maps;
 

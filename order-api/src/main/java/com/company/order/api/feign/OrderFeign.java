@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.company.common.api.Result;
 import com.company.order.api.feign.fallback.OrderFeignFallback;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
@@ -14,14 +15,14 @@ import com.company.order.api.response.OrderResp;
 public interface OrderFeign {
 
 	@RequestMapping("/getById")
-	OrderResp getById(@RequestParam("id") Long id);
+	Result<OrderResp> getById(@RequestParam("id") Long id);
 
 	@RequestMapping("/save")
-	OrderResp save(@RequestBody OrderReq orderReq);
+	Result<OrderResp> save(@RequestBody OrderReq orderReq);
 
 	@RequestMapping("/retryGet")
-	OrderResp retryGet(@RequestParam("id") Long id);
+	Result<OrderResp> retryGet(@RequestParam("id") Long id);
 	
 	@PostMapping("/retryPost")
-	OrderResp retryPost(@RequestBody OrderReq orderReq);
+	Result<OrderResp> retryPost(@RequestBody OrderReq orderReq);
 }

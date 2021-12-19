@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.annotation.Idempotent;
+import com.company.common.api.Result;
 import com.company.user.api.feign.fallback.UserFeignFallback;
 import com.company.user.api.request.UserReq;
 import com.company.user.api.response.UserResp;
@@ -14,19 +15,19 @@ import com.company.user.api.response.UserResp;
 public interface UserFeign {
 
 	@RequestMapping("/getById")
-	UserResp getById(@RequestParam("id") Long id);
+	Result<UserResp> getById(@RequestParam("id") Long id);
 
 	@RequestMapping("/retryGet")
-	UserResp retryGet(@RequestParam("id") Long id);
+	Result<UserResp> retryGet(@RequestParam("id") Long id);
 
 	@RequestMapping("/retryPost")
-	UserResp retryPost(@RequestBody UserReq userReq);
-	
+	Result<UserResp> retryPost(@RequestBody UserReq userReq);
+
 	@RequestMapping("/idempotent")
 	@Idempotent
-	UserResp idempotent(@RequestBody UserReq userReq);
+	Result<UserResp> idempotent(@RequestBody UserReq userReq);
 
 	@RequestMapping("/noreturn")
 	@Idempotent
-	void noreturn();
+	Result<Void> noreturn();
 }

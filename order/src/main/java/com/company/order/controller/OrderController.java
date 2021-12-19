@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.api.Result;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.MdcUtil;
@@ -71,7 +72,7 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public OrderResp getById(Long id) {
+	public Result<OrderResp> getById(Long id) {
 		log.info("provider-6001:{}-{}", id, System.currentTimeMillis());
 		System.out.println("OrderController thread:"+Thread.currentThread());
 		HttpServletRequest request = HttpContextUtil.request();
@@ -83,7 +84,8 @@ public class OrderController implements OrderFeign {
 			String headerValue = request.getHeader(headerName);
 			System.out.println("headerName:" + headerName + " headerValue:" + headerValue);
 		}
-		UserResp userResp = userFeign.getById(1L);
+		Result<UserResp> byId = userFeign.getById(1L);
+		UserResp userResp = byId.getData();
 		System.out.println("userResp:" + userResp);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 		
@@ -115,16 +117,16 @@ public class OrderController implements OrderFeign {
 		System.out.println("page:" + page);
 		System.out.println("page.getContent():" + page.getContent());
 		*/
-		return new OrderResp().setId(id).setOrderCode(String.valueOf(sequenceGenerator.nextId())).setPort(port);
+		return Result.success(new OrderResp().setId(id).setOrderCode(String.valueOf(sequenceGenerator.nextId())).setPort(port));
 	}
 	
 	@Override
-	public OrderResp save(@RequestBody OrderReq orderReq) {
-		return PropertyUtils.copyProperties(orderReq, OrderResp.class);
+	public Result<OrderResp> save(@RequestBody OrderReq orderReq) {
+		return Result.success(PropertyUtils.copyProperties(orderReq, OrderResp.class));
 	}
 	
 	@Override
-	public OrderResp retryGet(Long id) {
+	public Result<OrderResp> retryGet(Long id) {
 		log.info("retryGet:"+MdcUtil.get());
 		try {
 			int aa = new Random().nextInt(3) <2 ? 500:1000;
@@ -139,11 +141,11 @@ public class OrderController implements OrderFeign {
 //		UserResp userResp = userFeign.retryGet(1L);
 //		log.info("retryGet:{}", userResp);
 //		return new OrderResp().setOrderCode(userResp.getName());
-		return new OrderResp().setOrderCode("" + increment);
+		return Result.success(new OrderResp().setOrderCode("" + increment));
 	}
 
 	@Override
-	public OrderResp retryPost(@RequestBody OrderReq orderReq) {
+	public Result<OrderResp> retryPost(@RequestBody OrderReq orderReq) {
 		log.info("retryPost");
 		try {
 			int aa = new Random().nextInt(3) <2 ? 500:1000;
@@ -155,6 +157,6 @@ public class OrderController implements OrderFeign {
 		}
 //		UserResp userResp = userFeign.retryPost(new UserReq());
 //		log.info("retryPost:{}", userResp);
-		return new OrderResp().setOrderCode(System.currentTimeMillis()+"");
+		return Result.success(new OrderResp().setOrderCode(System.currentTimeMillis()+""));
 	}
 }

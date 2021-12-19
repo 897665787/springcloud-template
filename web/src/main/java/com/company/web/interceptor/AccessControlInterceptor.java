@@ -45,7 +45,7 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter writer = response.getWriter();
-		Result fail = Result.fail("请登录");
+		Result<?> fail = Result.fail("请登录");
 		writer.write(JsonUtil.toJsonString(fail));
 		
 		return false;

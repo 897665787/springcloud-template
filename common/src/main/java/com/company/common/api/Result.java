@@ -9,10 +9,10 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class Result {
+public class Result<T> {
 	private Integer code;// 响应码
 	private String message;// 响应信息
-	private Object data;// 数据
+	private T data;// 数据
 	private String traceId = null;// 日志追踪ID
 
 //	public Result of(Integer code, String message) {
@@ -21,41 +21,61 @@ public class Result {
 //		return this;
 //	}
 	
-	public Result setResultCode(ResultCode resultCode) {
+	public Result<T> setResultCode(ResultCode resultCode) {
 		this.code = resultCode.getCode();
 		this.message = resultCode.getMessage();
 		return this;
 	}
 
-	public static Result success() {
-		return new Result().setResultCode(ResultCode.SUCCESS);
+	public static <T> Result<T> success() {
+		return new Result<T>().setResultCode(ResultCode.SUCCESS);
 	}
 
-	public static Result success(Object data) {
-		return new Result().setResultCode(ResultCode.SUCCESS).setData(data);
+	public static <T> Result<T> success(T data) {
+		return new Result<T>().setResultCode(ResultCode.SUCCESS).setData(data);
 	}
 
-	public static Result fail() {
-		return new Result().setResultCode(ResultCode.FAIL);
+	public static <T> Result<T> fail() {
+		return new Result<T>().setResultCode(ResultCode.FAIL);
 	}
 
-	public static Result fail(String message) {
-		return new Result().setResultCode(ResultCode.FAIL).setMessage(message);
+	public static <T> Result<T> fail(String message) {
+		return new Result<T>().setResultCode(ResultCode.FAIL).setMessage(message);
 	}
 
-	public static Result fail(Object data) {
-		return new Result().setResultCode(ResultCode.FAIL).setData(data);
+	public static <T> Result<T> fail(T data) {
+		return new Result<T>().setResultCode(ResultCode.FAIL).setData(data);
 	}
 
-	public static Result fail(ResultCode resultCode) {
-		return new Result().setResultCode(resultCode);
+	public static <T> Result<T> fail(ResultCode resultCode) {
+		return new Result<T>().setResultCode(resultCode);
 	}
 
-	public static Result fail(ResultCode resultCode, Object data) {
-		return new Result().setResultCode(resultCode).setData(data);
+	public static <T> Result<T> fail(ResultCode resultCode, T data) {
+		return new Result<T>().setResultCode(resultCode).setData(data);
 	}
 
-	public static Result fail(BusinessException businessException) {
-		return new Result().setCode(businessException.getCode()).setMessage(businessException.getMessage());
+	public static <T> Result<T> fail(BusinessException businessException) {
+		return new Result<T>().setCode(businessException.getCode()).setMessage(businessException.getMessage());
+	}
+
+	public boolean successCode() {
+		if (code == null) {
+			return false;
+		}
+		if (ResultCode.of(code) != ResultCode.SUCCESS) {
+			return false;
+		}
+		return true;
+	}
+	
+	public T dataOrThrow() {
+		if (code == null) {
+			throw new BusinessException(message);
+		}
+		if (ResultCode.of(code) != ResultCode.SUCCESS) {
+			throw new BusinessException(code, message);
+		}
+		return data;
 	}
 }

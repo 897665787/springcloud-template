@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.annotation.Idempotent;
+import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
@@ -27,7 +28,7 @@ public class UserController implements UserFeign {
 	private OrderFeign orderFeign;
 	
 	@Override
-	public UserResp getById(Long id) {
+	public Result<UserResp> getById(Long id) {
 		System.out.println("UserController thread:"+Thread.currentThread());
 		/*
 		HttpServletRequest request = HttpContextUtil.request();
@@ -44,11 +45,11 @@ public class UserController implements UserFeign {
 		*/
 		User user = User.builder().id(1L).name("adasd").status(2).build();
 		System.out.println(JsonUtil.toJsonString(user));
-		return PropertyUtils.copyProperties(user, UserResp.class);
+		return Result.success(PropertyUtils.copyProperties(user, UserResp.class));
 	}
 
 	@Override
-	public UserResp retryGet(Long id) {
+	public Result<UserResp> retryGet(Long id) {
 		log.info("retryGet");
 		User user = User.builder().id(1L).name("retryGet1").status(2).build();
 //		try {
@@ -58,11 +59,11 @@ public class UserController implements UserFeign {
 //			e.printStackTrace();
 //		}
 		log.info("retryGet:{}", user);
-		return PropertyUtils.copyProperties(user, UserResp.class);
+		return Result.success(PropertyUtils.copyProperties(user, UserResp.class));
 	}
 
 	@Override
-	public UserResp retryPost(@RequestBody UserReq userReq) {
+	public Result<UserResp> retryPost(@RequestBody UserReq userReq) {
 		log.info("retryGet");
 		User user = User.builder().id(1L).name("adasd").status(2).build();
 //		try {
@@ -72,12 +73,12 @@ public class UserController implements UserFeign {
 //			e.printStackTrace();
 //		}
 		log.info("retryGet:{}", user);
-		return PropertyUtils.copyProperties(user, UserResp.class);
+		return Result.success(PropertyUtils.copyProperties(user, UserResp.class));
 	}
 	
 	@Override
 	@Idempotent
-	public UserResp idempotent(@RequestBody UserReq userReq) {
+	public Result<UserResp> idempotent(@RequestBody UserReq userReq) {
 		String value = System.currentTimeMillis() + "";
 		System.out.println("value:" + value);
 		try {
@@ -85,12 +86,12 @@ public class UserController implements UserFeign {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return new UserResp().setUsername(value);
+		return Result.success(new UserResp().setUsername(value));
 	}
 
 	@Override
 	@Idempotent
-	public void noreturn() {
+	public Result<Void> noreturn() {
 		String value = System.currentTimeMillis() + "";
 		System.out.println(" value:" + value);
 		try {
@@ -98,5 +99,6 @@ public class UserController implements UserFeign {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		return Result.success();
 	}
 }

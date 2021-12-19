@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 	 * 拦截异常
 	 */
 	@ExceptionHandler(Exception.class)
-	public Result error(Exception e) {
+	public Result<?> error(Exception e) {
 		log.error("未知异常:", e);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
 	 * 请求方式不支持
 	 */
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
-	public Result handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 		String message = MessageFormat.format("不支持{0}请求", e.getMethod());
 		log.warn(message, e);
 		return Result.fail(message);
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 	 * 拦截未处理的运行时异常
 	 */
 	@ExceptionHandler(RuntimeException.class)
-	public Result runtime(RuntimeException e) {
+	public Result<?> runtime(RuntimeException e) {
 		log.error("未处理运行时异常", e);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 	 * 业务异常
 	 */
 	@ExceptionHandler(BusinessException.class)
-	public Result business(BusinessException e) {
+	public Result<?> business(BusinessException e) {
 		String message = e.getMessage();
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
 	 * @return
 	 */
 	@ExceptionHandler(ConstraintViolationException.class)
-	public Result resolveConstraintViolationException(ConstraintViolationException ex) {
+	public Result<?> resolveConstraintViolationException(ConstraintViolationException ex) {
 		Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
 		if (!CollectionUtils.isEmpty(constraintViolations)) {
 			String messageStr = constraintViolations.stream().map(ConstraintViolation::getMessage)
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
 	 * @date 2019/11/6 16:40
 	 **/
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public Result resolveMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+	public Result<?> resolveMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
 		List<ObjectError> objectErrors = ex.getBindingResult().getAllErrors();
 		if (!CollectionUtils.isEmpty(objectErrors)) {
 			String messageStr = objectErrors.stream().map(ObjectError::getDefaultMessage)
@@ -116,7 +116,7 @@ public class GlobalExceptionHandler {
 	 * @date 2019/11/6 16:41
 	 **/
 	@ExceptionHandler(BindException.class)
-	public Result handleBingException(BindException e) {
+	public Result<?> handleBingException(BindException e) {
 		List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
 		if (!CollectionUtils.isEmpty(allErrors)) {
 			String messageStr = allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(","));
