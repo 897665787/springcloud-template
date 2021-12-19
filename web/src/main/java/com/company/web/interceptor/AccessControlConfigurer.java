@@ -1,21 +1,17 @@
 package com.company.web.interceptor;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@ConditionalOnProperty(prefix = "template", name = "enable.access-control", havingValue = "true", matchIfMissing = true)
 public class AccessControlConfigurer implements WebMvcConfigurer {
-	
-	@Autowired
-	private AccessControlInterceptor accessControlInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		InterceptorRegistration registration = registry.addInterceptor(accessControlInterceptor);
-		registration.addPathPatterns("/**");
+		registry.addInterceptor(new AccessControlInterceptor()).addPathPatterns("/**");
 	}
 
 }

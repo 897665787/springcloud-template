@@ -13,20 +13,12 @@ import com.company.common.annotation.PublicUrl;
 import com.company.framework.context.HttpContextUtil;
 import com.company.web.filter.TokenUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/token")
 public class TokenController {
-	
-	public static void main(String[] args) {
-		String subject = "subject";
-		String audience = "APP";// APP MINIP
-		Date expiration = DateUtils.addSeconds(new Date(), 5);
-//		SpringContextUtil.getProperty("spring.application.name");
-		String token = TokenUtil.generateToken(subject, audience, expiration);
-//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTRVJWSUNFIiwic3ViIjoic3ViamVjdCIsImF1ZCI6IkFQUCIsImV4cCI6MTYzOTIzMDcxMywibmJmIjoxNjM5MjMwNzA4LCJpYXQiOjE2MzkyMzA3MDgsImp0aSI6ImlkIn0.eMNz_Tm8i1xwKkO3NVkw5omLAejAXywQ89WYxddhC98";
-		String userId = TokenUtil.checkToken(token);
-		System.out.println("userId:" + userId);
-	}
 	
 	@PostMapping(value = "/login")
 	@PublicUrl
@@ -37,22 +29,21 @@ public class TokenController {
 //		WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
 		// APP微信授权(根据code找到openid或unionid)
 		
-		String userId = "1";
+		String userId = "83848";
 		
 		String subject = userId;
 		String audience = HttpContextUtil.platform();
 //		Date expiration = DateUtils.addSeconds(new Date(), 5);
 		Date expiration = DateUtils.addMinutes(new Date(), 50);
-//		SpringContextUtil.getProperty("spring.application.name");
 		String token = TokenUtil.generateToken(subject, audience, expiration);
-		
+		log.info("subject:{} token:{}", subject, token);
 		return token;
 	}
 	
 	@PostMapping(value = "/refresh")
 	public String refresh(@RequestBody Map<String, Object> param) {
 		String token = null;
-		String userId = TokenUtil.checkToken(token);
+		String userId = TokenUtil.checkTokenAndGetSubject(token, true);
 		if(userId != null){
 			String subject = userId;
 			String audience = HttpContextUtil.platform();

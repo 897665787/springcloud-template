@@ -36,7 +36,6 @@ import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 
-@PublicUrl
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -133,7 +132,6 @@ public class ApiController {
 		return byId;
 	}
 	
-	@PublicUrl
 	@GetMapping(value = "/getInt")
 	public Integer getInt() {
 		return 1;

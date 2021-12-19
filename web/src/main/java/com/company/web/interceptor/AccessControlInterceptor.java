@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -17,19 +15,11 @@ import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 
-@Component
 public class AccessControlInterceptor extends HandlerInterceptorAdapter {
-	
-	@Value("${template.enable.access-control:true}")
-	private Boolean enable;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		
-		if(!enable){
-			return true;
-		}
 
 		HandlerMethod handlerMethod = (HandlerMethod) handler;
 		
@@ -40,8 +30,7 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		// 获取类上的注解
-		Object bean = handlerMethod.getBean();
-		if (bean.getClass().isAnnotationPresent(PublicUrl.class)) {
+		if (method.getDeclaringClass().isAnnotationPresent(PublicUrl.class)) {
 			return true;
 		}
 		

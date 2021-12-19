@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,6 +24,9 @@ import com.company.web.filter.request.HeaderMapRequestWrapper;
 public class TokenFilter extends OncePerRequestFilter {
 	private static final String HEADER_TOKEN = "x-token";
 
+	@Value("${template.enable.access-control:true}")
+	private Boolean enableAccessControl;
+
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		return false;
@@ -32,7 +36,7 @@ public class TokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		String token = request.getHeader(HEADER_TOKEN);
-		String userId = TokenUtil.checkToken(token);
+		String userId = TokenUtil.checkTokenAndGetSubject(token, enableAccessControl);
 
 		if (StringUtils.isBlank(userId)) {
 			chain.doFilter(request, response);
@@ -41,7 +45,7 @@ public class TokenFilter extends OncePerRequestFilter {
 
 		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
 		headerRequest.addHeader(HttpContextUtil.HEADER_CURRENT_USER_ID, userId);
-		
+
 		chain.doFilter(headerRequest, response);
 	}
 }
