@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ConditionalOnProperty(prefix = "template", name = "enable.access-control", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "template.enable", name = "access-control", havingValue = "true", matchIfMissing = true)
 public class AccessControlConfigurer implements WebMvcConfigurer {
 
 	@Override

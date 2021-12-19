@@ -1,6 +1,6 @@
 package com.company.web.advice;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -23,18 +23,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Order(1)
 @RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
+@ConditionalOnProperty(prefix = "template.enable", name = "data-encypt", havingValue = "true", matchIfMissing = false)
 public class EncryptBodyResultAdvice implements ResponseBodyAdvice<Object> {
 	private static final String ENCRYPT_KEY = "11111111";
-	
-	@Value("${template.enable.data-encypt:false}")
-	private Boolean enable;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {
-//		if (!enable) {
-//			// 加密开关
-//			return false;
-//		}
 		// 如果使用了EncryptResultData，说明响应值需要加密
 		EncryptResultData encryptResultData = returnType.getMethodAnnotation(EncryptResultData.class);
 		return encryptResultData != null;
