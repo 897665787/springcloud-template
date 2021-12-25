@@ -39,22 +39,29 @@ public class RequestFilter extends OncePerRequestFilter {
 			throws IOException, ServletException {
 		long start = System.currentTimeMillis();
 		String contentType = request.getContentType();
-		String paramsStr;
+		String bodyStr = "{}";
 		if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
 			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
-			paramsStr = requestWrapper.getBodyStr();
+			bodyStr = JsonUtil.toJsonString(JsonUtil.readTree(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
 			request = requestWrapper;
-		} else {
-			paramsStr = JsonUtil.toJsonString(getReqParam(request));
 		}
+		
+		String paramsStr = JsonUtil.toJsonString(getReqParam(request));
 		chain.doFilter(request, response);
-		log.info("{} {} header:{} params:{} {}", request.getMethod(), request.getRequestURI(),
-				JsonUtil.toJsonString(HttpContextUtil.httpContextHeader()), paramsStr,
+		log.info("{} {} header:{},param:{},body:{},{}ms", request.getMethod(), request.getRequestURI(),
+				JsonUtil.toJsonString(HttpContextUtil.httpContextHeaderThisRequest(request)), paramsStr, bodyStr,
 				System.currentTimeMillis() - start);
 	}
 
 	/**
 	 * 组装request中的参数
+	 * 
+	 * <pre>
+	 * 以下场景都能通过request.getParameterNames获取参数
+	 * 1.参数跟在url后面
+	 * 2.POST form-data
+	 * 3.POST x-www-form-urlencoded
+	 * </pre>
 	 * 
 	 * @param request
 	 * @return

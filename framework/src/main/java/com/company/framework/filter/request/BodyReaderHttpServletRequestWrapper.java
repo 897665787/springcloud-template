@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.apache.commons.io.IOUtils;
 
-import com.company.common.util.JsonUtil;
-
 public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
 	private final byte[] body;
@@ -30,7 +28,7 @@ public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapp
 		try (InputStream inputStream = request.getInputStream()) {
 			String body = IOUtils.toString(inputStream, Charset.forName("UTF-8"));
 			// body 有换行和空格，暂时没想到好的办法处理
-			return JsonUtil.toJsonString(JsonUtil.readTree(body));
+			return body;
 		}
 	}
 

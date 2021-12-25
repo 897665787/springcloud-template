@@ -80,6 +80,17 @@ public class HttpContextUtil {
 		return headers;
 	}
 	
+	public static Map<String, String> httpContextHeaderThisRequest(HttpServletRequest request) {
+		Map<String, String> headers = Maps.newHashMap();
+		headers.put(HEADER_CURRENT_USER_ID, request.getHeader(HEADER_CURRENT_USER_ID));
+		headers.put(HEADER_PLATFORM, request.getHeader(HEADER_PLATFORM));
+		headers.put(HEADER_OPERATOR, request.getHeader(HEADER_OPERATOR));
+		headers.put(HEADER_VERSION, request.getHeader(HEADER_VERSION));
+		headers.put(HEADER_DEVICEID, request.getHeader(HEADER_DEVICEID));
+		headers.put(HEADER_SOURCE, request.getHeader(HEADER_SOURCE));
+		return headers;
+	}
+	
 	public static Map<String, Collection<String>> httpContextHeaders() {
 		Set<Entry<String, String>> entrySet = httpContextHeader().entrySet();
 		

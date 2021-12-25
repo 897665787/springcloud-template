@@ -1,5 +1,6 @@
 package com.company.web.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -114,5 +115,13 @@ public class ReqLogController {
 	public Map<String, Object> postbodyrow(@RequestBody Map<String, Object> param) {
 		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
 		return param;
+	}
+	
+	@PostMapping(value = "/post-body-row2")
+	public Map<String, Object> postbodyrow2(@RequestBody String param) {
+		// POST /reqlog/post-body-row {"asdasd":1,"sadsaddd":" asdas dasd"} 5
+		HashMap<Object, Object> newHashMap = Maps.newHashMap();
+		newHashMap.put("param", param);
+		return Maps.newHashMap();
 	}
 }
