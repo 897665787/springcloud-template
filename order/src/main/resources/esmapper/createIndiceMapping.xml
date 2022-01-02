@@ -29,6 +29,9 @@
 					}
 				}
 			},
+			"location": {
+                "type": "geo_point" // 经纬度
+            },
 			"latitude": {
 				"type": "float"
 			},

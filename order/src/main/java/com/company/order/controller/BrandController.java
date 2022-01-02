@@ -9,14 +9,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.frameworkset.elasticsearch.ElasticSearchHelper;
-import org.frameworkset.elasticsearch.boot.BBossESStarter;
 import org.frameworkset.elasticsearch.client.ClientInterface;
 import org.frameworkset.elasticsearch.entity.ESDatas;
 import org.frameworkset.elasticsearch.entity.MapRestResponse;
 import org.frameworkset.elasticsearch.entity.MapSearchHit;
 import org.frameworkset.elasticsearch.entity.MapSearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.frameworkset.elasticsearch.entity.geo.GeoPoint;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +27,6 @@ import com.company.common.util.PropertyUtils;
 import com.company.order.es.dto.Brand;
 import com.company.order.es.dto.Brand.Product;
 import com.company.order.es.dto.Brand.Product.Address;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.company.order.es.dto.EsTestDto;
 import com.github.javafaker.Faker;
 import com.google.common.collect.Lists;
@@ -44,6 +43,19 @@ import cn.hutool.json.JSONUtil;
 @RequestMapping("/brand")
 public class BrandController {
 	
+	public static void main(String[] args) {
+		double lon = RandomUtils.nextDouble(73.66, 135.05);
+		double lat = RandomUtils.nextDouble(3.86, 53.55);
+		System.out.println(lon);
+	}
+
+	@GetMapping(value = "/addDocumentBat")
+	public Object addDocumentBat(String indexName, Integer count) {
+		for (int i = 0; i < count; i++) {
+			addDocument2(indexName, (i + 1) + "");
+		}
+		return Result.success();
+	}
 	@GetMapping(value = "/addDocument")
 	public Object addDocument2(String indexName, String id) {
 		Faker faker = new Faker(Locale.CHINA);
@@ -53,8 +65,17 @@ public class BrandController {
 		estestdto.setName(faker.name().fullName());
 		estestdto.setAccessCount(11);
 		estestdto.setAddr(faker.address().fullAddress());
-		estestdto.setLongitude(new BigDecimal("113.93041"));
-		estestdto.setLatitude(new BigDecimal("22.53332"));
+
+//		纬度3.86~53.55，经度73.66~135.05
+		GeoPoint location = new GeoPoint();
+		double lon = RandomUtils.nextDouble(93.66, 115.05);
+		double lat = RandomUtils.nextDouble(20.86, 43.55);
+		location.setLon(lon);
+		location.setLat(lat);
+		estestdto.setLocation(location);
+		
+//		estestdto.setLongitude(new BigDecimal(faker.address().longitude()));
+//		estestdto.setLatitude(new BigDecimal("22.53332"));
 		estestdto.setUpdateDate(new Date());
 		estestdto.setRemark(faker.name().title());
 		estestdto.setDistance(BigDecimal.ONE);
@@ -66,17 +87,25 @@ public class BrandController {
 			product.setName(faker.name().title());
 			product.setUpdateDate(new Date());
 
-//			List<Address> addressList = Lists.newArrayList();
-//			for (int j = 0; j < 2; j++) {
-//				Address address = new Address();
-//				address.setProvince(faker.address().city());
-//				address.setCity(faker.address().city());
-//				address.setDistrict(faker.address().country());
-//				address.setAddr(faker.address().streetName());
-//				address.setUpdateDate(new Date());
-//				addressList.add(address);
-//			}
-//			product.setAddressList(addressList);
+			List<Address> addressList = Lists.newArrayList();
+			for (int j = 0; j < 2; j++) {
+				Address address = new Address();
+				address.setProvince(faker.address().city());
+				address.setCity(faker.address().city());
+				address.setDistrict(faker.address().country());
+				address.setAddr(faker.address().streetName());
+				
+				GeoPoint location2 = new GeoPoint();
+				double lon2 = RandomUtils.nextDouble(93.66, 115.05);
+				double lat2 = RandomUtils.nextDouble(20.86, 43.55);
+				location2.setLon(lon2);
+				location2.setLat(lat2);
+				address.setLocation(location2);
+
+				address.setUpdateDate(new Date());
+				addressList.add(address);
+			}
+			product.setAddressList(addressList);
 			productList.add(product);
 		}
 		estestdto.setProductList(productList);

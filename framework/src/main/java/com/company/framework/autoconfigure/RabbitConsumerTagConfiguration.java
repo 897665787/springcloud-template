@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import com.company.common.util.HostUtil;
 
 /**
- * 用于标记消费者，方便找出队列的消费者
+ * 用于标记消费者，方便找出队列的消费者（在正式环境可以不使用）
  */
 @Configuration
 public class RabbitConsumerTagConfiguration implements InitializingBean {

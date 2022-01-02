@@ -3,6 +3,7 @@
     <![CDATA[
 {
 	"query": {
+		// 多字段匹配
 		"multi_match": {
 			"query": "王烨华",
 			"fields": [
@@ -11,11 +12,49 @@
 				"productList.addressList.city"
 			]
 		}
+		// 经纬度查询
+		"geo_distance": {
+			//查询范围 单位支持 m/km/mm/cm/in等
+			"distance": "100km",
+			//经纬度距离计算方式，默认弧度，可以使用plane（平面），相对速度快，但是在靠近极点时不准确
+    		"distance_type": "arc",
+			// "location": "113.93,22.53"
+            // "location": {
+            //     "lon":119.88127,
+            //     "lat":17.53036
+            // }
+            // "productList.addressList.location": "127.18392,27.8129105"
+            "productList.addressList.location": {
+                "lon":127.18392,
+                "lat":27.812910
+            }
+		}
+		
 	},
 	"sort": [
+		// 分值排序
 		{
 			"_score": "desc"
 		}
+		// 距离排序
+		{
+			"_geo_distance": {
+				"unit": "km",
+				"order": "asc",
+				"location": {
+					"lon": #[lon],
+					"lat": #[lat]
+				}
+			}
+		}
+		// 随机排序
+		{
+            "_script": {
+                "script": "Math.random()",
+                "type": "number",
+                "order": "asc"
+            }
+        }
 	],
 	"from": 0,
 	"size": 10,
