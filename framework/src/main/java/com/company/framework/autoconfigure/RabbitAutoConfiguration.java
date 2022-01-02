@@ -1,6 +1,5 @@
 package com.company.framework.autoconfigure;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -22,10 +21,8 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.company.common.util.HostUtil;
 import com.company.common.util.JsonUtil;
 import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
-import com.company.framework.context.SpringContextUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,9 +58,6 @@ public class RabbitAutoConfiguration {
 		factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
 		factory.setConnectionFactory(connectionFactory);
 		factory.setMessageConverter(messageConverter);
-		if (SpringContextUtil.isTestProfile()) {
-			factory.setConsumerTagStrategy(a -> HostUtil.identity() + "-" + RandomStringUtils.randomAlphanumeric(22));
-		}
 		return factory;
 	}
 
