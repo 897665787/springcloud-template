@@ -4,48 +4,18 @@ eureka:
     lease-renewal-interval-in-seconds: 10 #服务刷新时间配置，每隔这个时间会主动心跳一次
 
 spring:
-  rabbitmq:
-    addresses: 172.16.1.52:5672,172.16.1.52:5674
-    username: lssq
-    password: lssq@xxx1
-    virtual-host: lssq
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    database: 0 # 默认是0
-    timeout: 5000 # 连接超时时间（毫秒）
-    lettuce:
-      pool:
-        max-active: 8 # 连接池最大连接数,默认8（使用负值表示没有限制）
-        max-idle: 8 # 连接池中的最大空闲连接,默认8
-        min-idle: 0 # 连接池中的最小空闲连接 ,默认0
-        max-wait: 2000 # 连接池最大阻塞等待时间 ,默认-1（使用负值表示没有限制）
-  elasticsearch:
-    bboss:
-      #elasticUser: 
-      #elasticPassword: 
-      elasticsearch:
-        rest:
-          hostNames: 127.0.0.1:9200
-        dateFormat: yyyy.MM.dd
-        timeZone: Asia/Shanghai
-        showTemplate: true
-        discoverHost: false
-      dslfile:
-        refreshInterval: 5
-      http:
-        timeoutConnection: 5000
-        timeoutSocket: 5000
-        connectionRequestTimeout: 5000
-        retryTime: 1
-        maxLineLength: -1
-        maxHeaderCount: 200
-        maxTotal: 400
-        defaultMaxPerRoute: 200
-        soReuseAddress: false
-        soKeepAlive: false
-        timeToLive: 3600000
-        keepAlive: 3600000
-        keystore:
-        keyPassword:
-        hostnameVerifier:
+  profiles:
+    include: redis-dev,rabbitmq-dev,elasticsearch-dev
+
+template:
+  domain: http://d-domain.com
+  enable:
+    redis: false
+    redisson: false
+    idempotent: false
+    rabbitmq: false
+    elasticsearch: false
+    data-encypt: false
+    access-control: false
+  mock:
+    time: false

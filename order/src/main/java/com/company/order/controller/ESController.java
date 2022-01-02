@@ -39,8 +39,8 @@ import cn.hutool.json.JSONUtil;
 @RequestMapping("/es")
 public class ESController {
 
-	@Autowired
-	private BBossESStarter bbossESStarter;
+//	@Autowired
+//	private BBossESStarter bbossESStarter;
 
 	/**
 	 * 获取客户端
@@ -50,8 +50,8 @@ public class ESController {
 	@GetMapping(value = "/clientUtil")
 	public Object clientUtil() {
 		// 方式1，通过BBossESStarter中提供的工厂方法获取其单实例对象，这些单实例对象是多线程并发安全的
-		ClientInterface clientUtil = bbossESStarter.getRestClient();// 内部调用了ElasticSearchHelper.getRestClientUtil()
-		System.out.println("clientUtil:" + clientUtil);
+//		ClientInterface clientUtil = bbossESStarter.getRestClient();// 内部调用了ElasticSearchHelper.getRestClientUtil()
+//		System.out.println("clientUtil:" + clientUtil);
 
 		// 方式2，创建客户端工具，单实例多线程安全
 		ClientInterface clientUtil2 = ElasticSearchHelper.getRestClientUtil();

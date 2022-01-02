@@ -1,3 +1,7 @@
+spring:
+  profiles:
+    include: redis-prod,rabbitmq-prod
+    
 template:
   domain: http://domain.com
   enable:
@@ -6,7 +10,3 @@ template:
     idempotent: true
     rabbitmq: true
     data-encypt: true
-    
-spring:
-  profiles:
-    include: redis-prod,rabbitmq-prod

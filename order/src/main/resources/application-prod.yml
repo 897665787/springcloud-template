@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    include: redis-prod,rabbitmq-prod,elasticsearch-prod
+
+template:
+  domain: http://domain.com
+  enable:
+    redis: true
+    redisson: true
+    idempotent: true
+    rabbitmq: true
+    data-encypt: true
