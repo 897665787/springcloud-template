@@ -40,7 +40,7 @@ public class RequestFilter extends OncePerRequestFilter {
 		long start = System.currentTimeMillis();
 		String contentType = request.getContentType();
 		String bodyStr = "{}";
-		if (MediaType.APPLICATION_JSON_VALUE.equals(contentType)) {
+		if (contentType != null && contentType.contains("application/json")) {
 			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
 			bodyStr = JsonUtil.toJsonString(JsonUtil.readTree(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
 			request = requestWrapper;
