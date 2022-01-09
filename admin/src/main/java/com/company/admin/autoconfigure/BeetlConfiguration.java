@@ -8,7 +8,7 @@ import com.company.admin.tag.DictDescTag;
 import com.company.admin.tag.DictOptionsTag;
 
 /**
- * beetl拓展配置,绑定一些工具类,方便在模板中直接调用
+ * 实现 initOther方法,以注册自己的函数，标签等
  */
 public class BeetlConfiguration extends BeetlGroupUtilConfiguration {
 
