@@ -1,0 +1,15 @@
+server:
+  port: 5001
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
+
+spring:
+  application:
+    name: template-admin
+  profiles:
+    active: dev
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp

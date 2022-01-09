@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    include: redis-dev,rabbitmq-dev
+    
+template:
+  domain: http://d-domain.com
+  enable:
+    redis: false
+    redisson: false
+    idempotent: false
+    rabbitmq: false
+    data-encypt: false
+    access-control: false
+  mock:
+    time: false
+    
+beetl:
+  resource-auto-check: true #热加载beetl模板，开发时候用

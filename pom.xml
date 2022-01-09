@@ -25,6 +25,7 @@
 		<module>order</module>
 		<module>order-api</module>
 		<module>web</module>
+		<module>admin</module>
 	</modules>
 
 	<dependencyManagement>
