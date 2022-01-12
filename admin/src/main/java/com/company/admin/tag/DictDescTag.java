@@ -45,22 +45,4 @@ public class DictDescTag extends Tag {
 			throw new RuntimeException("输出字典标签错误");
 		}
 	}
-	
-    /**
-     * 字典的Key
-     */
-    private String key;
-
-    /**
-     * 查询的值
-     */
-    private String value;
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

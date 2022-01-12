@@ -9,30 +9,89 @@
 src/main/resources templates saddddddddddd---- ${ctxPath}
 ${item}
 
+<br/>
+<br/>
+
 <div>
-自定义标签：
+自定义标签：<br/>
 <#dictDesc key="b"></#dictDesc>
 </div>
 
+<br/>
+<br/>
+
 <div>
-自定义标签-字典：
+自定义标签-字典：<br/>
 <#dictDesc2 key="c"></#dictDesc2>
 </div>
 
+<br/>
+<br/>
 
 <div>
-自定义标签-下拉选项：
+自定义标签-下拉选项：<br/>
 <select id="sad">
 <#dictOptions value="c"></#dictOptions>
 </select>
 </div>
 
+<br/>
+<br/>
+
 <div>
-自定义标签-下拉选项222：
+自定义标签-下拉选项222：<br/>
 <select id="sad222">
 <#descriptionOptions clazz="com.company.admin.entity.Order" property="type"></#descriptionOptions>
 </select>
 </div>
 
+<br/>
+<br/>
+
+<div>
+registerFunctionPackage：<br/>
+@if(utils.isEmpty(aaa)){
+<div>aaaaaaaaaa</div>
+@}else{
+<div>bbbbbbbbbb</div>
+@}
+</div>
+
+${utils.toStr(aaa)}
+
+<br/>
+<br/>
+
+<div>
+for：<br/>
+@for(order in orderList){
+    @if(stringUtils.isEmpty(order.orderCode)){
+        <li>
+            orderCode null
+        </li>
+    @}else{
+        <li>
+            orderCode: ${order.orderCode} ${order.type}
+        </li>
+    @}
+@}
+
+<br/>
+<br/>
+
+<div>
+registerFunction：<br/>
+${env("a","b")}
+
+<br/>
+环境：
+@if(isDev()){
+开发环境
+@}
+</div>
+
+printf:${printf("    aaaaaaaaaaaaaaaa")}
+<br/>
+strutil:${strutil.trim("   aaaaaaaaaaaaaaaa  ")}
 </body>
 </html>
