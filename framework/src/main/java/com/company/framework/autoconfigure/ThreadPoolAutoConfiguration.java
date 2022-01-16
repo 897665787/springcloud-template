@@ -16,7 +16,7 @@ import com.company.framework.threadpool.CustomThreadPoolTaskExecutor;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
-@ConditionalOnProperty(prefix = "template", name = "threadpool")
+@ConditionalOnProperty(prefix = "template", name = "threadpool.maxPoolSize")
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class ThreadPoolAutoConfiguration {
 

@@ -61,45 +61,29 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 
 	@Override
 	public void execute(Runnable command) {
-		super.execute(new MdcWrappedRunnable(command));
+		super.execute(new WrappedRunnable(command));
 	}
 
 	@Override
 	public Future<?> submit(Runnable task) {
-		return super.submit(new MdcWrappedRunnable(task));
+		return super.submit(task);
 	}
 
 	@Override
 	public <T> Future<T> submit(Runnable task, T result) {
-		return super.submit(new MdcWrappedRunnable(task), result);
+		return super.submit(task, result);
 	}
 
 	@Override
 	public <T> Future<T> submit(Callable<T> task) {
-		return super.submit(new MdcWrappedCallable<T>(task));
+		return super.submit(task);
 	}
 
-	private static class MdcWrappedCallable<T> implements Callable<T> {
-		private final Callable<T> target;
-		private final String traceId;
-
-		public MdcWrappedCallable(Callable<T> target) {
-			this.target = target;
-			this.traceId = MdcUtil.get();
-		}
-
-		@Override
-		public T call() throws Exception {
-			MdcUtil.put(traceId);
-			return target.call();
-		}
-	}
-
-	private static class MdcWrappedRunnable implements Runnable {
+	private static class WrappedRunnable implements Runnable {
 		private final Runnable target;
 		private final String traceId;
 
-		public MdcWrappedRunnable(Runnable target) {
+		public WrappedRunnable(Runnable target) {
 			this.target = target;
 			this.traceId = MdcUtil.get();
 		}

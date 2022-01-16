@@ -33,6 +33,9 @@ public class HttpContextUtil {
 		return (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 	}
 
+	/**
+	 * 请注意，请求响应之后再无法获取HttpServletRequest相关数据
+	 */
 	public static HttpServletRequest request() {
 		return Optional.ofNullable(attributes()).map(ServletRequestAttributes::getRequest).orElse(null);
 	}

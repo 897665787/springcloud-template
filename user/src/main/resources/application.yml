@@ -104,5 +104,5 @@ template:
     queueCapacity: 200
     keepAliveSeconds: 60
     threadNamePrefix: t-subTask-
-    waitForTasksToCompleteOnShutdown: 60
+    waitForTasksToCompleteOnShutdown: true
     awaitTerminationSeconds: 60

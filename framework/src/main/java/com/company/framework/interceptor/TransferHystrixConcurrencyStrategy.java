@@ -71,7 +71,7 @@ public class TransferHystrixConcurrencyStrategy extends HystrixConcurrencyStrate
 
 	@Override
 	public <T> Callable<T> wrapCallable(Callable<T> callable) {
-		return new WrappedCallable<>(callable, new Transfer());
+		return new WrappedCallable<>(callable);
 	}
 
 	@Override
@@ -143,9 +143,9 @@ public class TransferHystrixConcurrencyStrategy extends HystrixConcurrencyStrate
 		private final Callable<T> target;
 		private final Transfer transfer;
 
-		public WrappedCallable(Callable<T> target, Transfer transfer) {
+		public WrappedCallable(Callable<T> target) {
 			this.target = target;
-			this.transfer = transfer;
+			this.transfer = new Transfer();
 		}
 
 		@Override

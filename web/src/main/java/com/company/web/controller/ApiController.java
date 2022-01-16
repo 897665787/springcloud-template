@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -133,9 +136,34 @@ public class ApiController {
 	}
 	
 	@GetMapping(value = "/getInt")
-	public Result<Integer> getInt() {
-		System.out.println("HttpContextUtil.platform():" + HttpContextUtil.platform());
-		System.out.println("HttpContextUtil.httpContextHeader():" + HttpContextUtil.httpContextHeader());
+	public Result<Integer> getInt(HttpServletRequest request) {
+		String thname = Thread.currentThread().getName();
+		System.out.println(thname+" "+"ApiController platform():" + HttpContextUtil.platform());
+		System.out.println(thname+" "+"ApiController httpContextHeader():" + HttpContextUtil.httpContextHeader());
+//		threadPoolTaskExecutor.submit(()->{
+//			String thname2 = Thread.currentThread().getName();
+//			System.err.println(thname2+" "+"ApiController submit platform():" + HttpContextUtil.platform());
+////			System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HttpContextUtil.httpContextHeader());
+//		});
+		
+		Future<Integer> submit = threadPoolTaskExecutor.submit(()->{
+		String thname2 = Thread.currentThread().getName();
+			System.err.println(thname2+" "+"ApiController submit request platform():" + request.getHeader(HttpContextUtil.HEADER_PLATFORM));
+			System.err.println(thname2+" "+"ApiController submit platform():" + HttpContextUtil.platform());
+	//		System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HttpContextUtil.httpContextHeader());
+		return 1;
+		});
+		
+//		List<Integer> list = Lists.newArrayList(1,2,3,4);
+//		List<Integer> collect = list.parallelStream().map(a->{
+//			return a+1;
+//		}).collect(Collectors.toList());
+		
+//		threadPoolTaskExecutor.execute(()->{
+//			String thname2 = Thread.currentThread().getName();
+//			System.err.println(thname2+" "+"ApiController execute platform():" + HttpContextUtil.platform());
+////			System.out.println(thname2+" "+"ApiController execute httpContextHeader():" + HttpContextUtil.httpContextHeader());
+//		});
 		return Result.success(1);
 	}
 	
