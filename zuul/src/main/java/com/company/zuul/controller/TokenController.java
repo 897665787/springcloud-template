@@ -1,4 +1,4 @@
-package com.company.web.controller;
+package com.company.zuul.controller;
 
 import java.util.Date;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.annotation.PublicUrl;
 import com.company.framework.context.HttpContextUtil;
-import com.company.web.filter.TokenUtil;
+import com.company.zuul.filter.TokenUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,8 +33,8 @@ public class TokenController {
 		
 		String subject = userId;
 		String audience = HttpContextUtil.platform();
-//		Date expiration = DateUtils.addSeconds(new Date(), 5);
-		Date expiration = DateUtils.addMinutes(new Date(), 50);
+		Date expiration = DateUtils.addSeconds(new Date(), 5);
+//		Date expiration = DateUtils.addMinutes(new Date(), 50);
 		String token = TokenUtil.generateToken(subject, audience, expiration);
 		log.info("subject:{} token:{}", subject, token);
 		return token;

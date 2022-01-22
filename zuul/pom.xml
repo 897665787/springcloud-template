@@ -27,6 +27,19 @@
 		    <artifactId>template-framework</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+		
+		<!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
+		<dependency>
+		    <groupId>cn.dev33</groupId>
+		    <artifactId>sa-token-spring-boot-starter</artifactId>
+		    <version>1.28.0</version>
+		</dependency>
 	</dependencies>
 
 </project>

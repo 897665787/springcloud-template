@@ -7,9 +7,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
 /**
  * 对客户端请求添加MDC
@@ -32,6 +35,11 @@ public class MdcFilter extends OncePerRequestFilter {
 			throws IOException, ServletException {
 		String traceId = request.getHeader(MdcUtil.UNIQUE_KEY);
 		MdcUtil.put(traceId);
+		if (StringUtils.isEmpty(traceId)) {
+			HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
+			headerRequest.addHeader(MdcUtil.UNIQUE_KEY, MdcUtil.get());
+			request = headerRequest;
+		}
 		try {
 			chain.doFilter(request, response);
 		} finally {

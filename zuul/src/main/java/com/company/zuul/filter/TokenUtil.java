@@ -1,4 +1,4 @@
-package com.company.web.filter;
+package com.company.zuul.filter;
 
 import java.util.Date;
 

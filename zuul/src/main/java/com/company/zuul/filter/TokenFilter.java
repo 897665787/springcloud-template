@@ -1,4 +1,4 @@
-package com.company.web.filter;
+package com.company.zuul.filter;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.framework.context.HttpContextUtil;
-import com.company.web.filter.request.HeaderMapRequestWrapper;
+import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
 /**
  * token解析
@@ -45,7 +45,7 @@ public class TokenFilter extends OncePerRequestFilter {
 
 		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
 		headerRequest.addHeader(HttpContextUtil.HEADER_CURRENT_USER_ID, userId);
-
+		
 		chain.doFilter(headerRequest, response);
 	}
 }

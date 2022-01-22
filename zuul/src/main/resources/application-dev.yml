@@ -15,3 +15,4 @@ template:
     idempotent: false
     rabbitmq: false
     data-encypt: false
+    access-control: false

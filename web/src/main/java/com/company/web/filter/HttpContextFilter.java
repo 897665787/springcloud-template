@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.framework.context.HttpContextUtil;
-import com.company.web.filter.request.HeaderMapRequestWrapper;
+import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
 /**
  * Http上下文公共请求信息设置到header
@@ -32,6 +32,9 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			throws IOException, ServletException {
 		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
 
+		String userId = request.getHeader(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		headerRequest.addHeader(HttpContextUtil.HEADER_CURRENT_USER_ID, userId);
+		
 		// 有些请求的公共信息没有放在header，而是跟在url后面
 		String platform = request.getHeader(HttpContextUtil.HEADER_PLATFORM);
 		if (StringUtils.isBlank(platform)) {
