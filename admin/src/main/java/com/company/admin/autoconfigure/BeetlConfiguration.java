@@ -1,5 +1,8 @@
 package com.company.admin.autoconfigure;
 
+import java.util.Date;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
@@ -12,6 +15,7 @@ import com.company.admin.tag.DictOptionsTag;
 import com.company.admin.util.Utils;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
+import com.google.common.collect.Maps;
 
 /**
  * 实现 initOther方法,以注册自己的函数，标签等
@@ -27,6 +31,10 @@ public class BeetlConfiguration extends BeetlGroupUtilConfiguration {
 		
 		groupTemplate.registerFunctionPackage("utils", new Utils());
 		groupTemplate.registerFunctionPackage("stringUtils", StringUtils.class);
+		
+		Map<String, Object> sharedVars = Maps.newHashMap();
+		sharedVars.put("timestamp", new Date().getTime());
+		groupTemplate.setSharedVars(sharedVars);
 		
 //		groupTemplate.registerTagFactory("", tagFactory);
 		
