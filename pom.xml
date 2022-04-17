@@ -11,8 +11,9 @@
 	<description>springcloud模板</description>
 
 	<properties>
+		<!-- Alibaba 与springboot、cloud版本适配：https://blog.csdn.net/a749227859/article/details/120195331 -->
 		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
-		<spring-parent.version>2.0.3.RELEASE</spring-parent.version>
+		<spring-boot.version>2.0.3.RELEASE</spring-boot.version>
 	</properties>
 
 	<modules>
@@ -41,7 +42,7 @@
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-parent</artifactId>
-				<version>${spring-parent.version}</version>
+				<version>${spring-boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
