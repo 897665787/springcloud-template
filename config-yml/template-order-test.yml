@@ -1,9 +1,9 @@
 spring:
   application:
-    name: template-order
+    name: template-order2
     
 template:
-  domain: http://d-domain.com
+  domain: http://t-domain.com
   enable:
     redis: false
     redisson: false
@@ -11,3 +11,4 @@ template:
     rabbitmq: false
     data-encypt: false
     access-control: false
+    rabbitmq22: sdfdf

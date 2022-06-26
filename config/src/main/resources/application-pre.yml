@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          # git仓库
+          uri: https://gitee.com/jq_di/springcloud-template.git
+          ##搜索目录.这个目录指的是github上的目录
+          search-paths:
+            - config-yml
+          #username: 897665787@qq.com
+          #password: ******
+          force-pull: true  # 强制拉取资源文件
+          default-label: master   # 默认拉取的分支

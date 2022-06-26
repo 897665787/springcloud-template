@@ -1,0 +1,14 @@
+eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 30 #服务过期时间配置,超过这个时间没有接收到心跳EurekaServer就会将这个实例剔除
+    lease-renewal-interval-in-seconds: 10 #服务刷新时间配置，每隔这个时间会主动心跳一次
+    
+spring:
+  cloud:
+    config:
+      server:
+        native:
+          # 磁盘绝对路径
+          search-locations: file:D:/software_comp/eclipse-jee-mars-1-win32-x86_64/git/springcloud-template/config-yml
+          # classpath相对路径
+          #search-locations: classpath:/yml

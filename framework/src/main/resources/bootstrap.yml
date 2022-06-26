@@ -1,0 +1,10 @@
+# bootstrap是系统级配置文件，优先级高于application.yml
+# 本配置用于配置中心的配置加载
+# springcloud-config客户端配置动态实时刷新不太好用，建议还是使用apollo或者nacos做配置中心
+spring:
+  cloud:
+    config:
+      uri: http://localhost:4001 # config-server的请求路径
+      name: ${spring.application.name} # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
+      profile: ${spring.profiles.active} # 如果没有默认值，会从spring.profiles.active里面获取
+      label: master # 拉取的分支
