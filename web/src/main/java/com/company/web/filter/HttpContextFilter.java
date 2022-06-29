@@ -16,7 +16,7 @@ import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
 /**
- * Http上下文公共请求信息设置到header
+ * Http上下文公共请求信息设置到header（只有接收外部请求的服务才会用到，内部请求的服务通过FeignHeaderInterceptor处理）
  */
 @Component
 @Order(5)

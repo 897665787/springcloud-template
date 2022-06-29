@@ -17,7 +17,7 @@ import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
 /**
- * token解析
+ * token解析，把token转换为USER_ID
  */
 @Component
 @Order(30)
