@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.annotation.EncryptResultData;
+import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
 
+@PublicUrl
 @RestController
 @RequestMapping("/encrypt")
 public class EncryptController {

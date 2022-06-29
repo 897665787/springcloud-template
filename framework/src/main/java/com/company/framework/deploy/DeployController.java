@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.framework.context.SpringContextUtil;
 import com.netflix.discovery.DiscoveryClient;
@@ -19,6 +20,7 @@ import com.netflix.discovery.DiscoveryClient;
  * @author jqd
  *
  */
+@PublicUrl
 @RestController
 public class DeployController {
 
@@ -33,7 +35,7 @@ public class DeployController {
 	 * @return
 	 */
 	@RequestMapping(value = "/offline", method = RequestMethod.GET)
-	public Result offline() {
+	public Result<?> offline() {
 		try {
 			DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
 			client.shutdown();
@@ -53,7 +55,7 @@ public class DeployController {
 	 * @return
 	 */
 	@RequestMapping(value = "/refreshRegistry", method = RequestMethod.GET)
-	public Result refreshRegistry() {
+	public Result<?> refreshRegistry() {
 		return Result.success(refreshHandler.refreshRegistry());
 	}
 }

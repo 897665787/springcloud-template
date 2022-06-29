@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
@@ -109,11 +110,13 @@ public class ApiController {
 		return Result.success(map);
 	}
 	
+	@PublicUrl
 	@GetMapping(value = "/timestr")
 	public Result<String> timestr() {
 		return Result.success(timeService.getTime());
 	}
 	
+	@PublicUrl
 	@GetMapping(value = "/info")
 	public Result<String> info() {
 		return Result.success("{}");
