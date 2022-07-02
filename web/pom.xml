@@ -58,7 +58,7 @@
 		</dependency> -->
         <dependency>
 		    <groupId>com.company</groupId>
-		    <artifactId>template-framework</artifactId>
+		    <artifactId>template-framework-edge</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
         <dependency>
