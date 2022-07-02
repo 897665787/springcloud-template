@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.company</groupId>
+		<artifactId>template</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>template-framework-edge</artifactId>
+	<packaging>jar</packaging>
+
+	<description>边缘服务框架代码</description>
+
+	<build>
+		<finalName>${artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>2.5</version>
+			    <configuration>
+			        <skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+        </plugins>
+	</build>
+
+	<dependencies>
+        <dependency>
+		    <groupId>com.company</groupId>
+		    <artifactId>template-framework</artifactId>
+		    <version>1.0.0</version>
+		    <exclusions>
+		    	<!-- 剔除边缘服务一定不会用到的功能 -->
+		    	<exclusion>
+		    		<groupId>com.bbossgroups.plugins</groupId>
+            		<artifactId>bboss-elasticsearch-rest-jdbc</artifactId>
+		    	</exclusion>
+		    	<exclusion>
+		    		<groupId>com.bbossgroups.plugins</groupId>
+            		<artifactId>bboss-elasticsearch-spring-boot-starter</artifactId>
+		    	</exclusion>
+		    </exclusions>
+		</dependency>
+	</dependencies>
+
+</project>
