@@ -1,0 +1,50 @@
+eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 30 #服务过期时间配置,超过这个时间没有接收到心跳EurekaServer就会将这个实例剔除
+    lease-renewal-interval-in-seconds: 10 #服务刷新时间配置，每隔这个时间会主动心跳一次
+
+spring:
+  profiles:
+    include: redis-dev,rabbitmq-dev
+    
+template:
+  domain: http://d-domain.com
+  enable:
+    redis: false
+    redisson: false
+    idempotent: false
+    rabbitmq: false
+    data-encypt: false
+  mock:
+    time: false
+    oauthtool: true
+    matool: true
+    mptool: true
+
+# Sa-Token 配置
+sa-token: 
+  # jwt秘钥 
+  jwt-secret-key: sadsafdfadssad316as
+
+wx:
+  miniapp:
+    configs:
+      - appid: 1111 #微信小程序的appid
+        secret: 1111 #微信小程序的Secret
+        token: 1111 #微信小程序消息服务器配置的token
+        aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
+  mp:
+    useRedis: false
+    #redisConfig:
+      #host: 127.0.0.1
+      #port: 6379
+    configs:
+      - appId: 1111 # 第一个公众号的appid
+        secret: 1111 # 公众号的appsecret
+        token: 111 # 接口配置里的Token值
+        aesKey: 111 # 接口配置里的EncodingAESKey值
+      - appId: 2222 # 第二个公众号的appid，以下同上
+        secret: 1111
+        token: 111
+        aesKey: 111

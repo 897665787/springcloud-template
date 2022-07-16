@@ -58,7 +58,7 @@ public class RabbitMessageSender implements MessageSender {
 			return;
 		}
 
-		String correlationId = RandomUtil.simpleUUID();
+		String correlationId = RandomUtil.randomString(32);
 		String paramsStr = JsonUtil.toJsonString(toJson);
 		rabbitTemplate.convertAndSend(exchange, routingKey, paramsStr, messageToSend -> {
 			MessageProperties messageProperties = messageToSend.getMessageProperties();

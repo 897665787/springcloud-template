@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.annotation.PublicUrl;
 import com.company.framework.context.HttpContextUtil;
-import com.company.zuul.filter.TokenUtil;
+import com.company.zuul.token.TokenService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/token")
 public class TokenController {
+	
+	@Autowired
+	private TokenService tokenService;
 	
 	@PostMapping(value = "/login")
 	@PublicUrl
@@ -35,7 +39,7 @@ public class TokenController {
 		String audience = HttpContextUtil.platform();
 		Date expiration = DateUtils.addSeconds(new Date(), 5);
 //		Date expiration = DateUtils.addMinutes(new Date(), 50);
-		String token = TokenUtil.generateToken(subject, audience, expiration);
+		String token = tokenService.generate(subject, audience, expiration);
 		log.info("subject:{} token:{}", subject, token);
 		return token;
 	}
@@ -43,12 +47,12 @@ public class TokenController {
 	@PostMapping(value = "/refresh")
 	public String refresh(@RequestBody Map<String, Object> param) {
 		String token = null;
-		String userId = TokenUtil.checkTokenAndGetSubject(token, true);
+		String userId = tokenService.checkAndGet(token);
 		if(userId != null){
 			String subject = userId;
 			String audience = HttpContextUtil.platform();
 			Date expiration = DateUtils.addSeconds(new Date(), 5);
-			token = TokenUtil.generateToken(subject, audience, expiration);
+			token = tokenService.generate(subject, audience, expiration);
 		}
 		return token;
 	}

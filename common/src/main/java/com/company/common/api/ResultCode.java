@@ -5,7 +5,7 @@ import com.company.common.exception.BusinessException;
 public enum ResultCode {
 	SUCCESS(0, "成功"), FAIL(99, "失败"), FALLBACK(104, "API熔断"),
 	/* 自定义结果码 */
-	SYSTEM_ERROR(1001, "系统错误"), PARAM_INVALID(1002, "参数无效"), NO_LOGIN(9000, "未登录");
+	SYSTEM_ERROR(1001, "系统错误"), PARAM_INVALID(1002, "参数无效"), NO_LOGIN(9000, "未登录"), LOGIN_NEED_MOBILE(9999, "登录需要绑定手机号");
 
 	private Integer code;
 	private String message;

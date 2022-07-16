@@ -16,3 +16,7 @@ template:
     rabbitmq: false
     data-encypt: false
     access-control: false
+
+sa-token:
+  # jwt秘钥 
+  jwt-secret-key: sadsafdfadssad316as

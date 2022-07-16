@@ -1,0 +1,8 @@
+template:
+  domain: http://t-domain.com
+  enable:
+    redis: true
+    redisson: true
+    idempotent: true
+    rabbitmq: true
+    data-encypt: false

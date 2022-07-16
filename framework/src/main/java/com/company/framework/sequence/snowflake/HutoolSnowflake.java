@@ -3,7 +3,7 @@ package com.company.framework.sequence.snowflake;
 import com.company.framework.sequence.SequenceGenerator;
 
 import cn.hutool.core.lang.Snowflake;
-import cn.hutool.core.util.NetUtil;
+import cn.hutool.core.net.NetUtil;
 
 public class HutoolSnowflake implements SequenceGenerator {
 

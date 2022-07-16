@@ -31,6 +31,7 @@
 		<module>order</module>
 		<module>order-api</module>
 		<!-- 聚合微服务 -->
+		<module>auth</module>
 		<module>web</module>
 		<module>app</module>
 		<module>admin</module>

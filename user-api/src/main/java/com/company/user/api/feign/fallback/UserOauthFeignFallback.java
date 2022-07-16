@@ -1,0 +1,31 @@
+package com.company.user.api.feign.fallback;
+
+import org.springframework.stereotype.Component;
+
+import com.company.common.api.Result;
+import com.company.common.api.ResultCode;
+import com.company.user.api.enums.UserOauthEnum.IdentityType;
+import com.company.user.api.feign.UserOauthFeign;
+import com.company.user.api.request.UserOauthReq;
+import com.company.user.api.response.UserOauthResp;
+
+import feign.hystrix.FallbackFactory;
+
+@Component
+public class UserOauthFeignFallback implements FallbackFactory<UserOauthFeign> {
+
+	@Override
+	public UserOauthFeign create(final Throwable e) {
+		return new UserOauthFeign() {
+			@Override
+			public Result<Boolean> bindOauth(UserOauthReq userInfoReq) {
+				return Result.fail(ResultCode.FALLBACK);
+			}
+
+			@Override
+			public Result<UserOauthResp> selectOauth(IdentityType identityType, String identifier) {
+				return Result.fail(ResultCode.FALLBACK);
+			}
+		};
+	}
+}

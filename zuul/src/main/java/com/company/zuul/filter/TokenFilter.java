@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
+import com.company.zuul.token.TokenService;
 
 /**
  * token解析，把token转换为USER_ID
@@ -22,10 +24,12 @@ import com.company.framework.filter.request.HeaderMapRequestWrapper;
 @Component
 @Order(30)
 public class TokenFilter extends OncePerRequestFilter {
-	private static final String HEADER_TOKEN = "x-token";
-
-	@Value("${template.enable.access-control:true}")
-	private Boolean enableAccessControl;
+	
+	@Autowired
+	private TokenService tokenService;
+	
+	@Value("${token.name}")
+	private String headerToken;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -35,8 +39,8 @@ public class TokenFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		String token = request.getHeader(HEADER_TOKEN);
-		String userId = TokenUtil.checkTokenAndGetSubject(token, enableAccessControl);
+		String token = request.getHeader(headerToken);
+		String userId = tokenService.checkAndGet(token);
 
 		if (StringUtils.isBlank(userId)) {
 			chain.doFilter(request, response);
