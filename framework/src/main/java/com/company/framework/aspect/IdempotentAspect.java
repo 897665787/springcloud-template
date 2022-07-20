@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 幂等切面
  * 
- * @author jqd
+ * @author JQ棣
  */
 @Slf4j
 @Aspect

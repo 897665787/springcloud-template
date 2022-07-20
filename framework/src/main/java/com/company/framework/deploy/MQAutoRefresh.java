@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * MQ自动刷新注册列表(如果使用了MQ，可以利用MQ广播消息自动刷新)
  * 
- * @author Candi
+ * @author JQ棣
  *
  */
 @Slf4j

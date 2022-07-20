@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
+import com.company.framework.util.IpUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +48,8 @@ public class RequestFilter extends OncePerRequestFilter {
 		
 		String paramsStr = JsonUtil.toJsonString(getReqParam(request));
 		chain.doFilter(request, response);
-		log.info("{} {} header:{},param:{},body:{},{}ms", request.getMethod(), request.getRequestURI(),
+		String requestIp = IpUtil.getRequestIp(request);
+		log.info("{} {} {} header:{},param:{},body:{},{}ms", request.getMethod(), requestIp, request.getRequestURI(),
 				JsonUtil.toJsonString(HttpContextUtil.httpContextHeaderThisRequest(request)), paramsStr, bodyStr,
 				System.currentTimeMillis() - start);
 	}

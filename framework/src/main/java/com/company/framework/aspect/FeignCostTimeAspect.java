@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 记录请求Feign接口耗时，打印在调用方日志
  * 
- * @author jqd
+ * @author JQ棣
  */
 @Slf4j
 @Aspect

@@ -94,9 +94,6 @@ public class GlobalExceptionHandler {
 
 	/**
 	 * @Desc 处理 @RequestBody 类型的 POJO 参数
-	 * @Param [ex]
-	 * @Author Vader
-	 * @date 2019/11/6 16:40
 	 **/
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public Result<?> resolveMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
@@ -111,9 +108,6 @@ public class GlobalExceptionHandler {
 
 	/**
 	 * @Desc 处理表单提交的 pojo 参数
-	 * @Param [e]
-	 * @Author Vader
-	 * @date 2019/11/6 16:41
 	 **/
 	@ExceptionHandler(BindException.class)
 	public Result<?> handleBingException(BindException e) {

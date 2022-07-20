@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * 幂等性
  * 
- * @author jqd
+ * @author JQ棣
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

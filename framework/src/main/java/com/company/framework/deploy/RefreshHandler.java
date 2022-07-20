@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 部署相关接口
  * 
- * @author Candi
+ * @author JQ棣
  *
  */
 @Slf4j

@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
  * 官网：https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html
  * </pre>
  * 
- * @author Jiang-PC
+ * @author JQ棣
  *
  */
 @Component(LoginBeanFactory.WEIXIN_MP)

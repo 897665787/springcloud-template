@@ -37,7 +37,7 @@ import cn.hutool.json.JSONUtil;
 /**
  * 查看索引：http://172.20.33.24:8705/_cat/indices?v
  * 
- * @author Candi
+ * @author JQ棣
  */
 @RestController
 @RequestMapping("/brand")

@@ -5,7 +5,7 @@ import com.company.common.api.ResultCode;
 /**
  * 业务异常
  * 
- * @author jiangqingdi
+ * @author JQ棣
  */
 public class BusinessException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

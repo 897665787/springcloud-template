@@ -17,7 +17,7 @@ import com.netflix.discovery.DiscoveryClient;
 /**
  * 部署相关接口（用于优雅发版）
  * 
- * @author jqd
+ * @author JQ棣
  *
  */
 @PublicUrl

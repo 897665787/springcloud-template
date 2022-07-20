@@ -26,7 +26,7 @@ import com.google.common.collect.Lists;
  * 官网：https://developers.weixin.qq.com/doc/oplatform/Mobile_App/WeChat_Login/Development_Guide.html
  * </pre>
  * 
- * @author Jiang-PC
+ * @author JQ棣
  *
  */
 @Component(LoginBeanFactory.APP_WEIXIN)

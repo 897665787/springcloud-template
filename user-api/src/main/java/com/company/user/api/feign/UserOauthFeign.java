@@ -14,11 +14,11 @@ import com.company.user.api.response.UserOauthResp;
 @FeignClient(value = "template-user", path = "/useroauth", fallbackFactory = UserOauthFeignFallback.class)
 public interface UserOauthFeign {
 
-	@RequestMapping("/bindAuth")
+	@RequestMapping("/selectOauth")
 	Result<UserOauthResp> selectOauth(@RequestParam("identityType") UserOauthEnum.IdentityType identityType,
 			@RequestParam("identifier") String identifier);
 
-	@RequestMapping("/bindAuth")
+	@RequestMapping("/bindOauth")
 	Result<Boolean> bindOauth(@RequestBody UserOauthReq userInfoReq);
 
 }
