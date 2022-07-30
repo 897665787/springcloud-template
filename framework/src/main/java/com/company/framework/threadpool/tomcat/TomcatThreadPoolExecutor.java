@@ -9,7 +9,7 @@ import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j(topic = "LOG_THREADPOOL")
+@Slf4j(topic = "LOG_TOMCAT_THREADPOOL")
 public class TomcatThreadPoolExecutor extends ThreadPoolExecutor {
 
 	public TomcatThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,
