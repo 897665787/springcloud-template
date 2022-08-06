@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: redis-prod,rabbitmq-prod
+    include: redis-prod,rabbitmq-prod,apollo-prod
     
 template:
   domain: http://domain.com
