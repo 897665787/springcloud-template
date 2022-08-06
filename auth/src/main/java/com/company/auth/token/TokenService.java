@@ -13,5 +13,5 @@ public interface TokenService {
 	 * 
 	 * @return
 	 */
-	String checkAndGet(String token);
+//	String checkAndGet(String token);// 检查token在zuul网关
 }

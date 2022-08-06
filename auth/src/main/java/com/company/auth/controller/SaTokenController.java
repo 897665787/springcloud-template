@@ -1,4 +1,4 @@
-package com.company.zuul.controller;
+package com.company.auth.controller;
 
 import java.util.Map;
 

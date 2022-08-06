@@ -40,8 +40,12 @@ public class TokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		String token = request.getHeader(headerToken);
+		if (StringUtils.isBlank(token)) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
 		String userId = tokenService.checkAndGet(token);
-
 		if (StringUtils.isBlank(userId)) {
 			chain.doFilter(request, response);
 			return;

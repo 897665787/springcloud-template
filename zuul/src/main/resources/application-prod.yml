@@ -2,10 +2,7 @@ template:
   domain: http://domain.com
   enable:
     redis: true
-    redisson: true
-    idempotent: true
     rabbitmq: true
-    data-encypt: true
     
 spring:
   profiles:

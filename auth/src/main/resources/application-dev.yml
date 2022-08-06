@@ -21,10 +21,10 @@ template:
     matool: true
     mptool: true
 
-# Sa-Token 配置
-sa-token: 
-  # jwt秘钥 
-  jwt-secret-key: sadsafdfadssad316as
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5
 
 wx:
   miniapp:

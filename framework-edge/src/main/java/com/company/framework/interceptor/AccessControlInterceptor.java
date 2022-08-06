@@ -2,6 +2,7 @@ package com.company.framework.interceptor;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +23,19 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 
+		if (!(handler instanceof HandlerMethod)) {
+			return true;
+		}
+
 		HandlerMethod handlerMethod = (HandlerMethod) handler;
 		
+		String packageName = Optional.ofNullable(handlerMethod).map(HandlerMethod::getBeanType).map(Class::getPackage)
+				.map(Package::getName).orElse(StringUtils.EMPTY);
+		if (!packageName.startsWith("com.company")) {
+			// springboot有些内置的Controller，不做拦截；只拦截业务代码的Controller
+			return true;
+		}
+
 		// 获取方法上的注解
 		Method method = handlerMethod.getMethod();
 		if (method.isAnnotationPresent(PublicUrl.class)) {

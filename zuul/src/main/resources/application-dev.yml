@@ -11,12 +11,9 @@ template:
   domain: http://d-domain.com
   enable:
     redis: false
-    redisson: false
-    idempotent: false
     rabbitmq: false
-    data-encypt: false
-    access-control: false
 
-sa-token:
-  # jwt秘钥 
-  jwt-secret-key: sadsafdfadssad316as
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5

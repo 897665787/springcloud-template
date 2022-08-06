@@ -12,18 +12,25 @@ import com.company.auth.token.jsonwebtoken.util.TokenUtil;
 @Component
 public class JsonWebTokenService implements TokenService {
 	
+	@Value("${token.timeout:2592000}")
+	private Integer timeout;
+	
+	@Value("${token.secret:defaultsecret}")
+	private String secret;
+		  
+	@Override
+	public String generate(String userId, String device) {
+		Date expiration = DateUtils.addSeconds(new Date(), timeout);
+		return TokenUtil.generateToken(userId, device, expiration, secret);
+	}
+	
+	/*
 	@Value("${template.enable.access-control:true}")
 	private Boolean enableAccessControl;
 	
-	@Value("${token.timeout:2592000}")
-	private Integer timeout;
-		  
-	public String generate(String userId, String device) {
-		Date expiration = DateUtils.addSeconds(new Date(), timeout);
-		return TokenUtil.generateToken(userId, device, expiration);
-	}
-
+	@Override
 	public String checkAndGet(String token) {
-		return TokenUtil.checkTokenAndGetSubject(token, enableAccessControl);
+		return TokenUtil.checkTokenAndGetSubject(token, enableAccessControl, secret);
 	}
+	*/
 }
