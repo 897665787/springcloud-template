@@ -30,6 +30,7 @@
 		<module>user-api</module>
 		<module>order</module>
 		<module>order-api</module>
+		<module>job</module>
 		<!-- 聚合微服务 -->
 		<module>auth</module>
 		<module>web</module>

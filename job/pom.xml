@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.company</groupId>
+		<artifactId>template</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>template-job</artifactId>
+	<packaging>jar</packaging>
+
+	<description>定时任务服务</description>
+
+	<build>
+		<finalName>${artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>  
+			    <artifactId>maven-surefire-plugin</artifactId>  
+			    <version>2.5</version>  
+			    <configuration>  
+			        <skipTests>true</skipTests>  
+			    </configuration>  
+			</plugin>
+        </plugins>
+	</build>
+
+	<dependencies>
+		<!-- <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency> -->
+        <!-- rabbitMQ -->
+		<!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency> -->
+        
+        <!-- <dependency>
+		    <groupId>com.company</groupId>
+		    <artifactId>template-common</artifactId>
+		    <version>1.0.0</version>
+		</dependency> -->
+        <dependency>
+		    <groupId>com.company</groupId>
+		    <artifactId>template-framework</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+        <dependency>
+		    <groupId>com.company</groupId>
+		    <artifactId>template-order-api</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+		
+	</dependencies>
+
+</project>
