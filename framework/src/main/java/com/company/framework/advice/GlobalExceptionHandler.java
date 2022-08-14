@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.BusinessException;
-import com.company.framework.filter.MdcUtil;
+import com.company.common.util.MdcUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

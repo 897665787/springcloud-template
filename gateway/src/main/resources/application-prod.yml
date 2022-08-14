@@ -1,0 +1,9 @@
+template:
+  domain: http://domain.com
+  enable:
+    redis: true
+    rabbitmq: true
+    
+spring:
+  profiles:
+    include: redis-prod,rabbitmq-prod

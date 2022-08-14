@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.company.common.util.MdcUtil;
 import com.company.framework.aspect.IdempotentUtil;
 import com.company.framework.context.HttpContextUtil;
-import com.company.framework.filter.MdcUtil;
 import com.google.common.collect.Maps;
 
 import feign.RequestInterceptor;

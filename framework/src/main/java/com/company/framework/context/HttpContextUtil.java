@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.company.common.constant.HeaderConstants;
 import com.google.common.collect.Maps;
 
 public class HttpContextUtil {
@@ -24,7 +25,7 @@ public class HttpContextUtil {
 	public static final String HEADER_SOURCE = "x-source";// 请求来源
 
 	// 用户请求头
-	public static final String HEADER_CURRENT_USER_ID = "x-current-user-id";// 当前登录用户id
+	public static final String HEADER_CURRENT_USER_ID = HeaderConstants.HEADER_CURRENT_USER_ID;// 当前登录用户id
 
 	private HttpContextUtil() {
 	}

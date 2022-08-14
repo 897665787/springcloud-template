@@ -1,0 +1,101 @@
+server:
+  port: 5001
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
+
+spring:
+  application:
+    name: template-gateway
+  profiles:
+    active: dev
+  cloud:
+    gateway:
+      # 路由数组：指当请求满足什么样的断言时，转发到哪个服务上
+      routes:
+        # 路由标识，要求唯一，名称任意
+        - id: gateway-template-auth
+          # 请求最终被转发到的目标地址
+          uri: lb://template-auth
+          # 设置断言
+          predicates:
+            # Path Route Predicate Factory 断言，满足 /auth/** 路径的请求都会被路由到 lb://template-auth 这个uri中
+            - Path=/auth/**
+          # 配置过滤器（局部）
+          filters:
+            # StripPrefix：去除原始请求路径中的前1级路径，即/auth
+            - StripPrefix=1
+        - id: gateway-template-web
+          uri: lb://template-web
+          # 设置断言
+          predicates:
+            - Path=/web/**
+          # 配置过滤器（局部）
+          filters:
+            # StripPrefix：去除原始请求路径中的前1级路径，即/web
+            - StripPrefix=1
+        - id: gateway-template-app
+          uri: lb://template-app
+          # 设置断言
+          predicates:
+            - Path=/app/**
+          # 配置过滤器（局部）
+          filters:
+            # StripPrefix：去除原始请求路径中的前1级路径，即/app
+            - StripPrefix=1
+
+#为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
+logging:
+  config: classpath:logback-conf.xml
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true # 注册到Eureka Server，默认true
+    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
+      defaultZone: http://127.0.0.1:7001/eureka/
+    
+#网关转发也是使用ribbon来做负载的，网关超时时间>=内部服务超时时间（ReadTimeout）
+ribbon:
+  eager-load: #饥饿加载，默认false(用于防止第一次请求初始化耗时长而报错)
+    enabled: true
+    clients: template-auth,template-web,template-app #@FeignClient value值，多个逗号分隔
+  #Ribbon重试次数(包含首次) = 1 + ribbon.MaxAutoRetries + ribbon.MaxAutoRetriesNextServer + (ribbon.MaxAutoRetries * ribbon.MaxAutoRetriesNextServer)
+  MaxAutoRetries: 0 #同一实例最大重试次数，不包括首次调用。默认0
+  MaxAutoRetriesNextServer: 1 #同一个微服务其他实例的最大重试次数，不包括第一次调用的实例。默认1
+  OkToRetryOnAllOperations: false #是否所有操作（GET、POST等）都允许重试。默认false
+  ServerListRefreshInterval: 2000 #从注册中心刷新服务器列表信息的时间间隔，默认2000ms
+  #ConnectTimeout = feign.client.config.default.connectTimeout
+  ConnectTimeout: 1000 #连接超时时间，默认无
+  #ReadTimeout >= Ribbon重试次数(包含首次) * feign.client.config.default.connectTimeout
+  ReadTimeout: 5000 #读取超时时间，默认无
+
+# Token 配置
+token:
+  # token名称
+  name: x-token
+  # token有效期，单位s 默认30天, -1代表永不过期 
+  timeout: 2592000
+
+# Sa-Token 配置
+sa-token: 
+  # token名称 (同时也是cookie名称)
+  token-name: ${token.name}
+  # token有效期，单位s 默认30天, -1代表永不过期 
+  timeout: ${token.timeout}
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录) 
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token) 
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志 
+  is-log: false
+  # jwt秘钥 
+  jwt-secret-key: ${token.secret}

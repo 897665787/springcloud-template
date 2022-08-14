@@ -1,0 +1,5 @@
+template:
+  domain: http://p-domain.com
+  enable:
+    redis: true
+    rabbitmq: true

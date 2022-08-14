@@ -14,8 +14,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.company.framework.context.HttpContextUtil;
-import com.company.framework.filter.request.HeaderMapRequestWrapper;
+import com.company.common.constant.HeaderConstants;
+import com.company.zuul.filter.request.HeaderMapRequestWrapper;
 import com.company.zuul.token.TokenService;
 
 /**
@@ -52,7 +52,7 @@ public class TokenFilter extends OncePerRequestFilter {
 		}
 
 		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
-		headerRequest.addHeader(HttpContextUtil.HEADER_CURRENT_USER_ID, userId);
+		headerRequest.addHeader(HeaderConstants.HEADER_CURRENT_USER_ID, userId);
 		
 		chain.doFilter(headerRequest, response);
 	}

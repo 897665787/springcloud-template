@@ -42,7 +42,7 @@ ribbon:
   
 zuul:
   # 前缀，可以用来做版本控制
-  prefix: /api
+  prefix: /
   # 禁用默认路由，执行配置的路由
   ignored-services: "*"
   routes:

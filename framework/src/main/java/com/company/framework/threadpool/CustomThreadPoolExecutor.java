@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.company.framework.filter.MdcUtil;
+import com.company.common.util.MdcUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

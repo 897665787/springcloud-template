@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+	<!-- 独立输出的同步日志 -->
+	<appender name="THREAD_POOL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/threadpool.log</File>
+        <append>true</append>
+        <!--过滤器,只打INFO级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/threadpool.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+    </appender>
+    <logger name="LOG_THREADPOOL" level="INFO" additivity="false">
+        <appender-ref ref="THREAD_POOL_FILE" />
+    </logger>
+    
+    <!-- 独立输出的同步日志 -->
+	<appender name="LOG_TOMCAT_THREADPOOL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/tomcat-threadpool.log</File>
+        <append>true</append>
+        <!--过滤器,只打INFO级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/tomcat-threadpool.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${ENCODER_PATTERN}</pattern>
+		</encoder>
+    </appender>
+    <logger name="LOG_TOMCAT_THREADPOOL" level="INFO" additivity="false">
+        <appender-ref ref="LOG_TOMCAT_THREADPOOL_FILE" />
+    </logger>
+</included>

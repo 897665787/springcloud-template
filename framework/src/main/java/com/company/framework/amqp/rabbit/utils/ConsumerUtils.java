@@ -11,10 +11,10 @@ import org.springframework.amqp.core.MessageProperties;
 
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
+import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.rabbit.BaseStrategy;
 import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.filter.MdcUtil;
 import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;

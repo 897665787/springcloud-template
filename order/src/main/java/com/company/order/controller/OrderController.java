@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
-import com.company.framework.filter.MdcUtil;
 import com.company.framework.redis.RedisUtils;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;

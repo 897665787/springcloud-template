@@ -1,4 +1,4 @@
-package com.company.framework.filter;
+package com.company.common.util;
 
 import java.util.Arrays;
 import java.util.Collection;
