@@ -2,7 +2,7 @@ package com.company.user.entity;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotations.TableName;
 import com.company.common.jackson.annotation.AutoDesc;
 import com.company.user.api.enums.UserStatus;
 

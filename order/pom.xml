@@ -51,16 +51,16 @@
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency> -->
 
-		<dependency>
-			<groupId>com.company</groupId>
-			<artifactId>template-framework</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 		<!-- <dependency>
 			<groupId>com.company</groupId>
 			<artifactId>template-common</artifactId>
 			<version>1.0.0</version>
 		</dependency> -->
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-framework</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.company</groupId>
 			<artifactId>template-order-api</artifactId>
@@ -72,6 +72,20 @@
 			<version>1.0.0</version>
 		</dependency>
         
+		<!--微信支付sdk-->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-pay</artifactId>
+			<version>4.3.0</version>
+		</dependency>
+		
+		<!--支付宝支付sdk-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>3.4.49.ALL</version>
+        </dependency>
+
 	</dependencies>
 
 </project>

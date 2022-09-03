@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Primary;
 
 import com.company.common.util.HostUtil;
 import com.company.common.util.JsonUtil;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -81,6 +82,10 @@ public class RabbitAutoConfiguration {
 			public void returnedMessage(Message message, int replyCode, String replyText, String exchange,
 					String routingKey) {
 				// 当消息通过交换器无法匹配到队列会返回给生产者，就会打印这个日志
+				if (exchange != null && exchange.startsWith(FanoutConstants.PREFIX)) {
+					// (并非是BUG)如果配置了发送回调ReturnCallback，插件延迟队列则会回调该方法，因为发送方确实没有投递到队列上，只是在交换器上暂存，等过期时间到了才会发往队列
+					return;
+				}
 				log.info("message:{},replyCode:{},replyText:{},exchange:{},routingKey:{}",
 						JsonUtil.toJsonString(message), replyCode, replyText, exchange, routingKey);
 			}

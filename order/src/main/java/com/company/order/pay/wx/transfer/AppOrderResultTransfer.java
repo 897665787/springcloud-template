@@ -1,0 +1,46 @@
+package com.company.order.pay.wx.transfer;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.stereotype.Component;
+
+import com.company.common.exception.BusinessException;
+import com.company.order.pay.wx.OrderResultTransfer;
+import com.company.order.pay.wx.result.WxPayAppOrderResult;
+import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
+
+import cn.hutool.crypto.SecureUtil;
+
+/**
+ * 微信APP支付
+ */
+@Component(OrderResultTransfer.BEAN_NAME_PREFIX + TradeType.APP)
+public class AppOrderResultTransfer implements OrderResultTransfer {
+
+	@Override
+	public Object toPayInfo(String appid, String mchId, String mchKey, String prepayId, String codeUrl,
+			String mwebUrl) {
+		if (prepayId == null) {
+			throw new BusinessException(4015, "未获取到必要的支付参数");
+		}
+
+		String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
+		String nonceStr = RandomStringUtils.randomAlphanumeric(16);
+
+		String partnerId = mchId;
+		String packageValue = "Sign=WXPay";
+
+		WxPayAppOrderResult result = WxPayAppOrderResult.builder().prepayId(prepayId).partnerId(partnerId).appId(appid)
+				.packageValue(packageValue).timeStamp(timestamp).nonceStr(nonceStr).build();
+		
+		StringBuffer signStr = new StringBuffer();
+        signStr.append("appid=").append(result.getAppId())
+                .append("&noncestr=").append(result.getNonceStr())
+                .append("&package=").append(result.getPackageValue())
+                .append("&partnerid=").append(result.getPartnerId())
+                .append("&prepayid=").append(result.getPrepayId())
+                .append("&timestamp=").append(result.getTimeStamp())
+                .append("&key=").append(mchKey);
+        result.setSign(SecureUtil.md5(signStr.toString()).toUpperCase());
+		return result;
+	}
+}

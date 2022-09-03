@@ -131,7 +131,7 @@ public class ESController {
 		estestdto.setAddr(faker.address().fullAddress());
 		estestdto.setLongitude(new BigDecimal(faker.address().longitude()));
 		estestdto.setLatitude(new BigDecimal(faker.address().latitude()));
-		estestdto.setUpdateDate(new Date());
+		estestdto.setUpdateTime(new Date());
 		estestdto.setRemark(faker.name().title());
 		estestdto.setDistance(BigDecimal.ONE);
 

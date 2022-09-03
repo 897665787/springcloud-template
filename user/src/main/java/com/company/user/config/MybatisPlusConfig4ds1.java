@@ -14,11 +14,10 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.baomidou.mybatisplus.MybatisConfiguration;
+import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
+import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 /**
  * Mybatis主数据源ds1配置
  * 多数据源配置依赖数据源配置
@@ -44,7 +43,7 @@ public class MybatisPlusConfig4ds1 {
                 new PaginationInterceptor()
 //                        .setFormat(true),
         });
-        sqlSessionFactory.setGlobalConfig(new GlobalConfig().setBanner(false));
+//        sqlSessionFactory.setGlobalConfig(new GlobalConfig().setBanner(false));
         return sqlSessionFactory.getObject();
     }
 

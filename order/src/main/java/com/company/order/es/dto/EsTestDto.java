@@ -42,7 +42,7 @@ public class EsTestDto {
 	private BigDecimal distance;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8") // 时间字段需要格式化再写入ES
-	private Date updateDate;
+	private Date updateTime;
 
 	private String remark;
 }

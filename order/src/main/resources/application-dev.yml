@@ -6,7 +6,13 @@ eureka:
 spring:
   profiles:
     include: redis-dev,rabbitmq-dev,elasticsearch-dev
-
+  datasource:
+    ds1:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+      username: root
+      password: 12345678
+      
 template:
   domain: http://d-domain.com
   enable:
@@ -19,3 +25,41 @@ template:
     access-control: false
   mock:
     time: false
+
+# 支付配置
+pay:
+  wx:
+    configs:
+      - appId: wxeb6ffb3sdaddad1d # 微信公众号或者小程序等的appid
+        mchId: 1634232504 # 微信支付商户号
+        mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI # 微信支付商户密钥
+        keyPath: classpath:pay/apiclient_cert-504.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        tradeType: JSAPI
+      - appId: wx79c0easdsadba516
+        mchId: 1634232504
+        mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI
+        keyPath: classpath:pay/apiclient_cert-504.p12
+        tradeType: APP
+      - appId: wx93asdsadddb142b
+        mchId: 1634232504
+        mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI
+        keyPath: classpath:pay/apiclient_cert-504.p12
+        tradeType: JSAPI
+      - appId: wx93asdsadddb142b
+        mchId: 1523322361
+        mchKey: bf7fce054336482342343242465dc071
+        keyPath: classpath:pay/apiclient_cert-361.p12
+        tradeType: MWEB
+  ali:
+    configs:
+      - appId: 2022342343266003
+        privateKey: MIIEvgI432432432432432422AASCBKgwggSkAgEAAoIBAQCN8H5prHac+RMvB5wmcmvXnRq+Cghjzq4jYDqQd8rVIG0Y1c4Tt3RdCse9hYt9/T9YrN5khJnkFtR/2gHWc6iI79V8Sen0ntl5HBO8OgVI4pgtrDWI4TxmF6smsqvWEiZ7QVSdbhKQ2zorC/3BbvjprHsxgtAYcv+A9555+D/6RkCTHreV0jN2LHJh+zy6Ko48TFs0ULveWEEMqNrDWSO/e3dimscOVbeC2NWHNOXKmNGCiEsaLHhirh7b3okjA4qTnLFn7w1fiMoa3nc6B7wWgxPEtwC8c0jIPioXJbvR7foZkTluhvH0zbh/Pkvm+ij3mlvFXyNmBhWoYE55eaDhAgMBAAECggEAVQJrg7jSFXOrxKgHIpO2+RzTzmvN2JEJhJB2ot3MMldIX+51jSN74tm5BU49XEjXrrFiRMuSK6RswuH75cfBcbpKnzTZlTOqRjnFrB8H2T41LG2OZpuXhAG69ONfvUeDmqBnIB6zqeRS80MsSLTBCZrO8blKDsqZMlGbras8DhUqjf+kwHoZzSH0zRwCxWQHe0jvQWi+hs6OZJxL27uOvdKTTgMmsvToA3eLTh2fJwRtje7U0ZQu16md1i2DKBshRnWrcoX2H3zqsI8GXA61v/3U+LI2hohuyb5kev3I/PFgJs5Q++ADZXwiVZQU/V/wKl2zp+/mY5tDeadVt8pBEQKBgQDn4zzG7a8MGeAgeBFJOB+LmNFMP4qjo51EAEw1UQYX582Nvn8DFT3Z8BbwJU0EJgKbhc9AHchOp1h/+6Bqf9jKjB1PsoQU3aw44HrhkV7vl9pWkYmD2qHuOu2uJqHBZDK2wSgK8qqAGxKKPeGTq3pT0dWYXfhWAEGhz98sS2SJBQKBgQCcst5QvW7asQCoPyccJrizr6r3aLYM9ky7CWjOloT9V2Fp7xjObWKkU304MjQT4p1rrnfDup9Dhx2FQiTezsxTqQm5HfBUuiq22eO0rx2mhl77BrcTwOuiw4txVQAOKOuyHbBpPYx5pCYAUmUwLYkzjadmiabzrC665Ew0O4FPLQKBgQC1vkczTrSkkl80c4Zw0Zj/y103GpIpoSGwW19fZkqVT+uuTYC0xOA+QMtpmoKbXsMqa5y9Dtqgss5NOMVI0zzxuxF6FlspE3hY96+3vT0gIe9RbC3Qdvn1gqAon0SmE0cgL5GXywvQ7ecBDHERURPGQC7dhcEOfpLyJL8ws0JvlQKBgQCIU9G42uYr21ygA7mJ82Iz6fxLHU1tf4cIHkqRmUCAjFoS6NJjHaV5I63Ii1zlg/3DJlnJ7n4LKO0U95POSIpZqrHr3NEvVXw98tj5ZHTeYP8XVCNJS0l2JLwXUIUozI8qOkw1czfYyGfLVeP1A1jfgjkGq3GVg9JwBJkLxE1ezQKBgFe9wIKMnfS6UOhUMJrTQx+iAKYTzRyuHuKybkd3S5g2mvyn55HFIUG9vhq90J5fsFvai51a0EFauE0iqvECms+FhhvXQIdnC2JY1PhpfA4MxizHhen+BQil0ZdWftD1rBDJpKyCq9dyUE8p6PRqS+443ZSuWVsEyACsc1C4GPFP
+        pubKey: MIIBIjANBgkqhk111111111111111111BCgKCAQEAjZC/5YeZzOPMKdT5OuI20f7DpzmPtqioSUBaY7hX4wMbThluyZmkUnuMmy1qmYzgbdbatOSs80HzHehc6hDAZqtRIkmVNDIdWTi8NRa0+FQmU8mlPIPtTl9eCF5QbQ6T82hvnC/iGWup3jAhv6spVU/QwOx5fwyGyu6yEdwIj0l9i4mpHfEze8cdMMYbzrey46ZWE7+dpy5vkyXle4oChx9aRQyMpew/klPH7BVEANtglptyMbT6aLo5IAV5ApiNS5fk9Z+JQnsTx5SmNi9L10JRElKK4C/xERRO9AObO5AyRYghV8xq39Up70KHO2BBj0LieVU6BbJANInJXXyWRQIDAQAB
+      - appId: 2044023434234200
+        privateKey: MIIEvg324324324234SkA1111111111111gEAQEFAASCBKgAoIBAQCN8H5prHac+RMvB5wmcmvXnRq+CghjVIG0Y1c4Tt3RdCse9zq4jYDqQd8rhYt9/T9YrN5khJnkFtR/2gHWc6iI79V8Sen0ntl5HBO8OgVI4pgtrDWI4TxmF6smsqvWEiZ7QVSdbhKQ2zorC/3BbvjprHsxgtAYcv+A9555+D/6RkCTHreV0jN2LHJh+zy6Ko48TFs0ULveWEEMqNrDWSO/e3dimscOVbeC2NWHNOXKmNGCiEsaLHhirh7b3okjA4qTnLFn7w1fiMoa3nc6B7wWgxPEtwC8c0jIPioXJbvR7foZkTluhvH0zbh/Pkvm+ij3mlvFXyNmBhWoYE55eaDhAgMBAAECggEAVQJrg7jSFXOrxKgHIpO2+RzTzmvN2JEJhJB2ot3MMldIX+51jSN74tm5BU49XEjXrrFiRMuSK6RswuH75cfBcbpKnzTZlTOqRjnFrB8H2T41LG2OZpuXhAG69ONfvUeDmqBnIB6zqeRS80MsSLTBCZrO8blKDsqZMlGbras8DhUqjf+kwHoZzSH0zRwCxWQHe0jvQWi+hs6OZJxL27uOvdKTTgMmsvToA3eLTh2fJwRtje7U0ZQu16md1i2DKBshRnWrcoX2H3zqsI8GXA61v/3U+LI2hohuyb5kev3I/PFgJs5Q++ADZXwiVZQU/V/wKl2zp+/mY5tDeadVt8pBEQKBgQDn4zzG7a8MGeAgeBFJOB+LmNFMP4qjo51EAEw1UQYX582Nvn8DFT3Z8BbwJU0EJgKbhc9AHchOp1h/+6Bqf9jKjB1PsoQU3aw44HrhkV7vl9pWkYmD2qHuOu2uJqHBZDK2wSgK8qqAGxKKPeGTq3pT0dWYXfhWAEGhz98sS2SJBQKBgQCcst5QvW7asQCoPyccJrizr6r3aLYM9ky7CWjOloT9V2Fp7xjObWKkU304MjQT4p1rrnfDup9Dhx2FQiTezsxTqQm5HfBUuiq22eO0rx2mhl77BrcTwOuiw4txVQAOKOuyHbBpPYx5pCYAUmUwLYkzjadmiabzrC665Ew0O4FPLQKBgQC1vkczTrSkkl80c4Zw0Zj/y103GpIpoSGwW19fZkqVT+uuTYC0xOA+QMtpmoKbXsMqa5y9Dtqgss5NOMVI0zzxuxF6FlspE3hY96+3vT0gIe9RbC3Qdvn1gqAon0SmE0cgL5GXywvQ7ecBDHERURPGQC7dhcEOfpLyJL8ws0JvlQKBgQCIU9G42uYr21ygA7mJ82Iz6fxLHU1tf4cIHkqRmUCAjFoS6NJjHaV5I63Ii1zlg/3DJlnJ7n4LKO0U95POSIpZqrHr3NEvVXw98tj5ZHTeYP8XVCNJS0l2JLwXUIUozI8qOkw1czfYyGfLVeP1A1jfgjkGq3GVg9JwBJkLxE1ezQKBgFe9wIKMnfS6UOhUMJrTQx+iAKYTzRyuHuKybkd3S5g2mvyn55HFIUG9vhq90J5fsFvai51a0EFauE0iqvECms+FhhvXQIdnC2JY1PhpfA4MxizHhen+BQil0ZdWftD1rBDJpKyCq9dyUE8p6PRqS+443ZSuWVsEyACsc1C4GPFP
+        pubKey: MIIBIjANBgkq1111111111111111AjZC/5YeZzO0BAQEFAAOCPMKdT5OuI20f7DpzmPbThluyZmkUnuMmy1tqioSUBaY7hX4wMqmYzgbdbatOSs80HzHehc6hDAZqtRIkmVNDIdWTi8NRa0+FQmU8mlPIPtTl9eCF5QbQ6T82hvnC/iGWup3jAhv6spVU/QwOx5fwyGyu6yEdwIj0l9i4mpHfEze8cdMMYbzrey46ZWE7+dpy5vkyXle4oChx9aRQyMpew/klPH7BVEANtglptyMbT6aLo5IAV5ApiNS5fk9Z+JQnsTx5SmNi9L10JRElKK4C/xERRO9AObO5AyRYghV8xq39Up70KHO2BBj0LieVU6BbJANInJXXyWRQIDAQAB
+  ios:
+    configs:
+      - appId: 204423423432432427369
+        secretKey: 912a9b234343450323
+        bundleId: com.company.project

@@ -3,6 +3,7 @@ package com.company.common.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,6 +46,12 @@ public class MdcUtil {
 	
 	public static Map<String, Collection<String>> headers() {
 		HashMap<String, Collection<String>> headers = Maps.newHashMap();
+		headers.put(UNIQUE_KEY, Arrays.asList(get()));
+		return headers;
+	}
+	
+	public static Map<String, List<String>> headers2() {
+		HashMap<String, List<String>> headers = Maps.newHashMap();
 		headers.put(UNIQUE_KEY, Arrays.asList(get()));
 		return headers;
 	}

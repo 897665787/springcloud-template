@@ -1,10 +1,7 @@
 package com.company.order.controller;
 
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.redis.RedisUtils;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
@@ -27,7 +23,6 @@ import com.company.order.entity.Order;
 import com.company.order.event.AfterOrderAddEvent;
 import com.company.order.event.BeforeOrderAddEvent;
 import com.company.user.api.feign.UserFeign;
-import com.company.user.api.response.UserResp;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +68,7 @@ public class OrderController implements OrderFeign {
 
 	@Override
 	public Result<OrderResp> getById(Long id) {
-		log.info("provider-6001:{}-{}", id, System.currentTimeMillis());
+		log.info("provider-6001:{}-{}", id, System.currentTimeMillis());/*
 		System.out.println("OrderController thread:"+Thread.currentThread());
 		HttpServletRequest request = HttpContextUtil.request();
 		System.out.println("request:" + request);
@@ -88,7 +83,7 @@ public class OrderController implements OrderFeign {
 		UserResp userResp = byId.getData();
 		System.out.println("userResp:" + userResp);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
-		
+		*/
 //		if(true){
 //			throw new BusinessException("asdsad");
 //		}

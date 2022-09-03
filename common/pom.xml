@@ -66,15 +66,14 @@
 		</dependency>
 		<!-- ################## slf4j ################## -->
 		
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		</dependency>
         <dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
 		</dependency>
-        <dependency>
-		    <groupId>org.projectlombok</groupId>
-		    <artifactId>lombok</artifactId>
-		</dependency>
-		
         <dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -88,14 +87,14 @@
         <dependency>
 			<groupId>cn.hutool</groupId>
 			<artifactId>hutool-all</artifactId>
-			<version>5.7.14</version>
+			<version>5.8.5</version>
 		</dependency>
 		
 		<!-- 造数工具 -->
 		<dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
-            <version>0.18</version>
+            <version>1.0.2</version>
         </dependency>
 	</dependencies>
 </project>
