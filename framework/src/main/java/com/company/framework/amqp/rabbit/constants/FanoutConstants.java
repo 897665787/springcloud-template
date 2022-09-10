@@ -23,4 +23,15 @@ public interface FanoutConstants {
 		String SMS_QUEUE = PREFIX + "sms";
 		String COUNTMONEY_QUEUE = PREFIX + "countmoney";
 	}
+	
+	// canal事件
+	interface CANAL {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "canal";
+		
+		String PREFIX = FanoutConstants.PREFIX + "canal.";
+		// 队列
+		String USER_QUEUE = PREFIX + "user";
+		String ORDER_QUEUE = PREFIX + "order";
+	}
 }
