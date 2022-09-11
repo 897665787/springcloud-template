@@ -2,6 +2,7 @@ package com.company.framework.interceptor;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,15 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		// 判断是否已登录
-		String userId = request.getHeader(HttpContextUtil.HEADER_CURRENT_USER_ID);
+//		String userId = request.getHeader(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		// 注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值
+		Enumeration<String> headerCurrentUserIdEnum = request.getHeaders(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		String lastCurrentUserId = null;
+		while (headerCurrentUserIdEnum.hasMoreElements()) {
+			lastCurrentUserId = headerCurrentUserIdEnum.nextElement();
+		}
+		
+		String userId = lastCurrentUserId;
 		if (StringUtils.isNotBlank(userId)) {
 			return true;
 		}

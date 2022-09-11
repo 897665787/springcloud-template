@@ -40,20 +40,23 @@ public class TokenFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		String token = request.getHeader(headerToken);
+		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
 		if (StringUtils.isBlank(token)) {
-			chain.doFilter(request, response);
+			// 注：为了防止直接在header设置用户ID，绕过认证，要设置用户ID为空
+			headerRequest.addHeader(HeaderConstants.HEADER_CURRENT_USER_ID, StringUtils.EMPTY);
+			chain.doFilter(headerRequest, response);
 			return;
 		}
 		
 		String userId = tokenService.checkAndGet(token);
 		if (StringUtils.isBlank(userId)) {
-			chain.doFilter(request, response);
+			// 注：为了防止直接在header设置用户ID，绕过认证，要设置用户ID为空
+			headerRequest.addHeader(HeaderConstants.HEADER_CURRENT_USER_ID, StringUtils.EMPTY);
+			chain.doFilter(headerRequest, response);
 			return;
 		}
 
-		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
 		headerRequest.addHeader(HeaderConstants.HEADER_CURRENT_USER_ID, userId);
-		
 		chain.doFilter(headerRequest, response);
 	}
 }

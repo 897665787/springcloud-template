@@ -1,5 +1,7 @@
 package com.company.auth.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,9 @@ import com.company.auth.token.TokenService;
 import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.google.common.collect.Maps;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -26,6 +31,8 @@ public class AccountController {
 	
 	@Autowired
 	private TokenService tokenService;
+	@Autowired
+	private MessageSender messageSender;
 	
 	@PublicUrl
 	@GetMapping(value = "/login")
@@ -47,6 +54,13 @@ public class AccountController {
 		loginResp.setToken(tokenValue);
 		
 		// 发布登录事件
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("loginType", loginType);
+		params.put("device", device);
+		params.put("userId", userId);
+		params.put("tokenValue", tokenValue);
+		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGIN.EXCHANGE);
+		
 		return Result.success(loginResp);
 	}
 	

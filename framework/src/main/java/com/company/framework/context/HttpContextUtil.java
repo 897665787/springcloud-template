@@ -2,6 +2,7 @@ package com.company.framework.context;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class HttpContextUtil {
 	public static final String HEADER_DEVICEID = "x-deviceid";// 设备ID
 	public static final String HEADER_SOURCE = "x-source";// 请求来源
 
-	// 用户请求头
+	// 用户请求头（注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值）
 	public static final String HEADER_CURRENT_USER_ID = HeaderConstants.HEADER_CURRENT_USER_ID;// 当前登录用户id
 
 	private HttpContextUtil() {
@@ -48,9 +49,22 @@ public class HttpContextUtil {
 	public static String head(String name) {
 		return Optional.ofNullable(request()).map(request -> request.getHeader(name)).orElse(null);
 	}
+	
+	public static String lastHead(String name) {
+		HttpServletRequest request = request();
+		if (request == null) {
+			return null;
+		}
+		Enumeration<String> headerEnum = request.getHeaders(name);
+		String lastHeader = null;
+		while (headerEnum.hasMoreElements()) {
+			lastHeader = headerEnum.nextElement();
+		}
+		return lastHeader;
+	}
 
 	public static String currentUserId() {
-		return head(HEADER_CURRENT_USER_ID);
+		return lastHead(HEADER_CURRENT_USER_ID);
 	}
 
 	public static String platform() {
@@ -86,7 +100,14 @@ public class HttpContextUtil {
 	
 	public static Map<String, String> httpContextHeaderThisRequest(HttpServletRequest request) {
 		Map<String, String> headers = Maps.newHashMap();
-		headers.put(HEADER_CURRENT_USER_ID, request.getHeader(HEADER_CURRENT_USER_ID));
+		
+		Enumeration<String> headerEnum = request.getHeaders(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		String lastCurrentUserId = null;
+		while (headerEnum.hasMoreElements()) {
+			lastCurrentUserId = headerEnum.nextElement();
+		}
+		headers.put(HEADER_CURRENT_USER_ID, lastCurrentUserId);
+		
 		headers.put(HEADER_PLATFORM, request.getHeader(HEADER_PLATFORM));
 		headers.put(HEADER_OPERATOR, request.getHeader(HEADER_OPERATOR));
 		headers.put(HEADER_VERSION, request.getHeader(HEADER_VERSION));

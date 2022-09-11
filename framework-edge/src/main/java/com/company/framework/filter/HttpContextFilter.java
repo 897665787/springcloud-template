@@ -32,11 +32,6 @@ public class HttpContextFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
-
-		String userId = request.getHeader(HttpContextUtil.HEADER_CURRENT_USER_ID);
-		if (StringUtils.isNotBlank(userId)) {
-			headerRequest.addHeader(HttpContextUtil.HEADER_CURRENT_USER_ID, userId);
-		}
 		
 		// 有些请求的公共信息没有放在header，而是跟在url后面
 		String platform = request.getHeader(HttpContextUtil.HEADER_PLATFORM);

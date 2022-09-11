@@ -8,6 +8,6 @@ public interface HeaderConstants {
 	String HEADER_DEVICEID = "x-deviceid";// 设备ID
 	String HEADER_SOURCE = "x-source";// 请求来源
 
-	// 用户请求头
+	// 用户请求头（注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值）
 	String HEADER_CURRENT_USER_ID = "x-current-user-id";// 当前登录用户id
 }

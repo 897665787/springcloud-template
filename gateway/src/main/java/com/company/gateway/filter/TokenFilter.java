@@ -35,12 +35,16 @@ public class TokenFilter implements GlobalFilter {
 		HttpHeaders headers = request.getHeaders();
 		String token = headers.getFirst(headerToken);
 		if (StringUtils.isBlank(token)) {
-			return chain.filter(exchange);
+			// 注：为了防止直接在header设置用户ID，绕过认证，要设置用户ID为空
+			request = request.mutate().header(HeaderConstants.HEADER_CURRENT_USER_ID, StringUtils.EMPTY).build();
+			return chain.filter(exchange.mutate().request(request).build());
 		}
 		
 		String userId = tokenService.checkAndGet(token);
 		if (StringUtils.isBlank(userId)) {
-			return chain.filter(exchange);
+			// 注：为了防止直接在header设置用户ID，绕过认证，要设置用户ID为空
+			request = request.mutate().header(HeaderConstants.HEADER_CURRENT_USER_ID, StringUtils.EMPTY).build();
+			return chain.filter(exchange.mutate().request(request).build());
 		}
 
 		request = request.mutate().header(HeaderConstants.HEADER_CURRENT_USER_ID, userId).build();

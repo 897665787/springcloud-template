@@ -1,5 +1,7 @@
 package com.company.user.controller;
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.redis.redisson.DistributeLockUtils;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
@@ -17,6 +21,7 @@ import com.company.user.entity.UserInfo;
 import com.company.user.entity.UserOauth;
 import com.company.user.mapper.user.UserInfoMapper;
 import com.company.user.mapper.user.UserOauthMapper;
+import com.google.common.collect.Maps;
 
 @RestController
 @RequestMapping("/userinfo")
@@ -26,6 +31,8 @@ public class UserInfoController implements UserInfoFeign {
 	private UserInfoMapper userInfoMapper;
 	@Autowired
 	private UserOauthMapper userOauthMapper;
+	@Autowired
+	private MessageSender messageSender;
 
 	/**
 	 * <pre>
@@ -55,6 +62,14 @@ public class UserInfoController implements UserInfoFeign {
 			userInfoMapper.insert(userInfo);
 
 			userOauthMapper.bindOauth(userInfo.getId(), UserOauthEnum.IdentityType.MOBILE, mobile, null);
+
+			// 发布注册事件
+			Map<String, Object> params = Maps.newHashMap();
+			params.put("userId", userInfo.getId());
+			params.put("mobile", mobile);
+			params.put("nickname", userInfo.getNickname());
+			params.put("avator", userInfo.getAvator());
+			messageSender.sendFanoutMessage(params, FanoutConstants.USER_REGISTER.EXCHANGE);
 
 			return userInfo.getId();
 		});
