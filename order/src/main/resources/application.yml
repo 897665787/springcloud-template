@@ -66,6 +66,39 @@ ribbon:
   #ReadTimeout >= Ribbon重试次数(包含首次) * feign.client.config.default.connectTimeout
   ReadTimeout: 1000 #读取超时时间，默认无
   
+mybatis-plus:
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  # 搜索指定包别名
+  type-aliases-package: com.company.*.entity
+  configuration:
+    cacheEnabled: false # 使全局的映射器启用或禁用缓存
+    lazyLoadingEnabled: true # 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载
+    mapUnderscoreToCamelCase: true # 使用驼峰命名法转换字段
+    jdbcTypeForNull: NULL # 设置但JDBC类型为空时,某些驱动程序要指定值,default:OTHER，插入空值时不需要指定类型
+    logImpl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印查询语句
+  global-config:
+    # 逻辑删除配置
+    db-config:
+      #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
+      id-type: AUTO
+      #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+      field-strategy: not_empty
+      #驼峰下划线转换
+      column-underline: true
+      #是否刷新mapper
+      refresh: true
+      #数据库大写下划线转换
+      #capital-mode: true
+      #逻辑删除配置
+      #logic-delete-value: 1
+      #logic-not-delete-value: 0
+      #db-type: mysql
+      #自定义填充策略接口实现
+      #meta-object-handler: com.baomidou.springboot.xxx
+      #自定义SQL注入器
+      #sql-injector: com.baomidou.mybatisplus.extension.injector.LogicSqlInjector
+      
 template:
   sequence:
     datacenterId: 1

@@ -7,11 +7,22 @@ spring:
   profiles:
     include: redis-dev,rabbitmq-dev,elasticsearch-dev
   datasource:
-    ds1:
-      driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
-      username: root
-      password: 12345678
+    base:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
       
 template:
   domain: http://d-domain.com
@@ -45,7 +56,7 @@ pay:
         mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI
         keyPath: classpath:pay/apiclient_cert-504.p12
         tradeType: JSAPI
-      - appId: wx93asdsadddb142b
+      - appId: wx93asdsadd35142b
         mchId: 1523322361
         mchKey: bf7fce054336482342343242465dc071
         keyPath: classpath:pay/apiclient_cert-361.p12

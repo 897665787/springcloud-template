@@ -37,25 +37,6 @@
 	</build>
 
 	<dependencies>
-		<!-- <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
-		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency> -->
-        <!-- rabbitMQ -->
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency> -->
-        
-        <!-- <dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-common</artifactId>
-		    <version>1.0.0</version>
-		</dependency> -->
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework</artifactId>
@@ -73,21 +54,43 @@
 		</dependency>
         
 		<!-- 数据库 -->
+		<!-- mysql -->
         <dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+        
+        <!-- 引入了mybatis-plus-boot-starter，就不需要引入mybatis-spring-boot-starter -->
+		<!-- 
 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+		 -->
+		
+		<!-- mybatis-plus -->
 		<dependency>
         	<groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>2.3</version>
         </dependency>
+        
+        <!-- 动态数据源框架，作为参考，并没有直接使用 -->
+        <!-- 
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		 -->
         <!-- 数据库 -->
         
         <!-- Canal 依赖 -->

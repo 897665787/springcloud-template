@@ -37,25 +37,6 @@
 	</build>
 
 	<dependencies>
-		<!-- <dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		</dependency>
-		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency> -->
-        <!-- rabbitMQ -->
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency> -->
-        
-        <!-- <dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-common</artifactId>
-		    <version>1.0.0</version>
-		</dependency> -->
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework-edge</artifactId>
