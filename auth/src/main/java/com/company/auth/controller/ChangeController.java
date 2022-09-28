@@ -1,42 +1,23 @@
 package com.company.auth.controller;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.context.HttpContextUtil;
 
 @RestController
 @RequestMapping("/change")
 public class ChangeController {
 
 	/**
-	 * 授权头像、昵称
+	 * 小程序授权头像、昵称（非敏感信息，直接从rawData获取即可）
 	 * 
 	 * @return
 	 */
 	@GetMapping(value = "/nicknameheadicon")
-	public Result<?> nicknameheadicon(String encryptedData, String iv, String wxcode) {
-//		https://developers.weixin.qq.com/miniprogram/dev/api/open-api/login/wx.checkSession.html
-		// 前端调用wx.checkSession检查是否需要重新获取wxcode
-		String sessionKey = "";
-		if (StringUtils.isBlank(wxcode)) {
-			// 获取当前登录用户sessionKey
-			String currentUserId = HttpContextUtil.currentUserId();
-			sessionKey = "";
-		} else {
-			// 重新获取微信sessionKey
-			sessionKey = "";
-			// 更新当前用户sessionKey
-		}
-		try{
-//			phoneNoInfo = wxService.getUserService().getPhoneNoInfo(sessionkey, dto.getEncryptedData(), dto.getIv());
-			
-		} catch (Exception e) {
-			// 解密异常，让前端重新获取wxcode，重新请求
-		}
+	public Result<?> nicknameheadicon(String nickName, String avatarUrl) {
+//		https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E4%BC%9A%E8%AF%9D%E5%AF%86%E9%92%A5-session-key-%E6%9C%89%E6%95%88%E6%80%A7
 		
 		return Result.success();
 	}

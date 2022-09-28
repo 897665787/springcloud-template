@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.context.HttpContextUtil;
 import com.company.framework.redis.redisson.DistributeLockUtils;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
@@ -46,7 +47,7 @@ public class UserInfoController implements UserInfoFeign {
 		
 		UserOauth userOauthDB = userOauthMapper.selectByIdentityTypeIdentifier(UserOauthEnum.IdentityType.MOBILE, mobile);
 		if (userOauthDB != null) {
-			UserInfoResp userInfoResp = new UserInfoResp().setId(userOauthDB.getId());
+			UserInfoResp userInfoResp = new UserInfoResp().setId(userOauthDB.getUserId());
 			return Result.success(userInfoResp);
 		}
 		
@@ -69,6 +70,7 @@ public class UserInfoController implements UserInfoFeign {
 			params.put("mobile", mobile);
 			params.put("nickname", userInfo.getNickname());
 			params.put("avator", userInfo.getAvator());
+			params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
 			messageSender.sendFanoutMessage(params, FanoutConstants.USER_REGISTER.EXCHANGE);
 
 			return userInfo.getId();

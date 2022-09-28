@@ -14,9 +14,10 @@ import com.company.auth.authentication.dto.LoginResult;
 import com.company.auth.authentication.impl.tool.IMpTool;
 import com.company.auth.authentication.impl.tool.IOauthTool;
 import com.company.auth.authentication.impl.tool.dto.MobileBindAuthCode;
+import com.company.auth.authentication.impl.tool.dto.MobileBindAuthCode.BindUserOauth;
 import com.company.auth.authentication.impl.tool.dto.MpAccessToken;
 import com.company.auth.authentication.impl.tool.dto.MpUserInfo;
-import com.company.auth.authentication.impl.tool.dto.MobileBindAuthCode.BindUserOauth;
+import com.company.common.exception.BusinessException;
 import com.company.user.api.enums.UserOauthEnum;
 import com.google.common.collect.Lists;
 
@@ -31,7 +32,7 @@ import com.google.common.collect.Lists;
 @Component(LoginBeanFactory.WEIXIN_MP)
 public class WeixinMpService implements LoginService {
 	
-	@Value("${mp.wx.appid:wxeb6ffb1ebd72a4fd1}")
+	@Value("${appid.wx.mp:wxeb6ffb1ebd72a4fd1}")
 	private String appid;
 	
 	@Autowired
@@ -42,12 +43,16 @@ public class WeixinMpService implements LoginService {
 	
 	@Override
 	public LoginResult login(String ignore1, String ignore2, String wxcode) {
+		if (StringUtils.isBlank(wxcode)) {
+			throw new BusinessException("缺失参数");
+		}
+		
 		MpAccessToken mpAccessToken = mpTool.getAccessToken(appid, wxcode);
 		
 		Integer errcode = mpAccessToken.getErrcode();
 		if (errcode != null && errcode != 0) {
 			// 授权失败
-			return new LoginResult().setSuccess(false).setMessage("授权失败");
+			return new LoginResult().setSuccess(false).setMessage(mpAccessToken.getErrmsg());
 		}
 
 		String openid = mpAccessToken.getOpenid();
@@ -102,7 +107,7 @@ public class WeixinMpService implements LoginService {
 					new BindUserOauth().setIdentityType(UserOauthEnum.IdentityType.WX_UNIONID).setIdentifier(unionid));
 			mobileBindAuthCode.setBinds(binds);
 			oauthTool.storeMobileBindAuthCode(wxcode, mobileBindAuthCode);
-			return new LoginResult().setSuccess(false).setMessage("微信没有绑定账号");
+			return new LoginResult().setSuccess(true).setMessage("微信没有绑定账号");
 		}
 
 		// 通过解密微信的密文获取手机号码，可直接使用

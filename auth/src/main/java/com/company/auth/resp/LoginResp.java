@@ -9,9 +9,12 @@ import lombok.experimental.FieldDefaults;
 @Accessors(chain = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LoginResp {
-	/** 用户ID */
-	Integer userId;
+	/** 需要绑定账号 */
+	Boolean needBind;
+	
+	/** 用户ID（不应该返回给前端） */
+//	Integer userId;
 
-	/** token值 */
+	/** token值（needBind=false） */
 	String token;
 }

@@ -11,6 +11,7 @@ public interface LoginType {
 	
 	String APP_WEIXIN = "appWeixin";
 	String WEIXIN_MINIAPP = "weixinMiniapp";
+	String WEIXIN_MINIAPP_MOBILE = "weixinMiniappMobile";
 	String WEIXIN_MP = "weixinMp";
 
 	@AllArgsConstructor
@@ -22,6 +23,7 @@ public interface LoginType {
 		
 		APP_WEIXIN              (LoginType.APP_WEIXIN               , "APP微信授权登录"),
 		WEIXIN_MINIAPP          (LoginType.WEIXIN_MINIAPP           , "微信小程序登录"),
+		WEIXIN_MINIAPP_MOBILE   (LoginType.WEIXIN_MINIAPP_MOBILE    , "微信小程序手机号登录"),
 		WEIXIN_MP               (LoginType.WEIXIN_MP                , "微信公众号登录"),
 	    ;
 		

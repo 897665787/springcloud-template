@@ -11,13 +11,14 @@ import com.company.auth.authentication.dto.LoginResult;
 import com.company.auth.authentication.impl.tool.IMaTool;
 import com.company.auth.authentication.impl.tool.IOauthTool;
 import com.company.auth.authentication.impl.tool.dto.MaSession;
+import com.company.auth.authentication.impl.tool.dto.MaSessionPhoneNumber;
 import com.company.common.exception.BusinessException;
 import com.company.user.api.enums.UserOauthEnum;
 
 @Component(LoginBeanFactory.WEIXIN_MINIAPP)
 public class WeixinMiniappService implements LoginService {
 
-	@Value("${mp.wx.appid:wxeb6ffb1ebd72a4fd1}")
+	@Value("${appid.wx.miniapp:wxeb6ffb1ebd72a4fd1}")
 	private String appid;
 	
 	@Autowired
@@ -31,15 +32,16 @@ public class WeixinMiniappService implements LoginService {
 			throw new BusinessException("缺失参数");
 		}
 
-		MaSession maSession = maTool.getSessionInfo(appid, encryptedData, iv, wxcode);
+		MaSessionPhoneNumber maSessionPhoneNumber = maTool.getSessionInfoAndPhoneNumber(appid, encryptedData, iv, wxcode);
+		MaSession maSession = maSessionPhoneNumber.getMaSession();
 		
 		Integer errcode = maSession.getErrcode();
 		if (errcode != null && errcode != 0) {
 			// 授权失败
-			return new LoginResult().setSuccess(false).setMessage("授权失败");
+			return new LoginResult().setSuccess(false).setMessage(maSession.getErrmsg());
 		}
 
-		String mobile = maSession.getPhoneNumber();
+		String mobile = maSessionPhoneNumber.getPhoneNumber();
 		if (StringUtils.isBlank(mobile)) {
 			// 授权失败
 			return new LoginResult().setSuccess(false).setMessage("授权失败");
@@ -52,10 +54,10 @@ public class WeixinMiniappService implements LoginService {
 			
 			// 绑定用户与openid,unionid关系
 			String openid = maSession.getOpenid();
-			oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid, iv);
+			oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid, wxcode);
 			String unionid = maSession.getUnionid();
 			if (StringUtils.isNotBlank(unionid)) {
-				oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_UNIONID, unionid, iv);
+				oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_UNIONID, unionid, wxcode);
 			}
 			
 		}

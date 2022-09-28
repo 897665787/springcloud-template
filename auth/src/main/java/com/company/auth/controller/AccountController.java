@@ -18,6 +18,7 @@ import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.context.HttpContextUtil;
 import com.google.common.collect.Maps;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
@@ -46,11 +47,20 @@ public class AccountController {
 		if (!loginResult.getSuccess()) {
 			return Result.fail(loginResult.getMessage());
 		}
+		
 		Integer userId = loginResult.getUserId();
+		if (userId == null) {
+			// 用户ID为null代表未登录成功，一般是指通过authcode没有找到对应的用户，需要通过mobileCodeBind来注册用户账号
+			LoginResp loginResp = new LoginResp();
+			loginResp.setNeedBind(true);
+			return Result.success(loginResp);
+		}
+		
 		String tokenValue = tokenService.generate(String.valueOf(userId), device);
 		
 		LoginResp loginResp = new LoginResp();
-		loginResp.setUserId(userId);
+		loginResp.setNeedBind(false);
+//		loginResp.setUserId(userId);
 		loginResp.setToken(tokenValue);
 		
 		// 发布登录事件
@@ -58,7 +68,8 @@ public class AccountController {
 		params.put("loginType", loginType);
 		params.put("device", device);
 		params.put("userId", userId);
-		params.put("tokenValue", tokenValue);
+//		params.put("tokenValue", tokenValue);
+		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
 		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGIN.EXCHANGE);
 		
 		return Result.success(loginResp);

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.auth.authentication.impl.tool.IMaTool;
 import com.company.auth.authentication.impl.tool.dto.MaSession;
+import com.company.auth.authentication.impl.tool.dto.MaSessionPhoneNumber;
 import com.company.framework.context.Environment;
 
 @Component("mockMaTool")
@@ -16,13 +17,15 @@ import com.company.framework.context.Environment;
 public class MaTool implements IMaTool {
 
 	@Override
-	public MaSession getSessionInfo(String appid, String encryptedData, String iv, String code) {
-		MaSession maSession = new MaSession();
-		maSession.setErrcode(0);
-		maSession.setSessionKey("11111111111");
-		maSession.setOpenid("2222222222222222222222");
-		maSession.setUnionid("333333333333333333333");
-		maSession.setPhoneNumber("18700873486");
-		return maSession;
+	public MaSession getSessionInfo(String appid, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MaSessionPhoneNumber getSessionInfoAndPhoneNumber(String appid, String encryptedData, String iv,
+			String code) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -24,6 +24,7 @@ public class HttpContextUtil {
 	public static final String HEADER_VERSION = "x-version";// 版本号
 	public static final String HEADER_DEVICEID = "x-deviceid";// 设备ID
 	public static final String HEADER_SOURCE = "x-source";// 请求来源
+	public static final String HEADER_REQUESTIP = "x-requestip";// 请求IP
 
 	// 用户请求头（注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值）
 	public static final String HEADER_CURRENT_USER_ID = HeaderConstants.HEADER_CURRENT_USER_ID;// 当前登录用户id
@@ -87,6 +88,10 @@ public class HttpContextUtil {
 		return head(HEADER_SOURCE);
 	}
 	
+	public static String requestip() {
+		return head(HEADER_REQUESTIP);
+	}
+	
 	public static Map<String, String> httpContextHeader() {
 		Map<String, String> headers = Maps.newHashMap();
 		headers.put(HEADER_CURRENT_USER_ID, currentUserId());
@@ -95,6 +100,7 @@ public class HttpContextUtil {
 		headers.put(HEADER_VERSION, version());
 		headers.put(HEADER_DEVICEID, deviceid());
 		headers.put(HEADER_SOURCE, source());
+		headers.put(HEADER_REQUESTIP, requestip());
 		return headers;
 	}
 	
@@ -113,6 +119,7 @@ public class HttpContextUtil {
 		headers.put(HEADER_VERSION, request.getHeader(HEADER_VERSION));
 		headers.put(HEADER_DEVICEID, request.getHeader(HEADER_DEVICEID));
 		headers.put(HEADER_SOURCE, request.getHeader(HEADER_SOURCE));
+		headers.put(HEADER_REQUESTIP, request.getHeader(HEADER_REQUESTIP));
 		return headers;
 	}
 	

@@ -1,0 +1,18 @@
+<xml>
+  <appid><![CDATA[{appid}]]></appid>
+  <bank_type><![CDATA[OTHERS]]></bank_type>
+  <cash_fee><![CDATA[{total_fee}]]></cash_fee>
+  <fee_type><![CDATA[CNY]]></fee_type>
+  <is_subscribe><![CDATA[N]]></is_subscribe>
+  <mch_id><![CDATA[{mch_id}]]></mch_id>
+  <nonce_str><![CDATA[{nonce_str}]]></nonce_str>
+  <openid><![CDATA[{openid}]]></openid>
+  <out_trade_no><![CDATA[{out_trade_no}]]></out_trade_no>
+  <result_code><![CDATA[SUCCESS]]></result_code>
+  <return_code><![CDATA[SUCCESS]]></return_code>
+  <sign><![CDATA[{sign}]]></sign>
+  <time_end><![CDATA[{time_end}]]></time_end>
+  <total_fee>{total_fee}</total_fee>
+  <trade_type><![CDATA[{trade_type}]]></trade_type>
+  <transaction_id><![CDATA[{transaction_id}]]></transaction_id>
+</xml>

@@ -23,15 +23,18 @@ public class MpTool implements IMpTool {
 	@Override
 	public MpAccessToken getAccessToken(String appid, String code) {
 		/**
-		https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
+		 * <pre>
+		 * 官网：https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
 		{
 			"access_token": "58_hutKyhcT5biJsn04NZ9jHW9GZVgCVOF4YVlK3NZiivKq8rJkWs2-la-nhJNhuisNs-fwFtfeaIyOuWNYC9AOW9fzv3oz_pMcg_zUYoZplZc",
 			"expires_in": 7200,
 			"refresh_token": "58_luzGuma7ZudDzx4kF1-YCo9wNUI8D9-FWDLCtGg6idqwBy7yJ2ssAMpjgNR-uQz603Mrm2gadX5B1XRHZ76gEMooN-T2Fn514skqOWTOWMM",
-			"openid": "oYB7c6mHjNn4LW_zXXPsDR8mVSJ8",
+			"openid": "oYB7c6mHjNn4LW_zXX121R8mVSJ8",
 			"scope": "snsapi_userinfo"
 		}
+		 * </pre>
 		 */
+		
 		/*
 		String secret = findByAppid(appid);
 		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
@@ -41,7 +44,7 @@ public class MpTool implements IMpTool {
 		log.info("access_token,url:{}, result:{}", url, result);
 		
 		MpAccessToken mpAccessToken = JsonUtil.toEntity(result, MpAccessToken.class);
-		*/
+		 */
 		
 		MpAccessToken mpAccessToken = new MpAccessToken();
 		final WxMpService wxService = WxMpConfiguration.getMpService(appid);
@@ -51,9 +54,6 @@ public class MpTool implements IMpTool {
             mpAccessToken.setAccessToken(accessToken.getAccessToken());
             mpAccessToken.setOpenid(accessToken.getOpenId());
             mpAccessToken.setUnionid(accessToken.getUnionId());
-        	
-//            WxOAuth2UserInfo user = wxService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
-//            map.put("user", user);
         } catch (WxErrorException e) {
 			log.error("getAccessToken error", e);
             WxError error = e.getError();
@@ -66,7 +66,8 @@ public class MpTool implements IMpTool {
 	@Override
 	public MpUserInfo getUserinfo(String accessToken, String openid) {
 		/**
-		https://api.weixin.qq.com/sns/userinfo?access_token=58_hutKyhcT5biJsn04NZ9jHW9GZVgCVOF4YVlK3NZiivKq8rJkWs2-la-nhJNhuisNs-fwFtfeaIyOuWNYC9AOW9fzv3oz_pMcg_zUYoZplZc&openid=oYB7c6mHjNn4LW_zXXPsDR8mVSJ8
+		 * <pre>
+		 * 官网：https://api.weixin.qq.com/sns/userinfo?access_token=58_hutKyhcT5biJsn04NZ9jHW9GZVgCVOF4YVlK3NZiivKq8rJkWs2-la-nhJNhuisNs-fwFtfeaIyOuWNYC9AOW9fzv3oz_pMcg_zUYoZplZc&openid=oYB7c6mHjNn4LW_zXXPsDR8mVSJ8
 		{
 			"openid": "oYB7c6mHjNn4LW_zXXPsDR8mVSJ8",
 			"nickname": "勝",
@@ -79,7 +80,9 @@ public class MpTool implements IMpTool {
 			"privilege": [],
 			"unionid": "oiPIJuEo0OzxLqzSEWZYZ-nVWmTU"
 		}
+		 * </pre>
 		 */
+		
 		/*
 		String url = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID";
 		url = url.replace("ACCESS_TOKEN", accessToken).replace("OPENID", openid);

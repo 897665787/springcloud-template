@@ -35,10 +35,6 @@ wx:
         aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
   mp:
-    useRedis: false
-    #redisConfig:
-      #host: 127.0.0.1
-      #port: 6379
     configs:
       - appId: 1111 # 第一个公众号的appid
         secret: 1111 # 公众号的appsecret

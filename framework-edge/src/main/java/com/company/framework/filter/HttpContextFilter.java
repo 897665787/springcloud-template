@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
+import com.company.framework.util.IpUtil;
 
 /**
  * Http上下文公共请求信息设置到header
@@ -71,6 +72,14 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
 			if (StringUtils.isNotBlank(source)) {
 				headerRequest.addHeader(HttpContextUtil.HEADER_SOURCE, source);
+			}
+		}
+		
+		String requestip = request.getHeader(HttpContextUtil.HEADER_REQUESTIP);
+		if (StringUtils.isBlank(requestip)) {
+			requestip = IpUtil.getRequestIp(request);
+			if (StringUtils.isNotBlank(requestip)) {
+				headerRequest.addHeader(HttpContextUtil.HEADER_REQUESTIP, requestip);
 			}
 		}
 		

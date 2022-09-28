@@ -1,24 +1,16 @@
 package com.company.order.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +22,6 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.context.SpringContextUtil;
 import com.company.framework.redis.redisson.DistributeLockUtils;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
@@ -105,9 +96,6 @@ public class PayController implements PayFeign {
 
 	@Autowired
 	private MessageSender messageSender;
-
-	@Autowired
-	private ThreadPoolTaskExecutor executor;
 	
 	@Autowired
 	private OrderPayRefundService orderPayRefundService;
@@ -171,19 +159,6 @@ public class PayController implements PayFeign {
 					PayClient tradeClient = PayFactory.of(payReq.getMethod());
 					PayResp payResp = tradeClient.pay(payParams);
 					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
-					
-					if(SpringContextUtil.isTestProfile()) {
-						// 10s后回调
-						executor.execute(() -> {
-							try {
-								Thread.sleep(10000);
-							} catch (InterruptedException e) {
-								log.error("sleep error", e);
-							}
-							log.info("模拟微信支付回调入口",payReq.getNotifyUrl());
-//							devAutoWxNotify(payReq);
-						});
-					}
 					
 					return payResp;
 				});
@@ -750,110 +725,4 @@ public class PayController implements PayFeign {
 		
 		return Result.success();
 	}
-
-	private void devAutoWxNotify(PayReq payReq){
-		String xmlData =
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-						"<xml>" +
-						"<appid><![CDATA[wx8888888888888888]]></appid>" +
-						"<bank_type><![CDATA[OTHERS]]></bank_type>" +
-						"<cash_fee><![CDATA[2]]></cash_fee>" +
-						"<fee_type><![CDATA[CNY]]></fee_type>" +
-						"<is_subscribe><![CDATA[N]]></is_subscribe>" +
-						"<mch_id><![CDATA[1900000109]]></mch_id>" +
-						"<nonce_str><![CDATA[1B69F7V9mYmQg1Qv]]></nonce_str>" +
-						"<openid><![CDATA[oQvXm5VI2FXnKV_infrZMEw2SBAk]]></openid>" +
-						"<out_trade_no><![CDATA[249671930687860736]]></out_trade_no>" +
-						"<result_code><![CDATA[SUCCESS]]></result_code>" +
-						"<return_code><![CDATA[SUCCESS]]></return_code>" +
-						"<sign><![CDATA[498F9FC7920DFD5E040655254F043D2E]]></sign>" +
-						"<time_end><![CDATA[20210430000006]]></time_end>" +
-						"<total_fee>2</total_fee>" +
-						"<trade_type><![CDATA[JSAPI]]></trade_type>" +
-						"<transaction_id><![CDATA[4200000808202012244418326253]]></transaction_id>" +
-						"</xml>";
-		StringBuilder builder = new StringBuilder(xmlData);
-		WxPay wxPay = wxPayMapper.selectByOutTradeNo(payReq.getOrderCode());
-		builder.replace(builder.indexOf("<nonce_str><![CDATA[") + "<nonce_str><![CDATA[".length(), builder.indexOf("]]></nonce_str>"), wxPay.getNonceStr());
-		builder.replace(builder.indexOf("<out_trade_no><![CDATA[") + "<out_trade_no><![CDATA[".length(), builder.indexOf("]]></out_trade_no>"), wxPay.getOutTradeNo());
-		builder.replace(builder.indexOf("<cash_fee><![CDATA[") + "<cash_fee><![CDATA[".length(), builder.indexOf("]]></cash_fee>"), wxPay.getTotalFee().toString());
-		builder.replace(builder.indexOf("<total_fee>") + "<total_fee>".length(), builder.indexOf("</total_fee>"), wxPay.getTotalFee().toString());
-		String tranId = "420000080820201224441" + new Random().nextInt(83262531);
-		builder.replace(builder.indexOf("<transaction_id><![CDATA[") + "<transaction_id><![CDATA[".length(), builder.indexOf("]]></transaction_id>"), tranId);
-		// 解析微信支付返回报文
-		WxPayOrderNotifyResult orderNotifyResult = WxPayOrderNotifyResult.fromXML(builder.toString());
-		// 校验返回结果签名
-		Map<String, String> map = orderNotifyResult.toMap();
-		String sign = SignUtils.createSign(map, null, "GK0Dw8mHCJoasdsadd2127J8IEq9FX5fI", new String[0]);
-		builder.replace(builder.indexOf("<sign><![CDATA[") + "<sign><![CDATA[".length(), builder.indexOf("]]></sign>"), sign);
-		String postUrl = "http://127.0.0.1:9006/api/server/callback/wechat";
-		try {
-			log.info("模拟微信支付回调",payReq.getNotifyUrl());
-			URL url = new URL(postUrl);
-			URLConnection con = url.openConnection();
-			con.setDoOutput(true);
-			con.setRequestProperty("Cache-Control", "no-cache");
-			con.setRequestProperty("Content-Type", "application/xml");
-			OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-			out.write(new String(builder.toString().getBytes(StandardCharsets.UTF_8)));
-			out.flush();
-			out.close();
-			BufferedReader br = new BufferedReader(new InputStreamReader(con
-					.getInputStream()));
-			String line = "";
-			StringBuilder result = new StringBuilder();
-			for (line = br.readLine(); line != null; line = br.readLine()) {
-				result.append(line);
-			}
-			log.info("开发环境自动请求微信回调结果：" + result.toString());
-		}catch (Exception e){
-			log.error(e.getMessage(), e);
-		}
-	}
-
-	public static void main(String[] args) {
-		String xmlData =
-				"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
-						"<xml>" +
-						"<appid><![CDATA[wx8888888888888888]]></appid>" +
-						"<bank_type><![CDATA[OTHERS]]></bank_type>" +
-						"<cash_fee><![CDATA[2]]></cash_fee>" +
-						"<fee_type><![CDATA[CNY]]></fee_type>" +
-						"<is_subscribe><![CDATA[N]]></is_subscribe>" +
-						"<mch_id><![CDATA[1900000109]]></mch_id>" +
-						"<nonce_str><![CDATA[1B69F7V9mYmQg1Qv]]></nonce_str>" +
-						"<openid><![CDATA[oQvXm5VI2FXnKV_infrZMEw2SBAk]]></openid>" +
-						"<out_trade_no><![CDATA[249671930687860736]]></out_trade_no>" +
-						"<result_code><![CDATA[SUCCESS]]></result_code>" +
-						"<return_code><![CDATA[SUCCESS]]></return_code>" +
-						"<sign><![CDATA[498F9FC7920DFD5E040655254F043D2E]]></sign>" +
-						"<time_end><![CDATA[20210430000006]]></time_end>" +
-						"<total_fee>2</total_fee>" +
-						"<trade_type><![CDATA[JSAPI]]></trade_type>" +
-						"<transaction_id><![CDATA[4200000808202012244418326253]]></transaction_id>" +
-						"</xml>";
-		String postUrl = "https://d-api.lsqpay.com/api/server/callback/wechat";
-		try {
-			URL url = new URL(postUrl);
-			URLConnection con = url.openConnection();
-			con.setDoOutput(true);
-			con.setRequestProperty("Cache-Control", "no-cache");
-			con.setRequestProperty("Content-Type", "application/xml");
-			OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-			out.write(new String(xmlData.getBytes(StandardCharsets.UTF_8)));
-			out.flush();
-			out.close();
-			BufferedReader br = new BufferedReader(new InputStreamReader(con
-					.getInputStream()));
-			String line = "";
-			StringBuilder result = new StringBuilder();
-			for (line = br.readLine(); line != null; line = br.readLine()) {
-				result.append(line);
-			}
-			log.info("开发环境自动请求微信回调结果：" + result.toString());
-		}catch (Exception e){
-			log.info(e.getMessage());
-		}
-	}
-
 }

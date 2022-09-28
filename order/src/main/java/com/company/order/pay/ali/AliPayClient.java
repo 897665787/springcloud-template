@@ -11,6 +11,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.alipay.api.AlipayApiException;
@@ -30,6 +31,7 @@ import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
+import com.company.framework.context.SpringContextUtil;
 import com.company.order.api.response.PayTradeStateResp;
 import com.company.order.entity.AliPay;
 import com.company.order.entity.AliPayRefund;
@@ -38,6 +40,7 @@ import com.company.order.mapper.AliPayRefundMapper;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.ali.config.AliPayConfiguration;
 import com.company.order.pay.ali.config.AliPayProperties.PayConfig;
+import com.company.order.pay.ali.mock.NotifyMock;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
 
@@ -62,12 +65,17 @@ public class AliPayClient extends BasePayClient {
 	private AliPayMapper aliPayMapper;
 	@Autowired
 	private AliPayRefundMapper aliPayRefundMapper;
+	@Autowired
+	private ThreadPoolTaskExecutor executor;
 	
 	@Value("${template.domain}")
 	private String domain;
 	
 	@Value("${timeExpire.seconds:180}")
 	private Integer timeExpireSeconds;
+	
+	@Value("${template.mock.wxnotify:false}")
+	private Boolean mockNotify;
 	
 	@Override
     protected Object requestPayInfo(PayParams payParams) {
@@ -119,6 +127,19 @@ public class AliPayClient extends BasePayClient {
 			if (!response.isSuccess()) {
 				throw new BusinessException(response.getMsg());
 			}
+			
+			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
+				executor.submit(() -> {
+					try {
+						Thread.sleep(10000);// 10s后回调
+					} catch (InterruptedException e) {
+						log.error("sleep error", e);
+					}
+					log.info("模拟微信支付回调入口");
+					NotifyMock.payNotify(payConfig, request);
+				});
+			}
+			
 			// 可以直接返给客户端，无需再做处理
 			return response.getBody();// alipay_sdk=alipay-sdk-java-3.4.49.ALL&app_id=2022001196663503&biz_content=%7B%22body%22%3A%22testorder%22%2C%22out_trade_no%22%3A%22205546307409489920%22%2C%22subject%22%3A%22testorder-subject%22%2C%22total_amount%22%3A%220.01%22%7D&charset=UTF-8&format=json&method=alipay.trade.app.pay&notify_url=https%3A%2F%2Ft-api.lsqpay.com%2Fapi%2Fserver%2Fcallback%2Falipay%2F&sign=hdZMVVmslawvRMDKwIX%2Bcj%2BeSKHrIn7Zna5ngQt0rYgtPladQmAmdOILsNeIMCFv7ZFRVLIvjWNwsYiOxKxYdbo%2FRnR6JMbK7PSJg%2BCAjTZQYR5abcU%2Fq1eL0cjuwbtHwAC9qLBF7B95XYHeJkwwxZgK903Eb9vRyJCw6fTl7egnL3ceRphqC315gajxSzf0UkefxrWjIu55ov8zYd1wdZQ64jsJjS9y0Bh1iW5qWBXNq0lOU8VXLdg2vXUycOJs9wLP7Uv2ob%2FKmcy5DxfrPh4A9DNllwwKKwhVqPbGqQgwqArQh2hjy0FyYDQ9%2B%2FwbylG97Au6lqHlbP4GtMQVEw%3D%3D&sign_type=RSA2&timestamp=2020-12-30+09%3A26%3A51&version=1.0
         } catch (AlipayApiException e) {

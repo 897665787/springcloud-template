@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.company.common.exception.BusinessException;
@@ -22,6 +23,7 @@ import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
 import com.company.order.pay.wx.config.WxPayConfiguration;
 import com.company.order.pay.wx.config.WxPayProperties.PayConfig;
+import com.company.order.pay.wx.mock.NotifyMock;
 import com.github.binarywang.wxpay.bean.request.WxPayOrderCloseRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
@@ -56,9 +58,14 @@ public class WxPayClient extends BasePayClient {
 	private WxPayMapper wxPayMapper;
 	@Autowired
 	private WxPayRefundMapper wxPayRefundMapper;
+	@Autowired
+	private ThreadPoolTaskExecutor executor;
 	
 	@Value("${template.domain}")
 	private String domain;
+	
+	@Value("${template.mock.wxnotify:false}")
+	private Boolean mockNotify;
 	
 	@Override
     protected Object requestPayInfo(PayParams payParams) {
@@ -125,6 +132,18 @@ public class WxPayClient extends BasePayClient {
 			Object payInfo = orderResultTransfer.toPayInfo(request.getAppid(), request.getMchId(),
 					payConfig.getMchKey(), unifiedOrderResult.getPrepayId(), unifiedOrderResult.getCodeURL(),
 					unifiedOrderResult.getMwebUrl());
+			
+			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
+				executor.submit(() -> {
+					try {
+						Thread.sleep(10000);// 10s后回调
+					} catch (InterruptedException e) {
+						log.error("sleep error", e);
+					}
+					log.info("模拟微信支付回调入口");
+					NotifyMock.payNotify(config, request);
+				});
+			}
 			return payInfo;
 		} catch (WxPayException e) {
 			// 支付异常

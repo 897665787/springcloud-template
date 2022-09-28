@@ -32,7 +32,7 @@ import com.google.common.collect.Lists;
 @Component(LoginBeanFactory.APP_WEIXIN)
 public class AppWeixinService implements LoginService {
 	
-	@Value("${app.wx.appid:wxeb6ffb1ebd72a4fds}")
+	@Value("${appid.wx.app:wxeb6ffb1ebd72a4fds}")
 	private String appid;
 	
 	@Autowired
@@ -52,7 +52,7 @@ public class AppWeixinService implements LoginService {
 		Integer errcode = mpAccessToken.getErrcode();
 		if (errcode != null && errcode != 0) {
 			// 授权失败
-			return new LoginResult().setSuccess(false).setMessage("授权失败");
+			return new LoginResult().setSuccess(false).setMessage(mpAccessToken.getErrmsg());
 		}
 
 		String openid = mpAccessToken.getOpenid();
@@ -101,14 +101,14 @@ public class AppWeixinService implements LoginService {
 			mobileBindAuthCode.setNickname(Optional.ofNullable(userinfo).map(MpUserInfo::getNickname).orElse(null));
 			mobileBindAuthCode.setHeadimgurl(Optional.ofNullable(userinfo).map(MpUserInfo::getHeadimgurl).orElse(null));
 			List<BindUserOauth> binds = Lists.newArrayList();
-			binds.add(new BindUserOauth().setIdentityType(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP)
+			binds.add(new BindUserOauth().setIdentityType(UserOauthEnum.IdentityType.WX_OPENID_APP)
 					.setIdentifier(openid));
 			binds.add(
 					new BindUserOauth().setIdentityType(UserOauthEnum.IdentityType.WX_UNIONID).setIdentifier(unionid));
 			mobileBindAuthCode.setBinds(binds);
 			oauthTool.storeMobileBindAuthCode(wxcode, mobileBindAuthCode);
 				
-			return new LoginResult().setSuccess(false).setMessage("微信没有绑定账号");
+			return new LoginResult().setSuccess(true).setMessage("微信没有绑定账号");
 		}
 
 		// 通过解密微信的密文获取手机号码，可直接使用
