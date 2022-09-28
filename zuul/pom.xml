@@ -12,15 +12,8 @@
 	<packaging>jar</packaging>
 
 	<description>zuul路由网关</description>
-
-	<build>
-		<finalName>${artifactId}</finalName>
-	</build>
-
-	<properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+    
+    <properties>
         <sa-token.version>1.28.0</sa-token.version>
     </properties>
     
@@ -74,8 +67,7 @@
 		    <version>${sa-token.version}</version>
 		</dependency>
 		<!-- Sa-Token -->
-				
 		
 	</dependencies>
-
+	
 </project>

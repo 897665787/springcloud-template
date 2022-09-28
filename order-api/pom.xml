@@ -13,10 +13,6 @@
 
 	<description>订单服务</description>
 
-	<build>
-		<finalName>${artifactId}</finalName>
-	</build>
-
 	<dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

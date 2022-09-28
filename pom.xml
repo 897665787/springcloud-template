@@ -11,6 +11,9 @@
 	<description>springcloud模板</description>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
 		<!-- Alibaba 与springboot、cloud版本适配：https://blog.csdn.net/a749227859/article/details/120195331 -->
 		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
 		<spring-boot.version>2.0.3.RELEASE</spring-boot.version>
@@ -64,5 +67,41 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	
+	<build>
+		<finalName>${artifactId}</finalName>
+		<plugins>
+			<!--编译插件-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<!--跳过测试-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+			<!--配置生成源码包-->
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-source-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                    <id>attach-sources</id>
+	                    <goals>
+	                        <goal>jar</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+        </plugins>
+	</build>
 </project>

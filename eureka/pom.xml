@@ -13,10 +13,6 @@
 
 	<description>eureka注册中心</description>
 
-	<build>
-		<finalName>${artifactId}</finalName>
-	</build>
-
 	<dependencies>
 		<!-- eureka-server服务端 -->
 		<dependency>
