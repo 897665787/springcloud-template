@@ -55,4 +55,13 @@ public interface FanoutConstants {
 		String NEW_USER_QUEUE = PREFIX + "new_user";
 	}
 
+	// 用户登出事件
+	interface USER_LOGOUT {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "user_logout";
+
+		String PREFIX = FanoutConstants.PREFIX + "user_logout.";
+		// 队列
+		String LOGOUT_RECORD_QUEUE = PREFIX + "logout_record";
+	}
 }

@@ -118,4 +118,23 @@ public class TokenUtil {
 		/* =============== 系统让token失效=============== */
 		return subject;
 	}
+	
+	public static Claims getClaims(String token, String secret) {
+		if (StringUtils.isBlank(token)) {
+			return null;
+		}
+
+		Claims body = null;
+		try {
+			Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+			body = claimsJws.getBody();
+		} catch (SignatureException e) {// token不正确
+			log.error("SignatureException", e);
+			return null;
+		} catch (ExpiredJwtException e) {// token过期
+			// log.error("ExpiredJwtException", e);
+			body = e.getClaims();
+		}
+		return body;
+	}
 }

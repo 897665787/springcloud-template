@@ -2,7 +2,10 @@ package com.company.auth.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,17 +18,11 @@ import com.company.auth.resp.LoginResp;
 import com.company.auth.token.TokenService;
 import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.google.common.collect.Maps;
 
-import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.dev33.satoken.stp.StpUtil;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @RestController
 @RequestMapping("/account")
 public class AccountController {
@@ -34,6 +31,9 @@ public class AccountController {
 	private TokenService tokenService;
 	@Autowired
 	private MessageSender messageSender;
+	
+	@Value("${token.name}")
+	private String headerToken;
 	
 	@PublicUrl
 	@GetMapping(value = "/login")
@@ -76,11 +76,18 @@ public class AccountController {
 	}
 	
 	@GetMapping(value = "/logout")
-	public Result<String> logout() {
-		StpUtil.logout();
-		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-		log.info("tokenInfo:{}", JsonUtil.toJsonString(tokenInfo));
+	public Result<String> logout(HttpServletRequest request) {
+		String token = request.getHeader(headerToken);
+		String device = tokenService.invalid(token);
+		
 		// 发布登出事件
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("device", device);
+		params.put("userId", HttpContextUtil.currentUserId());
+//		params.put("tokenValue", tokenValue);
+		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGOUT.EXCHANGE);
+
 		return Result.success("登出成功");
 	}
 }

@@ -22,6 +22,17 @@ public class SaTokenService implements TokenService {
 		log.info("userId:{},device:{},tokenInfo:{}", userId, device, JsonUtil.toJsonString(tokenInfo));
 		return tokenInfo.getTokenValue();
 	}
+
+	@Override
+	public String invalid(String token) {
+		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+		log.info("tokenInfo:{}", JsonUtil.toJsonString(tokenInfo));
+		
+		StpUtil.logoutByTokenValue(token);
+
+		return tokenInfo.getLoginDevice();
+	}
+
 	/*
 	@Value("${template.enable.access-control:true}")
 	private Boolean enableAccessControl;
@@ -45,4 +56,5 @@ public class SaTokenService implements TokenService {
 		}
 	}
 	*/
+
 }

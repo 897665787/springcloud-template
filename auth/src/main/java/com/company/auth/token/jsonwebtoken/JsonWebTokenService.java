@@ -8,7 +8,12 @@ import org.springframework.stereotype.Component;
 
 import com.company.auth.token.TokenService;
 import com.company.auth.token.jsonwebtoken.util.TokenUtil;
+import com.company.common.util.JsonUtil;
 
+import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class JsonWebTokenService implements TokenService {
 	
@@ -23,7 +28,19 @@ public class JsonWebTokenService implements TokenService {
 		Date expiration = DateUtils.addSeconds(new Date(), timeout);
 		return TokenUtil.generateToken(userId, device, expiration, secret);
 	}
-	
+
+	@Override
+	public String invalid(String token) {
+		Claims claims = TokenUtil.getClaims(token, secret);
+		log.info("claims:{}", JsonUtil.toJsonString(claims));
+		
+		// do nothing
+		if (claims == null) {
+			return null;
+		}
+		return claims.getAudience();
+	}
+
 	/*
 	@Value("${template.enable.access-control:true}")
 	private Boolean enableAccessControl;
