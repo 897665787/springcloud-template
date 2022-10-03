@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
@@ -15,13 +16,15 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
+
 @Slf4j
 @RestController
 @RequestMapping("/sa-token")
 public class SaTokenController {
 	
+	@PublicUrl
 	@PostMapping(value = "/cookie/login")
-	public Result<String> login(@RequestBody Map<String, Object> param) {
+	public Result<Object> login(@RequestBody Map<String, Object> param) {
 		// 手机号+验证码
 		// 手机号+密码
 		// 小程序微信授权(根据code找到openid或unionid)
@@ -30,7 +33,9 @@ public class SaTokenController {
 		
 		String userId = "83848";
 		StpUtil.login(userId);
-		return Result.success("有状态登录成功");
+//		StpUtil.getTokenSession().set(key, value);
+		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+		return Result.success(tokenInfo);
 	}
 	
 	@GetMapping(value = "/cookie/check")
@@ -42,7 +47,7 @@ public class SaTokenController {
 			int loginId = StpUtil.getLoginIdAsInt();
 			System.out.println("loginId:"+loginId);
 			System.out.println("getLoginDevice:"+StpUtil.getLoginDevice());
-			System.out.println("getLoginKey:"+StpUtil.getLoginKey());
+//			System.out.println("getLoginKey:"+StpUtil.getLoginKey());
 			System.out.println("getTokenValue:"+StpUtil.getTokenValue());
 			System.out.println("getLoginIdByToken:"+StpUtil.getLoginIdByToken(StpUtil.getTokenValue()));
 			System.out.println("getSession:"+JSONUtil.toJsonPrettyStr(StpUtil.getSession()));
@@ -64,6 +69,7 @@ public class SaTokenController {
 		return Result.success("注销成功");
 	}
 	
+	@PublicUrl
 	@PostMapping(value = "/jwt/login")
 	public Result<String> jwtlogin(@RequestBody Map<String, Object> param) {
 		// 手机号+验证码
@@ -89,7 +95,7 @@ public class SaTokenController {
 			int loginId = StpUtil.getLoginIdAsInt();
 			System.out.println("loginId:"+loginId);
 			System.out.println("getLoginDevice:"+StpUtil.getLoginDevice());
-			System.out.println("getLoginKey:"+StpUtil.getLoginKey());
+//			System.out.println("getLoginKey:"+StpUtil.getLoginKey());
 			System.out.println("getTokenValue:"+StpUtil.getTokenValue());
 			System.out.println("getLoginIdByToken:"+StpUtil.getLoginIdByToken(StpUtil.getTokenValue()));
 //			System.out.println("getSession:"+JSONUtil.toJsonPrettyStr(StpUtil.getSession()));

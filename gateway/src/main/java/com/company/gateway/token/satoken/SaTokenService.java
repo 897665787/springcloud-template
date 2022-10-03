@@ -12,7 +12,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-//@Primary
+@Primary
 @Component
 public class SaTokenService implements TokenService {
 

@@ -14,7 +14,7 @@
 	<description>gateway路由网关</description>
 
 	<properties>
-        <sa-token.version>1.28.0</sa-token.version>
+        <sa-token.version>1.31.0</sa-token.version>
     </properties>
     
 	<dependencies>
@@ -55,18 +55,11 @@
 		</dependency>
 		
 		<!-- Sa-Token -->
-		<!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
+		<!-- Sa-Token 权限认证（Reactor响应式集成）, 在线文档：http://sa-token.dev33.cn/ -->
 		<dependency>
 		    <groupId>cn.dev33</groupId>
-		    <artifactId>sa-token-spring-boot-starter</artifactId>
+		    <artifactId>sa-token-reactor-spring-boot-starter</artifactId>
 		    <version>${sa-token.version}</version>
-			<exclusions>
-				<!-- 一定要排除掉 spring-boot-starter-web 依赖，否则启动报错 -->
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-web</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<!-- Sa-Token 整合 jwt -->
 		<dependency>
@@ -75,11 +68,14 @@
 			<version>${sa-token.version}</version>
 		</dependency>
 		<!-- Sa-Token 整合 Redis （使用jackson序列化方式） -->
+		<!-- Simple、Mixin模式才有效，demo环境下使用Stateless模式 -->
+		<!-- 
 		<dependency>
 		    <groupId>cn.dev33</groupId>
 		    <artifactId>sa-token-dao-redis-jackson</artifactId>
 		    <version>${sa-token.version}</version>
 		</dependency>
+		 -->
 		<!-- Sa-Token -->
 		
 	</dependencies>

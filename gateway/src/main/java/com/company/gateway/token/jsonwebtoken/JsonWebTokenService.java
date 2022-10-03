@@ -1,13 +1,11 @@
 package com.company.gateway.token.jsonwebtoken;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.company.gateway.token.TokenService;
 import com.company.gateway.token.jsonwebtoken.util.TokenUtil;
 
-@Primary
 @Component // 优先级低于SaTokenService，作为token备用方案
 public class JsonWebTokenService implements TokenService {
 	
