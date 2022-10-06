@@ -20,8 +20,6 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.order.entity.Order;
-import com.company.order.event.AfterOrderAddEvent;
-import com.company.order.event.BeforeOrderAddEvent;
 import com.company.user.api.feign.UserFeign;
 import com.google.common.collect.Lists;
 
@@ -50,15 +48,6 @@ public class OrderController implements OrderFeign {
 	
 	@GetMapping(value = "/list")
 	public List<Order> list() {
-		Order payload = new Order().setId(Long.valueOf(1));
-		System.out.println("payload:"+payload);
-		BeforeOrderAddEvent beforeOrderAddEvent = new BeforeOrderAddEvent(payload);
-		applicationContext.publishEvent(beforeOrderAddEvent);
-		System.out.println("payload save:"+payload);
-		AfterOrderAddEvent afterOrderAddEvent = new AfterOrderAddEvent(payload);
-		applicationContext.publishEvent(afterOrderAddEvent);
-		System.out.println("payload:"+payload);
-		
 		List<Order> list = Lists.newArrayList();
 		for (int i = 0; i < 10; i++) {
 			list.add(new Order().setId(Long.valueOf(i)).setOrderCode(String.valueOf(System.currentTimeMillis())));

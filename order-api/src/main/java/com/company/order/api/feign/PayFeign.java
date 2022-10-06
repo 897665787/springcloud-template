@@ -1,7 +1,5 @@
 package com.company.order.api.feign;
 
-import java.util.Map;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,18 +40,6 @@ public interface PayFeign {
 	Result<PayInfoResp> queryPayInfo(@RequestParam("orderCode") String orderCode);
 
 	/**
-	 * 微信支付回调
-	 */
-	@PostMapping("/wxPayNotify")
-	Result<String> wxPayNotify(@RequestBody String xmlString);
-
-	/**
-	 * 支付宝支付回调
-	 */
-	@PostMapping("/aliPayNotify")
-	Result<String> aliPayNotify(@RequestBody Map<String, String> params);
-
-	/**
 	 * 查询交易状态
 	 * 
 	 * @param orderCode
@@ -78,15 +64,6 @@ public interface PayFeign {
 	 */
 	@PostMapping("/refundWithRetry")
 	Result<Void> refundWithRetry(@RequestBody RefundReq refundReq);
-	
-	/**
-	 * 退款回调
-	 * 
-	 * @param xmlString
-	 * @return
-	 */
-	@PostMapping("/wxPayRefundNotify")
-	Result<String> wxPayRefundNotify(@RequestBody String xmlString);
 
 	/**
 	 * 关闭订单
@@ -115,16 +92,6 @@ public interface PayFeign {
 				}
 
 				@Override
-				public Result<String> wxPayNotify(String xmlString) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<String> aliPayNotify(Map<String, String> params) {
-					return Result.onFallbackError();
-				}
-
-				@Override
 				public Result<PayTradeStateResp> queryTradeState(String orderCode) {
 					return Result.onFallbackError();
 				}
@@ -136,11 +103,6 @@ public interface PayFeign {
 				
 				@Override
 				public Result<Void> refundWithRetry(RefundReq refundReq) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<String> wxPayRefundNotify(String xmlString) {
 					return Result.onFallbackError();
 				}
 

@@ -29,6 +29,23 @@
 		    <artifactId>template-user-api</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+		
+		<!-- 文件系统 -->
+		<!-- minio -->
+		<dependency>
+		    <groupId>io.minio</groupId>
+		    <artifactId>minio</artifactId>
+		    <version>7.1.4</version>
+			<!-- 8.0.x版本会报错：Unsupported OkHttp library found. Must use okhttp >= 4.8.1 -->
+		</dependency>
+		<!-- aliyun oss -->
+		<dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.15.1</version>
+        </dependency>
+		<!-- 文件系统 -->
+		
 	</dependencies>
 
 </project>

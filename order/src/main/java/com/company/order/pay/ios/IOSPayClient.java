@@ -1,10 +1,14 @@
 package com.company.order.pay.ios;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.company.common.exception.BusinessException;
+import com.company.common.util.JsonUtil;
 import com.company.order.api.response.PayTradeStateResp;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.BasePayClient;
@@ -32,18 +36,23 @@ public class IOSPayClient extends BasePayClient {
 
 	@Override
 	protected Object requestPayInfo(PayParams payParams) {
-		// TODO Auto-generated method stub
-		return null;
+        Map<String, String> payParamMap = new HashMap<>();
+        payParamMap.put("tradeId", payParams.getOutTradeNo());
+		// 以分为单位；多余的小数始终进位，避免造成经济损失
+        BigDecimal fee = payParams.getAmount().multiply(new BigDecimal("100")).setScale(0, BigDecimal.ROUND_UP);
+        payParamMap.put("fee", fee.toString());
+        payParamMap.put("callbackUrl", domain + PAY_CALLBACK_URL);
+//        payParamMap.put("passbackParams", xsTrade.getPassbackParams());
+        return JsonUtil.toJsonString(payParamMap);
 	}
 
 	@Override
 	protected void requestRefund(String outTradeNo, String outRefundNo, BigDecimal refundAmount) {
-		// TODO Auto-generated method stub
+		throw new BusinessException("iOS不支持退款");
 	}
 
 	@Override
 	protected void requestPayCloseOrder(String outTradeNo) {
-		// TODO Auto-generated method stub
-
+		throw new BusinessException("iOS不支持关闭订单");
 	}
 }

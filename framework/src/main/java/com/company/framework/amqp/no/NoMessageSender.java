@@ -1,13 +1,11 @@
 package com.company.framework.amqp.no;
 
-import org.springframework.stereotype.Component;
-
 import com.company.framework.amqp.MessageSender;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+//@Component
 public class NoMessageSender implements MessageSender {
 
 	@Override
