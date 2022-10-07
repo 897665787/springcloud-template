@@ -1,18 +1,22 @@
 package com.company.web.file.alioss.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.Optional;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.auth.CredentialsProvider;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.comm.ResponseMessage;
+import com.aliyun.oss.event.ProgressEventType;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.VoidResult;
 import com.company.common.util.JsonUtil;
@@ -25,30 +29,43 @@ import lombok.extern.slf4j.Slf4j;
 public class AliossUtil {
 
 	private static OSS client = null;
+	private static String endpoint = null;
 	
 	private AliossUtil(){}
 
 	public static void init(String endpoint, String accessKeyId, String secretAccessKey) {
 		CredentialsProvider credentialsProvider = new DefaultCredentialProvider(accessKeyId, secretAccessKey);
 		client = OSSClientBuilder.create().endpoint(endpoint).credentialsProvider(credentialsProvider).build();
+		AliossUtil.endpoint = endpoint;
 	}
 
 	public static String putObject(String bucketName, String key, InputStream input) {
-		PutObjectResult putObjectResult = client.putObject(bucketName, key, input);
+
+		PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, input);
 		
+		putObjectRequest.setProgressListener(progressEvent -> {
+			long bytes = progressEvent.getBytes();
+			ProgressEventType eventType = progressEvent.getEventType();
+			log.info("bytes:{},eventType:{}", bytes, eventType);
+		});
+		
+		PutObjectResult putObjectResult = client.putObject(putObjectRequest);
 		String eTag = putObjectResult.getETag();
 		String versionId = putObjectResult.getVersionId();
 		String requestId = putObjectResult.getRequestId();
 		Long clientCRC = putObjectResult.getClientCRC();
 		Long serverCRC = putObjectResult.getServerCRC();
-
-		ResponseMessage response = putObjectResult.getResponse();
-		String uri = response.getUri();
-		Map<String, String> headers = response.getHeaders();
+		
+		String uri = Optional.ofNullable(putObjectResult.getResponse()).map(ResponseMessage::getUri).orElse(null);
+		Map<String, String> headers = Optional.ofNullable(putObjectResult.getResponse())
+				.map(ResponseMessage::getHeaders).orElse(null);
 		log.info("eTag:{},versionId:{},requestId:{},clientCRC:{},serverCRC:{},uri:{},headers:{}", eTag, versionId,
 				requestId, clientCRC, serverCRC, uri, JsonUtil.toJsonString(headers));
-
-		return uri;
+		
+		// 文件URL的格式为https://BucketName.Endpoint/ObjectName
+		String url = String.format("https://%s.%s/%s", bucketName, endpoint, key);
+		log.info("url:{}", url);
+		return url;
 	}
 
 	public static InputStream getObject(String bucketName, String key) {
@@ -91,12 +108,13 @@ public class AliossUtil {
 		AliossUtil.init(endpoint, accessKeyId, secretAccessKey);
 		
 		String bucketName = "aocai-home";
-		String key = "image/201904120816011555071361409.png";
-		/*
+		String key = "image/111.jpg";
+		
 		// 上传文件
 		FileInputStream inputStream = IoUtil.toStream(new File("D:/111.jpg"));
-		AliossUtil.putObject(bucketName, key, inputStream);
-		*/
+		String url = AliossUtil.putObject(bucketName, key, inputStream);
+		System.out.println("url:" + url);
+		System.out.println("略缩url:" + (url + "?x-oss-process=image/resize,m_lfit,h_60,w_60"));
 		
 		// 下载文件
 		InputStream download = AliossUtil.getObject(bucketName, key);

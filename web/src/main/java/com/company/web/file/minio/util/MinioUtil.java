@@ -139,7 +139,7 @@ public class MinioUtil {
 		MinioUtil.init(endpoint, accessKey, secretKey);
 		
 		String bucketName = "buket-template";
-		String objectName = "333.jpg";
+		String objectName = "image/333.jpg";
 		
 		// 上传文件
 		FileInputStream inputStream = IoUtil.toStream(new File("D:/111.jpg"));
