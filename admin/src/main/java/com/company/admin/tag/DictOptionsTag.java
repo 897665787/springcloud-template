@@ -4,67 +4,22 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.MapUtils;
-import org.beetl.core.GeneralVarTagBinding;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-import com.google.common.collect.Maps;
+import com.company.framework.context.SpringContextUtil;
+import com.company.admin.service.system.DictionaryService;
 import com.google.common.collect.Sets;
 
 /**
  * 根据字典数组输出<option></option>标签
+ * Created by gustinlau on 11/2/17.
  */
-public class DictOptionsTag extends GeneralVarTagBinding {
+public class DictOptionsTag extends SimpleTagSupport {
 
-	Map<String, String> kv = Maps.newHashMap();
-	{
-		kv.put("a", "a1");
-		kv.put("b", "b1");
-		kv.put("c", "c1");
-		kv.put("d", "d1");
-		kv.put("e", "e1");
-	}
-	
-	@Override
-	public void render() {
-		StringBuilder html = new StringBuilder();
-		
-		String htmlTagName = this.getHtmlTagName();
-		Map<String, Object> items = this.getAttributes();
-		
-		String value = MapUtils.getString(items, "value");
-		String include = MapUtils.getString(items, "include");
-		String exclude = MapUtils.getString(items, "exclude");
-		
-        for (Map.Entry<String, String> entry : kv.entrySet()) {
-        	if(include != null){
-        		Set<String> includeSet = Sets.newHashSet(include.split(","));
-        		if(!includeSet.contains(entry.getKey())){
-        			continue;
-        		}
-        	}
-        	
-        	if(exclude != null){
-        		Set<String> excludeSet = Sets.newHashSet(exclude.split(","));
-        		if(excludeSet.contains(entry.getKey())){
-        			continue;
-        		}
-        	}
-        	
-            if(entry.getKey().equals(value)){
-            	html.append("<option value=\"" + entry.getKey() + "\" selected>" + entry.getValue() + "</option>");
-            }else{
-            	html.append("<option value=\"" + entry.getKey() + "\">" + entry.getValue() + "</option>");
-            }
+    private static DictionaryService dictionaryService = SpringContextUtil.getBean("dictionaryService");
 
-        }
-        
-		try {
-			this.ctx.byteWriter.writeString(html.toString());
-		} catch (IOException e) {
-			throw new RuntimeException("输出字典标签错误");
-		}
-	}
-    
     /**
      * 字典key
      */
@@ -100,7 +55,7 @@ public class DictOptionsTag extends GeneralVarTagBinding {
 	public void setExclude(String exclude) {
 		this.exclude = exclude;
 	}
-	/*
+	
     @Override
     public void doTag() throws JspException, IOException {
         Map<String, String> items = dictionaryService.mapByCategory(key);
@@ -131,6 +86,5 @@ public class DictOptionsTag extends GeneralVarTagBinding {
         }
     }
 
-*/
 
 }

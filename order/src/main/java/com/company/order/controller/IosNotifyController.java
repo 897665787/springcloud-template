@@ -132,11 +132,11 @@ public class IosNotifyController implements IosNotifyFeign {
             if (iOSServerError) {
 //                xsTradeDao.saveIOSFailureReason(xsTradeId, passbackParams, failureReason, receipt, outId,
 //                        xsTradeFromDB.getReal(), currentTime);
-//                return XSServiceResult.build();
+//                return Result.success();
             }
             else {
 //                xsTradeDao.saveFailureReason(xsTradeId, failureReason, currentTime);
-//                return XSServiceResult.build(false, String.valueOf(status));
+//                return Result.success(String.valueOf(status));
             }
         }
         

@@ -9,5 +9,5 @@ apollo:
     enabled: true
     # 命名空间（多个使用英文逗号分隔）
     namespaces: application
-  #apollo meta server地址（多个使用英文逗号分隔）
+  # apollo meta server地址（多个使用英文逗号分隔）
   meta: http://localhost:8080

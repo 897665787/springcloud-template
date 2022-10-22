@@ -5,14 +5,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.BusinessException;
+import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,87 +41,130 @@ public class GlobalExceptionHandler {
 	 * 拦截异常
 	 */
 	@ExceptionHandler(Exception.class)
-	public Result<?> error(Exception e) {
+	public Result<?> error(Exception e, HttpServletRequest request, HttpServletResponse response) {
 		log.error("未知异常:", e);
+		sendErrorIfPage(request, response);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
-	
+
 	/**
 	 * 请求方式不支持
 	 */
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
-	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,
+			HttpServletRequest request, HttpServletResponse response) {
 		String message = MessageFormat.format("不支持{0}请求", e.getMethod());
 		log.warn(message, e);
+		sendErrorIfPage(request, response);
 		return Result.fail(message);
 	}
 	
 	/**
+	 * 媒体类型不支持
+	 */
+	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+	public Result<?> httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e,
+			HttpServletRequest request, HttpServletResponse response) {
+		String message = MessageFormat.format("仅支持{0}媒体类型", JsonUtil.toJsonString(e.getSupportedMediaTypes()));
+		log.warn(message, e);
+		sendErrorIfPage(request, response);
+		return Result.fail(message);
+	}
+
+	/**
 	 * 拦截未处理的运行时异常
 	 */
 	@ExceptionHandler(RuntimeException.class)
-	public Result<?> runtime(RuntimeException e) {
+	public Result<?> runtime(RuntimeException e, HttpServletRequest request, HttpServletResponse response) {
 		log.error("未处理运行时异常", e);
+		sendErrorIfPage(request, response);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
-	
+
 	/**
 	 * 业务异常
 	 */
 	@ExceptionHandler(BusinessException.class)
-	public Result<?> business(BusinessException e) {
+	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response) {
 		String message = e.getMessage();
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
 		}
 		log.warn("业务异常:{}", message);
+		sendErrorIfPage(request, response);
 		return Result.fail(e);
 	}
 	
 	// 各种运行时异常单独处理可以在这里添加,例如
 	/**
-	 * 用来处理bean validation异常
-	 * 主要是 resolveMethodArgumentNotValidException，handleBingException 这两个方法
-	 *
-	 * @param ex
-	 * @return
+	 * 用来处理bean validation异常 主要是
+	 * resolveMethodArgumentNotValidException，handleBingException 这两个方法
 	 */
 	@ExceptionHandler(ConstraintViolationException.class)
-	public Result<?> resolveConstraintViolationException(ConstraintViolationException ex) {
-		Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
+	public Result<?> resolveConstraintViolationException(ConstraintViolationException e, HttpServletRequest request, HttpServletResponse response) {
+		sendErrorIfPage(request, response);
+		Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
 		if (!CollectionUtils.isEmpty(constraintViolations)) {
 			String messageStr = constraintViolations.stream().map(ConstraintViolation::getMessage)
 					.collect(Collectors.joining(","));
 			return Result.fail(messageStr);
 		}
-		return Result.fail(ex.getMessage());
+		return Result.fail(e.getMessage());
 	}
 
 	/**
 	 * @Desc 处理 @RequestBody 类型的 POJO 参数
 	 **/
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public Result<?> resolveMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-		List<ObjectError> objectErrors = ex.getBindingResult().getAllErrors();
+	public Result<?> resolveMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request, HttpServletResponse response) {
+		sendErrorIfPage(request, response);
+		List<ObjectError> objectErrors = e.getBindingResult().getAllErrors();
 		if (!CollectionUtils.isEmpty(objectErrors)) {
 			String messageStr = objectErrors.stream().map(ObjectError::getDefaultMessage)
 					.collect(Collectors.joining(","));
 			return Result.fail(messageStr);
 		}
-		return Result.fail(ex.getMessage());
+		return Result.fail(e.getMessage());
 	}
 
 	/**
-	 * @Desc 处理表单提交的 pojo 参数
+	 * @Desc 处理表单提交的 POJO 参数
 	 **/
 	@ExceptionHandler(BindException.class)
-	public Result<?> handleBingException(BindException e) {
+	public Result<?> handleBingException(BindException e, HttpServletRequest request, HttpServletResponse response) {
+		sendErrorIfPage(request, response);
 		List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
 		if (!CollectionUtils.isEmpty(allErrors)) {
 			String messageStr = allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(","));
 			return Result.fail(messageStr);
 		}
-		return Result.fail( e.getMessage());
+		return Result.fail(e.getMessage());
+	}
+	
+	/**
+	 * 数据重复
+	 */
+	@ExceptionHandler(DuplicateKeyException.class)
+	public Result<?> duplicateKey(DuplicateKeyException e, HttpServletRequest request,
+			HttpServletResponse response) {
+		log.error("数据重复异常", e);
+		sendErrorIfPage(request, response);
+		return Result.fail("数据重复");
 	}
 
+	private void sendErrorIfPage(HttpServletRequest request, HttpServletResponse response) {
+		String accept = request.getHeader("Accept");
+		if (StringUtils.isNotBlank(accept) && accept.contains("application/json")) {
+			return;
+		}
+		String contentType = response.getContentType();
+		if (StringUtils.isNotBlank(contentType) && contentType.contains("application/json")) {
+			return;
+		}
+		try {
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			log.error("sendError error", e);
+		}
+	}
 }

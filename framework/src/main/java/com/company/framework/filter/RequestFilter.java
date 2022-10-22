@@ -10,11 +10,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.util.JsonUtil;
+import com.company.common.util.RegexUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.util.IpUtil;
@@ -29,8 +32,24 @@ import lombok.extern.slf4j.Slf4j;
 @Order(10)
 public class RequestFilter extends OncePerRequestFilter {
 
+	@Value("${template.requestFilter.ignoreLogPatterns:}")
+	private String ignoreLogPatterns;
+	
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		if (StringUtils.isBlank(ignoreLogPatterns)) {
+			return false;
+		}
+		
+		String requestURI = request.getRequestURI();
+		String[] ignoreLogPatternss = StringUtils.split(ignoreLogPatterns, ",");
+		for (String ignoreLogPattern : ignoreLogPatternss) {
+			boolean match = RegexUtil.match(ignoreLogPattern, requestURI);
+			if (match) {
+				// 匹配任意一个表达式就不打印日志
+				return true;
+			}
+		}
 		return false;
 	}
 

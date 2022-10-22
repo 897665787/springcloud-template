@@ -1,0 +1,28 @@
+{
+	"AccessKeyID": "LTAIuW2QsA8H4osR",
+	"AccessKeySecret": "DRmTZ2y1ZszX7cP10qY96vIFrHgD63",
+	"RoleArn": "acs:ram::1362484620841928:role/aliyunosstokenrole",
+	"TokenExpireTime": 900,
+	"Policy": {
+		"Statement": [
+			{
+				"Action": [
+					"oss:ListObjects",
+					"oss:DeleteObject",
+					"oss:GetObject",
+					"oss:HeadObject",
+					"oss:PutObject"
+				],
+				"Effect": "Allow",
+				"Resource": [
+					"acs:oss:*:*:ypxt",
+					"acs:oss:*:*:ypxt/*"
+				]
+			}
+		],
+		"Version": "1"
+	},
+	"Bucket": "ypxt",
+	"Endpoint": "oss-cn-shenzhen.aliyuncs.com",
+	"Region": "cn-shenzhen"
+}

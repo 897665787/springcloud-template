@@ -4,4 +4,12 @@
 	<include resource="logback-conf-base.xml" />
 	<!--引用线程池日志 -->
 	<include resource="logback-conf-threadpool.xml" />
+	
+	<!-- 自定义日志打印，比如调整orm查询数据库的日志级别 -->
+	<logger name="com.company.admin.mapper" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="ERROR_FILE" />
+	</logger>
+	
 </configuration>

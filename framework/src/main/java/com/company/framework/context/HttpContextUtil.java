@@ -15,6 +15,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.company.common.constant.HeaderConstants;
+import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 
 public class HttpContextUtil {
@@ -131,5 +132,9 @@ public class HttpContextUtil {
 			headers.put(entry.getKey(), Arrays.asList(entry.getValue()));
 		}
 		return headers;
+	}
+	
+	public static String getRequestIp() {
+		return IpUtil.getRequestIp(request());
 	}
 }

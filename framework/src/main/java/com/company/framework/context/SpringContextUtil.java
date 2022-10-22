@@ -1,5 +1,6 @@
 package com.company.framework.context;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -78,6 +79,10 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 			log.error("has not been", e);
 		}
 		return null;
+	}
+	
+	public static <T> Map<String, T> getBeansOfType(Class<T> requiredType) {
+		return context.getBeansOfType(requiredType);
 	}
 
 	public static String getProperty(String key, String defaultValue) {

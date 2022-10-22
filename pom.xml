@@ -69,7 +69,7 @@
 	</dependencyManagement>
 	
 	<build>
-		<finalName>${artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<!--编译插件-->
 			<plugin>

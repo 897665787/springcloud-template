@@ -4,79 +4,95 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.beetl.core.GeneralVarTagBinding;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.company.admin.util.DescriptionUtils;
 import com.google.common.collect.Sets;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * 根据clazz查询property的@AutoDesc枚举，列举所有数据组装<option></option>返回
+ * @author xxw
+ * @date 2018/10/8
  */
-@Slf4j
-public class DescriptionOptionsTag extends GeneralVarTagBinding {
+public class DescriptionOptionsTag extends SimpleTagSupport {
 
-	@Override
-	public void render() {
-		StringBuilder html = new StringBuilder();
+    private static final Logger logger = LoggerFactory.getLogger(DescriptionOptionsTag.class);
 
-		Map<String, Object> attrs = this.getAttributes();
-		String clazzStr = MapUtils.getString(attrs, "clazz");
-		String property = MapUtils.getString(attrs, "property");
-		String value = MapUtils.getString(attrs, "value");
-		String include = MapUtils.getString(attrs, "include");
-		String exclude = MapUtils.getString(attrs, "exclude");
+    private String clazz;
 
-		if (StringUtils.isBlank(clazzStr)) {
-			html.append("'clazz' not null");
-			try {
-				this.ctx.byteWriter.writeString(html.toString());
-			} catch (IOException e) {
-				throw new RuntimeException("输出字典标签错误");
-			}
-		}
-		
-		Class<?> clazz = null;
-		try {
-			clazz = Class.forName(clazzStr);
-		} catch (ClassNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		if (clazz != null) {
-			Map<String, String> items = DescriptionUtils.descriptions(clazz, property);
-			if (items != null && items.size() > 0) {
-				for (Map.Entry<String, String> entry : items.entrySet()) {
-					if (include != null) {
-						Set<String> includeSet = Sets.newHashSet(include.split(","));
-						if (!includeSet.contains(entry.getKey())) {
-							continue;
-						}
-					}
+    private String property;
 
-					if (exclude != null) {
-						Set<String> excludeSet = Sets.newHashSet(exclude.split(","));
-						if (excludeSet.contains(entry.getKey())) {
-							continue;
-						}
-					}
+    private String value;
 
-					if (entry.getKey().equals(value)) {
-						html.append(
-								"<option value=\"" + entry.getKey() + "\" selected>" + entry.getValue() + "</option>");
-					} else {
-						html.append("<option value=\"" + entry.getKey() + "\">" + entry.getValue() + "</option>");
-					}
+    /**
+     * 包含值，多个值使用英文逗号分隔
+     */
+    private String include;
+    
+    /**
+     * 剔除值，多个值使用英文逗号分隔
+     */
+    private String exclude;
+    
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
 
-				}
-			}
-		}
+    public void setProperty(String property) {
+        this.property = property;
+    }
 
-		try {
-			this.ctx.byteWriter.writeString(html.toString());
-		} catch (IOException e) {
-			throw new RuntimeException("输出字典标签错误");
-		}
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+	public void setInclude(String include) {
+		this.include = include;
 	}
+
+	public void setExclude(String exclude) {
+		this.exclude = exclude;
+	}
+	
+    @Override
+    public void doTag() throws JspException, IOException {
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName(this.getClass().getPackage().getName().replace("admin.tag", "common.model") + "." + this.clazz);
+        } catch (ClassNotFoundException e) {
+            logger.error(e.getMessage());
+        }
+        if (clazz != null) {
+            Map<String, String> items = DescriptionUtils.descriptions(clazz, property);
+            if (items != null && items.size() > 0) {
+                JspWriter out = getJspContext().getOut();
+                for (Map.Entry<String, String> entry : items.entrySet()) {
+                	if(include != null){
+                		Set<String> includeSet = Sets.newHashSet(include.split(","));
+                		if(!includeSet.contains(entry.getKey())){
+                			continue;
+                		}
+                	}
+                	
+                	if(exclude != null){
+                		Set<String> excludeSet = Sets.newHashSet(exclude.split(","));
+                		if(excludeSet.contains(entry.getKey())){
+                			continue;
+                		}
+                	}
+                	
+                    if(entry.getKey().equals(value)){
+                        out.println("<option value=\"" + entry.getKey() + "\" selected>" + entry.getValue() + "</option>");
+                    }else{
+                        out.println("<option value=\"" + entry.getKey() + "\">" + entry.getValue() + "</option>");
+                    }
+
+                }
+            }
+        }
+    }
 }
