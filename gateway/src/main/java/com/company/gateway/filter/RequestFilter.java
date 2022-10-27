@@ -61,13 +61,16 @@ public class RequestFilter implements GlobalFilter {
 		}
 
 		String paramsStr = JsonUtil.toJsonString(getReqParam(request));
+		String requestIp = IpUtil.getRequestIp(request);
+		String headerStr = JsonUtil.toJsonString(headers.toSingleValueMap());
+
+		log.info("{} {} {} header:{},param:{},body:{}", request.getMethod(), requestIp, request.getURI().getPath(),
+				headerStr, paramsStr, bodyStr);
+
 		Mono<Void> mono = chain.filter(exchange.mutate().request(request).build());
 
-		String requestIp = IpUtil.getRequestIp(request);
-
 		log.info("{} {} {} header:{},param:{},body:{},{}ms", request.getMethod(), requestIp, request.getURI().getPath(),
-				JsonUtil.toJsonString(headers.toSingleValueMap()), paramsStr, bodyStr,
-				System.currentTimeMillis() - start);
+				headerStr, paramsStr, bodyStr, System.currentTimeMillis() - start);
 
 		return mono;
 	}

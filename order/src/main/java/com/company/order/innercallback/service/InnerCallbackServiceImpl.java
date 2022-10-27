@@ -86,7 +86,6 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 	@Override
 	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
 			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy, Date nextDisposeTime) {
-		// 这里可以异步
 		InnerCallback innerCallback = new InnerCallback().setUrl(notifyUrl).setJsonParams(JsonUtil.toJsonString(jsonParams))
 				.setProcessorBeanName(processorBeanName == null ? null : JsonUtil.toJsonString(processorBeanName))
 				.setStatus(InnerCallbackEnum.Status.PRE_CALLBACK.getCode())
@@ -95,6 +94,14 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 				.setFailure(0).setTraceId(MdcUtil.get())
 				.setSecondsStrategy(secondsStrategy.getCode());
 		baseMapper.insert(innerCallback);
+		
+		if (nextDisposeTime.after(new Date())) {
+			// 如果传入的nextDisposeTime在当前时间之后，说明需要延迟一段时间才开始执行，把状态修改为CALLBACK_FAIL利用selectId4CallbackFail来跑
+			InnerCallback innerCallback4Update = new InnerCallback().setId(innerCallback.getId())
+					.setStatus(InnerCallbackEnum.Status.CALLBACK_FAIL.getCode());
+			baseMapper.updateById(innerCallback4Update);
+			return true;
+		}
 		return postRestTemplateAsync(innerCallback);
 	}
 

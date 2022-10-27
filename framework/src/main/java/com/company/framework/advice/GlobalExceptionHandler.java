@@ -1,5 +1,6 @@
 package com.company.framework.advice;
 
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +21,10 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.HandlerMethod;
 
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
@@ -41,9 +45,10 @@ public class GlobalExceptionHandler {
 	 * 拦截异常
 	 */
 	@ExceptionHandler(Exception.class)
-	public Result<?> error(Exception e, HttpServletRequest request, HttpServletResponse response) {
+	public Result<?> error(Exception e, HttpServletRequest request, HttpServletResponse response,
+			HandlerMethod handler) {
 		log.error("未知异常:", e);
-		sendErrorIfPage(request, response);
+		sendErrorIfPage(request, response, handler);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
 
@@ -52,22 +57,22 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
 	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		String message = MessageFormat.format("不支持{0}请求", e.getMethod());
 		log.warn(message, e);
-		sendErrorIfPage(request, response);
+		sendErrorIfPage(request, response, handler);
 		return Result.fail(message);
 	}
-	
+
 	/**
 	 * 媒体类型不支持
 	 */
 	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
 	public Result<?> httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e,
-			HttpServletRequest request, HttpServletResponse response) {
+			HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		String message = MessageFormat.format("仅支持{0}媒体类型", JsonUtil.toJsonString(e.getSupportedMediaTypes()));
 		log.warn(message, e);
-		sendErrorIfPage(request, response);
+		sendErrorIfPage(request, response, handler);
 		return Result.fail(message);
 	}
 
@@ -75,9 +80,10 @@ public class GlobalExceptionHandler {
 	 * 拦截未处理的运行时异常
 	 */
 	@ExceptionHandler(RuntimeException.class)
-	public Result<?> runtime(RuntimeException e, HttpServletRequest request, HttpServletResponse response) {
+	public Result<?> runtime(RuntimeException e, HttpServletRequest request, HttpServletResponse response,
+			HandlerMethod handler) {
 		log.error("未处理运行时异常", e);
-		sendErrorIfPage(request, response);
+		sendErrorIfPage(request, response, handler);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
 	}
 
@@ -85,24 +91,26 @@ public class GlobalExceptionHandler {
 	 * 业务异常
 	 */
 	@ExceptionHandler(BusinessException.class)
-	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response) {
+	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response,
+			HandlerMethod handler) {
 		String message = e.getMessage();
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
 		}
 		log.warn("业务异常:{}", message);
-		sendErrorIfPage(request, response);
+		sendErrorIfPage(request, response, handler);
 		return Result.fail(e);
 	}
-	
+
 	// 各种运行时异常单独处理可以在这里添加,例如
 	/**
 	 * 用来处理bean validation异常 主要是
 	 * resolveMethodArgumentNotValidException，handleBingException 这两个方法
 	 */
 	@ExceptionHandler(ConstraintViolationException.class)
-	public Result<?> resolveConstraintViolationException(ConstraintViolationException e, HttpServletRequest request, HttpServletResponse response) {
-		sendErrorIfPage(request, response);
+	public Result<?> resolveConstraintViolationException(ConstraintViolationException e, HttpServletRequest request,
+			HttpServletResponse response, HandlerMethod handler) {
+		sendErrorIfPage(request, response, handler);
 		Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
 		if (!CollectionUtils.isEmpty(constraintViolations)) {
 			String messageStr = constraintViolations.stream().map(ConstraintViolation::getMessage)
@@ -116,8 +124,9 @@ public class GlobalExceptionHandler {
 	 * @Desc 处理 @RequestBody 类型的 POJO 参数
 	 **/
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public Result<?> resolveMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request, HttpServletResponse response) {
-		sendErrorIfPage(request, response);
+	public Result<?> resolveMethodArgumentNotValidException(MethodArgumentNotValidException e,
+			HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
+		sendErrorIfPage(request, response, handler);
 		List<ObjectError> objectErrors = e.getBindingResult().getAllErrors();
 		if (!CollectionUtils.isEmpty(objectErrors)) {
 			String messageStr = objectErrors.stream().map(ObjectError::getDefaultMessage)
@@ -131,8 +140,9 @@ public class GlobalExceptionHandler {
 	 * @Desc 处理表单提交的 POJO 参数
 	 **/
 	@ExceptionHandler(BindException.class)
-	public Result<?> handleBingException(BindException e, HttpServletRequest request, HttpServletResponse response) {
-		sendErrorIfPage(request, response);
+	public Result<?> handleBingException(BindException e, HttpServletRequest request, HttpServletResponse response,
+			HandlerMethod handler) {
+		sendErrorIfPage(request, response, handler);
 		List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
 		if (!CollectionUtils.isEmpty(allErrors)) {
 			String messageStr = allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(","));
@@ -140,25 +150,39 @@ public class GlobalExceptionHandler {
 		}
 		return Result.fail(e.getMessage());
 	}
-	
+
 	/**
 	 * 数据重复
 	 */
 	@ExceptionHandler(DuplicateKeyException.class)
-	public Result<?> duplicateKey(DuplicateKeyException e, HttpServletRequest request,
-			HttpServletResponse response) {
+	public Result<?> duplicateKey(DuplicateKeyException e, HttpServletRequest request, HttpServletResponse response,
+			HandlerMethod handler) {
 		log.error("数据重复异常", e);
-		sendErrorIfPage(request, response);
+		sendErrorIfPage(request, response, handler);
 		return Result.fail("数据重复");
 	}
 
-	private void sendErrorIfPage(HttpServletRequest request, HttpServletResponse response) {
+	private boolean isReturnJson(HandlerMethod handler) {
+		if (handler.getBeanType().isAnnotationPresent(RestController.class)) {
+			return true;
+		}
+		Method method = handler.getMethod();
+		if (method.isAnnotationPresent(ResponseBody.class)) {
+			return true;
+		}
+		return false;
+	}
+
+	private void sendErrorIfPage(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
 		String accept = request.getHeader("Accept");
 		if (StringUtils.isNotBlank(accept) && accept.contains("application/json")) {
 			return;
 		}
 		String contentType = response.getContentType();
 		if (StringUtils.isNotBlank(contentType) && contentType.contains("application/json")) {
+			return;
+		}
+		if (isReturnJson(handler)) {
 			return;
 		}
 		try {

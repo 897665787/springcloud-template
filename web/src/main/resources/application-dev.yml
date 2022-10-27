@@ -26,6 +26,6 @@ template:
       bucketName: buket-template-dev
     alioss:
       endpoint: oss-cn-shenzhen.aliyuncs.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
+      accessKeyId: LTAIkcl2bVhsEpGf
+      secretAccessKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
       bucketName: buket-template-dev

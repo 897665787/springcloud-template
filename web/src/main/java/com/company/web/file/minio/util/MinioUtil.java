@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
+import com.company.common.exception.BusinessException;
+
 import cn.hutool.core.io.FastByteArrayOutputStream;
 import cn.hutool.core.io.IoUtil;
 import io.minio.GetObjectArgs;
@@ -77,6 +79,7 @@ public class MinioUtil {
 				| InternalException | InvalidBucketNameException | InvalidResponseException | NoSuchAlgorithmException
 				| ServerException | XmlParserException | IOException e) {
 			log.error("minioClient.putObject error", e);
+			throw new BusinessException(e.getMessage());
 		}
 
 		String url = null;
