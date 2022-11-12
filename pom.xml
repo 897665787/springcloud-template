@@ -30,6 +30,8 @@
 		<module>framework</module>
 		<module>framework-edge</module>
 		<!-- 内部微服务 -->
+		<module>tool</module>
+		<module>tool-api</module>
 		<module>user</module>
 		<module>user-api</module>
 		<module>order</module>

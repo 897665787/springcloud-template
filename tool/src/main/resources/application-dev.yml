@@ -1,0 +1,55 @@
+eureka:
+  instance:
+    lease-expiration-duration-in-seconds: 30 #服务过期时间配置,超过这个时间没有接收到心跳EurekaServer就会将这个实例剔除
+    lease-renewal-interval-in-seconds: 10 #服务刷新时间配置，每隔这个时间会主动心跳一次
+
+spring:
+  profiles:
+    include: redis-dev,rabbitmq-dev,elasticsearch-dev
+  datasource:
+    base:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      
+template:
+  domain: http://d-domain.com
+  enable:
+    redis: false
+    redisson: false
+    idempotent: false
+    rabbitmq: false
+    elasticsearch: false
+    data-encypt: false
+    access-control: false
+  mock:
+    time: false
+  filestorage:
+    active: minio
+    minio:
+      endpoint: http://127.0.0.1:9000
+      accessKey: pRYo5fCm9ZyVNKLA
+      secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+      bucketName: buket-template-dev
+    alioss:
+      endpoint: oss-cn-shenzhen.aliyuncs.com
+      accessKeyId: LTAIkcl2bVhsEpGf
+      secretAccessKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
+      bucketName: buket-template-dev
+    tencentcos:
+      endpoint: ap-guangzhou.myqcloud.com
+      secretId: LTAIkcl2bVhsEpGf
+      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
+      bucketName: buket-template-dev

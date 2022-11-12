@@ -12,8 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
-import com.company.web.file.FileStorage;
+import com.company.tool.api.feign.FileFeign;
+import com.company.tool.api.request.UploadReq;
 
+import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FileController {
 
 	@Autowired
-	private FileStorage fileStorage;
+	private FileFeign fileFeign;
 
 	@PostMapping("/upload")
 	public Result<String> upload(@RequestParam("file") MultipartFile file) {
@@ -34,8 +36,36 @@ public class FileController {
 		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
 
 		try (InputStream inputStream = file.getInputStream()) {
-			String path = fileStorage.upload(inputStream, "images/" + originalFilename);
-			return Result.success(path);
+			byte[] bytes = IoUtil.readBytes(inputStream);
+			UploadReq uploadReq = new UploadReq();
+			uploadReq.setBytes(bytes);
+			
+			// 生成文件名
+			uploadReq.setGeneratefileName(true);
+			uploadReq.setFileName(originalFilename);
+			
+			
+			/*
+			// 生成文件名，带基础目录
+			uploadReq.setGeneratefileName(true);
+			uploadReq.setBasePath("images");
+			uploadReq.setFileName(originalFilename);
+			*/
+			
+			/*
+			// 不生成文件名，不带基础目录，基础目录写到FileName
+			uploadReq.setGeneratefileName(false);
+			uploadReq.setFileName("images/" + originalFilename);
+			*/
+			
+			/*
+			// 不生成文件名
+			uploadReq.setGeneratefileName(false);
+			uploadReq.setBasePath("aaa");
+			uploadReq.setFileName("images/" + originalFilename);
+			*/
+			
+			return fileFeign.upload(uploadReq);
 		} catch (IOException e) {
 			log.error("IOException", e);
 			return Result.fail(e.getMessage());

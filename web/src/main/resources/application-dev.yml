@@ -17,15 +17,3 @@ template:
     data-encypt: false
   mock:
     time: false
-  filestorage:
-    active: minio
-    minio:
-      endpoint: http://127.0.0.1:9000
-      accessKey: pRYo5fCm9ZyVNKLA
-      secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
-      bucketName: buket-template-dev
-    alioss:
-      endpoint: oss-cn-shenzhen.aliyuncs.com
-      accessKeyId: LTAIkcl2bVhsEpGf
-      secretAccessKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template-dev

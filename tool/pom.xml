@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.company</groupId>
+		<artifactId>template</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>template-tool</artifactId>
+	<packaging>jar</packaging>
+
+	<description>工具服务</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-framework</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-tool-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<!-- 文件系统 -->
+		<!-- minio -->
+		<dependency>
+		    <groupId>io.minio</groupId>
+		    <artifactId>minio</artifactId>
+		    <version>7.1.4</version>
+			<!-- 8.0.x版本会报错：Unsupported OkHttp library found. Must use okhttp >= 4.8.1 -->
+		</dependency>
+		<!-- aliyun oss -->
+		<dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.15.1</version>
+        </dependency>
+		<!-- tencent cos -->
+		<dependency>
+			<groupId>com.qcloud</groupId>
+			<artifactId>cos_api</artifactId>
+			<version>5.6.89</version>
+		</dependency>
+		<!-- 文件系统 -->
+		
+        <!-- 数据库 -->
+		<!-- mysql -->
+        <dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>1.2.8</version>
+        </dependency>
+        
+        <!-- 引入了mybatis-plus-boot-starter，就不需要引入mybatis-spring-boot-starter -->
+		<!-- 
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		 -->
+		
+		<!-- mybatis-plus -->
+		<dependency>
+        	<groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>2.3</version>
+        </dependency>
+        
+        <!-- 动态数据源框架，作为参考，并没有直接使用 -->
+        <!-- 
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		 -->
+        <!-- 数据库 -->
+        
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
