@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
+import com.company.tool.api.response.UploadResp;
 import com.company.tool.file.FileStorage;
+import com.company.tool.file.FileUrl;
 
 import cn.hutool.core.util.IdUtil;
 
@@ -25,7 +27,11 @@ public class FileController implements FileFeign {
 	private FileStorage fileStorage;
 
 	@Override
-	public Result<String> upload(@RequestBody UploadReq uploadReq) {
+	public Result<UploadResp> upload(@RequestBody UploadReq uploadReq) {
+		if (uploadReq.getBytes().length == 0) {
+			return Result.fail("请选择文件");
+		}
+		
 		String fileName = uploadReq.getFileName();
 		if (uploadReq.isGeneratefileName()) {
 			fileName = generateFileName(fileName);
@@ -33,8 +39,12 @@ public class FileController implements FileFeign {
 		String fullFileName = fullFileName(uploadReq.getBasePath(), fileName);
 
 		InputStream inputStream = new ByteArrayInputStream(uploadReq.getBytes());
-		String path = fileStorage.upload(inputStream, fullFileName);
-		return Result.success(path);
+		FileUrl fileUrl = fileStorage.upload(inputStream, fullFileName);
+		
+		UploadResp resp = new UploadResp();
+		resp.setDomainUrl(fileUrl.getDomainUrl());
+		resp.setOssUrl(fileUrl.getOssUrl());
+		return Result.success(resp);
 	}
 
 	private static String fullFileName(String basePath, String fileName) {

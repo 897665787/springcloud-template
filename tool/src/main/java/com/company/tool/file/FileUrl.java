@@ -1,4 +1,4 @@
-package com.company.tool.api.response;
+package com.company.tool.file;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 @Data
 @Accessors(chain = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UploadResp {
+public class FileUrl {
+
 	/**
 	 * 域名访问地址(推荐使用域名)
 	 */

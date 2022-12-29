@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.company.common.api.Result;
 import com.company.tool.api.feign.fallback.FileFeignFallback;
 import com.company.tool.api.request.UploadReq;
+import com.company.tool.api.response.UploadResp;
 
 @FeignClient(value = "template-tool", path = "/file", fallbackFactory = FileFeignFallback.class)
 public interface FileFeign {
 
 	@PostMapping("/upload")
-	Result<String> upload(@RequestBody UploadReq uploadReq);
+	Result<UploadResp> upload(@RequestBody UploadReq uploadReq);
 }

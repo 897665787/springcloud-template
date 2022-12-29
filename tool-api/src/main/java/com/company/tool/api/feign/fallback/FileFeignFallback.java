@@ -6,6 +6,7 @@ import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
+import com.company.tool.api.response.UploadResp;
 
 import feign.hystrix.FallbackFactory;
 
@@ -17,7 +18,7 @@ public class FileFeignFallback implements FallbackFactory<FileFeign> {
 		return new FileFeign() {
 
 			@Override
-			public Result<String> upload(UploadReq uploadReq) {
+			public Result<UploadResp> upload(UploadReq uploadReq) {
 				return Result.fail(ResultCode.FALLBACK);
 			}
 		};

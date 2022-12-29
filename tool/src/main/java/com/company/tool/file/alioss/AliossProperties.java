@@ -8,7 +8,8 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "template.filestorage.alioss")
 public class AliossProperties {
 	private String endpoint;
-	private String accessKeyId;
-	private String secretAccessKey;
+	private String accessKey;
+	private String secretKey;
 	private String bucketName;
+	private String domain;
 }

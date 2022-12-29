@@ -14,6 +14,7 @@ import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
+import com.company.tool.api.response.UploadResp;
 
 import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +29,17 @@ public class FileController {
 	private FileFeign fileFeign;
 
 	@PostMapping("/upload")
-	public Result<String> upload(@RequestParam("file") MultipartFile file) {
+	public Result<UploadResp> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
 		long size = file.getSize();
 		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
 
+		if (size == 0) {
+			return Result.fail("请选择文件");
+		}
+		
 		try (InputStream inputStream = file.getInputStream()) {
 			byte[] bytes = IoUtil.readBytes(inputStream);
 			UploadReq uploadReq = new UploadReq();

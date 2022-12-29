@@ -2,8 +2,10 @@ package com.company.tool.file.minio;
 
 import java.io.InputStream;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.company.tool.file.FileStorage;
-import com.company.tool.file.minio.util.MinioUtil;
+import com.company.tool.file.FileUrl;
 
 /**
  * minio
@@ -13,25 +15,37 @@ import com.company.tool.file.minio.util.MinioUtil;
  */
 public class MinioFileStorage implements FileStorage {
 
+	private MinioClient minioClient;
 	private String bucketName;
+	private String domain;
 	
-	public MinioFileStorage(String endpoint, String accessKey, String secretKey, String bucketName) {
-		MinioUtil.init(endpoint, accessKey, secretKey);
+	public MinioFileStorage(String endpoint, String accessKey, String secretKey, String bucketName, String domain) {
+		this.minioClient = new MinioClient(endpoint, accessKey, secretKey);
 		this.bucketName = bucketName;
+		this.domain = domain;
 	}
 
 	@Override
-	public String upload(InputStream inputStream, String fileName) {
-		return MinioUtil.putObject(bucketName, inputStream, fileName);
+	public FileUrl upload(InputStream inputStream, String fileName) {
+		String ossUrl = minioClient.putObject(bucketName, inputStream, fileName);
+		FileUrl fileUrl = new FileUrl();
+		fileUrl.setOssUrl(ossUrl);
+		if (StringUtils.isNotBlank(domain)) {
+			String domainUrl = String.format("%s/%s", domain, fileName);
+			fileUrl.setDomainUrl(domainUrl);
+		} else {
+			fileUrl.setDomainUrl(ossUrl);
+		}
+		return fileUrl;
 	}
 
 	@Override
 	public InputStream download(String fileName) {
-		return MinioUtil.getObject(bucketName, fileName);
+		return minioClient.getObject(bucketName, fileName);
 	}
 
 	@Override
 	public void remove(String fileName) {
-		MinioUtil.removeObject(bucketName, fileName);
+		minioClient.removeObject(bucketName, fileName);
 	}
 }
