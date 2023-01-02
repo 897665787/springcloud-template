@@ -40,17 +40,19 @@ public class UserService {
 //		OrderReq orderReq = new OrderReq().setId(3L).setOrderCode(String.valueOf(System.currentTimeMillis()));
 //		OrderResp save = orderFeign.save(orderReq);
 //		System.out.println("save:" + save);
-		return User.builder().build().setId(id).setUsername(String.valueOf(System.currentTimeMillis()));
+		User user = new User();
+		return user.setId(id).setUsername(String.valueOf(System.currentTimeMillis()));
 	}
 
 //	@Transactional
 	public void save() {
 //		System.out.println("sqlSessionFactory:" + sqlSessionFactory);
 		
-		User entity = User.builder().build().setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
+		User user = new User();
+		user.setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
 				.setAvatar("http://demo.ruoyi.vip/img/profile.jpg")
 				.setStatus(0);
-		int insert = userMapper.insert(entity);
+		int insert = userMapper.insert(user);
 		System.out.println("insert:" + insert);
 		
 	}
@@ -58,7 +60,8 @@ public class UserService {
 	
 	@Transactional(transactionManager = "ds2TransactionManager")
 	public void saveTs() {
-		User user = User.builder().build().setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
+		User user = new User();
+		user.setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
 				.setAvatar("http://demo.ruoyi.vip/img/profile.jpg")
 				.setStatus(0);
 		int insert = userMapper.insert(user);

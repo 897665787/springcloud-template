@@ -43,7 +43,8 @@ public class UserController implements UserFeign {
 		System.out.println("UserController.save():"+save);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 		*/
-		User user = User.builder().id(1L).name("adasd").status(2).build();
+		User user = new User();
+		user.setId(1L).setName("adasd").setStatus(2);
 		System.out.println(JsonUtil.toJsonString(user));
 		return Result.success(PropertyUtils.copyProperties(user, UserResp.class));
 	}
@@ -51,7 +52,8 @@ public class UserController implements UserFeign {
 	@Override
 	public Result<UserResp> retryGet(Long id) {
 		log.info("retryGet");
-		User user = User.builder().id(1L).name("retryGet1").status(2).build();
+		User user = new User();
+		user.setId(1L).setName("retryGet1").setStatus(2);
 //		try {
 //			Thread.sleep(1000);
 //		} catch (InterruptedException e) {
@@ -65,7 +67,8 @@ public class UserController implements UserFeign {
 	@Override
 	public Result<UserResp> retryPost(@RequestBody UserReq userReq) {
 		log.info("retryGet");
-		User user = User.builder().id(1L).name("adasd").status(2).build();
+		User user = new User();
+		user.setId(1L).setName("adasd").setStatus(2);
 //		try {
 //			Thread.sleep(1000);
 //		} catch (InterruptedException e) {

@@ -5,13 +5,11 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@Builder
 @TableName("bu_user_oauth")
 public class UserOauth {
 	private Integer id;

@@ -6,13 +6,11 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.company.common.jackson.annotation.AutoDesc;
 import com.company.user.api.enums.UserStatus;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@Builder
 @TableName("sys_user")
 public class User {
 	private Long id;
