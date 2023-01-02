@@ -57,7 +57,7 @@ public class RequestFilter implements GlobalFilter {
 				}
 			};
 
-			bodyStr = JsonUtil.toJsonString(JsonUtil.readTree(bodyStr));// 用json去掉有换行和空格
+			bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(bodyStr));// 用json去掉有换行和空格
 		}
 
 		String paramsStr = JsonUtil.toJsonString(getReqParam(request));

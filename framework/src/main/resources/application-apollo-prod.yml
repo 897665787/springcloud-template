@@ -5,7 +5,7 @@ apollo:
   # 集群，一般不需要修改
   cluster: default
   bootstrap:
-    # 开关，false表示不适用apollo
+    # 开关，false表示不使用apollo
     enabled: true
     # 命名空间（多个使用英文逗号分隔）
     namespaces: application

@@ -69,6 +69,15 @@
 			<artifactId>weixin-java-mp</artifactId>
 			<version>4.3.0</version>
 		</dependency>
+		
+		<!--支付宝sdk-->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.35.0.ALL</version>
+            <!-- <version>3.4.49.ALL</version> -->
+            <!-- <version>4.34.22.ALL</version> -->
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>

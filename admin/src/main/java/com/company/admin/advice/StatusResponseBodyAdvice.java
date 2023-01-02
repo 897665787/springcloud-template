@@ -35,7 +35,7 @@ public class StatusResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 		} else {
 			dataStr = JsonUtil.toJsonString(data);
 		}
-		JsonNode resultNode = JsonUtil.readTree(dataStr);
+		JsonNode resultNode = JsonUtil.toJsonNode(dataStr);
 		int code = resultNode.get("code").asInt();
 		ObjectNode putResultNode = (ObjectNode) resultNode;
 		putResultNode.put("status", code == ResultCode.SUCCESS.getCode());

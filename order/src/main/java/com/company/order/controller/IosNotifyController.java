@@ -234,7 +234,7 @@ public class IosNotifyController implements IosNotifyFeign {
         String url = real.equals(1) ? SERVER_URL : SANDBOX_SERVER_URL;
         
         String responseParamsStr = HttpUtil.post(url, requestParamsStr);
-        return JsonUtil.readTree(responseParamsStr);
+        return JsonUtil.toJsonNode(responseParamsStr);
     }
     
 }

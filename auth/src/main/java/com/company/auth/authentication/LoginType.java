@@ -14,6 +14,9 @@ public interface LoginType {
 	String WEIXIN_MINIAPP_MOBILE = "weixinMiniappMobile";
 	String WEIXIN_MP = "weixinMp";
 
+	String ALIPAY_MINIAPP = "alipayMiniapp";
+	String ALIPAY_MINIAPP_MOBILE = "alipayMiniappMobile";
+	
 	@AllArgsConstructor
 	enum Enum {
 		LOCAL_MOBILE            (LoginType.LOCAL_MOBILE            	, "本机号码一键登录"),
@@ -25,6 +28,9 @@ public interface LoginType {
 		WEIXIN_MINIAPP          (LoginType.WEIXIN_MINIAPP           , "微信小程序登录"),
 		WEIXIN_MINIAPP_MOBILE   (LoginType.WEIXIN_MINIAPP_MOBILE    , "微信小程序手机号登录"),
 		WEIXIN_MP               (LoginType.WEIXIN_MP                , "微信公众号登录"),
+		
+		ALIPAY_MINIAPP   		(LoginType.ALIPAY_MINIAPP    		, "支付宝小程序登录"),
+		ALIPAY_MINIAPP_MOBILE   (LoginType.ALIPAY_MINIAPP_MOBILE	, "支付宝小程序手机号登录"),
 	    ;
 		
 		@Getter

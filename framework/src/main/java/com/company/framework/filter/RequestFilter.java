@@ -61,7 +61,7 @@ public class RequestFilter extends OncePerRequestFilter {
 		String bodyStr = "{}";
 		if (contentType != null && contentType.contains("application/json")) {
 			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
-			bodyStr = JsonUtil.toJsonString(JsonUtil.readTree(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
+			bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
 			request = requestWrapper;
 		}
 		

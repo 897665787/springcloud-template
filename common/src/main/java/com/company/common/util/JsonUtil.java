@@ -98,7 +98,7 @@ public class JsonUtil {
 		return true;
 	}
 
-	public static JsonNode readTree(String jsonString) {
+	public static JsonNode toJsonNode(String jsonString) {
 		if (jsonString == null) {
 			return null;
 		}

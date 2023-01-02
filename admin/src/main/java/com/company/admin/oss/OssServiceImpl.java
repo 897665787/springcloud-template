@@ -60,7 +60,7 @@ public class OssServiceImpl implements OssService {
                 if (withSize) {
                     //获取图片的高和宽并且拼接在图片的url
 					String jsonStrResult = HttpUtil.get(url + "?x-oss-process=image/info", Charset.forName("UTF-8"));
-					JsonNode info = JsonUtil.readTree(jsonStrResult);
+					JsonNode info = JsonUtil.toJsonNode(jsonStrResult);
                     int imageHeight = info.get("ImageHeight").get("value").asInt();
                     int imageWidth = info.get("ImageWidth").get("value").asInt();
                     String height = String.valueOf(Math.min(4096, imageHeight));//目标缩略图高度范围 1~4096

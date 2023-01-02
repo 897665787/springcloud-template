@@ -14,6 +14,9 @@ public class LoginBeanFactory {
 	public static final String WEIXIN_MINIAPP = LoginType.WEIXIN_MINIAPP + SUFFIX;
 	public static final String WEIXIN_MINIAPP_MOBILE = LoginType.WEIXIN_MINIAPP_MOBILE + SUFFIX;
 	public static final String WEIXIN_MP = LoginType.WEIXIN_MP + SUFFIX;
+	
+	public static final String ALIPAY_MINIAPP = LoginType.ALIPAY_MINIAPP + SUFFIX;
+	public static final String ALIPAY_MINIAPP_MOBILE = LoginType.ALIPAY_MINIAPP_MOBILE + SUFFIX;
 
 	public static LoginService of(LoginType.Enum loginType) {
 		String beanName = loginType.getType() + SUFFIX;

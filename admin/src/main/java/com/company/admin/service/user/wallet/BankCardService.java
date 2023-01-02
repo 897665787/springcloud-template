@@ -126,7 +126,7 @@ public class BankCardService {
 //		String responseStr = xsHttpClientService.makeHttpRequestStringResult(
 //				"https://aliyun-bankcard-verify.apistore.cn/bank", headers, "GET", params);
 		String responseStr = "{\"error_code\": 0, \"result\": {\"information\": {\"bankname\": \"中国银行\", \"cardname\": \"金穗通宝卡(银联卡)\", \"cardtype\": \"银联借记卡\"}}}";
-		JsonNode info = JsonUtil.readTree(responseStr);
+		JsonNode info = JsonUtil.toJsonNode(responseStr);
 		if (info.get("error_code").asInt() != 0) {
 			logger.error("验证银行卡信息失败：{}", responseStr);
 			throw new BusinessException(info.get("reason").asText());

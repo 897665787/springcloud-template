@@ -16,6 +16,8 @@ public interface UserOauthEnum {
 		WX_OPENID_MINIAPP("wx-openid-miniapp", "微信小程序openid"),
 		WX_OPENID_MP("wx-openid-mp", "微信公众号openid"),
 		
+		ALI_USERID_MINIAPP("ali-userid-miniapp", "支付宝小程序userId"),
+		
 		EMAIL("email", "邮箱"),
 		SINA("sina", "新浪微博"),
 		QQ("qq", "QQ"),

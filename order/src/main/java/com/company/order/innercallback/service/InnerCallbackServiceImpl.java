@@ -131,7 +131,7 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 			paramObject = SpringContextUtil.getBean(beforeRequest, BeforeRequestProcessor.class)
 					.beforeRequest(jsonParams);
 		} else {
-			paramObject = JsonUtil.readTree(jsonParams);
+			paramObject = JsonUtil.toJsonNode(jsonParams);
 		}
 		String remark = null;
 		boolean abandonCallback = false;
