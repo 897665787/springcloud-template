@@ -14,6 +14,8 @@ import com.company.tool.file.baidubos.BaiduBosFileStorage;
 import com.company.tool.file.baidubos.BaiduBosProperties;
 import com.company.tool.file.huaweiobs.HuaweiObsFileStorage;
 import com.company.tool.file.huaweiobs.HuaweiObsProperties;
+import com.company.tool.file.local.LocalFileStorage;
+import com.company.tool.file.local.LocalProperties;
 import com.company.tool.file.minio.MinioFileStorage;
 import com.company.tool.file.minio.MinioProperties;
 import com.company.tool.file.tencentcos.TencentcosFileStorage;
@@ -22,9 +24,20 @@ import com.company.tool.file.tencentcos.TencentcosProperties;
 @Configuration
 @ConditionalOnProperty(prefix = "template", name = "filestorage.active")
 @ConditionalOnMissingBean(FileStorage.class)
-@EnableConfigurationProperties({ MinioProperties.class, AliossProperties.class, TencentcosProperties.class,
+@EnableConfigurationProperties({ LocalProperties.class, MinioProperties.class, AliossProperties.class, TencentcosProperties.class,
 		AmazonS3Properties.class, BaiduBosProperties.class, HuaweiObsProperties.class })
 public class FileStorageAutoConfiguration {
+	
+	@Bean
+	@ConditionalOnProperty(prefix = "template", name = "filestorage.active", havingValue = "local")
+	FileStorage localFileStorage(LocalProperties properties) {
+		String endpoint = properties.getEndpoint();
+		String bucketName = properties.getBucketName();
+		String domain = properties.getDomain();
+
+		FileStorage fileStorage = new LocalFileStorage(endpoint, bucketName, domain);
+		return fileStorage;
+	}
 
 	@Bean
 	@ConditionalOnProperty(prefix = "template", name = "filestorage.active", havingValue = "minio")

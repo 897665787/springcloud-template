@@ -6,6 +6,9 @@ eureka:
 spring:
   profiles:
     include: redis-dev,rabbitmq-dev,elasticsearch-dev
+  resources:
+    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+    static-locations: file:D:/home/data/oss/buket-template-dev/
   datasource:
     base:
       master:
@@ -37,7 +40,11 @@ template:
   mock:
     time: false
   filestorage:
-    active: minio
+    active: local
+    local:
+      endpoint: D:/home/data/oss
+      bucketName: buket-template-dev
+      domain: http://localhost:4001 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
     minio:
       endpoint: http://127.0.0.1:9000
       accessKey: pRYo5fCm9ZyVNKLA

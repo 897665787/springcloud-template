@@ -128,7 +128,7 @@ public class AliossClient {
 		
 		/*
 		// 删除文件
-		ossTool.deleteObject(bucketName, key);
+		ossClient.deleteObject(bucketName, key);
 		*/
 	}
 }
