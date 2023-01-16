@@ -55,6 +55,11 @@ public class PayReq {
 	 */
 	@NotBlank(message = "商品描述不能为空")
 	private String body;
+	
+	/**
+	 * 商品Id<非必填>
+	 */
+	private String productId;
 
 	/**
 	 * 用户标识<非必填>

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,7 +252,8 @@ public class AliPayClient extends BasePayClient {
 		AliPayRefund aliPayRefund = aliPayRefundMapper.selectByOutRequestNo(outRefundNo);
 		Integer aliPayRefundId = null;
 		if (aliPayRefund != null) {// 已创建过退款记录
-			if (AliConstants.TradeStatus.SUCCESS.equals(aliPayRefund.getTradeStatus())) {// 已成功退款
+			if (StringUtils.isNotBlank(aliPayRefund.getTradeStatus())) {// 已成功退款
+				// 部分退款：TRADE_SUCCESS，全额退款：TRADE_CLOSED
 				return;
 			}
 			aliPayRefundId = aliPayRefund.getId();

@@ -17,7 +17,7 @@ public class AliPay {
 	/**
 	 * ID
 	 */
-//	@TableId(type = IdType.AUTO)
+	@TableId(type = IdType.AUTO)
 	private Integer id;
 
 	/**
