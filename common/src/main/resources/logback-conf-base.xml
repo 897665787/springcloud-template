@@ -21,9 +21,11 @@
 		<File>${LOG_HOME}/info.log</File>
         <append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/info.%d{yyyy-MM-dd}.log
-			</fileNamePattern>
+			<fileNamePattern>${LOG_HOME}/info.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
 			<maxHistory>7</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1GB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
 		</rollingPolicy>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>${ENCODER_PATTERN}</pattern>
@@ -36,8 +38,7 @@
 		<File>${LOG_HOME}/error.log</File>
         <append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.log
-			</fileNamePattern>
+			<fileNamePattern>${LOG_HOME}/error.%d{yyyy-MM-dd}.log</fileNamePattern>
 			<!--日志文件保留天数-->
 			<maxHistory>7</maxHistory>
 		</rollingPolicy>
@@ -45,9 +46,11 @@
 			<pattern>${ENCODER_PATTERN}</pattern>
 		</encoder>
 		<!--日志文件最大的大小-->
+		<!-- 
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10MB</MaxFileSize>
         </triggeringPolicy>
+         -->
 		<!-- 所有error日志都在这里-->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
