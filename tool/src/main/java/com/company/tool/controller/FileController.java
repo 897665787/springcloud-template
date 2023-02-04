@@ -64,7 +64,7 @@ public class FileController implements FileFeign {
 		// 生成文件名（目录+文件名，例如:basePath/202201/01/00033d9fea0b484eac1509567e87e61a.jpg）
 		Calendar now = Calendar.getInstance();
 		int year = now.get(Calendar.YEAR);
-		int month = now.get(Calendar.MONTH);
+		int month = now.get(Calendar.MONTH) + 1;
 		int day = now.get(Calendar.DAY_OF_MONTH);
 
 		String ext = null;

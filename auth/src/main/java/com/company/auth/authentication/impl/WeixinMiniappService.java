@@ -51,16 +51,16 @@ public class WeixinMiniappService implements LoginService {
 		if (userId == null) {// 账号不存在
 			// 创建新用户
 			userId = oauthTool.registerUser(mobile, null, null);
-			
-			// 绑定用户与openid,unionid关系
-			String openid = maSession.getOpenid();
-			oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid, wxcode);
-			String unionid = maSession.getUnionid();
-			if (StringUtils.isNotBlank(unionid)) {
-				oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_UNIONID, unionid, wxcode);
-			}
-			
 		}
+		
+		// 绑定用户与openid,unionid关系
+		String openid = maSession.getOpenid();
+		oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid, wxcode);
+		String unionid = maSession.getUnionid();
+		if (StringUtils.isNotBlank(unionid)) {
+			oauthTool.bindOauth(userId, UserOauthEnum.IdentityType.WX_UNIONID, unionid, wxcode);
+		}
+		
 		return new LoginResult().setSuccess(true).setUserId(userId);
 	}
 }
