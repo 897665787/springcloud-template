@@ -9,6 +9,8 @@
 - Feign请求头数据在微服务间传递
 - 基于MDC实现的自定义请求链路追踪
 - 基于redis+注解实现的API幂等
+- 统一认证demo，包括微信、支付宝授权登录等各种登录方式
+- 文件存储demo，包括阿里云OSS、腾讯云COS等多种云存储方式
 
 ## 快速开始
 
@@ -38,8 +40,18 @@ springcloud-template
 ├── template-config -- 配置中心
 └── template-order -- 订单服务(内部微服务)
      └── template-order-api -- 被依赖开放api
-└── template-user -- 用户服务(内部微服务)
-     └── template-user-api -- 被依赖开放api
+└── template-order -- 订单服务(内部微服务)
+     └── template-order-api -- 被依赖开放api
+└── template-tool -- 工具服务(内部微服务)
+     └── template-tool-api -- 被依赖开放api
+     └── file -- 文件存储
+          └── alioss -- 阿里云OSS
+          └── amazons3 -- 亚马逊AWS
+          └── baidubos -- 百度BOS
+          └── huaweiobs -- 华为云OBS
+          └── local -- 本地磁盘
+          └── minio -- MinIO
+          └── tencentcos -- 腾讯云COS
 └── template-auth -- 统一认证接入层(边缘微服务)
      └── authentication -- 登录
           └── 本机号码一键登录
@@ -47,8 +59,10 @@ springcloud-template
           └── 手机号+验证码登录
           └── 手机号+验证码登录并绑定授权码
           └── APP微信授权登录
-          └── 微信小程序登录
+          └── 微信小程序登录(新版)
+          └── 微信小程序登录(旧版)
           └── 微信公众号登录
+          └── 支付宝小程序登录
      └── token -- token的使用
           └── JWT
           └── sa-token的应用
