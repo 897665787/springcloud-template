@@ -14,18 +14,23 @@ import com.company.tool.file.baidubos.BaiduBosFileStorage;
 import com.company.tool.file.baidubos.BaiduBosProperties;
 import com.company.tool.file.huaweiobs.HuaweiObsFileStorage;
 import com.company.tool.file.huaweiobs.HuaweiObsProperties;
+import com.company.tool.file.jingdong.JingdongossFileStorage;
+import com.company.tool.file.jingdong.JingdongossProperties;
 import com.company.tool.file.local.LocalFileStorage;
 import com.company.tool.file.local.LocalProperties;
 import com.company.tool.file.minio.MinioFileStorage;
 import com.company.tool.file.minio.MinioProperties;
 import com.company.tool.file.tencentcos.TencentcosFileStorage;
 import com.company.tool.file.tencentcos.TencentcosProperties;
+import com.company.tool.file.wangyinos.WangyinosFileStorage;
+import com.company.tool.file.wangyinos.WangyinosProperties;
 
 @Configuration
 @ConditionalOnProperty(prefix = "template", name = "filestorage.active")
 @ConditionalOnMissingBean(FileStorage.class)
-@EnableConfigurationProperties({ LocalProperties.class, MinioProperties.class, AliossProperties.class, TencentcosProperties.class,
-		AmazonS3Properties.class, BaiduBosProperties.class, HuaweiObsProperties.class })
+@EnableConfigurationProperties({ LocalProperties.class, MinioProperties.class, AliossProperties.class,
+		TencentcosProperties.class, AmazonS3Properties.class, BaiduBosProperties.class, HuaweiObsProperties.class,
+		WangyinosProperties.class, JingdongossProperties.class })
 public class FileStorageAutoConfiguration {
 	
 	@Bean
@@ -114,6 +119,32 @@ public class FileStorageAutoConfiguration {
 		String domain = properties.getDomain();
 
 		FileStorage fileStorage = new HuaweiObsFileStorage(endpoint, accessKey, secretKey, bucketName, domain);
+		return fileStorage;
+	}
+	
+	@Bean
+	@ConditionalOnProperty(prefix = "template", name = "filestorage.active", havingValue = "wangyinos")
+	FileStorage wangyinosFileStorage(HuaweiObsProperties properties) {
+		String endpoint = properties.getEndpoint();
+		String accessKey = properties.getAccessKey();
+		String secretKey = properties.getSecretKey();
+		String bucketName = properties.getBucketName();
+		String domain = properties.getDomain();
+		
+		FileStorage fileStorage = new WangyinosFileStorage(endpoint, accessKey, secretKey, bucketName, domain);
+		return fileStorage;
+	}
+	
+	@Bean
+	@ConditionalOnProperty(prefix = "template", name = "filestorage.active", havingValue = "jingdongoss")
+	FileStorage jingdongossFileStorage(HuaweiObsProperties properties) {
+		String endpoint = properties.getEndpoint();
+		String accessKey = properties.getAccessKey();
+		String secretKey = properties.getSecretKey();
+		String bucketName = properties.getBucketName();
+		String domain = properties.getDomain();
+		
+		FileStorage fileStorage = new JingdongossFileStorage(endpoint, accessKey, secretKey, bucketName, domain);
 		return fileStorage;
 	}
 }

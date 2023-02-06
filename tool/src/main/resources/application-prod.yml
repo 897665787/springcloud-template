@@ -52,3 +52,15 @@ template:
       secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
       bucketName: buket-template
       domain: # 访问域名，未配置域名会默认使用oss的url
+    wangyinos:
+      endpoint: xxx.wangyi.com
+      accessKey: LTAIkcl2bVhsEpGf
+      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
+      bucketName: buket-template-dev
+      domain: # 访问域名，未配置域名会默认使用oss的url
+    jingdongoss:
+      endpoint: xxx.jdcloud.com
+      accessKey: LTAIkcl2bVhsEpGf
+      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
+      bucketName: buket-template-dev
+      domain: # 访问域名，未配置域名会默认使用oss的url

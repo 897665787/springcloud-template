@@ -18,6 +18,9 @@ import com.company.common.api.ResultCode;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 	
 	@Override
@@ -69,6 +72,7 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		PrintWriter writer = response.getWriter();
 		Result<?> fail = Result.fail(ResultCode.NO_LOGIN);
 		writer.write(JsonUtil.toJsonString(fail));
+		log.warn("登录过期:{}.{}", method.getDeclaringClass().getName(), method.getName());
 		
 		return false;
 	}

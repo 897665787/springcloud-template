@@ -49,9 +49,11 @@ springcloud-template
           └── amazons3 -- 亚马逊AWS
           └── baidubos -- 百度BOS
           └── huaweiobs -- 华为云OBS
+          └── jingdongoss -- 京东云OOS
           └── local -- 本地磁盘
           └── minio -- MinIO
           └── tencentcos -- 腾讯云COS
+          └── wangyinos -- 网易NOS
 └── template-auth -- 统一认证接入层(边缘微服务)
      └── authentication -- 登录
           └── 本机号码一键登录
