@@ -6,18 +6,18 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.entity.user.User;
 import com.company.admin.entity.user.wallet.WalletHistory;
-import com.company.common.exception.BusinessException;
 import com.company.admin.mapper.user.UserDao;
 import com.company.admin.mapper.user.wallet.WalletHistoryDao;
 import com.company.admin.service.security.SecStaffService;
 import com.company.admin.util.DescriptionUtils;
 import com.company.admin.util.XSUuidUtil;
+import com.company.common.exception.BusinessException;
 
 /**
  * @author xxw
@@ -35,7 +35,7 @@ public class WalletService {
     @Autowired
     private SecStaffService secStaffService;
     
-    @XSTransactional
+    @Transactional
     public void update(String userId, BigDecimal fee, Integer platform, Integer eventType, String eventId) {
         User user = userDao.getAndLock(userId);
         Integer type = fee.compareTo(new BigDecimal(0)) >= 0 ? 1 : 2;

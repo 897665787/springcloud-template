@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.article.Article;
 import com.company.admin.entity.article.ArticleCategory;
 import com.company.admin.exception.ExceptionConsts;
@@ -74,7 +74,7 @@ public class ArticleCategoryService {
         articleCategoryDao.remove(articleCategory);
     }
 
-    @XSTransactional
+    @Transactional
     public void update(ArticleCategory articleCategory) {
         ArticleCategory existent = get(articleCategory);
         if (articleCategory.getKey() != null) {

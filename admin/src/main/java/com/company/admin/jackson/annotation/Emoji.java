@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.company.admin.jackson.serializer.XSEmojiSerializer;
+import com.company.admin.jackson.serializer.EmojiSerializer;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @JacksonAnnotationsInside
-@JsonSerialize(using = XSEmojiSerializer.class)
+@JsonSerialize(using = EmojiSerializer.class)
 public @interface Emoji {
 
 }

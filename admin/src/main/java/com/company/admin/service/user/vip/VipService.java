@@ -7,18 +7,18 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.entity.user.User;
 import com.company.admin.entity.user.vip.VipHistory;
-import com.company.common.exception.BusinessException;
 import com.company.admin.mapper.user.UserDao;
 import com.company.admin.mapper.user.vip.VipHistoryDao;
 import com.company.admin.service.security.SecStaffService;
 import com.company.admin.util.DateUtils;
 import com.company.admin.util.XSUuidUtil;
+import com.company.common.exception.BusinessException;
 
 /**
  * @author xxw
@@ -36,7 +36,7 @@ public class VipService {
     @Autowired
     private SecStaffService secStaffService;
 
-    @XSTransactional
+    @Transactional
     public void update(String userId, Integer duration) {
         User user = userDao.getAndLock(userId);
         Date changeAfter;

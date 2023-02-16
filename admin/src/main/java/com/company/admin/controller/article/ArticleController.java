@@ -32,8 +32,6 @@ public class ArticleController {
     private ArticleService articleService;
     @Autowired
     private ArticleCategoryService articleCategoryService;
-    @Value("${aes.key}")
-    private String AES_KEY;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @Pagination
@@ -47,7 +45,6 @@ public class ArticleController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String create(Model model) throws Exception {
         model.addAttribute("categoryTree", JsonUtil.toJsonString(articleCategoryService.tree(new ArticleCategory())));
-        model.addAttribute("AES_KEY",AES_KEY);
         return "content/articleCreate";
     }
 
@@ -59,7 +56,6 @@ public class ArticleController {
             model.addAttribute("article", null);
         }
         model.addAttribute("categoryTree", JsonUtil.toJsonString(articleCategoryService.tree(new ArticleCategory())));
-        model.addAttribute("AES_KEY",AES_KEY);
         return "content/articleUpdate";
     }
 

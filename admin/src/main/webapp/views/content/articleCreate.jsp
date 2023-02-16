@@ -185,13 +185,15 @@
         fontsize_formats: '12px 14px 15px 16px 18px 20px 24px',
         resize: false,
         branding: false,
-        elementpath: false
+        elementpath: false,
+        images_upload_url: '<%=request.getContextPath()%>/admin/content/article/article/save1',
+        images_upload_credentials: true,
+        image_dimensions: false
     });
     var options = {
         tokenApi: "<%=request.getContextPath()%>/admin/editor/token",
         tokenMethod: "POST",
-        encrypt: true,
-        encryptKey: "${AES_KEY}",
+        encrypt: false,
         params: {token: '<sec:authentication property="principal.id"/>'}
     };
 

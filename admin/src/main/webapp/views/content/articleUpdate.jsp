@@ -203,8 +203,7 @@
     var options = {
         tokenApi: "<%=request.getContextPath()%>/admin/editor/token",
         tokenMethod: "POST",
-        encrypt: true,
-        encryptKey: "${AES_KEY}",
+        encrypt: false,
         params: {token: '<sec:authentication property="principal.id"/>'}
     };
 

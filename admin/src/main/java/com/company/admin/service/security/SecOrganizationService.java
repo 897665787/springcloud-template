@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
@@ -46,7 +46,7 @@ public class SecOrganizationService {
         secOrganizationDao.save(secOrganization);
     }
 
-    @XSTransactional
+    @Transactional
     public void remove(SecOrganization secOrganization) {
         SecOrganization existent = get(secOrganization);
         SecOrganization children = new SecOrganization();
@@ -64,7 +64,7 @@ public class SecOrganizationService {
         secOrganizationDao.remove(existent);
     }
 
-    @XSTransactional
+    @Transactional
     public void update(SecOrganization secOrganization) {
         SecOrganization existent = get(secOrganization);
         if (secOrganization.getName() != null || secOrganization.getParent() != null) {
@@ -135,7 +135,7 @@ public class SecOrganizationService {
         return roleList;
     }
 
-    @XSTransactional
+    @Transactional
     public void authorizeRole(SecOrganization secOrganization) {
         SecOrganization existent = get(secOrganization);
         //不能授予超级管理员角色

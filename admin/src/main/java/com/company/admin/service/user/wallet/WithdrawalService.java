@@ -7,14 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.entity.user.wallet.Withdrawal;
-import com.company.common.exception.BusinessException;
 import com.company.admin.mapper.user.wallet.WithdrawalDao;
 import com.company.admin.service.security.SecStaffService;
+import com.company.common.exception.BusinessException;
 
 /**
  * 提现Service
@@ -37,7 +37,7 @@ public class WithdrawalService {
 		withdrawalDao.remove(existent);
 	}
 
-	@XSTransactional
+	@Transactional
 	public void update(Withdrawal withdrawal) {
 		Withdrawal existent = get(withdrawal);
 		SecStaff secStaff = secStaffService.getByUsername(new SecStaff(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));

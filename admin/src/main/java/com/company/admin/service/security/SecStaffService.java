@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
@@ -47,7 +47,7 @@ public class SecStaffService {
         secStaffDao.save(secStaff);
     }
 
-    @XSTransactional
+    @Transactional
     public void remove(SecStaff secStaff) {
         SecStaff existent = get(secStaff);
         if (secStaffDao.remove(existent) > 0) {
@@ -173,7 +173,7 @@ public class SecStaffService {
         return roleList;
     }
 
-    @XSTransactional
+    @Transactional
     public void authorizeRole(SecStaff secStaff) {
         SecStaff existent = get(secStaff);
         secStaffDao.removeStaffRole(existent);
@@ -199,7 +199,7 @@ public class SecStaffService {
         return XSTreeUtil.getSubTrees(orgList, new SecOrganization(0L));
     }
 
-    @XSTransactional
+    @Transactional
     public void authorizeOrganization(SecStaff secStaff) {
         SecStaff existent = get(secStaff);
         secStaffDao.removeStaffOrganization(existent);

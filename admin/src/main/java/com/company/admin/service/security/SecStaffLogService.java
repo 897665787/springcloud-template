@@ -1,9 +1,6 @@
 package com.company.admin.service.security;
 
-import java.util.Date;
 import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
-import com.company.admin.aspect.Logable;
 import com.company.admin.aspect.XSLogHandler;
 import com.company.admin.aspect.XSLogger;
 import com.company.admin.entity.base.XSPageModel;
@@ -23,14 +19,13 @@ import com.company.admin.entity.security.SecStaffLog;
 import com.company.admin.mapper.security.SecStaffLogDao;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.framework.util.IpUtil;
 
 /**
  * 系统用户日志ServiceImpl
  * Created by xuxiaowei on 2017/11/2.
  */
 @Service
-public class SecStaffLogService implements XSLogHandler, Logable {
+public class SecStaffLogService implements XSLogHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SecStaffLogService.class);
 
@@ -96,29 +91,6 @@ public class SecStaffLogService implements XSLogHandler, Logable {
                     latest.setResult(xsLogger.getResult());
                     save(latest);
                 }
-            } catch (Exception e) {
-                logger.error("error : ", e);
-            }
-        }
-    }
-
-    @Override
-    public void log(HttpServletRequest request, String operation, Object param, Object result, boolean success) {
-        if (request.getRequestURI().contains("admin")) {
-            try {
-                SecStaffLog latest = new SecStaffLog();
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (authentication != null) {
-                	SecStaff secStaff = secStaffService.getByUsername(new SecStaff(((User) authentication).getUsername()));
-                    latest.setStaff(secStaff);
-                }
-                latest.setIp(IpUtil.getRequestIp(request));
-                latest.setTime(new Date());
-                latest.setOperation(operation);
-                latest.setStatus(success ? 1 : 0);
-                latest.setParameters(JsonUtil.toJsonString(param));
-                latest.setResult(JsonUtil.toJsonString(result));
-                save(latest);
             } catch (Exception e) {
                 logger.error("error : ", e);
             }

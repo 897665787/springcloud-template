@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecResource;
 import com.company.admin.entity.security.SecResourceFromXml;
@@ -63,7 +63,7 @@ public class SecResourceService {
         mapAll();
     }
 
-    @XSTransactional
+    @Transactional
     public void save(SecResource secResource) {
         SecResource criteria = new SecResource();
         criteria.setKey(secResource.getKey());
@@ -104,7 +104,7 @@ public class SecResourceService {
         cache.invalidateAll();
     }
 
-    @XSTransactional
+    @Transactional
     public void remove(SecResource secResource) {
         SecResource existent = get(secResource);
         SecResource children = new SecResource();
@@ -123,7 +123,7 @@ public class SecResourceService {
         cache.invalidateAll();
     }
 
-    @XSTransactional
+    @Transactional
     public void update(SecResource secResource) {
         SecResource existent = get(secResource);
         if (secResource.getKey() != null) {
@@ -256,7 +256,7 @@ public class SecResourceService {
         return map;
     }
 
-    @XSTransactional
+    @Transactional
     public void reload() throws Exception {
         try {
             Digester digester = new Digester();

@@ -1,59 +1,44 @@
 package com.company.admin.controller.common;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.company.admin.entity.security.SecStaff;
-import com.company.admin.oss.OssService;
-import com.company.admin.oss.sts.model.SecurityToken;
-import com.company.admin.oss.sts.server.SecurityTokenServer;
-import com.company.admin.service.security.SecStaffService;
-import com.company.admin.util.AESUtil;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.jqdi.filestorage.core.FileStorage;
+import com.jqdi.filestorage.core.FileUrl;
+
+import lombok.extern.slf4j.Slf4j;
 
 
-/**
- * Created by gustinlau on 10/30/17.
- */
+@Slf4j
 @Controller
 public class CommonController {
 
-    @Autowired
-    OssService ossService;
-    @Autowired
-    SecurityTokenServer stsServer;
-    @Autowired
-    SecStaffService secStaffService;
-    @Value("${aes.key}")
-    private String AES_KEY;
+	@Autowired
+	private FileStorage fileStorage;
 
     @RequestMapping("/admin/editor/token")
-    @ResponseBody
-    public Result<?> ossTokenEncrypt(String token) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SecStaff secStaff = secStaffService.getByUsername(new SecStaff(((User) authentication.getPrincipal()).getUsername()));
-        if (token != null && token.equals(secStaff.getId())) {
-            SecurityToken securityToken = stsServer.getToken();
-            if ("success".equals(securityToken.getCode())) {
-                return Result.success(AESUtil.encrypt(JsonUtil.toJsonString(securityToken), AES_KEY));
-            } else {
-                return Result.fail("Token获取失败 " + securityToken.getMsg());
-            }
-        } else {
-            throw new Exception("Token校验失败");
-        }
-    }
+	@ResponseBody
+	public Result<?> ossTokenEncrypt(String token) {
+		Map<String, String> result = Maps.newHashMap();
+//		result.put("accessKeyId", "1");
+//		result.put("accessKeySecret", "1");
+		return Result.success(result);
+	}
 
 
     /**
@@ -67,10 +52,55 @@ public class CommonController {
     @RequestMapping(value = "/admin/common/api/file/upload", method = RequestMethod.POST)
     @ResponseBody
     public Result<?> fileUpload(String[] folders, MultipartFile[] files) throws Exception {
-        List<String> resultList = ossService.imageUpload(folders, files);
-        if (resultList == null) {
-            throw new Exception();
-        }
+    	List<String> resultList = Lists.newArrayList();
+		for (int i = 0; i < files.length; i++) {
+    		MultipartFile file = files[i];
+    		String name = file.getName();
+    		String originalFilename = file.getOriginalFilename();
+    		String contentType = file.getContentType();
+    		long size = file.getSize();
+    		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
+    		
+    		try (InputStream inputStream = file.getInputStream()) {
+    			String fileName = generateFileName(file.getOriginalFilename());
+				String fullFileName = fullFileName(folders[i], fileName);
+
+    			FileUrl fileUrl = fileStorage.upload(inputStream, fullFileName);
+    			
+    			resultList.add(fileUrl.getDomainUrl());
+    		} catch (IOException e) {
+    			log.error("IOException", e);
+    		}
+		}
         return Result.success(resultList);
     }
+    
+
+	private static String fullFileName(String basePath, String fileName) {
+		if (basePath == null) {
+			basePath = "";
+		}
+		if (basePath.startsWith("/")) {
+			basePath = basePath.substring(1, basePath.length());
+		}
+		if (StringUtils.isNotBlank(basePath) && !basePath.endsWith("/")) {
+			basePath = basePath + "/";
+		}
+		return basePath + fileName;
+	}
+	
+	private static String generateFileName(String fileName) {
+		// 生成文件名（目录+文件名，例如:basePath/202201/01/00033d9fea0b484eac1509567e87e61a.jpg）
+		Calendar now = Calendar.getInstance();
+		int year = now.get(Calendar.YEAR);
+		int month = now.get(Calendar.MONTH) + 1;
+		int day = now.get(Calendar.DAY_OF_MONTH);
+
+		String ext = null;
+		String[] fileNameSplit = fileName.split("\\.");
+		if (fileNameSplit.length > 1) {
+			ext = fileNameSplit[fileNameSplit.length - 1];
+		}
+		return String.format("%d%02d/%02d/%s.%s", year, month, day, UUID.randomUUID().toString().replace("-", ""), ext);
+	}
 }

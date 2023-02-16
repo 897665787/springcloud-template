@@ -30,15 +30,12 @@ template:
     access-control: false
   mock:
     time: false
-    
-#Oss
-oss:
-  accessKeyId: LTAIkcl2bVhsEpGf
-  accessKeySecret: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-  bucketName: aocai-home
-  endPoint: oss-cn-shenzhen.aliyuncs.com
-  domain: http://aocai-home.oss-cn-shenzhen.aliyuncs.com
-      
-# 富文本编辑器用到
-aes:
-  key: 48Y0atTejMNrKIQ6
+
+filestorage:
+  active: minio
+  minio:
+    endpoint: http://127.0.0.1:9000
+    accessKey: pRYo5fCm9ZyVNKLA
+    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+    bucketName: buket-template-dev
+    domain: http://127.0.0.1:9000/buket-template-dev # 访问域名，例如：“https://image.d-domain.com”

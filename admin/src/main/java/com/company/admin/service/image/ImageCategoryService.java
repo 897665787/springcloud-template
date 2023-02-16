@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.image.Image;
 import com.company.admin.entity.image.ImageCategory;
 import com.company.admin.entity.system.Dictionary;
@@ -36,7 +36,7 @@ public class ImageCategoryService {
     @Autowired
     private DictionaryService dictionaryService;
 
-    @XSTransactional
+    @Transactional
     public void save(ImageCategory imageCategory) {
         ImageCategory criteria = new ImageCategory();
         criteria.setKey(imageCategory.getKey());
@@ -68,7 +68,7 @@ public class ImageCategoryService {
         }
     }
 
-    @XSTransactional
+    @Transactional
     public void remove(ImageCategory imageCategory) {
         ImageCategory existent = get(imageCategory);
         if (existent.getLock().equals(1)) {
@@ -93,7 +93,7 @@ public class ImageCategoryService {
         imageCategoryDao.removeImageCategoryJumpType(imageCategory);
     }
 
-    @XSTransactional
+    @Transactional
     public void update(ImageCategory imageCategory) {
         ImageCategory existent = get(imageCategory);
         if (imageCategory.getKey() != null) {

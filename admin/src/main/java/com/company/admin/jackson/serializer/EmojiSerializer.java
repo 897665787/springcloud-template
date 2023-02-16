@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
  * Emoji序列化工具 <br>
  * Created by JQ棣 on 2018/06/13.
  */
-public class XSEmojiSerializer extends JsonSerializer<String> implements ContextualSerializer {
+public class EmojiSerializer extends JsonSerializer<String> implements ContextualSerializer {
 
 	@Override
 	public void serialize(String o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
@@ -26,6 +26,6 @@ public class XSEmojiSerializer extends JsonSerializer<String> implements Context
 	@Override
 	public JsonSerializer<String> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty)
 			throws JsonMappingException {
-		return new XSEmojiSerializer();
+		return new EmojiSerializer();
 	}
 }

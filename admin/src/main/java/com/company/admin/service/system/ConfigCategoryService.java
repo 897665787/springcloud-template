@@ -6,8 +6,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.ConfigCategory;
 import com.company.admin.mapper.system.ConfigCategoryDao;
@@ -40,7 +40,7 @@ public class ConfigCategoryService {
         return existedConfigCategory;
     }
 
-    @XSTransactional
+    @Transactional
     public void deleteById(Long id) {
         ConfigCategory existedConfigCategory = findById(id);
         boolean used = configCategoryDao.existByParent(id) ||
@@ -54,7 +54,7 @@ public class ConfigCategoryService {
         }
     }
 
-    @XSTransactional
+    @Transactional
     public void save(ConfigCategory configCategory) {
         boolean existedKey = configCategoryDao.existByKey(configCategory.getKey());
         if (existedKey) {
@@ -66,7 +66,7 @@ public class ConfigCategoryService {
         }
     }
 
-    @XSTransactional
+    @Transactional
     public void update(ConfigCategory configCategory) {
         ConfigCategory existedConfigCategory = findById(configCategory.getId());
         boolean existedKey = configCategoryDao.existByKeyExcludeSelf(configCategory.getKey(), configCategory.getId());

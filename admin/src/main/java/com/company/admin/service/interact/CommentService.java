@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.interact.Comment;
 import com.company.admin.entity.interact.CommentNum;
@@ -29,7 +29,7 @@ public class CommentService {
 	@Autowired
 	private CommentNumDao commentNumDao;
 	
-	@XSTransactional
+	@Transactional
 	public void hided(Comment comment) {
 		int affect = commentDao.hided(comment);
 		if (affect == 1) {

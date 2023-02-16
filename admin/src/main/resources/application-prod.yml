@@ -1,12 +1,41 @@
 spring:
   profiles:
     include: redis-prod,rabbitmq-prod
+  datasource:
+    base:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/shuttle_common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
+        username: root
+        password: 12345678
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
+        username: root
+        password: 12345678
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
+        username: root
+        password: 12345678
     
 template:
   domain: http://domain.com
   enable:
-    redis: true
-    redisson: true
-    idempotent: true
-    rabbitmq: true
-    data-encypt: true
+    redis: false
+    redisson: false
+    idempotent: false
+    rabbitmq: false
+    data-encypt: false
+    access-control: false
+  mock:
+    time: false
+
+filestorage:
+  active: minio
+  minio:
+    endpoint: http://127.0.0.1:9000
+    accessKey: pRYo5fCm9ZyVNKLA
+    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+    bucketName: buket-template
+    domain: http://127.0.0.1:9000/buket-template # 访问域名，例如：“https://image.d-domain.com”

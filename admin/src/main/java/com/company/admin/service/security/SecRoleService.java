@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecResource;
 import com.company.admin.entity.security.SecRole;
@@ -42,7 +42,7 @@ public class SecRoleService {
         secRoleDao.save(secRole);
     }
 
-    @XSTransactional
+    @Transactional
     public void remove(SecRole secRole) {
         SecRole existent = get(secRole);
         //校验是否存在员工拥有该角色
@@ -122,7 +122,7 @@ public class SecRoleService {
         return XSTreeUtil.getSubTrees(resourceList, new SecResource(0L));
     }
 
-    @XSTransactional
+    @Transactional
     public void authorizeResource(SecRole secRole, SecStaff secStaff) {
         SecRole existent = get(secRole);
         List<SecResource> resourceList = secRoleDao.listResourceCombo(new SecResource());

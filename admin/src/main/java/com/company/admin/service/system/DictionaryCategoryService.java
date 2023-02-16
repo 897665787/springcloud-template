@@ -5,8 +5,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.annotation.XSTransactional;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.DictionaryCategory;
 import com.company.admin.mapper.system.DictionaryCategoryDao;
@@ -54,7 +54,7 @@ public class DictionaryCategoryService {
         dictionaryCategoryDao.save(dictionaryCategory);
     }
 
-    @XSTransactional
+    @Transactional
     public void update(DictionaryCategory dictionaryCategory) {
         DictionaryCategory existedDictionaryCategory = findById(dictionaryCategory.getId());
         boolean existedKey = dictionaryCategoryDao.existByKeyExcludeSelf(dictionaryCategory.getKey(),
@@ -85,7 +85,7 @@ public class DictionaryCategoryService {
         return dictionaryCategoryDao.findCombo();
     }
 
-    @XSTransactional
+    @Transactional
     public void updateLock(Long id) {
         DictionaryCategory existedDictionaryCategory = dictionaryCategoryDao.findAndLockById(id);
         if (existedDictionaryCategory == null) {

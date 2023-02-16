@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.company.admin.annotation.Log;
-import com.company.common.api.Result;
 import com.company.admin.entity.security.SecResource;
 import com.company.admin.entity.security.SecRole;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.service.security.SecRoleService;
 import com.company.admin.service.security.SecStaffService;
+import com.company.common.api.Result;
 
 /**
  * 系统角色Controller
@@ -46,7 +45,6 @@ public class SecRoleController {
 
     @RequestMapping(value = "/admin/security/secRole/get", method = RequestMethod.POST)
     @ResponseBody
-    @Log("查询角色详情")
     public Result<?> adminGet(SecRole secRole) {
         return Result.success(secRoleService.get(secRole));
     }
