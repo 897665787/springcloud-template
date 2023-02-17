@@ -40,7 +40,7 @@ public class DescriptionTag extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         JspWriter out = getJspContext().getOut();
         try {
-            Class<?> clazz = Class.forName(this.getClass().getPackage().getName().replace("admin.tag", "common.model") + "." + this.clazz);
+            Class<?> clazz = Class.forName(this.getClass().getPackage().getName().replace("admin.tag", "admin.entity") + "." + this.clazz);
             out.println(DescriptionUtils.description(clazz, property, value));
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage());

@@ -62,7 +62,7 @@ public class DescriptionOptionsTag extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         Class<?> clazz = null;
         try {
-            clazz = Class.forName(this.getClass().getPackage().getName().replace("admin.tag", "common.model") + "." + this.clazz);
+            clazz = Class.forName(this.getClass().getPackage().getName().replace("admin.tag", "admin.entity") + "." + this.clazz);
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage());
         }
