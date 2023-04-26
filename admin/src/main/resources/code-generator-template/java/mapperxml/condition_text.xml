@@ -1,0 +1,6 @@
+			<if test="{columnName}!=null and {columnName}!=''">
+				AND `{column_name}`=#{{columnName}}
+			</if>
+			<if test="dynamic!=null and dynamic.{columnName}!=null and dynamic.{columnName}!=''">
+				AND `{column_name}` LIKE CONCAT('%',#{dynamic.{columnName}},'%')
+			</if>

@@ -1,5 +1,6 @@
 package com.company.admin.entity.base;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.company.admin.entity.user.User;
 
 /**
@@ -11,11 +12,13 @@ public class BaseModel extends XSGenericModel {
     /**
      * 令牌
      */
+	@TableField(exist = false)
     protected String token;
 
     /**
      * 当前登录用户
      */
+	@TableField(exist = false)
     protected User user;
 
     public String getToken() {

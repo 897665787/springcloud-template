@@ -18,7 +18,12 @@ spring:
         url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false&allowMultiQueries=true
         username: root
         password: 12345678
-    
+
+mybatis-plus:
+  global-config:
+    #是否刷新mapper
+    refreshMapper: true
+
 template:
   domain: http://d-domain.com
   enable:

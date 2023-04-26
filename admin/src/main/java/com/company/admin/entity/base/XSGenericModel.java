@@ -1,28 +1,30 @@
 package com.company.admin.entity.base;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 模型基础类
  * Created by xuxiaowei on 2017/10/20.
  */
 public class XSGenericModel {
-
+	@TableField(exist = false)
     protected Long offset;
-
+	@TableField(exist = false)
     protected Long limit;
-
+	@TableField(exist = false)
     protected Long page;
-
+	@TableField(exist = false)
     protected Map<String, String> sort;
-
+	@TableField(exist = false)
     protected Map<String, String> dynamic;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
