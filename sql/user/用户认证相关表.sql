@@ -13,6 +13,8 @@ CREATE TABLE `bu_user_info` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户信息表';
 
+
+
 -- ----------------------------
 -- Table structure for bu_user_oauth
 -- ----------------------------
