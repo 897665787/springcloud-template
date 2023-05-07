@@ -48,6 +48,9 @@ public class AliNotifyController implements AliNotifyFeign {
 
 	@Autowired
 	private MessageSender messageSender;
+	
+	@Autowired
+	private AliPayConfiguration aliPayConfiguration;
 
 	@Override
 	public Result<String> aliPayNotify(@RequestBody Map<String, String> aliParams) {
@@ -58,7 +61,7 @@ public class AliNotifyController implements AliNotifyFeign {
 		payNotifyMapper.insert(payNotify);
 
 		String appid = aliParams.get("app_id");
-		AliPayProperties.PayConfig payConfig = AliPayConfiguration.getPayConfig(appid);
+		AliPayProperties.PayConfig payConfig = aliPayConfiguration.getPayConfig(appid);
 		try {
 			// 调用SDK验证签名
 			boolean signVerified = AlipaySignature.rsaCheckV1(aliParams, payConfig.getPubKey(),

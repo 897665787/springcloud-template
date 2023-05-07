@@ -40,26 +40,29 @@ template:
 # 支付配置
 pay:
   wx:
+    mchs:
+      # 所有使用过的商户号都要例举在这里（退款回调中需要用到商户密钥解密，防止退历史订单使用新商户密钥解密报错）
+      - mchId: 1634232504 # 微信支付商户号
+        mchKey: 1111w82343234uJVMt3m7J8IEq34sdaI # 微信支付商户密钥
+        keyPath: classpath:pay/apiclient_cert_1634232504.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+      - mchId: 1523322361
+        mchKey: f111115422222222222372e86c627c04
+        keyPath: classpath:/pay/apiclient_cert_1523322361.p12
+      - mchId: 1231232301
+        mchKey: f1111154f16c4722234372e86c627c04
+        keyPath: classpath:/pay/apiclient_cert_1231232301.p12
     configs:
-      - appId: wxeb6ffb3sdaddad1d # 微信公众号或者小程序等的appid
+      - appId: wxeb6ffb3sdadda333 # 微信公众号或者小程序等的appid
         mchId: 1634232504 # 微信支付商户号
-        mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI # 微信支付商户密钥
-        keyPath: classpath:pay/apiclient_cert-504.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
         tradeType: JSAPI
-      - appId: wx79c0easdsadba516
+      - appId: wx79c0easdsadba522
         mchId: 1634232504
-        mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI
-        keyPath: classpath:pay/apiclient_cert-504.p12
         tradeType: APP
-      - appId: wx93asdsadddb142b
+      - appId: wx93asdsadddb142a
         mchId: 1634232504
-        mchKey: GK0Dw82343234uJVMt3m7J8IEq34sdaI
-        keyPath: classpath:pay/apiclient_cert-504.p12
         tradeType: JSAPI
       - appId: wx93asdsadd35142b
         mchId: 1523322361
-        mchKey: bf7fce054336482342343242465dc071
-        keyPath: classpath:pay/apiclient_cert-361.p12
         tradeType: MWEB
   ali:
     configs:

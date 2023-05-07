@@ -48,7 +48,19 @@ public class PayParams {
 	 * </pre>
 	 */
 	private String outTradeNo;
-
+	
+	/**
+	 * <pre>
+	 * 字段名：终端IP.
+	 * 变量名：spbill_create_ip
+	 * 是否必填：是
+	 * 类型：String(16)
+	 * 示例值：123.12.12.123
+	 * 描述：APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
+	 * </pre>
+	 */
+	private String spbillCreateIp;
+	
 	/**
 	 * <pre>
 	 * 字段名：商品Id.

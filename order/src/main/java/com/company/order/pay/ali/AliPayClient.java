@@ -63,6 +63,8 @@ public class AliPayClient extends BasePayClient {
 	private static final String PAY_CALLBACK_URL = "/server/callback/ali";
 	
 	@Autowired
+	private AliPayConfiguration aliPayConfiguration;
+	@Autowired
 	private AliPayMapper aliPayMapper;
 	@Autowired
 	private AliPayRefundMapper aliPayRefundMapper;
@@ -111,7 +113,7 @@ public class AliPayClient extends BasePayClient {
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         
-        PayConfig payConfig = AliPayConfiguration.getPayConfig(payParams.getAppid());
+        PayConfig payConfig = aliPayConfiguration.getPayConfig(payParams.getAppid());
 		try {
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
 					payConfig.getAppId(),

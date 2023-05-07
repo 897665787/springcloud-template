@@ -54,6 +54,9 @@ public class WxNotifyController implements WxNotifyFeign {
 	@Autowired
 	private MessageSender messageSender;
 	
+	@Autowired
+	private WxPayConfiguration wxPayConfiguration;
+	
 	@Override
 	public Result<String> wxPayNotify(@RequestBody String xmlString) {
 		/**
@@ -197,14 +200,8 @@ public class WxNotifyController implements WxNotifyFeign {
 			return Result.success(WxPayNotifyResponse.fail("缺少mch_id"));
 		}
 		
-		String appid = refundNotifyResult.getAppid();
-		if (StringUtils.isBlank(appid)) {
-			payNotifyMapper.updateRemarkById("缺少appid", payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("缺少appid"));
-		}
-		
-		WxPayProperties.PayConfig payConfig = WxPayConfiguration.getPayConfig(appid);
-		String mchKey = payConfig.getMchKey();
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(mchId);
+		String mchKey = mchConfig.getMchKey();
 
 		try {
 			// 校验返回结果签名

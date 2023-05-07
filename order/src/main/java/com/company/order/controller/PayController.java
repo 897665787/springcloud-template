@@ -108,6 +108,7 @@ public class PayController implements PayFeign {
 					payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
 					payParams.setBody(payReq.getBody());
 					payParams.setOutTradeNo(orderCode);
+					payParams.setSpbillCreateIp(payReq.getSpbillCreateIp());
 					payParams.setProductId(payReq.getProductId());
 					payParams.setOpenid(payReq.getOpenid());
 					

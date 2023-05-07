@@ -2,9 +2,6 @@ package com.company.order.controller;
 
 import java.math.BigDecimal;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.feign.PayFeign;
@@ -44,6 +42,7 @@ public class TestController implements TestFeign {
 		payReq.setAppid("wxeb6ffb3sdaddad1d");
 		payReq.setAmount(new BigDecimal("1"));
 		payReq.setBody("下单");
+		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		payReq.setOpenid("oQvXm5d0q3sadasdunR1Y-oEr3ZmQ");
 		payReq.setNotifyUrl("http://template-order/test/buyNotify");
 		// payReq.setAttach(attach);
@@ -64,6 +63,7 @@ public class TestController implements TestFeign {
 		payReq.setAppid("wx79c0easdsadba516");
 		payReq.setAmount(new BigDecimal("1"));
 		payReq.setBody("下单");
+		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		// payReq.setOpenid(openid);
 		payReq.setNotifyUrl("http://template-order/test/buyNotify");
 		// payReq.setAttach(attach);
@@ -84,6 +84,7 @@ public class TestController implements TestFeign {
 		payReq.setAppid("wx93asdsadddb142b");
 		payReq.setAmount(new BigDecimal("1"));
 		payReq.setBody("下单");
+		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		payReq.setOpenid("oQvXm5d0q3sadasdunR1Y-oEr3ZmQ");
 		payReq.setNotifyUrl("http://template-order/test/buyNotify");
 		// payReq.setAttach(attach);
@@ -104,6 +105,7 @@ public class TestController implements TestFeign {
 		payReq.setAppid("wx93asdsadddb142b");
 		payReq.setAmount(new BigDecimal("1"));
 		payReq.setBody("下单");
+		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		// payReq.setOpenid(openid);
 		payReq.setNotifyUrl("http://template-order/test/buyNotify");
 		// payReq.setAttach(attach);
@@ -124,6 +126,7 @@ public class TestController implements TestFeign {
 		payReq.setAppid("2021034342660503");
 		payReq.setAmount(new BigDecimal("1"));
 		payReq.setBody("下单");
+		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		// payReq.setOpenid(openid);
 		payReq.setNotifyUrl("http://template-order/test/buyNotify");
 		// payReq.setAttach(attach);

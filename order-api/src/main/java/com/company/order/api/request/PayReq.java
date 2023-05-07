@@ -57,6 +57,12 @@ public class PayReq {
 	private String body;
 	
 	/**
+	 * 终端IP<必填>
+	 */
+	@NotBlank(message = "终端IP不能为空")
+	private String spbillCreateIp;
+	
+	/**
 	 * 商品Id<非必填>
 	 */
 	private String productId;
