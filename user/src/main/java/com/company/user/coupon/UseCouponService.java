@@ -187,7 +187,15 @@ public class UseCouponService {
 	 */
 	public UserCouponCanUse canUse(Integer userCouponId, Integer userId, BigDecimal orderAmount, Map<String, String> runtimeAttach) {
 		UserCoupon userCoupon = userCouponService.selectById(userCouponId);
-
+		if (userCoupon == null) {
+			UserCouponCanUse userCouponCanUse = new UserCouponCanUse();
+			userCouponCanUse.setUserCouponId(userCouponId);
+			userCouponCanUse.setReduceAmount(BigDecimal.ZERO);
+			userCouponCanUse.setCanUse(false);
+			userCouponCanUse.setReason("优惠券不存在");
+			return userCouponCanUse;
+		}
+		
 		List<CouponTemplateCondition> couponTemplateConditionList = couponTemplateConditionService
 				.selectByCouponTemplateId(userCoupon.getCouponTemplateId());
 		

@@ -14,8 +14,8 @@ import com.company.common.api.Result;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.UploadResp;
-import com.company.tool.file.FileStorage;
-import com.company.tool.file.FileUrl;
+import com.jqdi.filestorage.core.FileStorage;
+import com.jqdi.filestorage.core.FileUrl;
 
 import cn.hutool.core.util.IdUtil;
 

@@ -99,6 +99,9 @@ public class AliPayClient extends BasePayClient {
 		
     	String notifyUrl = domain + PAY_CALLBACK_URL;
     	
+		/**
+		 * 官方文档：https://opendocs.alipay.com/pre-open/02e7gd
+		 */
     	AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
         model.setOutTradeNo(payParams.getOutTradeNo());
@@ -311,6 +314,7 @@ public class AliPayClient extends BasePayClient {
 				aliPayRefund.setRemark(remark);
 			}
 		}
+		aliPayRefund.setUpdateTime(new Date());
 		aliPayRefund.setId(aliPayRefunddb.getId());
 		aliPayRefundMapper.updateById(aliPayRefund);
 

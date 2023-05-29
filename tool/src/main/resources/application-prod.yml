@@ -22,45 +22,22 @@ template:
       secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
       bucketName: buket-template
       domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
-    alioss:
-      endpoint: oss-cn-shenzhen.aliyuncs.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template
-      domain: https://image.d-domain.com
-    tencentcos:
-      endpoint: ap-guangzhou.myqcloud.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template
-      domain: # 访问域名，未配置域名会默认使用oss的url
-    amazons3:
-      endpoint: xxx.aws.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template
-      domain: # 访问域名，未配置域名会默认使用oss的url
-    baidubos:
-      endpoint: xxx.baidu.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template
-      domain: # 访问域名，未配置域名会默认使用oss的url
-    huaweiobs:
-      endpoint: xxx.huawei.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template
-      domain: # 访问域名，未配置域名会默认使用oss的url
-    wangyinos:
-      endpoint: xxx.wangyi.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template-dev
-      domain: # 访问域名，未配置域名会默认使用oss的url
-    jingdongoss:
-      endpoint: xxx.jdcloud.com
-      accessKey: LTAIkcl2bVhsEpGf
-      secretKey: D9hwgRig2IKQ6rIE4PBUglmKsqTpUm
-      bucketName: buket-template-dev
-      domain: # 访问域名，未配置域名会默认使用oss的url
+
+smssender:
+  active: log
+  # 打印日志（用于测试环境不想发送真实短信）
+  log:
+    signName: 测试
+  # 阿里云短信
+  ali:
+    regionId: cn-hangzhou
+    accessKey: LTAI5tRK8vFDnEijSRxNyDEs
+    secretKey: ZIIW2Gt71FU8l48JyCIe4gzXmMYESe
+    signName: XXX公司1
+  # 腾讯短信
+  tencent:
+    appId: 1400006666
+    regionId: ap-guangzhou
+    accessKey: LTAIkcl1bVhsEpGf
+    secretKey: D9hwgRigRI1Q6rIE4PBU1lmKsqTpUm
+    signName: XXX公司2

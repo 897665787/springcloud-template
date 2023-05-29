@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +25,14 @@ public class TestController {
 
 	@Autowired
 	private FileController fileController;
+	@Autowired
+	private VerifyCodeController verifyCodeController;
 
+	@GetMapping("/verifyCodeSms")
+	public Result<String> verifyCodeSms(String mobile, String type) {
+		return verifyCodeController.sms(mobile, type);
+	}
+	
 	@PostMapping("/upload")
 	public Result<UploadResp> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();

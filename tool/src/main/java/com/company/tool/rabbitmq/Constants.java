@@ -28,16 +28,10 @@ public interface Constants {
 			String ROUTING_KEY = PREFIX + "routingkey.common";
 		}
 
-		// 秒杀队列
-		interface FLASH_KILL {
-			String NAME = PREFIX + "flash_kill";
-			String ROUTING_KEY = PREFIX + "routingkey.flash_kill";
-		}
-		
-		// 支付回调队列
-		interface PAY_NOTIFY {
-			String NAME = PREFIX + "pay_notify";
-			String ROUTING_KEY = PREFIX + "routingkey.pay_notify";
+		// 发送短信
+		interface SEND_SMS {
+			String NAME = PREFIX + "send_sms";
+			String ROUTING_KEY = PREFIX + "routingkey.send_sms";
 		}
 	}
 }
