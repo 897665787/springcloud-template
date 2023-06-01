@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
+import com.company.tool.amqp.rabbitmq.Constants;
+import com.company.tool.amqp.strategy.StrategyConstants;
+import com.company.tool.amqp.strategy.dto.SendSmsMQDto;
 import com.company.tool.entity.SmsTask;
 import com.company.tool.enums.SmsEnum;
 import com.company.tool.enums.SmsTaskEnum;
-import com.company.tool.rabbitmq.Constants;
-import com.company.tool.rabbitmq.consumer.strategy.StrategyConstants;
-import com.company.tool.rabbitmq.dto.SendSmsMQDto;
 import com.company.tool.service.SmsTaskService;
 
 /**

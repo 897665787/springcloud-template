@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
+import com.company.order.amqp.rabbitmq.Constants;
+import com.company.order.amqp.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.IosNotifyFeign;
 import com.company.order.entity.AliPay;
@@ -29,8 +30,6 @@ import com.company.order.mapper.AliPayMapper;
 import com.company.order.mapper.AliPayRefundMapper;
 import com.company.order.mapper.PayNotifyMapper;
 import com.company.order.pay.ali.AliConstants;
-import com.company.order.rabbitmq.Constants;
-import com.company.order.rabbitmq.consumer.strategy.StrategyConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
 

@@ -7,7 +7,7 @@ import org.apache.commons.collections.MapUtils;
 
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.framework.amqp.rabbit.BaseStrategy;
+import com.company.framework.amqp.BaseStrategy;
 import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.amqp.springevent.event.MessageEvent;
 import com.company.framework.context.SpringContextUtil;

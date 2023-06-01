@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
+import com.company.order.amqp.rabbitmq.Constants;
+import com.company.order.amqp.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliNotifyFeign;
 import com.company.order.entity.AliPay;
@@ -26,8 +28,6 @@ import com.company.order.mapper.PayNotifyMapper;
 import com.company.order.pay.ali.AliConstants;
 import com.company.order.pay.ali.config.AliPayConfiguration;
 import com.company.order.pay.ali.config.AliPayProperties;
-import com.company.order.rabbitmq.Constants;
-import com.company.order.rabbitmq.consumer.strategy.StrategyConstants;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
