@@ -81,7 +81,7 @@
 		u.id AS u_id,u.nickname AS u_nickname,u.mobile AS u_mobile
 		<include refid="listCondition"/>
 		ORDER BY application_time DESC
-		<include refid="XSBaseMapper.limit"/>
+		<if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
 	</select>
 
 	<select id="count" parameterType="withdrawal" resultType="long">

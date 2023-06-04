@@ -150,14 +150,14 @@
     <select id="list" parameterType="secResource" resultMap="secResourceMap">
         SELECT r.*,p.id AS p_id,p.name AS p_name
         <include refid="listCondition"/>
-        <include refid="XSBaseMapper.sort"/>
-        <include refid="XSBaseMapper.limit"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+        <if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
     </select>
 
     <select id="listCombo" resultMap="secResourceMap">
         SELECT id,`name`,pid AS p_id,`type`
         FROM sc_security_resource
-        <include refid="XSBaseMapper.sort"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
     </select>
 
     <resultMap id="secResourceWithRoleMap" type="secResource" autoMapping="true">

@@ -50,8 +50,8 @@
     <select id="list" parameterType="secStaffLog" resultMap="secStaffLogMap">
         SELECT ss.nickname AS s_nickname,sl.id,sl.time,sl.operation,sl.status
         <include refid="listCondition"/>
-        <include refid="XSBaseMapper.sort"/>
-        <include refid="XSBaseMapper.limit"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+        <if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
     </select>
 
     <select id="count" parameterType="secStaffLog" resultType="long">

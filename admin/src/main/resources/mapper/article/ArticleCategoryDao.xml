@@ -118,7 +118,7 @@
                 AND display=#{display}
             </if>
         </trim>
-        <include refid="XSBaseMapper.sort"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
     </select>
 
     <select id="count" parameterType="articleCategory" resultType="long">

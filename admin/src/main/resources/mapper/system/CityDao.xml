@@ -83,8 +83,8 @@
     <select id="list" parameterType="City" resultMap="cityMap">
         SELECT c.*,p.id AS p_id,p.name AS p_name
         <include refid="listCondition"/>
-        <include refid="XSBaseMapper.sort"/>
-        <include refid="XSBaseMapper.limit"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+        <if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
     </select>
 
     <select id="listCombo" parameterType="City" resultType="City">
@@ -98,8 +98,8 @@
                 AND province_id=#{province.id}
             </if>
         </trim>
-        <include refid="XSBaseMapper.sort"/>
-        <include refid="XSBaseMapper.limit"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+        <if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
     </select>
 
     <select id="count" parameterType="City" resultType="long">

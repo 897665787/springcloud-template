@@ -20,7 +20,7 @@
 	<select id="list" parameterType="user" resultType="vipHistory">
 		SELECT id,user_id,package_id,package_desc,package_duration,complete_time,change_before,change_after,creator_id,creator
 		<include refid="condition"/>
-		<include refid="XSBaseMapper.limit"/>
+		<if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
 	</select>
 
 	<select id="count" parameterType="user" resultType="long">

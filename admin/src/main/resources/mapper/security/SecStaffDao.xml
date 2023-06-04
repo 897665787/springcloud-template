@@ -127,8 +127,8 @@
     <select id="list" parameterType="secStaff" resultType="secStaff">
         SELECT *
         <include refid="listCondition"/>
-        <include refid="XSBaseMapper.sort"/>
-        <include refid="XSBaseMapper.limit"/>
+        <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+        <if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
     </select>
 
     <select id="listRoleCombo" resultType="secRole">

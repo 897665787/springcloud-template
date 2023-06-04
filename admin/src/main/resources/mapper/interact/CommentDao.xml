@@ -47,8 +47,8 @@
 			(SELECT COUNT(*) FROM sc_comment WHERE module = 1 AND relative_id = c.id AND deleted = 0) commentNum,
 			IF(pn.number IS null,0,pn.number) praiseNum
 		<include refid="listCondition"/>
-		<include refid="XSBaseMapper.sort"/>
-		<include refid="XSBaseMapper.limit"/>
+		<if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+		<if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
 	</select>
 
 	<select id="count" parameterType="comment" resultType="long">
@@ -73,8 +73,8 @@
 			c.module=1
 			AND c.relative_id=#{relativeId}
 			AND c.deleted=0
-		<include refid="XSBaseMapper.sort"/>
-		<include refid="XSBaseMapper.limit"/>
+		<if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+		<if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
 	</select>
 	
 	<update id="hided" parameterType="comment">

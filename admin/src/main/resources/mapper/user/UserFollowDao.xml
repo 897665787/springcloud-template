@@ -24,8 +24,8 @@
 	<select id="list" parameterType="userFollow" resultType="user">
 		SELECT u.id,u.nickname,u.avatar,uf.create_time
 		<include refid="listCondition"/>
-		<include refid="XSBaseMapper.sort"/>
-		<include refid="XSBaseMapper.limit"/>
+		<if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
+		<if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
 	</select>
 
 	<select id="count" parameterType="userFollow" resultType="long">

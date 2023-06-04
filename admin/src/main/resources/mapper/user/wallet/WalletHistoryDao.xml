@@ -21,7 +21,7 @@
 		SELECT id,user_id,platform,fee,`type`,event_type,event_id,event_desc,complete_time,change_before,change_after,create_time
 		,creator_id,creator
 		<include refid="condition"/>
-		<include refid="XSBaseMapper.limit"/>
+		<if test="offset!=null and limit!=null"> LIMIT #{offset},#{limit}</if>
 	</select>
 
 	<select id="count" parameterType="user" resultType="long">
