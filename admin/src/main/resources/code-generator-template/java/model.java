@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
-import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
 
 import lombok.Data;
@@ -20,7 +19,7 @@ import lombok.Data;
  */
 @Data
 @TableName("{table}")
-public class {ModelName} extends BaseModel {
+public class {ModelName} {
 {column_field}
 	public interface Save {
 	}

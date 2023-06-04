@@ -209,7 +209,7 @@ public class IndexSingleReplace implements Replace {
 		
 		src = src.replace("{search_form}", search_form.toString());
 		src = src.replace("{table_th}", table_th.toString());
-		src = src.replace("{table_th_count}", String.valueOf(table_th_count + 1));
+		src = src.replace("{table_th_count}", String.valueOf(table_th_count + 2));
 		src = src.replace("{table_td}", table_td.toString());
 		
 		src = src.replace("{save_form}", save_form.toString());

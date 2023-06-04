@@ -148,7 +148,7 @@
             submitHandler: function () {
                 $createSubmit.attr("disabled", true);
                 doPost("<%=request.getContextPath()%>/admin/{module}/{modelName}/save",
-                    $createForm.serialize(),
+                    $createForm.xsJson(),
                     function (data) {
                         $createSubmit.attr("disabled", false);
                         if (data.status) {
@@ -158,7 +158,7 @@
                                 window.location.reload(true);
                             }, 680);
                         } else {
-                            alert(data.msg);
+                            alert(data.message);
                         }
                     }, function (XMLHttpRequest, textStatus) {
                         $createSubmit.attr("disabled", false);
@@ -208,7 +208,7 @@
 {update_image_js}
                     $("#getModel").modal("show");
                 } else {
-                    alert(data.msg);
+                    alert(data.message);
                 }
             });
         }
@@ -266,7 +266,7 @@
                                 window.location.reload(true);
                             }, 680);
                         } else {
-                            alert(data.msg);
+                            alert(data.message);
                         }
                     }, function (XMLHttpRequest, textStatus) {
                         $updateSubmit.attr("disabled", false);
@@ -282,7 +282,7 @@
 {update_image_js}
                     $("#updateModel").modal("show");
                 } else {
-                    alert(data.msg);
+                    alert(data.message);
                 }
             });
         }
@@ -308,7 +308,7 @@
                             window.location.reload(true);
                         }, 680);
                     } else {
-                        alert(data.msg);
+                        alert(data.message);
                     }
                 })
             })

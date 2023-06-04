@@ -65,14 +65,14 @@
                             <ul class="nav nav-sub">
                                 <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_hotWord')})">
                                     <li class="${index eq "marketing_hotWord"?"active":""}">
-                                        <a href="<%=request.getContextPath()%>/admin/marketing/hotWord">
+                                        <a href="<%=request.getContextPath()%>/admin/marketing/hotWord/index">
                                             <span>热搜词</span>
                                         </a>
                                     </li>
                                 </sec:authorize>
                                 <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_feedback')})">
                                     <li class="${index eq "marketing_feedback"?"active":""}">
-                                        <a href="<%=request.getContextPath()%>/admin/marketing/feedback">
+                                        <a href="<%=request.getContextPath()%>/admin/marketing/feedback/index">
                                             <span>意见反馈</span>
                                         </a>
                                     </li>

@@ -1,9 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="xs" uri="http://code.template.com/tags/jsp/xs" %>
-<%--
-  Created by wjc on 2018/11/07.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="cmn-hans">
@@ -27,18 +24,13 @@
             <div class="col-xs-12">
                 <form class="form-horizontal" id="searchForm">
                     <div class="form-group">
-						<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
-							<label class="control-label">编号：</label>
-						</div>
-						<div class="col-xs-8 col-md-4 col-lg-3  m-b-md">
-							<input name="id" type="number" class="form-control" value="${search.id}">
-						</div>
-						<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
-							<label class="control-label">名称：</label>
-						</div>
-						<div class="col-xs-8 col-md-4 col-lg-3  m-b-md">
-							<input name="dynamic[name]" type="text" class="form-control" placeholder="模糊查询" value="${search.dynamic.name}">
-						</div>
+                    	<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
+                        	<label class="control-label">名称：</label>
+                    	</div>
+                    	<div class="col-xs-8 col-md-4 col-lg-3  m-b-md">
+                        	<input name="name" type="text" class="form-control" placeholder="模糊查询"
+                               	value="${search.name}">
+                    	</div>
 						<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
 							<label class="control-label">状态：</label>
 						</div>
@@ -48,19 +40,23 @@
 								<xs:descriptionOptions clazz="marketing.HotWord" property="status"/>
 							</select>
 						</div>
-						<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
-							<label class="control-label">创建时间始：</label>
-						</div>
-						<div class="col-xs-8 col-md-4 col-lg-3  m-b-md">
-							<input type="text" name="dynamic[createTimeBegin]" class="form-control datepicker" readonly value="${search.dynamic.createTimeBegin}">
-						</div>
-						<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
-							<label class="control-label">创建时间末：</label>
-						</div>
-						<div class="col-xs-8 col-md-4 col-lg-3  m-b-md">
-							<input type="text" name="dynamic[createTimeEnd]" class="form-control datepicker" readonly value="${search.dynamic.createTimeEnd}">
-						</div>
-                    </div>
+                    	<div class="col-xs-4 col-md-2 col-lg-1 no-padder m-b-md text-right">
+                        	<label class="control-label">创建时间：</label>
+                    	</div>
+                        <div class="col-xs-8 col-md-4 col-lg-7 m-b-md">
+                            <div class="row">
+                                <div class="col-xs-10 col-md-4 col-lg-4 ">
+                                    <input type="text" name="createTimeStart" class="form-control datepicker"
+                                           value="${createTimeStart}" readonly>
+                                </div>
+                                <label class="pull-left control-label" style="width: 15px">至</label>
+                                <div class="col-xs-10 col-md-4 col-lg-4 ">
+                                    <input type="text" name="createTimeEnd" class="form-control datepicker"
+                                           value="${createTimeEnd}" readonly>
+                                </div>
+                            </div>
+                        </div>
+					</div>
                     <div class="form-group m-t-n-md">
                         <div class="col-xs-12">
                             <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_hotWord_create')})">
@@ -77,25 +73,25 @@
                     <table class="table text-center table-bordered table-striped m-b-none">
                         <thead>
                             <tr>
-								<th>编号</th>
-								<th>名称</th>
-								<th>状态</th>
-								<th>顺序</th>
+                        		<th>名称</th>
+                        		<th>状态</th>
+                        		<th>顺序</th>
+								<th>创建/更新时间</th>
 								<th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                         <c:if test="${pageModel.list.size() eq 0}">
                             <tr>
-                                <td colspan="6">无数据</td>
+                                <td colspan="5">无数据</td>
                             </tr>
                         </c:if>
                         <c:forEach items="${pageModel.list}" var="item">
                             <tr>
-								<td>${item.id}</td>
-								<td>${item.name}</td>
-								<td><xs:descriptionDesc clazz="marketing.HotWord" property="status" value="${item.status}"/></td>
-								<td>${item.seq}</td>
+                            	<td>${item.name}</td>
+                                <td><xs:descriptionDesc clazz="marketing.HotWord" property="status" value="${item.status}"/></td>
+                            	<td>${item.seq}</td>
+                                <td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${item.createTime}"/><br/><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${item.updateTime}"/></td>
                                 <td>
                                     <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_hotWord_update')})">
                                         <c:if test="${item.status eq 0}">
@@ -146,9 +142,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">新增</h4>
                 </div>
                 <form name="createForm" class="form-horizontal" style="max-width: 800px">
@@ -158,7 +152,7 @@
 								<label class="control-label required">名称：</label>
 							</div>
 							<div class="col-xs-9">
-								<input name="name" type="text" maxlength="50" class="form-control">
+								<input name="name" type="text" maxlength="255" class="form-control">
 							</div>
 						</div>
 						<div class="form-group row">
@@ -166,7 +160,7 @@
 								<label class="control-label required">状态：</label>
 							</div>
 							<div class="col-xs-9">
-								<select name="status" class="form-control" data-ignore="true" value="0" data-value="0">
+								<select name="status" class="form-control">
 									<xs:descriptionOptions clazz="marketing.HotWord" property="status"/>
 								</select>
 							</div>
@@ -203,9 +197,8 @@
 					required: true
 				},
 				seq: {
-					required: true,
-					number: true,
-				}
+					required: true
+				},
 			},
 			messages: {
 				name: {
@@ -217,9 +210,8 @@
 					required: "状态不能为空"
 				},
 				seq: {
-					required: "顺序不能为空",
-					number: "顺序必须为数字",
-				}
+					required: "顺序不能为空"
+				},
 			},
             submitHandler: function () {
                 $createSubmit.attr("disabled", true);
@@ -260,9 +252,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">详情</h4>
                 </div>
                 <form name="getForm" class="form-horizontal" style="max-width: 800px">
@@ -273,7 +263,7 @@
 								<label class="control-label required">名称：</label>
 							</div>
 							<div class="col-xs-9">
-								<input name="name" type="text" maxlength="50" class="form-control" readonly>
+								<input name="name" type="text" maxlength="255" class="form-control" readonly>
 							</div>
 						</div>
 						<div class="form-group row">
@@ -330,9 +320,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">编辑</h4>
                 </div>
                 <form name="updateForm" class="form-horizontal" style="max-width: 800px">
@@ -343,7 +331,7 @@
 								<label class="control-label required">名称：</label>
 							</div>
 							<div class="col-xs-9">
-								<input name="name" type="text" maxlength="50" class="form-control">
+								<input name="name" type="text" maxlength="255" class="form-control">
 							</div>
 						</div>
 						<div class="form-group row">
@@ -352,8 +340,8 @@
 							</div>
 							<div class="col-xs-9">
 								<select name="status" class="form-control">
-                                    <xs:descriptionOptions clazz="marketing.HotWord" property="status"/>
-                                </select>
+									<xs:descriptionOptions clazz="marketing.HotWord" property="status"/>
+								</select>
 							</div>
 						</div>
 						<div class="form-group row">
@@ -361,7 +349,7 @@
 								<label class="control-label required">顺序：</label>
 							</div>
 							<div class="col-xs-9">
-								<input name="seq" type="number" step="1" class="form-control">
+								<input name="seq" type="number" class="form-control">
 							</div>
 						</div>
                     </div>
@@ -388,9 +376,9 @@
 					required: true
 				},
 				seq: {
-					required: true,
-					number: true,
-				}
+					required: true
+				},
+
 			},
 			messages: {
 				name: {
@@ -402,9 +390,9 @@
 					required: "状态不能为空"
 				},
 				seq: {
-					required: "顺序不能为空",
-					number: "顺序必须为数字"
-				}
+					required: "顺序不能为空"
+				},
+
 			},
             submitHandler: function () {
                 $updateSubmit.attr("disabled", true);
@@ -450,7 +438,7 @@
 
 
         function updateListItemStatus(id,status) {
-            doPost("<%=request.getContextPath()%>/admin/marketing/hotWord/status/update",
+            doPost("<%=request.getContextPath()%>/admin/marketing/hotWord/update",
                 {
                     id: id,
                     status: status
@@ -490,4 +478,3 @@
 </sec:authorize>
 </body>
 </html>
-

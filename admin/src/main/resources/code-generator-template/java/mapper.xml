@@ -4,21 +4,4 @@
 
 <mapper namespace="com.company.admin.mapper.{module}.{ModelName}Dao">
 
-	<sql id="listCondition">
-		FROM {tab}
-		<trim prefix="WHERE" prefixOverrides="AND|OR">
-{search_form}	</trim>
-	</sql>
-
-	<select id="list" parameterType="{modelName}" resultType="{modelName}">
-		SELECT *
-		<include refid="listCondition" />
-		<include refid="XSBaseMapper.sort" />
-		<include refid="XSBaseMapper.limit" />
-	</select>
-
-	<select id="count" parameterType="{modelName}" resultType="long">
-		SELECT COUNT(id)
-		<include refid="listCondition" />
-	</select>
 </mapper>
