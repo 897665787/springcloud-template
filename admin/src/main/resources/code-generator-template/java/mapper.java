@@ -7,8 +7,8 @@ import com.company.admin.entity.{module}.{ModelName};
 
 public interface {ModelName}Dao extends BaseMapper<{ModelName}> {
 
-	List<{ModelName}> list({ModelName} orderPayRefund);
+	List<{ModelName}> list({ModelName} {modelName});
 	
-	Long count({ModelName} orderPayRefund);
+	Long count({ModelName} {modelName});
 
 }

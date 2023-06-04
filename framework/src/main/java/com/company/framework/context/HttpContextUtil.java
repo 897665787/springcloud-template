@@ -65,6 +65,14 @@ public class HttpContextUtil {
 		return lastHeader;
 	}
 
+	public static String parameter(String name, String defaultValue) {
+		return Optional.ofNullable(request()).map(request -> request.getParameter(name)).orElse(defaultValue);
+	}
+
+	public static int parameterInt(String name, int defaultValue) {
+		return Optional.ofNullable(parameter(name, null)).map(Integer::valueOf).orElse(defaultValue);
+	}
+
 	public static String currentUserId() {
 		return lastHead(HEADER_CURRENT_USER_ID);
 	}

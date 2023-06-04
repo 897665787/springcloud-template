@@ -30,13 +30,13 @@
                         <div class="col-xs-8 col-md-4 col-lg-7 m-b-md">
                             <div class="row">
                                 <div class="col-xs-10 col-md-4 col-lg-4 ">
-                                    <input type="text" name="dynamic[createTimeStart]" class="form-control datepicker"
-                                           value="${search.dynamic.createTimeStart}" readonly>
+                                    <input type="text" name="createTimeStart" class="form-control datepicker"
+                                           value="${createTimeStart}" readonly>
                                 </div>
                                 <label class="pull-left control-label" style="width: 15px">至</label>
                                 <div class="col-xs-10 col-md-4 col-lg-4 ">
-                                    <input type="text" name="dynamic[createTimeEnd]" class="form-control datepicker"
-                                           value="${search.dynamic.createTimeEnd}" readonly>
+                                    <input type="text" name="createTimeEnd" class="form-control datepicker"
+                                           value="${createTimeEnd}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -46,13 +46,13 @@
                         <div class="col-xs-8 col-md-4 col-lg-7 m-b-md">
                             <div class="row">
                                 <div class="col-xs-10 col-md-4 col-lg-4 ">
-                                    <input type="text" name="dynamic[updateTimeStart]" class="form-control datepicker"
-                                           value="${search.dynamic.updateTimeStart}" readonly>
+                                    <input type="text" name="updateTimeStart" class="form-control datepicker"
+                                           value="${updateTimeStart}" readonly>
                                 </div>
                                 <label class="pull-left control-label" style="width: 15px">至</label>
                                 <div class="col-xs-10 col-md-4 col-lg-4 ">
-                                    <input type="text" name="dynamic[updateTimeEnd]" class="form-control datepicker"
-                                           value="${search.dynamic.updateTimeEnd}" readonly>
+                                    <input type="text" name="updateTimeEnd" class="form-control datepicker"
+                                           value="${updateTimeEnd}" readonly>
                                 </div>
                             </div>
                         </div>

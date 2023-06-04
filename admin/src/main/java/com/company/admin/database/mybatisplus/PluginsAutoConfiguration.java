@@ -11,7 +11,9 @@ public class PluginsAutoConfiguration {
 
 	@Bean
 	public PaginationInterceptor paginationInterceptor() {
-		return new PaginationInterceptor();
+		PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+		paginationInterceptor.setLocalPage(true);// 使PageHelper.startPage生效
+		return paginationInterceptor;
 	}
 
 	@Bean
