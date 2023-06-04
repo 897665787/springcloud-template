@@ -1,57 +1,77 @@
 package com.company.admin.entity.marketing;
 
-import javax.validation.constraints.Pattern;
+import java.util.Date;
 
-import org.hibernate.validator.constraints.Length;
-
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
-import com.company.admin.entity.base.BaseModel;
+import com.baomidou.mybatisplus.enums.IdType;
+import com.company.admin.jackson.annotation.AutoDesc;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import lombok.Data;
 
 /**
- * Created by gustinlau on 11/1/17.
+ * 反馈
+ * 
+ * @author CodeGenerator
+ * @date 2023-04-14
  */
-@Accessors(chain = true)
-@Getter
-@Setter
+@Data
 @TableName("sc_feedback")
-public class Feedback extends BaseModel {
+public class Feedback {
 
-    @TableId("id")
-    private Long id;
-    /**
-     * 用户名
-     */
-    @Length(max = 20, message = "名称长度为1-20个字符", groups = Save.class)
-    private String name;
+	/**
+	 * id
+	 */
+	@TableId(value = "id", type = IdType.AUTO)
+	private Long id;
 
-    /**
-     * 手机号
-     */
-    @Pattern(regexp = "^1[0-9]{10}$", message = "手机号格式错误", groups = Save.class)
-    private String mobile;
+	/**
+	 * 姓名
+	 */
+	@TableField("name")
+	private String name;
 
-//    /**
-//     * 标题
-//     */
-//    @NotNull(message = "标题不能为空", groups = Save.class)
-//    @Length(min = 1, max = 255, message = "名称长度为1-255个字符", groups = Save.class)
-//    private String title;
-    /**
-     * 内容
-     */
-    @Length( max = 500, message = "内容长度最多500个字符", groups = Save.class)
-    private String content;
+	/**
+	 * 手机
+	 */
+	@TableField("mobile")
+	private String mobile;
 
-    /**
-     * 是否解决 1 是 0：否
-     */
-    private Integer status;
+	/**
+	 * 标题
+	 */
+	@TableField("title")
+	private String title;
 
-    public interface Save {}
+	/**
+	 * 内容
+	 */
+	@TableField("content")
+	private String content;
 
+	/**
+	 * 是否解决(0:否,1:是)
+	 */
+	@TableField("status")
+	@AutoDesc({ "0:否", "1:是" })
+	private Integer status;
+
+	/**
+	 * 创建时间
+	 */
+	@TableField("create_time")
+	private Date createTime;
+
+	/**
+	 * 更新时间
+	 */
+	@TableField("update_time")
+	private Date updateTime;
+
+	public interface Save {
+	}
+
+	public interface Update {
+	}
 }
