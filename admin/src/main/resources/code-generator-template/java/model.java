@@ -15,7 +15,6 @@ import lombok.Data;
  * {module_name}
  * 
  * @author CodeGenerator
- * @date 2023-04-14
  */
 @Data
 @TableName("{table}")

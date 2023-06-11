@@ -105,6 +105,7 @@ public class {ModelName}Controller {
 		if (StringUtils.isNotBlank(updateTimeEnd)) {
 			wrapper.le("update_time", updateTimeEnd + " 23:59:59");
 		}
+		wrapper.orderBy("id", false);
 		return wrapper;
 	}
 }

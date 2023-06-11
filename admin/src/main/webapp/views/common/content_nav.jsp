@@ -63,6 +63,20 @@
                                 <span>营销</span>
                             </a>
                             <ul class="nav nav-sub">
+                                <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_couponUseCondition')})">
+                                    <li class="${index eq "marketing_couponUseCondition"?"active":""}">
+                                        <a href="<%=request.getContextPath()%>/admin/marketing/couponUseCondition/index">
+                                            <span>优惠券使用条件</span>
+                                        </a>
+                                    </li>
+                                </sec:authorize>
+                                <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_couponTemplate')})">
+                                    <li class="${index eq "marketing_couponTemplate"?"active":""}">
+                                        <a href="<%=request.getContextPath()%>/admin/marketing/couponTemplate/index">
+                                            <span>优惠券模板</span>
+                                        </a>
+                                    </li>
+                                </sec:authorize>
                                 <sec:authorize access="hasAnyRole(${xs:getPermissions('marketing_hotWord')})">
                                     <li class="${index eq "marketing_hotWord"?"active":""}">
                                         <a href="<%=request.getContextPath()%>/admin/marketing/hotWord/index">
