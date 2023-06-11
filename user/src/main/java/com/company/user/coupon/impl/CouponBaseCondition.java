@@ -3,14 +3,12 @@ package com.company.user.coupon.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
+import com.company.user.coupon.UseParam.UserCouponInfo;
 import com.company.user.coupon.dto.MatchResult;
-import com.company.user.entity.UserCoupon;
-import com.company.user.service.market.UserCouponService;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @Component("CouponBaseCondition")
 public class CouponBaseCondition implements UseCondition {
 
-	@Autowired
-	private UserCouponService userCouponService;
-
 	@Override
 	public MatchResult canUse(UseParam useParam) {
-		// 根据id查询优惠券满减金额、有效期、未使用
-		UserCoupon userCoupon = userCouponService.selectById(useParam.getUserCouponId());
+		UserCouponInfo userCoupon = useParam.getUserCouponInfo();
 
 		// 校验用户
 		Integer appUserId = userCoupon.getUserId();

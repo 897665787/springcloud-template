@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
+import com.company.user.coupon.dto.UserCouponCanUseBatch;
+import com.company.user.coupon.dto.UserCouponCanUseParam;
 import com.company.user.coupon.dto.UserCouponMe;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 @RestController
@@ -31,10 +34,10 @@ public class CouponTestController {
 	public Result<?> listCouponByAppUserId(Integer userId) {
 		String status = "nouse";
 
-		Map<String, String> runtimeAttach = Maps.newHashMap();
-		runtimeAttach.put("platform", "app");
+		Map<String, String> seeRuntimeAttach = Maps.newHashMap();
+		seeRuntimeAttach.put("platform", "app");
 
-		List<UserCouponMe> userCouponMeList = useCouponService.listCouponByAppUserId(userId, status, runtimeAttach);
+		List<UserCouponMe> userCouponMeList = useCouponService.listCouponByAppUserId(userId, status, seeRuntimeAttach);
 
 		return Result.success(userCouponMeList);
 	}
@@ -42,7 +45,7 @@ public class CouponTestController {
 	/**
 	 * <pre>
 	 * 用户最优的可用优惠券
-	 * 应用场景：商品展示券后价、支付时自动为用户选择优惠券
+	 * 应用场景：支付时自动为用户选择优惠券
 	 * </pre>
 	 */
 	@RequestMapping("/bestCouponCanUse")
@@ -55,6 +58,38 @@ public class CouponTestController {
 		UserCouponCanUse bestCouponCanUse = useCouponService.bestCouponCanUse(userId, orderAmount, runtimeAttach);
 
 		return Result.success(bestCouponCanUse);
+	}
+	
+	/**
+	 * <pre>
+	 * 用户最优的可用优惠券(批量)
+	 * 应用场景：商品展示券后价
+	 * </pre>
+	 */
+	@RequestMapping("/bestCouponCanUseBatch")
+	public Result<?> bestCouponCanUseBatch(Integer userId) {
+		Map<String, String> seeRuntimeAttach = Maps.newHashMap();
+		seeRuntimeAttach.put("business", "groupmeal");
+		seeRuntimeAttach.put("couponType", "coupon");
+		
+		List<UserCouponCanUseParam> userCouponCanUseParamList = Lists.newArrayList();
+		for (int i = 0; i < 50; i++) {
+			UserCouponCanUseParam userCouponCanUseParam = new UserCouponCanUseParam();
+			userCouponCanUseParam.setUniqueCode("AB3301-" + String.format("%02d", i));// 用productCode做唯一
+			userCouponCanUseParam.setOrderAmount(new BigDecimal(10 + i));
+			
+			Map<String, String> runtimeAttach = Maps.newHashMap();
+			runtimeAttach.put("business", "groupmeal");
+//			runtimeAttach.put("business", "youxuan");
+			runtimeAttach.put("couponType", "coupon");
+			runtimeAttach.put("productCode", "AB3301");
+			userCouponCanUseParam.setRuntimeAttach(runtimeAttach);
+			userCouponCanUseParamList.add(userCouponCanUseParam);
+		}
+		
+		List<UserCouponCanUseBatch> userCouponCanUseBatchList = useCouponService.bestCouponCanUseBatch(userId, seeRuntimeAttach, userCouponCanUseParamList );
+
+		return Result.success(userCouponCanUseBatchList);
 	}
 
 	/**

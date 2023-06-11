@@ -1,6 +1,7 @@
 package com.company.user.coupon;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import lombok.AccessLevel;
@@ -17,6 +18,10 @@ public class UseParam {
 	 * 用户优惠券ID
 	 */
 	Integer userCouponId;
+	/**
+	 * 优惠券信息
+	 */
+	UserCouponInfo userCouponInfo;
 	/**
 	 * 用户ID
 	 */
@@ -37,4 +42,32 @@ public class UseParam {
 	 * 使用条件值
 	 */
 	String useConditionValue;
+	
+	@Data
+	@Builder
+	@FieldDefaults(level = AccessLevel.PRIVATE)
+	public static class UserCouponInfo {
+		/**
+		 * 用户ID
+		 */
+		Integer userId;
+		/**
+		 * 状态(nouse:未使用/已使用/已过期/未激活/已失效)
+		 */
+		private String status;
+		/**
+		 * 满x金额可用
+		 */
+		private BigDecimal conditionAmount;
+
+		/**
+		 * 有效期开始时间
+		 */
+		private LocalDateTime beginTime;
+
+		/**
+		 * 有效期结束时间
+		 */
+		private LocalDateTime endTime;
+	}
 }
