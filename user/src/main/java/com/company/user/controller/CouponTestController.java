@@ -13,6 +13,7 @@ import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.coupon.dto.UserCouponCanUseBatch;
 import com.company.user.coupon.dto.UserCouponCanUseParam;
+import com.company.user.coupon.dto.UserCouponCanUsePay;
 import com.company.user.coupon.dto.UserCouponMe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -44,6 +45,27 @@ public class CouponTestController {
 
 	/**
 	 * <pre>
+	 * 用户优惠券列表
+	 * 应用场景：支付时展示选择优惠券的列表
+	 * </pre>
+	 */
+	@RequestMapping("/listCouponCanUseByAppUserId")
+	public Result<?> listCouponCanUseByAppUserId(Integer userId) {
+		Map<String, String> runtimeAttach = Maps.newHashMap();
+		runtimeAttach.put("productCode", "AB3301");
+		runtimeAttach.put("business", "groupmeal");
+		runtimeAttach.put("couponType", "coupon");
+//		runtimeAttach.put("platform", "app");
+
+		BigDecimal orderAmount = new BigDecimal("10");
+		List<UserCouponCanUsePay> UserCouponCanUsePayList = useCouponService.listCouponCanUseByAppUserId(userId, orderAmount,
+				runtimeAttach);
+
+		return Result.success(UserCouponCanUsePayList);
+	}
+	
+	/**
+	 * <pre>
 	 * 用户最优的可用优惠券
 	 * 应用场景：支付时自动为用户选择优惠券
 	 * </pre>
@@ -53,7 +75,7 @@ public class CouponTestController {
 		Map<String, String> runtimeAttach = Maps.newHashMap();
 		runtimeAttach.put("productCode", "AB3301");
 
-		BigDecimal orderAmount = new BigDecimal("30");
+		BigDecimal orderAmount = new BigDecimal("20");
 
 		UserCouponCanUse bestCouponCanUse = useCouponService.bestCouponCanUse(userId, orderAmount, runtimeAttach);
 
@@ -94,25 +116,6 @@ public class CouponTestController {
 
 	/**
 	 * <pre>
-	 * 用户优惠券列表
-	 * 应用场景：支付时展示选择优惠券的列表
-	 * </pre>
-	 */
-	@RequestMapping("/listCouponCanUseByAppUserId")
-	public Result<?> listCouponCanUseByAppUserId(Integer userId) {
-		Map<String, String> runtimeAttach = Maps.newHashMap();
-		runtimeAttach.put("productCode", "AB3301");
-//		runtimeAttach.put("platform", "app");
-
-		BigDecimal orderAmount = new BigDecimal("20");
-		List<UserCouponCanUse> userCouponCanUseList = useCouponService.listCouponCanUseByAppUserId(userId, orderAmount,
-				runtimeAttach);
-
-		return Result.success(userCouponCanUseList);
-	}
-
-	/**
-	 * <pre>
 	 * 判断优惠券能否使用
 	 * 应用场景：创建订单时校验优惠券
 	 * </pre>
@@ -121,7 +124,9 @@ public class CouponTestController {
 	public Result<?> canUse(Integer userId, Integer userCouponId) {
 		Map<String, String> runtimeAttach = Maps.newHashMap();
 		runtimeAttach.put("productCode", "AB3301");
-
+		runtimeAttach.put("business", "groupmeal");
+		runtimeAttach.put("couponType", "coupon");
+		
 		BigDecimal orderAmount = new BigDecimal("20");
 		UserCouponCanUse canUse = useCouponService.canUse(userCouponId, userId, orderAmount, runtimeAttach);
 
