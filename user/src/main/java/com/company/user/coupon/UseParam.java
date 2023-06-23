@@ -48,26 +48,30 @@ public class UseParam {
 	@FieldDefaults(level = AccessLevel.PRIVATE)
 	public static class UserCouponInfo {
 		/**
+		 * 券模板ID
+		 */
+		Integer couponTemplateId;
+		/**
 		 * 用户ID
 		 */
 		Integer userId;
 		/**
 		 * 状态(nouse:未使用/已使用/已过期/未激活/已失效)
 		 */
-		private String status;
+		String status;
 		/**
 		 * 满x金额可用
 		 */
-		private BigDecimal conditionAmount;
+		BigDecimal conditionAmount;
 
 		/**
 		 * 有效期开始时间
 		 */
-		private LocalDateTime beginTime;
+		LocalDateTime beginTime;
 
 		/**
 		 * 有效期结束时间
 		 */
-		private LocalDateTime endTime;
+		LocalDateTime endTime;
 	}
 }

@@ -2,6 +2,7 @@ package com.company.tool.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.company.common.api.Result;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.UploadResp;
+import com.company.tool.enums.SmsEnum;
+import com.company.tool.sms.AsyncSmsSender;
+import com.google.common.collect.Lists;
 
 import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +31,24 @@ public class TestController {
 	private FileController fileController;
 	@Autowired
 	private VerifyCodeController verifyCodeController;
+	@Autowired
+	private AsyncSmsSender asyncSmsSender;
 
 	@GetMapping("/verifyCodeSms")
 	public Result<String> verifyCodeSms(String mobile, String type) {
 		return verifyCodeController.sms(mobile, type);
+	}
+
+	@GetMapping("/batchSendSms")
+	public Result<List<Integer>> testBatchSendSms() {
+		List<String> mobileList = Lists.newArrayList();
+		mobileList.add("152xxxxxxxx");
+		mobileList.add("153xxxxxxxx");
+		mobileList.add("154xxxxxxxx");
+
+		asyncSmsSender.send0(mobileList, SmsEnum.Type.MARKET);
+
+		return Result.success();
 	}
 	
 	@PostMapping("/upload")

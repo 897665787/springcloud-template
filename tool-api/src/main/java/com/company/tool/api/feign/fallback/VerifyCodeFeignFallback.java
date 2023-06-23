@@ -25,6 +25,11 @@ public class VerifyCodeFeignFallback implements FallbackFactory<VerifyCodeFeign>
 			public Result<CaptchaResp> captcha(String type) {
 				return Result.fail(ResultCode.FALLBACK);
 			}
+
+			@Override
+			public Result<Boolean> verify(String type, String certificate, String inputcode) {
+				return Result.fail(ResultCode.FALLBACK);
+			}
 		};
 	}
 }
