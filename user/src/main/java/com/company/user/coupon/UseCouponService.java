@@ -2,6 +2,7 @@ package com.company.user.coupon;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,8 +21,8 @@ import com.company.framework.context.SpringContextUtil;
 import com.company.user.coupon.dto.MatchResult;
 import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.coupon.dto.UserCouponCanUseBatch;
-import com.company.user.coupon.dto.UserCouponCanUsePay;
 import com.company.user.coupon.dto.UserCouponCanUseParam;
+import com.company.user.coupon.dto.UserCouponCanUsePay;
 import com.company.user.coupon.dto.UserCouponMe;
 import com.company.user.coupon.util.CollectionUtil;
 import com.company.user.entity.CouponTemplateCondition;
@@ -168,22 +169,42 @@ public class UseCouponService {
 
 		List<UserCoupon> userCouponCanSeeList = this.canSee(userCouponList, couponTemplateIdConditionMap, userId,
 				runtimeAttach);
+		
+		// 先按优惠紧急对优惠券进行排序，接下来查询到第一张满足条件的优惠券就行
+		Collections.sort(userCouponCanSeeList, (a, b) -> {
+			// 先按优惠金额倒序，金额一致按过期时间正序
+			BigDecimal reduceAmountA = a.getMaxAmount();
+			BigDecimal discountA = a.getDiscount();
+			if (discountA.compareTo(BigDecimal.ONE) < 0) {// 折扣
+				BigDecimal discountAmount = orderAmount.multiply(BigDecimal.ONE.subtract(discountA));
+				reduceAmountA = discountAmount.min(reduceAmountA);
+			}
 
-		List<UserCouponCanUse> userCouponCanUseList = userCouponCanSeeList.stream().map(userCoupon -> {
-			List<CouponTemplateCondition> couponTemplateConditionList = couponTemplateIdConditionMap
-					.get(userCoupon.getCouponTemplateId());
-			return this.canUse(userCoupon, couponTemplateConditionList, userId, orderAmount, runtimeAttach);
-		}).collect(Collectors.toList());
+			BigDecimal reduceAmountB = b.getMaxAmount();
+			BigDecimal discountB = b.getDiscount();
+			if (discountB.compareTo(BigDecimal.ONE) < 0) {// 折扣
+				BigDecimal discountAmount = orderAmount.multiply(BigDecimal.ONE.subtract(discountB));
+				reduceAmountB = discountAmount.min(reduceAmountB);
+			}
 
-		UserCouponCanUse bestCouponCanUse = userCouponCanUseList.stream().filter(v -> v.getCanUse()).max((a, b) -> {
-			// 先按金额倒序，金额一致按过期时间正序
-			int compareTo = b.getReduceAmount().compareTo(a.getReduceAmount());
+			int compareTo = reduceAmountB.compareTo(reduceAmountA);
 			if (compareTo == 0) {
 				compareTo = a.getEndTime().compareTo(b.getEndTime());
 			}
 			return compareTo;
-		}).orElse(null);
-
+		});
+		
+		UserCouponCanUse bestCouponCanUse = null;
+		for (UserCoupon userCoupon : userCouponCanSeeList) {
+			List<CouponTemplateCondition> couponTemplateConditionList = couponTemplateIdConditionMap
+					.get(userCoupon.getCouponTemplateId());
+			UserCouponCanUse userCouponCanUse = this.canUse(userCoupon, couponTemplateConditionList, userId,
+					orderAmount, runtimeAttach);
+			if (userCouponCanUse.getCanUse()) {
+				bestCouponCanUse = userCouponCanUse;
+				break;
+			}
+		}
 		return bestCouponCanUse;
 	}
 
@@ -222,22 +243,41 @@ public class UseCouponService {
 					UserCouponCanUseBatch userCouponCanUseBatch = new UserCouponCanUseBatch();
 					userCouponCanUseBatch.setUniqueCode(userCouponCanUseParam.getUniqueCode());
 
-					List<UserCouponCanUse> userCouponCanUseList = userCouponCanSeeList.stream().map(userCoupon -> {
+					// 先按优惠紧急对优惠券进行排序，接下来查询到第一张满足条件的优惠券就行
+					Collections.sort(userCouponCanSeeList, (a, b) -> {
+						// 先按优惠金额倒序，金额一致按过期时间正序
+						BigDecimal reduceAmountA = a.getMaxAmount();
+						BigDecimal discountA = a.getDiscount();
+						if (discountA.compareTo(BigDecimal.ONE) < 0) {// 折扣
+							BigDecimal discountAmount = userCouponCanUseParam.getOrderAmount().multiply(BigDecimal.ONE.subtract(discountA));
+							reduceAmountA = discountAmount.min(reduceAmountA);
+						}
+
+						BigDecimal reduceAmountB = b.getMaxAmount();
+						BigDecimal discountB = b.getDiscount();
+						if (discountB.compareTo(BigDecimal.ONE) < 0) {// 折扣
+							BigDecimal discountAmount = userCouponCanUseParam.getOrderAmount().multiply(BigDecimal.ONE.subtract(discountB));
+							reduceAmountB = discountAmount.min(reduceAmountB);
+						}
+
+						int compareTo = reduceAmountB.compareTo(reduceAmountA);
+						if (compareTo == 0) {
+							compareTo = a.getEndTime().compareTo(b.getEndTime());
+						}
+						return compareTo;
+					});
+
+					UserCouponCanUse bestCouponCanUse = null;
+					for (UserCoupon userCoupon : userCouponCanSeeList) {
 						List<CouponTemplateCondition> couponTemplateConditionList = couponTemplateIdConditionMap
 								.get(userCoupon.getCouponTemplateId());
-						return this.canUse(userCoupon, couponTemplateConditionList, userId,
+						UserCouponCanUse userCouponCanUse = this.canUse(userCoupon, couponTemplateConditionList, userId,
 								userCouponCanUseParam.getOrderAmount(), userCouponCanUseParam.getRuntimeAttach());
-					}).collect(Collectors.toList());
-
-					UserCouponCanUse bestCouponCanUse = userCouponCanUseList.stream().filter(v -> v.getCanUse())
-							.max((a, b) -> {
-								// 先按金额倒序，金额一致按过期时间正序
-								int compareTo = b.getReduceAmount().compareTo(a.getReduceAmount());
-								if (compareTo == 0) {
-									compareTo = a.getEndTime().compareTo(b.getEndTime());
-								}
-								return compareTo;
-							}).orElse(null);
+						if (userCouponCanUse.getCanUse()) {
+							bestCouponCanUse = userCouponCanUse;
+							break;
+						}
+					}
 
 					userCouponCanUseBatch.setUserCouponCanUse(bestCouponCanUse);
 
@@ -369,9 +409,9 @@ public class UseCouponService {
 				}
 
 				UseParam.UserCouponInfo userCouponInfo = UseParam.UserCouponInfo.builder()
-						.userId(userCoupon.getUserId()).status(userCoupon.getStatus())
-						.conditionAmount(userCoupon.getConditionAmount()).beginTime(userCoupon.getBeginTime())
-						.endTime(userCoupon.getEndTime()).build();
+						.couponTemplateId(userCoupon.getCouponTemplateId()).userId(userCoupon.getUserId())
+						.status(userCoupon.getStatus()).conditionAmount(userCoupon.getConditionAmount())
+						.beginTime(userCoupon.getBeginTime()).endTime(userCoupon.getEndTime()).build();
 				UseParam useParam = UseParam.builder().userCouponId(userCoupon.getId()).userCouponInfo(userCouponInfo)
 						.userId(userId).orderAmount(orderAmount).runtimeAttach(runtimeAttach)
 						.useConditionValue(v.getUseConditionValue()).build();

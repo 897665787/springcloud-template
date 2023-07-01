@@ -3,7 +3,7 @@ package com.company.tool.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public interface SmsTaskEnum {
+public interface SmsTaskDetailEnum {
 
 	@AllArgsConstructor
 	enum Status {

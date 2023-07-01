@@ -10,18 +10,19 @@ template:
     idempotent: true
     rabbitmq: true
     data-encypt: true
-  filestorage:
-    active: local
-    local:
-      endpoint: /home/data/oss
-      bucketName: buket-template
-      domain: http://18.163.115.207:8011 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
-    minio:
-      endpoint: http://127.0.0.1:9000
-      accessKey: pRYo5fCm9ZyVNKLA
-      secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
-      bucketName: buket-template
-      domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
+
+filestorage:
+  active: local
+  local:
+    endpoint: /home/data/oss
+    bucketName: buket-template
+    domain: http://18.163.115.207:8011 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
+  minio:
+    endpoint: http://127.0.0.1:9000
+    accessKey: pRYo5fCm9ZyVNKLA
+    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+    bucketName: buket-template
+    domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
 
 smssender:
   active: log

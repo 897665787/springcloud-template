@@ -20,12 +20,6 @@ import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
-/**
- * 验证码
- * 
- * @author Candi
- *
- */
 @RestController
 @RequestMapping(value = "/verifyCode")
 public class VerifyCodeController implements VerifyCodeFeign {
@@ -33,12 +27,10 @@ public class VerifyCodeController implements VerifyCodeFeign {
 	private VerifyCodeService verifyCodeService;
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;
-
+	
 	@Override
 	public Result<String> sms(String mobile, String type) {
 		String code = RandomUtil.randomNumbers(6);
-
-		// 判断手机号是否已注册
 
 		verifyCodeService.save(type, mobile, code);
 
@@ -46,7 +38,8 @@ public class VerifyCodeController implements VerifyCodeFeign {
 		templateParamMap.put("code", code);
 		LocalDateTime planSendTime = LocalDateTime.now();
 		LocalDateTime overTime = planSendTime.plusMinutes(5);
-		asyncSmsSender.send(mobile, SmsEnum.Type.VERIFYCODE, templateParamMap, planSendTime, overTime);
+
+		asyncSmsSender.send(mobile, templateParamMap, SmsEnum.Type.VERIFYCODE, planSendTime, overTime);
 
 		return Result.success("验证码发送成功");
 	}
@@ -63,5 +56,11 @@ public class VerifyCodeController implements VerifyCodeFeign {
 		resp.setUuid(uuid);
 		resp.setImageBase64Data(lineCaptcha.getImageBase64Data());
 		return Result.success(resp);
+	}
+
+	@Override
+	public Result<Boolean> verify(String type, String certificate, String inputcode) {
+		boolean verifyPass = verifyCodeService.verify(type, certificate, inputcode);
+		return Result.success(verifyPass);
 	}
 }

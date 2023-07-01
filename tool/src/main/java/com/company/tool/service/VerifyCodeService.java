@@ -27,12 +27,8 @@ public class VerifyCodeService extends ServiceImpl<VerifyCodeMapper, VerifyCode>
 		baseMapper.insert(verifyCode);
 	}
 
-	public VerifyCode selectLastByCertificateType(String certificate, String type) {
-		return this.baseMapper.selectLastByCertificateType(certificate, type);
-	}
-	
 	public boolean verify(String type, String certificate, String inputcode) {
-		VerifyCode verifyCode = selectLastByCertificateType(certificate, type);
+		VerifyCode verifyCode = baseMapper.selectLastByCertificateType(certificate, type);
 		if (verifyCode == null) {
 			throw new BusinessException("验证码不正确");
 		}
@@ -40,10 +36,17 @@ public class VerifyCodeService extends ServiceImpl<VerifyCodeMapper, VerifyCode>
 		if (validTime.compareTo(LocalDateTime.now()) < 0) {
 			throw new BusinessException("验证码已失效");
 		}
+		Integer maxErrCount = verifyCode.getMaxErrCount();
+		Integer errCount = verifyCode.getErrCount();
+		if (errCount < maxErrCount) {
+			throw new BusinessException("失败次数过多，验证码已失效");
+		}
 		String code = verifyCode.getCode();
 		if (!code.equals(inputcode)) {
+			baseMapper.incrErrCount(verifyCode.getId());
 			throw new BusinessException("验证码不正确");
 		}
+		baseMapper.updateStatus(verifyCode.getId(), VerifyCodeEnum.Status.USED);
 		return true;
 	}
 }
