@@ -215,6 +215,12 @@ public class SecResourceService {
         XSTreeUtil.buildTree(list);
         return XSTreeUtil.getSubTrees(list, new SecResource(0L));
     }
+    
+    public List<SecResource> treeByStaffId(String staffId) {
+        List<SecResource> list = secResourceDao.listComboByStaffId(staffId);
+        XSTreeUtil.buildTree(list);
+        return XSTreeUtil.getSubTrees(list, new SecResource(0L));
+    }
 
     public void invalidateCache() {
         cache.invalidateAll();

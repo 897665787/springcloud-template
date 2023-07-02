@@ -159,6 +159,19 @@
         FROM sc_security_resource
         <if test="sort!=null"><foreach collection="sort" index="index" item="item" open="ORDER BY" separator=",">${index} ${item}</foreach></if>
     </select>
+    
+    <select id="listComboByStaffId" resultMap="secResourceMap">
+        SELECT
+		r.id,r.`name`,r.pid AS p_id,r.`type`,r.`key`,r.url
+		FROM 
+		sc_security_resource r
+		inner join sc_security_role_res rr on rr.resource_id = r.id
+		inner join sc_security_staff_role sr on sr.role_id = rr.role_id
+		where sr.staff_id = #{staffId}
+		and r.type = 0
+		ORDER BY
+		r.seq DESC,r.id ASC 
+    </select>
 
     <resultMap id="secResourceWithRoleMap" type="secResource" autoMapping="true">
         <id property="id" column="id" javaType="long"/>

@@ -47,6 +47,8 @@ public interface SecResourceDao {
     List<SecResource> list(SecResource secResource);
 
     List<SecResource> listCombo(SecResource secResource);
+    
+	List<SecResource> listComboByStaffId(@Param("staffId") String staffId);
 
     /**
      * 获取所有资源和其所属的角色列表

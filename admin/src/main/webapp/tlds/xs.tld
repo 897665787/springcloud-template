@@ -7,6 +7,12 @@
     <short-name>xs</short-name><!-- 你的标签库的简称 -->
     <uri>http://code.template.com/tags/jsp/xs</uri><!-- 你标签库的引用uri -->
 
+    <tag>
+        <name>menu</name>
+        <tag-class>com.company.admin.tag.MenuTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    
     <!--根据值获取字典描述-->
     <tag>
         <name>dictDesc</name>
