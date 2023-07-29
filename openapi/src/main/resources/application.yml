@@ -1,0 +1,97 @@
+server:
+  port: 6201
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
+
+spring:
+  application:
+    name: template-openapi
+  profiles:
+    active: dev
+
+#为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
+logging:
+  config: classpath:logback-conf.xml
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true # 注册到Eureka Server，默认true
+    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
+      defaultZone: http://127.0.0.1:7001/eureka/
+
+########## Feign Ribbon Hystrix 三者关系：https://www.cnblogs.com/crazymakercircle/p/11664812.html ##########
+feign:
+  hystrix: #开启feign的hystrix支持,默认false
+    enabled: true
+  #httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection
+    #enabled: true
+  #okhttp: # 使用okhttp作为http客户端  ，默认HttpURLConnection
+    #enabled: true
+  #使用Feign进行微服务调用分为两层：Hystrix的调用和Ribbon的调用，Feign自身的配置会被覆盖
+  client:
+    config:
+      default:
+        connectTimeout: 1000 #连接超时时间，默认1000ms
+        readTimeout: 1000 #读取超时时间，默认1000ms
+    
+#参考https://www.cnblogs.com/zhenbianshu/p/9630167.html，https://blog.csdn.net/u010395804/article/details/80266335
+hystrix:
+  command:
+    default: #全局默认配置
+      execution: #线程隔离相关
+        timeout:
+          enabled: true #是否给方法执行设置超时时间，默认true
+        isolation:
+          strategy: THREAD #默认线程池方式。还有一种信号量的方式SEMAPHORE
+          thread:
+            #Hystrix的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
+            timeoutInMilliseconds: 3000 #方法执行超时时间，默认1000ms
+            interruptOnTimeout: true #发生超时时是否中断方法的执行，默认true
+            interruptOnCancel: false #是否在方法执行被取消时中断方法，默认false
+  threadpool:
+    default:
+      #核心线程池的大小，默认 10，一般根据 QPS * 99% cost + redundancy count 计算得出
+      coreSize: 10
+      #是否允许线程池扩展到最大线程池数量，默认 false
+      allowMaximumSizeToDivergeFromCoreSize: true
+      #线程池中线程的最大数量，默认10，此配置项单独配置时并不会生效，需要启用 allowMaximumSizeToDivergeFromCoreSize 项
+      maximumSize: 15
+      #由上面的 maximumSize，我们知道，线程池内核心线程数目都在忙碌，再有新的请求到达时，线程池容量可以被扩充为到最大数量，等到线程池空闲后，多于核心数量的线程还会被回收，此值指定了线程被回收前的存活时间，默认 2min
+      keepAliveTimeMinutes: 2
+  circuitBreaker: #熔断器相关配置
+    enabled: true #是否启动熔断器，默认true，false表示不要引入Hystrix
+    requestVolumeThreshold: 20 #启用熔断器功能窗口时间内的最小请求数
+    sleepWindowInMilliseconds: 5000 #所以此配置的作用是指定熔断器打开后多长时间内允许一次请求尝试执行，默认5000ms
+    errorThresholdPercentage: 50 #窗口时间内超过50%的请求失败后就会打开熔断器将后续请求快速失败掉,默认50
+    
+ribbon:
+  eager-load: #饥饿加载，默认false(用于防止第一次请求初始化耗时长而报错)
+    enabled: true
+    clients: template-order,template-user #@FeignClient value值，多个逗号分隔
+  #Ribbon重试次数(包含首次) = 1 + ribbon.MaxAutoRetries + ribbon.MaxAutoRetriesNextServer + (ribbon.MaxAutoRetries * ribbon.MaxAutoRetriesNextServer)
+  MaxAutoRetries: 0 #同一实例最大重试次数，不包括首次调用。默认0
+  MaxAutoRetriesNextServer: 1 #同一个微服务其他实例的最大重试次数，不包括第一次调用的实例。默认1
+  OkToRetryOnAllOperations: false #是否所有操作（GET、POST等）都允许重试。默认false
+  ServerListRefreshInterval: 2000 #从注册中心刷新服务器列表信息的时间间隔，默认2000ms
+  #ConnectTimeout = feign.client.config.default.connectTimeout
+  ConnectTimeout: 1000 #连接超时时间，默认无
+  #ReadTimeout >= Ribbon重试次数(包含首次) * feign.client.config.default.connectTimeout
+  ReadTimeout: 1000 #读取超时时间，默认无
+  
+template:
+  sequence:
+    datacenterId: 4
+  threadpool:
+    corePoolSize: 10
+    maxPoolSize: 20
+    queueCapacity: 200
+    keepAliveSeconds: 60
+    threadNamePrefix: t-subTask-
+    waitForTasksToCompleteOnShutdown: true
+    awaitTerminationSeconds: 60

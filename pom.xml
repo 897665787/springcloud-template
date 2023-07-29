@@ -41,6 +41,7 @@
 		<module>auth</module>
 		<module>web</module>
 		<module>app</module>
+		<module>openapi</module>
 		<module>admin</module>
 	</modules>
 
