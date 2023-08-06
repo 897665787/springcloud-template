@@ -29,7 +29,7 @@
     <p style="text-align: center;color: #888"><span id="second" style="padding: 0 10px">5秒后</span><a
             href="javascript:goback()" style="color: #33AC79;">返回</a></p>
 </div>
-<script src="<%=request.getContextPath()%>/assets/js/jquery-v2.4.4.min.js"></script>
+<script src="<%=request.getContextPath()%>/assets/js/jquery.min.js"></script>
 <script>
     var $second = $("#second");
     var second = 5;

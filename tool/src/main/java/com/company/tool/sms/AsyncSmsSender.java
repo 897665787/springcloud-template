@@ -123,7 +123,7 @@ public class AsyncSmsSender {
 	private void asyncExe(Integer smsTaskDetailId, SmsTaskDetailEnum.Status status) {
 		// MQ异步处理
 		SendSmsMQDto params = new SendSmsMQDto();
-		params.setSmsTaskId(smsTaskDetailId);
+		params.setSmsTaskDetailId(smsTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDSMS_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 				Constants.QUEUE.SEND_SMS.ROUTING_KEY);

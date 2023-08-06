@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <tlib-version>1.0</tlib-version><!-- 代表标签库的版本号 -->
+    <short-name>xs</short-name><!-- 你的标签库的简称 -->
+    <uri>http://code.template.com/tags/jsp/xs</uri><!-- 你标签库的引用uri -->
+
+    <!--根据字典生成Options-->
+    <tag>
+        <name>dictOptions</name>
+        <tag-class>com.company.admin.tag.DictOptionsTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>字典的KEY</description>
+            <name>key</name>
+            <required>true</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>选中值</description>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <function>
+        <description>获取指定资源的所需的权限</description>
+        <name>getPermissions</name>
+        <function-class>com.company.admin.tag.PermissionTag</function-class>
+        <function-signature>java.lang.String getPermissions(java.lang.String)</function-signature>
+    </function>
+</taglib>

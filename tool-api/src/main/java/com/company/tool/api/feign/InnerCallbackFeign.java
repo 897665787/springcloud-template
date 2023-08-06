@@ -22,7 +22,7 @@ public interface InnerCallbackFeign {
 	@GetMapping("/selectId4CallbackFail")
 	Result<List<Integer>> selectId4CallbackFail();
 
-	@Component
+	@Component("toolInnerCallbackFeignFactory")
 	class InnerCallbackFeignFactory implements FallbackFactory<InnerCallbackFeign> {
 
 		@Override

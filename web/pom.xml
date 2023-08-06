@@ -34,12 +34,39 @@
 		    <artifactId>template-user-api</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+		
+		<!-- 渲染模板 -->
+		<!-- 对jsp的支持的依赖 -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!-- 对jstl的支持的依赖 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<!-- 渲染模板 -->
+		
 	</dependencies>
 	<build>
+		<resources>
+			<resource>
+                <directory>src/main/webapp</directory>
+                <targetPath>META-INF/resources</targetPath><!-- 注意此次必须要放在此目录下才能被访问到 -->
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>1.4.2.RELEASE</version><!-- 一定要是这个版本，其他版本访问不到页面 -->
 				<executions>
                     <execution>
                         <goals>
@@ -47,6 +74,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                	<!-- 1.4.2.RELEASE导致多个main方法的情况下需要指定主类 -->
+                    <mainClass>com.company.web.WebApplication</mainClass>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>

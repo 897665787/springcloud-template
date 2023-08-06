@@ -13,7 +13,17 @@ spring:
     multipart:
       max-file-size: 10MB #单个文件大小限制，默认1M
       max-request-size: 10MB #一次请求中所有上传文件总大小限制，默认1M
-
+  resources:
+    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+    static-locations: /assets/
+  mvc:
+    #资源访问路径和spring.mvc.static-path-pattern匹配，当资源访问路径为"%/static/**”时，springboot才会处理请求
+    static-path-pattern: /assets/**
+    #相关页面解析器设置
+    view:
+      prefix: /views/
+      suffix: .jsp
+      
 #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
 logging:
   config: classpath:logback-conf.xml
@@ -99,3 +109,6 @@ template:
     threadNamePrefix: t-subTask-
     waitForTasksToCompleteOnShutdown: true
     awaitTerminationSeconds: 60
+  requestFilter:
+    # 忽略日志打印匹配表达式，支持?匹配单个字符，*匹配多个字符
+    ignoreLogPatterns: /assets/*,/favicon.ico

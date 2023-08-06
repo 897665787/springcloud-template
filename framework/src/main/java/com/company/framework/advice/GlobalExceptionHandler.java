@@ -25,12 +25,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
+import com.company.framework.context.SpringContextUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,10 +59,9 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
 	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,
-			HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
+			HttpServletRequest request, HttpServletResponse response) {
 		String message = MessageFormat.format("不支持{0}请求", e.getMethod());
 		log.warn(message, e);
-		sendErrorIfPage(request, response, handler);
 		return Result.fail(message);
 	}
 
@@ -69,10 +70,21 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
 	public Result<?> httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e,
-			HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
+			HttpServletRequest request, HttpServletResponse response) {
 		String message = MessageFormat.format("仅支持{0}媒体类型", JsonUtil.toJsonString(e.getSupportedMediaTypes()));
 		log.warn(message, e);
-		sendErrorIfPage(request, response, handler);
+		return Result.fail(message);
+	}
+	
+	/**
+	 * 文件上传大小限制
+	 */
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public Result<?> maxUploadSizeExceededException(MaxUploadSizeExceededException e,
+			HttpServletRequest request, HttpServletResponse response) {
+		String maxFileSize = SpringContextUtil.getProperty("spring.servlet.multipart.max-file-size", "1M");
+		String message = MessageFormat.format("文件大小需小于{0}", maxFileSize);
+		log.warn(message, e);
 		return Result.fail(message);
 	}
 

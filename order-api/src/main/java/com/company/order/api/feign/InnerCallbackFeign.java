@@ -13,7 +13,7 @@ import com.company.order.api.feign.InnerCallbackFeign.InnerCallbackFeignFactory;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-tool", path = "/innerCallback", fallbackFactory = InnerCallbackFeignFactory.class)
+@FeignClient(value = "template-order", path = "/innerCallback", fallbackFactory = InnerCallbackFeignFactory.class)
 public interface InnerCallbackFeign {
 
 	@PostMapping("/postRestTemplate")
@@ -22,7 +22,7 @@ public interface InnerCallbackFeign {
 	@GetMapping("/selectId4CallbackFail")
 	Result<List<Integer>> selectId4CallbackFail();
 
-	@Component
+	@Component("orderInnerCallbackFeignFactory")
 	class InnerCallbackFeignFactory implements FallbackFactory<InnerCallbackFeign> {
 
 		@Override

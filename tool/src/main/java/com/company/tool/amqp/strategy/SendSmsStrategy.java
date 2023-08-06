@@ -15,7 +15,7 @@ public class SendSmsStrategy implements BaseStrategy<SendSmsMQDto> {
 
 	@Override
 	public void doStrategy(SendSmsMQDto params) {
-		Integer smsTaskId = params.getSmsTaskId();
-		amsSenderConsumer.consumer(smsTaskId);
+		Integer smsTaskDetailId = params.getSmsTaskDetailId();
+		amsSenderConsumer.consumer(smsTaskDetailId);
 	}
 }

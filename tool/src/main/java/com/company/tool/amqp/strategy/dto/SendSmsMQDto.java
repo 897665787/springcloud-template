@@ -4,7 +4,5 @@ import lombok.Data;
 
 @Data
 public class SendSmsMQDto {
-//	String mobile;
-//	String content;
-	Integer smsTaskId;
+	Integer smsTaskDetailId;
 }
