@@ -1,6 +1,7 @@
 package com.company.tool.api.feign.fallback;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
@@ -19,6 +20,11 @@ public class FileFeignFallback implements FallbackFactory<FileFeign> {
 
 			@Override
 			public Result<UploadResp> upload(UploadReq uploadReq) {
+				return Result.fail(ResultCode.FALLBACK);
+			}
+
+			@Override
+			public Result<UploadResp> uploadFile(MultipartFile file) {
 				return Result.fail(ResultCode.FALLBACK);
 			}
 		};

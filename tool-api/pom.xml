@@ -36,6 +36,12 @@
 			<version>1.0.0</version>
 		</dependency>
 		
+		<!-- feign传递MultipartFile -->
+		<dependency>
+			<groupId>io.github.openfeign.form</groupId>
+			<artifactId>feign-form-spring</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 	</dependencies>
 
 </project>

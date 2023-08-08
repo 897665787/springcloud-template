@@ -76,4 +76,19 @@ public class FileController {
 			return Result.fail(e.getMessage());
 		}
 	}
+	
+	@PostMapping("/uploadFile")
+	public Result<UploadResp> uploadFile(@RequestParam("file") MultipartFile file) {
+		String name = file.getName();
+		String originalFilename = file.getOriginalFilename();
+		String contentType = file.getContentType();
+		long size = file.getSize();
+		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
+		
+		if (size == 0) {
+			return Result.fail("请选择文件");
+		}
+		
+		return fileFeign.uploadFile(file);
+	}
 }

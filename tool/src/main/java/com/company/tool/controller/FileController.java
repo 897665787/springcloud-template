@@ -1,6 +1,7 @@
 package com.company.tool.controller;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 
@@ -8,7 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.company.common.api.Result;
 import com.company.tool.api.feign.FileFeign;
@@ -18,7 +21,9 @@ import com.jqdi.filestorage.core.FileStorage;
 import com.jqdi.filestorage.core.FileUrl;
 
 import cn.hutool.core.util.IdUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/file")
 public class FileController implements FileFeign {
@@ -47,6 +52,35 @@ public class FileController implements FileFeign {
 		return Result.success(resp);
 	}
 
+	@Override
+	public Result<UploadResp> uploadFile(@RequestPart("file") MultipartFile file) {
+		String name = file.getName();
+		String originalFilename = file.getOriginalFilename();
+		String contentType = file.getContentType();
+		long size = file.getSize();
+		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
+
+		if (size == 0) {
+			return Result.fail("请选择文件");
+		}
+		
+		String fileName = generateFileName(originalFilename);
+		String fullFileName = fullFileName("", fileName);
+		
+		try (InputStream inputStream = file.getInputStream()) {
+			
+			FileUrl fileUrl = fileStorage.upload(inputStream, fullFileName);
+			
+			UploadResp resp = new UploadResp();
+			resp.setDomainUrl(fileUrl.getDomainUrl());
+			resp.setOssUrl(fileUrl.getOssUrl());
+			return Result.success(resp);
+		} catch (IOException e) {
+			log.error("IOException", e);
+			return Result.fail(e.getMessage());
+		}
+	}
+	
 	private static String fullFileName(String basePath, String fileName) {
 		if (basePath == null) {
 			basePath = "";
