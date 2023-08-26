@@ -68,14 +68,15 @@ public class RequestFilter extends OncePerRequestFilter {
 		String paramsStr = JsonUtil.toJsonString(getReqParam(request));
 		String requestIp = IpUtil.getRequestIp(request);
 		String headerStr = JsonUtil.toJsonString(HttpContextUtil.httpContextHeaderThisRequest(request));
+		String method = request.getMethod();
+		String requestURI = request.getRequestURI();
 
-		log.info("{} {} {} header:{},param:{},body:{}", request.getMethod(), requestIp, request.getRequestURI(),
-				headerStr, paramsStr, bodyStr);
+		log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, requestURI, headerStr, paramsStr, bodyStr);
 
 		chain.doFilter(request, response);
 
-		log.info("{} {} {} header:{},param:{},body:{},{}ms", request.getMethod(), requestIp, request.getRequestURI(),
-				headerStr, paramsStr, bodyStr, System.currentTimeMillis() - start);
+		log.info("{} {} {} header:{},param:{},body:{},{}ms", method, requestIp, requestURI, headerStr, paramsStr,
+				bodyStr, System.currentTimeMillis() - start);
 	}
 
 	/**

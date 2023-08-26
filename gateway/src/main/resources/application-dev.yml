@@ -5,7 +5,7 @@ eureka:
 
 spring:
   profiles:
-    include: redis-dev,rabbitmq-dev
+    include: routes,rabbitmq-dev,apollo-dev
     
 template:
   domain: http://d-domain.com

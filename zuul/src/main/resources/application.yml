@@ -39,25 +39,6 @@ ribbon:
   ConnectTimeout: 1000 #连接超时时间，默认无
   #ReadTimeout >= Ribbon重试次数(包含首次) * feign.client.config.default.connectTimeout
   ReadTimeout: 5000 #读取超时时间，默认无
-  
-zuul:
-  # 前缀，可以用来做版本控制
-  prefix: /
-  # 禁用默认路由，执行配置的路由
-  ignored-services: "*"
-  routes:
-    # 配置4001认证中心微服务
-    auth:
-      serviceId: template-auth
-      path: /auth/**
-    # 配置6001接口微服务
-    web:
-      serviceId: template-web
-      path: /web/**
-    # 配置6002接口微服务
-    app:
-      serviceId: template-app
-      path: /app/**
 
 # Token 配置
 token:
@@ -84,3 +65,8 @@ sa-token:
   is-log: false
   # jwt秘钥 
   jwt-secret-key: ${token.secret}
+  
+template:
+  sqlInjectFilter:
+    # SQL注入过滤关键词（多个英文逗号分隔）
+    keywords: union select

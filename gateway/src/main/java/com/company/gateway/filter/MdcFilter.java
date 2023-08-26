@@ -27,11 +27,9 @@ public class MdcFilter implements GlobalFilter {
 		ServerHttpRequest request = exchange.getRequest();
 		MdcUtil.put();
 		request = request.mutate().header(MdcUtil.UNIQUE_KEY, MdcUtil.get()).build();
-		try {
-			// 把新的 exchange放回到过滤链
-	        return chain.filter(exchange.mutate().request(request).build());
-		} finally {
-//			MdcUtil.remove();// 这里执行了日志ID就没了
-		}
+
+		return chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(() -> {
+			MdcUtil.remove();
+		}));
 	}
 }

@@ -6,4 +6,9 @@ template:
     
 spring:
   profiles:
-    include: redis-prod,rabbitmq-prod
+    include: routes,rabbitmq-prod,apollo-prod
+
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5

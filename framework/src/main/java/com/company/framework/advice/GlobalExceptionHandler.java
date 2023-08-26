@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
 	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,
 			HttpServletRequest request, HttpServletResponse response) {
 		String message = MessageFormat.format("不支持{0}请求", e.getMethod());
-		log.warn(message, e);
+//		log.warn(message, e);
 		return Result.fail(message);
 	}
 

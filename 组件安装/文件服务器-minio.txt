@@ -2,7 +2,7 @@ windows：
 https://min.io/download#/windows
 
 创建数据目录\data
-启动命令：
+启动命令(可创建启动脚本startup.bat)：
 minio.exe server data
 # minio.exe server D:\software_comp\eclipse-jee-mars-1-win32-x86_64\git\springcloud-template\minio\data
 

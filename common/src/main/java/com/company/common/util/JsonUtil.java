@@ -70,7 +70,7 @@ public class JsonUtil {
 		try {
 			return mapper.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
-			logger.error("json process error", e);
+			logger.error("json process error,object:{}", object, e);
 		}
 		return null;
 	}
@@ -82,11 +82,11 @@ public class JsonUtil {
 		try {
 			return mapper.readValue(jsonString, clazz);
 		} catch (JsonParseException e) {
-			logger.error("json parse error", e);
+			logger.error("json parse error,jsonString:{}", jsonString, e);
 		} catch (JsonMappingException e) {
-			logger.error("json mapping error", e);
+			logger.error("json mapping error,jsonString:{}", jsonString, e);
 		} catch (IOException e) {
-			logger.error("io error", e);
+			logger.error("io error,jsonString:{}", jsonString, e);
 		}
 		return null;
 	}
@@ -99,11 +99,11 @@ public class JsonUtil {
 		try {
 			return mapper.readValue(jsonString, javaType);
 		} catch (JsonParseException e) {
-			logger.error("json parse error", e);
+			logger.error("json parse error,jsonString:{}", jsonString, e);
 		} catch (JsonMappingException e) {
-			logger.error("json mapping error", e);
+			logger.error("json mapping error,jsonString:{}", jsonString, e);
 		} catch (IOException e) {
-			logger.error("io exception error", e);
+			logger.error("io exception error,jsonString:{}", jsonString, e);
 		}
 		return Collections.emptyList();
 	}
@@ -115,6 +115,7 @@ public class JsonUtil {
 		try {
 			mapper.readTree(string);
 		} catch (Exception e) {
+			logger.error("exception error,string:{}", string, e);
 			return false;
 		}
 		return true;
@@ -127,7 +128,7 @@ public class JsonUtil {
 		try {
 			return mapper.readTree(jsonString);
 		} catch (IOException e) {
-			logger.error("io exception error", e);
+			logger.error("io exception error,jsonString:{}", jsonString, e);
 		}
 		return null;
 	}

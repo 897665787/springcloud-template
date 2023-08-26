@@ -1,9 +1,7 @@
 package com.company.zuul.filter;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -13,11 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import com.company.common.util.JsonUtil;
 import com.company.zuul.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.zuul.util.IpUtil;
-import com.google.common.collect.Maps;
+import com.company.zuul.util.WebUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,65 +36,60 @@ public class RequestFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		long start = System.currentTimeMillis();
-		String contentType = request.getContentType();
-		String bodyStr = "{}";
-		if (contentType != null && contentType.contains("application/json")) {
-			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
-			bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
-			request = requestWrapper;
-		}
-
-		String paramsStr = JsonUtil.toJsonString(getReqParam(request));
 		String requestIp = IpUtil.getRequestIp(request);
-		String headerStr = JsonUtil.toJsonString(getReqHeader(request));
+		String headerStr = JsonUtil.toJsonString(WebUtil.getReqHeader(request));
+		String method = request.getMethod();
+		String requestURI = request.getRequestURI();
 
-		log.info("{} {} {} header:{},param:{},body:{}", request.getMethod(), requestIp, request.getRequestURI(),
-				headerStr, paramsStr, bodyStr);
+		long start = System.currentTimeMillis();
+		try {
+			String contentType = request.getContentType();
+			String bodyStr = "{}";
+			if (contentType != null && contentType.contains("application/json")) {
+				BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
+				bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
+				request = requestWrapper;
+			}
 
-		chain.doFilter(request, response);
+			String paramsStr = JsonUtil.toJsonString(WebUtil.getReqParam(request));
 
-		log.info("{} {} {} header:{},param:{},body:{},{}ms", request.getMethod(), requestIp, request.getRequestURI(),
-				headerStr, paramsStr, bodyStr, System.currentTimeMillis() - start);
+			// 包装缓存responseBody信息
+			ContentCachingResponseWrapper cachingResponse = new ContentCachingResponseWrapper(response);
+			chain.doFilter(request, cachingResponse);
+
+			String responsePayload = getPayloadFromBuf(cachingResponse.getContentAsByteArray(),
+					cachingResponse.getCharacterEncoding());
+
+			// 把从response中读取过的内容重新放回response，否则客户端获取不到返回的数据
+			cachingResponse.copyBodyToResponse();
+
+			log.info("{} {} {} header:{},param:{},body:{},response:{},{}ms", method, requestIp, requestURI, headerStr,
+					paramsStr, bodyStr, responsePayload, System.currentTimeMillis() - start);
+		} catch (Exception e) {
+			// 避免filter逻辑中的任何异常，直接转发请求
+			log.error("{} {} {} header:{},{}ms,filter error", method, requestIp, requestURI, headerStr,
+					System.currentTimeMillis() - start, e);
+			chain.doFilter(request, response);
+		}
 	}
 
 	/**
-	 * 组装request中的参数
+	 * 将bytep[]参数转换为字符串用于输出
 	 * 
-	 * <pre>
-	 * 以下场景都能通过request.getParameterNames获取参数
-	 * 1.参数跟在url后面
-	 * 2.POST form-data
-	 * 3.POST x-www-form-urlencoded
-	 * </pre>
-	 * 
-	 * @param request
+	 * @param buf
+	 * @param characterEncoding
 	 * @return
 	 */
-	private Map<String, Object> getReqParam(HttpServletRequest request) {
-		Enumeration<String> parameterNames = request.getParameterNames();
-		Map<String, Object> paramMap = new HashMap<>();
-		while (parameterNames.hasMoreElements()) {
-			String name = parameterNames.nextElement();
-			paramMap.put(name, request.getParameter(name));
+	protected String getPayloadFromBuf(byte[] buf, String characterEncoding) {
+		String payload = "";
+		if (buf.length > 0) {
+			int length = buf.length;
+			try {
+				payload = new String(buf, 0, length, characterEncoding);
+			} catch (UnsupportedEncodingException ex) {
+				log.error(ex.getMessage(), ex);
+			}
 		}
-		return paramMap;
-	}
-
-	/**
-	 * 组装request中的header
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private Map<String, String> getReqHeader(HttpServletRequest request) {
-		Map<String, String> headerMap = Maps.newHashMap();
-		Enumeration<String> headerNames = request.getHeaderNames();
-		while (headerNames.hasMoreElements()) {
-			String headerName = headerNames.nextElement();
-			String headerValue = request.getHeader(headerName);
-			headerMap.put(headerName, headerValue);
-		}
-		return headerMap;
+		return payload;
 	}
 }
