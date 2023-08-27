@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.company.common.constant.CommonConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 import com.company.framework.util.IpUtil;
@@ -21,7 +22,7 @@ import com.company.framework.util.IpUtil;
  * （只有接收外部请求的服务才会用到，内部请求的服务通过FeignHeaderInterceptor已经直接放到header）
  */
 @Component
-@Order(5)
+@Order(CommonConstants.FilterOrdered.HTTPCONTEXT)
 public class HttpContextFilter extends OncePerRequestFilter {
 
 	@Override

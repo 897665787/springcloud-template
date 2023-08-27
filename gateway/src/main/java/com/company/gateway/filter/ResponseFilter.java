@@ -1,0 +1,68 @@
+package com.company.gateway.filter;
+
+import java.nio.charset.StandardCharsets;
+
+import org.reactivestreams.Publisher;
+import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+
+import com.company.common.constant.CommonConstants;
+import com.company.common.util.MdcUtil;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+/**
+ * 响应参数日志打印
+ */
+@Slf4j
+@Component
+public class ResponseFilter implements GlobalFilter, Ordered {
+
+	@Override
+	public int getOrder() {
+		return CommonConstants.FilterOrdered.RESPONSE;
+	}
+
+	@Override
+	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+		ServerHttpResponse originalResponse = exchange.getResponse();
+		DataBufferFactory bufferFactory = originalResponse.bufferFactory();
+
+		ServerHttpRequest request = exchange.getRequest();
+		String uniqueKey = request.getHeaders().getFirst(MdcUtil.UNIQUE_KEY);
+
+		long start = System.currentTimeMillis();
+		ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
+			@Override
+			public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+				if (body instanceof Flux) {
+					Flux<? extends DataBuffer> fluxBody = (Flux<? extends DataBuffer>) body;
+					return super.writeWith(fluxBody.map(dataBuffer -> {
+						byte[] content = new byte[dataBuffer.readableByteCount()];
+						dataBuffer.read(content);
+						DataBufferUtils.release(dataBuffer);
+						String responseBody = new String(content, StandardCharsets.UTF_8);
+						MdcUtil.put(uniqueKey);
+						log.info("response body:{},{}ms", responseBody, System.currentTimeMillis() - start);
+						MdcUtil.remove();
+						return bufferFactory.wrap(content);
+					}));
+				}
+				return super.writeWith(body);
+			}
+		};
+
+		return chain.filter(exchange.mutate().response(decoratedResponse).build());
+	}
+}

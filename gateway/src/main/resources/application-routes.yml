@@ -2,12 +2,6 @@
 spring:
   cloud:
     gateway:
-      default-filters:
-        - name: ModifyResponseBody
-          args:
-            inClass: java.lang.String
-            outClass: java.lang.String
-            rewriteFunction: "#{@logResponseBody}"
       # 路由数组：指当请求满足什么样的断言时，转发到哪个服务上
       routes:
         # 路由标识，要求唯一，名称任意

@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.constant.HeaderConstants;
 import com.company.gateway.token.TokenService;
 
@@ -21,13 +23,18 @@ import reactor.core.publisher.Mono;
  */
 @Component
 @Order(30)
-public class TokenFilter implements GlobalFilter {
+public class TokenFilter implements GlobalFilter, Ordered {
 
 	@Autowired
 	private TokenService tokenService;
 	
 	@Value("${token.name}")
 	private String headerToken;
+
+	@Override
+	public int getOrder() {
+		return CommonConstants.FilterOrdered.TOKEK;
+	}
 	
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

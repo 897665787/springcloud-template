@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.MdcUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
@@ -19,7 +20,7 @@ import com.company.framework.filter.request.HeaderMapRequestWrapper;
  * 对客户端请求添加MDC
  */
 @Component
-@Order(1)
+@Order(CommonConstants.FilterOrdered.MDC)
 public class MdcFilter extends OncePerRequestFilter {
 
 	static {

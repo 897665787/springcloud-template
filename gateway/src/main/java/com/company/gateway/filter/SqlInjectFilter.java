@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.company.common.api.Result;
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 import com.company.gateway.util.WebUtil;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,14 +40,18 @@ import reactor.ipc.netty.ByteBufMono;
  */
 @Slf4j
 @Component
-@Order(20)
-public class SqlInjectFilter implements GlobalFilter {
+public class SqlInjectFilter implements GlobalFilter, Ordered {
 
 	@Value("${template.sqlInjectFilter.keywords:}")
 	private String[] sqlInjectKeywords;
 
 	@Value("${template.sqlInjectFilter.enable:true}")
 	private boolean enable;
+
+	@Override
+	public int getOrder() {
+		return CommonConstants.FilterOrdered.SQLINJECT;
+	}
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

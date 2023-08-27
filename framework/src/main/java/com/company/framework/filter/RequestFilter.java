@@ -16,6 +16,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.RegexUtil;
 import com.company.framework.context.HttpContextUtil;
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-@Order(10)
+@Order(CommonConstants.FilterOrdered.REQUEST)
 public class RequestFilter extends OncePerRequestFilter {
 
 	@Value("${template.requestFilter.ignoreLogPatterns:}")

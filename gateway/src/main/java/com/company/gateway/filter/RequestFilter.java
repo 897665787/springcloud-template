@@ -1,12 +1,13 @@
 package com.company.gateway.filter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -18,6 +19,7 @@ import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.gateway.util.IpUtil;
@@ -32,12 +34,16 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @Component
-@Order(10)
-public class RequestFilter implements GlobalFilter {
+public class RequestFilter implements GlobalFilter, Ordered {
 
 	@Value("${filter.request.enable:true}")
 	private boolean enable;
 
+    @Override
+    public int getOrder() {
+        return CommonConstants.FilterOrdered.REQUEST;
+    }
+    
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 		if (!enable) {
@@ -74,7 +80,7 @@ public class RequestFilter implements GlobalFilter {
 						}
 					};
 
-					String bodyStr = new String(bytes);
+					String bodyStr = new String(bytes, StandardCharsets.UTF_8);
 					if (StringUtils.isNotBlank(bodyStr)) {
 						bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(bodyStr));// 用json去掉有换行和空格
 					}

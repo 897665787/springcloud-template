@@ -2,11 +2,12 @@ package com.company.gateway.filter;
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.annotation.Order;
+import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.MdcUtil;
 
 import reactor.core.publisher.Mono;
@@ -15,11 +16,15 @@ import reactor.core.publisher.Mono;
  * 对客户端请求添加MDC
  */
 @Component
-@Order(1)
-public class MdcFilter implements GlobalFilter {
+public class MdcFilter implements GlobalFilter, Ordered {
 
 	static {
 		System.setProperty("log4j2.isThreadContextMapInheritable", "true");
+	}
+
+	@Override
+	public int getOrder() {
+		return CommonConstants.FilterOrdered.MDC;
 	}
 
 	@Override

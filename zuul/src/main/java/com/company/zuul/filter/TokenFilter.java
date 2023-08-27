@@ -14,6 +14,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.constant.HeaderConstants;
 import com.company.zuul.filter.request.HeaderMapRequestWrapper;
 import com.company.zuul.token.TokenService;
@@ -22,7 +23,7 @@ import com.company.zuul.token.TokenService;
  * token解析，把token转换为USER_ID
  */
 @Component
-@Order(30)
+@Order(CommonConstants.FilterOrdered.TOKEK)
 public class TokenFilter extends OncePerRequestFilter {
 	
 	@Autowired

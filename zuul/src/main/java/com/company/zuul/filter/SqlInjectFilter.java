@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.api.Result;
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 import com.company.zuul.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.zuul.util.WebUtil;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
  * SQL注入过滤
  */
 @Slf4j
-@Order(20)
+@Order(CommonConstants.FilterOrdered.SQLINJECT)
 @Component
 public class SqlInjectFilter extends OncePerRequestFilter {
 	
