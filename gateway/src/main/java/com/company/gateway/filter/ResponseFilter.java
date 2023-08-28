@@ -3,6 +3,7 @@ package com.company.gateway.filter;
 import java.nio.charset.StandardCharsets;
 
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -29,6 +30,9 @@ import reactor.core.publisher.Mono;
 @Component
 public class ResponseFilter implements GlobalFilter, Ordered {
 
+	@Value("${filter.response.enable:true}")
+	private boolean enable;
+	
 	@Override
 	public int getOrder() {
 		return CommonConstants.FilterOrdered.RESPONSE;
@@ -36,6 +40,9 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+		if (!enable) {
+			return chain.filter(exchange);
+		}
 		ServerHttpResponse originalResponse = exchange.getResponse();
 		DataBufferFactory bufferFactory = originalResponse.bufferFactory();
 

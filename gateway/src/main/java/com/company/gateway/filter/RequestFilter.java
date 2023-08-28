@@ -55,7 +55,6 @@ public class RequestFilter implements GlobalFilter, Ordered {
 		String headerStr = JsonUtil.toJsonString(headers.toSingleValueMap());
 		HttpMethod method = request.getMethod();
 		String path = request.getURI().getPath();
-		long start = System.currentTimeMillis();
 		try {
 			String paramsStr = JsonUtil.toJsonString(WebUtil.getReqParam(request));
 			String uniqueKey = request.getHeaders().getFirst(MdcUtil.UNIQUE_KEY);
@@ -86,26 +85,24 @@ public class RequestFilter implements GlobalFilter, Ordered {
 					}
 					String finalBodyStr = bodyStr;
 
-					return chain.filter(exchange.mutate().request(decorator).build()).then(Mono.fromRunnable(() -> {
-						MdcUtil.put(uniqueKey);
-						log.info("{} {} {} header:{},param:{},body:{},{}ms", method, requestIp, path, headerStr,
-								paramsStr, finalBodyStr, System.currentTimeMillis() - start);
-						MdcUtil.remove();
-					}));
+					MdcUtil.put(uniqueKey);
+					log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, path, headerStr, paramsStr,
+							finalBodyStr);
+					MdcUtil.remove();
+					
+					return chain.filter(exchange.mutate().request(decorator).build());
 				});
 			}
 
 			String finalBodyStr = "{}";
-			return chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(() -> {
-				MdcUtil.put(uniqueKey);
-				log.info("{} {} {} header:{},param:{},body:{},{}ms", method, requestIp, path, headerStr, paramsStr,
-						finalBodyStr, System.currentTimeMillis() - start);
-				MdcUtil.remove();
-			}));
+			MdcUtil.put(uniqueKey);
+			log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, path, headerStr, paramsStr,
+					finalBodyStr);
+			MdcUtil.remove();
+			return chain.filter(exchange.mutate().request(request).build());
 		} catch (Exception e) {
 			// 避免filter逻辑中的任何异常，直接转发请求
-			log.error("{} {} {} header:{},{}ms,filter error", method, requestIp, path, headerStr,
-					System.currentTimeMillis() - start, e);
+			log.error("{} {} {} header:{},filter error", method, requestIp, path, headerStr, e);
 			return chain.filter(exchange);
 		}
 	}
