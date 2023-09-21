@@ -2,6 +2,7 @@ package com.company.tool.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.common.api.Result;
+import com.company.tool.api.enums.PopupEnum;
+import com.company.tool.api.feign.PopupFeign;
+import com.company.tool.api.request.CancelUserPopupReq;
+import com.company.tool.api.request.CreateUserPopupReq;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.UploadResp;
 import com.company.tool.enums.SmsEnum;
@@ -33,6 +38,8 @@ public class TestController {
 	private VerifyCodeController verifyCodeController;
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;
+	@Autowired
+	private PopupFeign popupFeign;
 
 	@GetMapping("/verifyCodeSms")
 	public Result<String> verifyCodeSms(String mobile, String type) {
@@ -98,5 +105,54 @@ public class TestController {
 			log.error("IOException", e);
 			return Result.fail(e.getMessage());
 		}
+	}
+
+	/**
+	 * 完成某个操作后，埋1个用户弹窗
+	 * 
+	 * @return
+	 */
+	@GetMapping("/createUserPopup")
+	public Result<?> createUserPopup() {
+		PopupEnum.Model model = PopupEnum.Model.simple;
+		String title = "订单配送完成";
+		String text = "订单配送完成，马上去收货吧！";
+		Integer priority = 1;
+		Integer userId = 1;
+
+		LocalDateTime beginTime = LocalDateTime.now();
+		LocalDateTime endTime = beginTime.plusDays(7);
+
+		CreateUserPopupReq.PopImage bgImg = new CreateUserPopupReq.PopImage();
+		bgImg.setModel(model);
+		bgImg.setImgUrl("https://image.com/aaa/bbb.jpg");
+		bgImg.setType(PopupEnum.Type.redirect_http);
+		bgImg.setValue("https://www.baidu.com");
+
+		CreateUserPopupReq.PopButton closeBtn = new CreateUserPopupReq.PopButton();
+		closeBtn.setType(PopupEnum.Type.close);
+		closeBtn.setText("X");
+		closeBtn.setValue("");
+
+		CreateUserPopupReq createUserPopupReq = new CreateUserPopupReq();
+		createUserPopupReq.setUserId(userId);
+		createUserPopupReq.setBeginTime(beginTime);
+		createUserPopupReq.setEndTime(endTime);
+		createUserPopupReq.setPriority(priority);
+		createUserPopupReq.setTitle(title);
+		createUserPopupReq.setText(text);
+		createUserPopupReq.setBgImg(bgImg);
+		createUserPopupReq.setCloseBtn(closeBtn);
+
+		popupFeign.createUserPopup(createUserPopupReq);
+
+		CancelUserPopupReq cancelUserPopupReq = new CancelUserPopupReq();
+		cancelUserPopupReq.setUserId(userId);
+		cancelUserPopupReq.setTitle("商家已接单");
+		cancelUserPopupReq.setRemark("订单完成，取消商家已接单弹窗");
+		
+		popupFeign.cancelUserPopup(cancelUserPopupReq);
+		
+		return Result.success();
 	}
 }

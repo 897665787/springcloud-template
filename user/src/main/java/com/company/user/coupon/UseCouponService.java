@@ -350,7 +350,13 @@ public class UseCouponService {
 					}
 					SeeParam seeParam = SeeParam.builder().userCouponId(userCouponId).userId(userId)
 							.runtimeAttach(seeRuntimeAttach).useConditionValue(v.getUseConditionValue()).build();
-					boolean canSee = condition.canSee(seeParam);
+					boolean canSee = false;
+					try {
+						canSee = condition.canSee(seeParam);
+					} catch (Exception e) {
+						// 异常情况下不可见
+						log.error("canSee error", e);
+					}
 					if (subTraceId == null) {
 						MdcUtil.remove();
 					}
@@ -416,7 +422,14 @@ public class UseCouponService {
 						.userId(userId).orderAmount(orderAmount).runtimeAttach(runtimeAttach)
 						.useConditionValue(v.getUseConditionValue()).build();
 
-				MatchResult canUse = condition.canUse(useParam);
+				MatchResult canUse;
+				try {
+					canUse = condition.canUse(useParam);
+				} catch (Exception e) {
+					// 异常情况下不可用
+					log.error("canUse error", e);
+					canUse = MatchResult.builder().canUse(false).reason("系统判断异常").build();
+				}
 				if (subTraceId == null) {
 					MdcUtil.remove();
 				}

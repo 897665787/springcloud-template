@@ -29,6 +29,11 @@
 		    <artifactId>template-user-api</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+        <dependency>
+		    <groupId>com.company</groupId>
+		    <artifactId>template-tool-api</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

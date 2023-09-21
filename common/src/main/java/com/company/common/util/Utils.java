@@ -53,4 +53,26 @@ public class Utils {
 		remark = StringUtils.right(remark, 200);
 		return remark;
 	}
+
+	/**
+	 * 任意一个strs中的值包含searchStr
+	 * 
+	 * @param searchStr
+	 * @param strs
+	 * @return
+	 */
+	public static boolean anyContains(String searchStr, String... strs) {
+		if (strs == null) {
+			return false;
+		}
+		for (String str : strs) {
+			if (StringUtils.isBlank(str)) {
+				continue;
+			}
+			if (str.contains(searchStr)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

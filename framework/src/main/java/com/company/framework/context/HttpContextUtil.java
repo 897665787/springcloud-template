@@ -65,6 +65,10 @@ public class HttpContextUtil {
 		return lastHeader;
 	}
 
+	public static Integer currentUserIdInt() {
+		return Optional.ofNullable(currentUserId()).map(Integer::valueOf).orElse(null);
+	}
+	
 	public static String currentUserId() {
 		return lastHead(HEADER_CURRENT_USER_ID);
 	}
