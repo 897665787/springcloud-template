@@ -8,9 +8,9 @@ public interface PopupEnum {
 	@AllArgsConstructor
 	enum Model {
 		/** 这里的值需前后端一起约定，需与数据库的值保持一致（注意大小写匹配） */
-		// 弹窗模板(simple:简单弹窗(图片+关闭按钮+确认按钮),groupmeal_newuser_coupon:团餐新人券包)
+		// 弹窗模板(simple:简单弹窗(图片+关闭按钮+确认按钮),newuser_coupon:团餐新人券包)
 		simple("simple", "简单弹窗"), // 图片+关闭按钮+确认按钮
-		groupmeal_newuser_coupon("groupmeal_newuser_coupon", "团餐新人券包"),// 需展示优惠券模板的内容
+		newuser_coupon("newuser_coupon", "新人券包"),// 需展示优惠券模板的内容
 		;
 
 		@Getter

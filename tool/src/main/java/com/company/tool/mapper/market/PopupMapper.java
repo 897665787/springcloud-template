@@ -17,6 +17,5 @@ public interface PopupMapper extends BaseMapper<Popup> {
 			+ " begin_time < #{time} and end_time > #{time}"
 			+ " and status = #{status.code}"
 			+ " order by priority desc,id desc")
-	List<Popup> selectByPopupLog(@Param("businessType") PopupEnum.LogBusinessType businessType,
-			@Param("status") PopupEnum.Status status, @Param("time") LocalDateTime time);
+	List<Popup> selectByPopupLog(@Param("status") PopupEnum.Status status, @Param("time") LocalDateTime time);
 }

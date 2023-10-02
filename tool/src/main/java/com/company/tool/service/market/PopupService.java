@@ -14,8 +14,7 @@ import com.company.tool.mapper.market.PopupMapper;
 @Component
 public class PopupService extends ServiceImpl<PopupMapper, Popup> implements IService<Popup> {
 
-	public List<Popup> selectByPopupLog(PopupEnum.LogBusinessType businessType, PopupEnum.Status status,
-			LocalDateTime now) {
-		return baseMapper.selectByPopupLog(businessType, status, now);
+	public List<Popup> selectByPopupLog(PopupEnum.Status status, LocalDateTime now) {
+		return baseMapper.selectByPopupLog(status, now);
 	}
 }

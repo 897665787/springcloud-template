@@ -11,6 +11,9 @@
 - 基于redis+注解实现的API幂等
 - 统一认证demo，包括微信、支付宝授权登录等各种登录方式
 - 文件存储demo，包括阿里云OSS、腾讯云COS等多种云存储方式
+- 短信发送demo，支持阿里云、腾讯云等多个渠道，结合MQ实现短信异步发送，并记录短信发送结果
+- ToC优惠券实现demo，能够在不修改表结构的情况增加优惠券使用条件，或者增加复杂度更高的使用条件，具有高扩展性
+- ToC弹窗实现demo，能够在不修改表结构的情况增加弹窗条件，或者增加复杂度更高的弹窗条件，具有高扩展性
 
 ## 快速开始
 
@@ -28,15 +31,17 @@ springcloud-template
 ├── template-common -- 公共模块
 └── template-framework -- 框架代码(内部微服务)
      └── advice -- 统一异常处理、响应日志统一打印
+     └── apollo -- apollo属性刷新配置（分享：https://www.toutiao.com/article/7258567779102917139）
      └── autoconfigure -- 自动配置
-     └── deploy -- 优雅发版(可做到用户无感发版，完全不报错)
-     └── interceptor -- Feign请求头数据在微服务间传递
+     └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
+     └── interceptor -- Feign请求头数据在微服务间传递（分享：https://www.toutiao.com/article/7126056949267268108）
      └── threadpool -- 自定义线程池（JDK和Tomcat）
 └── template-framework-edge -- 框架代码(边缘微服务)
      └── filter -- http公共请求参数设置到请求头在微服务内传递
      └── interceptor -- 访问控制(结合@PublicUrl使用)
 ├── template-eureka -- 注册中心
-├── template-zuul -- 网关
+├── template-gateway -- 网关(与zuul二选一，分享：https://www.toutiao.com/article/7271926711678321215)
+├── template-zuul -- 网关（与gateway二选一）
 ├── template-config -- 配置中心
 └── template-order -- 订单服务(内部微服务)
      └── template-order-api -- 被依赖开放api
@@ -44,18 +49,24 @@ springcloud-template
      └── template-order-api -- 被依赖开放api
 └── template-tool -- 工具服务(内部微服务)
      └── template-tool-api -- 被依赖开放api
-     └── file -- 文件存储
-          └── alioss -- 阿里云OSS
-          └── amazons3 -- 亚马逊AWS
-          └── baidubos -- 百度BOS
-          └── huaweiobs -- 华为云OBS
-          └── jingdongoss -- 京东云OOS
-          └── local -- 本地磁盘
-          └── minio -- MinIO
-          └── tencentcos -- 腾讯云COS
-          └── wangyinos -- 网易NOS
+     └── template-tool-api -- 被依赖开放api
+     └── controller
+          └── FileController -- 文件存储使用demo（支持阿里OSS、腾讯云COS、MinIO、本地磁盘等多种方式）
+     └── popup -- 弹窗设计demo（分享：https://www.toutiao.com/article/7285271621949866559）
+          └── condition -- 弹窗条件实现类
+          └── PopCondition -- 抽象定义弹窗条件
+          └── PopService -- 弹窗查询的核心代码
+          └── ReplaceParam -- 参数替换接口
+     └── sms -- 短信设计demo（分享：https://www.toutiao.com/article/7248173282141291047）
+          └── AsyncSmsSender -- 短信发送器（异步）
+          └── MysqlSendPostProcessor -- 短信发送记录
+          └── SmsSenderConsumer -- 短信发送处理器（消费者逻辑）
+└── template-user -- 用户服务(内部微服务)
+     └── canal-- canal使用demo
+     └── coupon -- 优惠券设计demo（分享：https://www.toutiao.com/article/7228973418354475572）
+          └── UseCouponService -- 优惠券核心类
 └── template-auth -- 统一认证接入层(边缘微服务)
-     └── authentication -- 登录
+     └── authentication -- 登录（分享：https://www.toutiao.com/article/7144259146018406948）
           └── 本机号码一键登录
           └── 用户名+密码登录
           └── 手机号+验证码登录

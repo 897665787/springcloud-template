@@ -88,8 +88,7 @@ public class PopService {
 		}
 
 		// 查询公共弹窗
-		List<Popup> popupList = popupService.selectByPopupLog(PopupEnum.LogBusinessType.POPUP, PopupEnum.Status.ON,
-				now);
+		List<Popup> popupList = popupService.selectByPopupLog(PopupEnum.Status.ON, now);
 
 		Set<Integer> popupIdSet = popupList.stream().map(Popup::getId).collect(Collectors.toSet());
 
