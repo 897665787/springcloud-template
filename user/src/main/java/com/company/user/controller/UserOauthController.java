@@ -31,6 +31,12 @@ public class UserOauthController implements UserOauthFeign {
 	}
 
 	@Override
+	public Result<String> selectIdentifier(Integer userId, UserOauthEnum.IdentityType identityType) {
+		UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, identityType);
+		return Result.success(userOauth.getIdentifier());
+	}
+
+	@Override
 	public Result<Boolean> bindOauth(@RequestBody @Valid UserOauthReq userInfoReq) {
 
 		userOauthMapper.bindOauth(userInfoReq.getUserId(), userInfoReq.getIdentityType(), userInfoReq.getIdentifier(),

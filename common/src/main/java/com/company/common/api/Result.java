@@ -34,6 +34,10 @@ public class Result<T> {
 	public static <T> Result<T> success(T data) {
 		return new Result<T>().setResultCode(ResultCode.SUCCESS).setData(data);
 	}
+	
+	public static <T> Result<T> success(T data, String message) {
+		return new Result<T>().setResultCode(ResultCode.SUCCESS).setMessage(message).setData(data);
+	}
 
 	public static <T> Result<T> fail() {
 		return new Result<T>().setResultCode(ResultCode.FAIL);

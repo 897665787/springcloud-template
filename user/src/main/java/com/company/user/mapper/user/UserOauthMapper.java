@@ -19,4 +19,8 @@ public interface UserOauthMapper extends BaseMapper<UserOauth> {
 	@Select("select * from bu_user_oauth where identity_type = #{identityType.code} and identifier = #{identifier}")
 	UserOauth selectByIdentityTypeIdentifier(@Param("identityType") UserOauthEnum.IdentityType identityType,
 			@Param("identifier") String identifier);
+	
+	@Select("select * from bu_user_oauth where user_id = #{userId} and identity_type = #{identityType.code}")
+	UserOauth selectByUserIdIdentityType(@Param("userId") Integer userId,
+			@Param("identityType") UserOauthEnum.IdentityType identityType);
 }

@@ -18,6 +18,10 @@ public interface UserOauthFeign {
 	Result<UserOauthResp> selectOauth(@RequestParam("identityType") UserOauthEnum.IdentityType identityType,
 			@RequestParam("identifier") String identifier);
 
+	@RequestMapping("/selectIdentifier")
+	Result<String> selectIdentifier(@RequestParam("userId") Integer userId,
+			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
+
 	@RequestMapping("/bindOauth")
 	Result<Boolean> bindOauth(@RequestBody UserOauthReq userInfoReq);
 

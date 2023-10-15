@@ -64,4 +64,16 @@ public interface FanoutConstants {
 		// 队列
 		String LOGOUT_RECORD_QUEUE = PREFIX + "logout_record";
 	}
+	
+	// 优惠券发放事件
+	interface SEND_COUPON {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "send_coupon";
+		
+		String PREFIX = FanoutConstants.PREFIX + "send_coupon.";
+		// 队列
+		String SUBSCRIBE_RECEIVE_QUEUE = PREFIX + "subscribe_receive";
+		String SUBSCRIBE_TOUSE_QUEUE = PREFIX + "subscribe_touse";
+		String SUBSCRIBE_EXPIRE_QUEUE = PREFIX + "subscribe_expire";
+	}
 }

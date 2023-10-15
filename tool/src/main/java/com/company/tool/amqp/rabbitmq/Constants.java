@@ -33,5 +33,11 @@ public interface Constants {
 			String NAME = PREFIX + "send_sms";
 			String ROUTING_KEY = PREFIX + "routingkey.send_sms";
 		}
+		
+		// 发送订阅消息
+		interface SEND_SUBSCRIBE {
+			String NAME = PREFIX + "send_subscribe";
+			String ROUTING_KEY = PREFIX + "routingkey.send_subscribe";
+		}
 	}
 }

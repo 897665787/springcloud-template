@@ -26,6 +26,11 @@ public class UserOauthFeignFallback implements FallbackFactory<UserOauthFeign> {
 			public Result<UserOauthResp> selectOauth(IdentityType identityType, String identifier) {
 				return Result.fail(ResultCode.FALLBACK);
 			}
+
+			@Override
+			public Result<String> selectIdentifier(Integer userId, IdentityType identityType) {
+				return Result.fail(ResultCode.FALLBACK);
+			}
 		};
 	}
 }

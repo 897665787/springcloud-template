@@ -1,11 +1,13 @@
 package com.company.job.config;
 
-import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.company.job.util.NetUtil;
+import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 
 /**
  * xxl-job config
@@ -28,8 +30,8 @@ public class XxlJobConfig {
     @Value("${xxl.job.executor.address}")
     private String address;
 
-    @Value("${xxl.job.executor.ip}")
-    private String ip;
+//    @Value("${xxl.job.executor.ip}")
+//    private String ip;
 
     @Value("${xxl.job.executor.port}")
     private int port;
@@ -48,7 +50,9 @@ public class XxlJobConfig {
         xxlJobSpringExecutor.setAdminAddresses(adminAddresses);
         xxlJobSpringExecutor.setAppname(appname);
         xxlJobSpringExecutor.setAddress(address);
-        xxlJobSpringExecutor.setIp(ip);
+//      xxlJobSpringExecutor.setIp(ip);// 这里会获取到内网IP，类似172.20.xx.xx，会导致admin无法请求到
+		String ip2 = NetUtil.getLocalhostStr();
+		xxlJobSpringExecutor.setIp(ip2);
         xxlJobSpringExecutor.setPort(port);
         xxlJobSpringExecutor.setAccessToken(accessToken);
         xxlJobSpringExecutor.setLogPath(logPath);

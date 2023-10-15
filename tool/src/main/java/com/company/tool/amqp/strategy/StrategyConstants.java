@@ -5,4 +5,5 @@ public interface StrategyConstants {
 	String MAP_STRATEGY = "mapStrategy";
 	String XDELAYMESSAGE_STRATEGY = "xDelayMessageStrategy";
 	String SENDSMS_STRATEGY = "sendSmsStrategy";
+	String SENDSUBSCRIBE_STRATEGY = "sendSubscribeStrategy";
 }
