@@ -14,6 +14,7 @@
 - 短信发送demo，支持阿里云、腾讯云等多个渠道，结合MQ实现短信异步发送，并记录短信发送结果
 - ToC优惠券实现demo，能够在不修改表结构的情况增加优惠券使用条件，或者增加复杂度更高的使用条件，具有高扩展性
 - ToC弹窗实现demo，能够在不修改表结构的情况增加弹窗条件，或者增加复杂度更高的弹窗条件，具有高扩展性
+- 微信订阅消息实现demo，提供存储设计表结构，代码通用，易于使用，易于问题排查
 
 ## 快速开始
 
@@ -61,6 +62,9 @@ springcloud-template
           └── AsyncSmsSender -- 短信发送器（异步）
           └── MysqlSendPostProcessor -- 短信发送记录
           └── SmsSenderConsumer -- 短信发送处理器（消费者逻辑）
+     └── subscribe -- 微信订阅消息设计demo
+          └── AsyncSubscribeSender -- 订阅消息发送器（异步）
+          └── SubscribeSenderConsumer -- 订阅消息发送处理器（消费者逻辑）
 └── template-user -- 用户服务(内部微服务)
      └── canal-- canal使用demo
      └── coupon -- 优惠券设计demo（分享：https://www.toutiao.com/article/7228973418354475572）
@@ -83,6 +87,7 @@ springcloud-template
 ├── template-app -- app端接入层(边缘微服务)
 ├── template-web -- web端接入层(边缘微服务)
 ├── template-admin -- 管理后台端
+├── sql -- 项目中的表结构设计
 ```
 
 ### 本地开发 运行
