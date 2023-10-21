@@ -17,9 +17,18 @@ public class SubscribeTemplateGrantService extends ServiceImpl<SubscribeTemplate
 		Integer affect = baseMapper.incrUseNum(openid, templateCode);
 		return affect > 0;
 	}
+	
+	public boolean incrUseNum(String openid, String templateCode) {
+		Integer affect = baseMapper.incrUseNum(openid, templateCode);
+		return affect > 0;
+	}
 
 	public void returnUseNum(String openid, String templateCode) {
 		baseMapper.returnUseNum(openid, templateCode);
+	}
+	
+	public void zeroNum(String openid, String templateCode) {
+		baseMapper.zeroNum(openid, templateCode);
 	}
 
 }

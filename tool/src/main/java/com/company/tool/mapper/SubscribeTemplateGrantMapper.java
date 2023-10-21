@@ -20,4 +20,7 @@ public interface SubscribeTemplateGrantMapper extends BaseMapper<SubscribeTempla
 	
 	@Update("update subscribe_template_grant set use_num = use_num - 1 where openid = #{openid} and template_code = #{templateCode}")
 	Integer returnUseNum(@Param("openid") String openid, @Param("templateCode") String templateCode);
+	
+	@Update("update subscribe_template_grant set use_num = total_num where openid = #{openid} and template_code = #{templateCode}")
+	Integer zeroNum(@Param("openid") String openid, @Param("templateCode") String templateCode);
 }

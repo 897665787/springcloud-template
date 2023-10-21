@@ -122,15 +122,17 @@ public class SubscribeSenderConsumer {
 		}
 
 		String priTmplId = subscribeTemplate.getPriTmplId();
-		// 判断是否有授权次数
-		boolean hasGrant = subscribeTemplateGrantService.hasGrantByOpenidTemplateCode(openid, priTmplId);
-		if (!hasGrant) {
-			log.info("无授权:{},{}", openid, priTmplId);
-			remark = Utils.rightRemark(remark, "无授权:" + openid + "," + priTmplId);
-			subscribeTaskDetailService.updateStatusRemark(SubscribeTaskDetailEnum.Status.SEND_CANCEL, remark,
-					subscribeTaskDetailId);
-			return;
-		}
+		
+		/* 这里判断是否有授权次数似乎没有意义，微信拒绝订阅消息后可能会重置授权次数，系统中记录的跟微信官方记录的不一致，所以不校验，无脑发 */
+//		// 判断是否有授权次数
+//		boolean hasGrant = subscribeTemplateGrantService.hasGrantByOpenidTemplateCode(openid, priTmplId);
+//		if (!hasGrant) {
+//			log.info("无授权:{},{}", openid, priTmplId);
+//			remark = Utils.rightRemark(remark, "无授权:" + openid + "," + priTmplId);
+//			subscribeTaskDetailService.updateStatusRemark(SubscribeTaskDetailEnum.Status.SEND_CANCEL, remark,
+//					subscribeTaskDetailId);
+//			return;
+//		}
 
 		String content = JsonUtil.toJsonString(dataList);
 		subscribeTaskDetailService.updateContentById(content, subscribeTaskDetailId);
@@ -140,13 +142,21 @@ public class SubscribeSenderConsumer {
 				dataList);
 
 		if (response.isSuccess()) {
+			// 成功了增加使用次数
+			subscribeTemplateGrantService.incrUseNum(openid, priTmplId);
+			
 			remark = Utils.rightRemark(remark, SubscribeTaskDetailEnum.Status.REQ_SUCCESS.getDesc());
 			subscribeTaskDetailService.updateSendSuccessStatus(SubscribeTaskDetailEnum.Status.REQ_SUCCESS, remark,
 					subscribeTaskDetailId);
 		} else {
-			// 如果失败了就归还授权次数
-			subscribeTemplateGrantService.returnUseNum(openid, priTmplId);
-
+			String message = response.getMessage();
+			if (message.contains("用户拒绝接受消息")) {// 如果是用户关闭了授权，则将totalNum设置为useNum，这样用户剩余授权次数为0
+				subscribeTemplateGrantService.zeroNum(openid, priTmplId);
+			}
+//			else {// 其他失败就归还授权次数
+//				subscribeTemplateGrantService.returnUseNum(openid, priTmplId);
+//			}
+			
 			remark = Utils.rightRemark(remark, response.getMessage());
 			subscribeTaskDetailService.updateStatusRemark(SubscribeTaskDetailEnum.Status.REQ_FAIL, remark,
 					subscribeTaskDetailId);
