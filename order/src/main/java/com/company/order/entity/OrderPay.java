@@ -1,6 +1,7 @@
 package com.company.order.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableField;
@@ -88,10 +89,10 @@ public class OrderPay {
 	 * 创建时间
 	 */
 	@TableField(value = "create_time")
-	private Date createTime;
+	private LocalDateTime createTime;
 	/**
 	 * 更新时间
 	 */
 	@TableField(value = "update_time")
-	private Date updateTime;
+	private LocalDateTime updateTime;
 }

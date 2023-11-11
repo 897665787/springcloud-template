@@ -9,10 +9,10 @@ import com.baomidou.mybatisplus.enums.IdType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@TableName("bu_pay_notify")
+@TableName("bu_ali_activity_notify")
 @Data
 @Accessors(chain = true)
-public class PayNotify {
+public class AliActivityNotify {
 	/**
 	 * ID
 	 */
@@ -20,7 +20,7 @@ public class PayNotify {
 	private Integer id;
 
 	/**
-	 * 支付方式(ali:支付宝,wx:微信,ios:苹果,quick:云闪付)
+	 * 消息(spiordersend:订单券发放,from:FROM消息)
 	 */
 	private String method;
 

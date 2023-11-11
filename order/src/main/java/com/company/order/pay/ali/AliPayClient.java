@@ -1,6 +1,7 @@
 package com.company.order.pay.ali;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -314,7 +315,7 @@ public class AliPayClient extends BasePayClient {
 				aliPayRefund.setRemark(remark);
 			}
 		}
-		aliPayRefund.setUpdateTime(new Date());
+		aliPayRefund.setUpdateTime(LocalDateTime.now());
 		aliPayRefund.setId(aliPayRefunddb.getId());
 		aliPayRefundMapper.updateById(aliPayRefund);
 

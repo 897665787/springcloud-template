@@ -1,7 +1,7 @@
 package com.company.order.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -93,10 +93,10 @@ public class AliPay {
 	/**
 	 * 创建时间
 	 */
-	private Date createTime;
+	private LocalDateTime createTime;
 
 	/**
 	 * 更新时间
 	 */
-	private Date updateTime;
+	private LocalDateTime updateTime;
 }

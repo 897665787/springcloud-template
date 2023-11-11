@@ -2,7 +2,7 @@ package com.company.order.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -70,11 +70,11 @@ public class FinancialFlow implements Serializable {
 	 * 创建时间
 	 */
 	@TableField(value = "create_date", fill = FieldFill.INSERT)
-	private Date createTime;
+	private LocalDateTime createTime;
 
 	/**
 	 * 更新时间
 	 */
 	@TableField(value = "update_date", fill = FieldFill.INSERT_UPDATE)
-	private Date updateTime;
+	private LocalDateTime updateTime;
 }

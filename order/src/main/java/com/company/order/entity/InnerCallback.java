@@ -1,5 +1,6 @@
 package com.company.order.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -72,10 +73,10 @@ public class InnerCallback {
 	/**
 	 * 创建时间
 	 */
-	private Date createTime;
+	private LocalDateTime createTime;
 
 	/**
 	 * 更新时间
 	 */
-	private Date updateTime;
+	private LocalDateTime updateTime;
 }

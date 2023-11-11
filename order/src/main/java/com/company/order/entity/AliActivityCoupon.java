@@ -1,0 +1,71 @@
+package com.company.order.entity;
+
+import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+@TableName("bu_ali_activity_coupon")
+@Data
+@Accessors(chain = true)
+public class AliActivityCoupon {
+	/**
+	 * ID
+	 */
+	@TableId(type = IdType.AUTO)
+	private Integer id;
+
+	/**
+	 * 活动id
+	 */
+	private String activityId;
+	
+	/**
+	 * 事件id。可用于业务去重。
+	 */
+	private String eventId;
+	
+	/**
+	 * 事件创建时间
+	 */
+	private String eventTime;
+
+	/**
+	 * 支付宝券ID
+	 */
+	private String voucherId;
+
+	/**
+	 * 用户领取的券码code,支付宝商家券活动才会返回券码，其他优惠券活动该值为空
+	 */
+	private String voucherCode;
+
+	/**
+	 * 领券的支付宝user_id账号
+	 */
+	private String receiveUserId;
+
+	/**
+	 * bu_ali_activity_notify.id
+	 */
+	private Integer payNotifyId;
+	
+	/**
+	 * 备注信息
+	 */
+	private String remark;
+
+	/**
+	 * 创建时间
+	 */
+	private LocalDateTime createTime;
+
+	/**
+	 * 更新时间
+	 */
+	private LocalDateTime updateTime;
+}

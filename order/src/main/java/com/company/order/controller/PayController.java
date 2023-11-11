@@ -1,13 +1,13 @@
 package com.company.order.controller;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +40,8 @@ import com.company.order.pay.dto.PayParams;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
 import com.google.common.collect.Maps;
+
+import cn.hutool.core.date.LocalDateTimeUtil;
 
 @RestController
 @RequestMapping(value = "/pay")
@@ -275,13 +277,13 @@ public class PayController implements PayFeign {
 		Map<String, Object> params = new HashMap<>();
 		params.put("outTradeNo", payCloseReq.getOrderCode());
 		
-		Date minPayCloseTime = DateUtils.addMinutes(orderPay.getCreateTime(), 5);
-		Date now = new Date();
+		LocalDateTime minPayCloseTime = orderPay.getCreateTime().plusMinutes(5);
+		LocalDateTime now = LocalDateTime.now();
 		// 微信订单不能创建后马上关闭，延迟调用微信关闭接口时间 单位：s
 		// 官方文档：https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_3&index=3
 		Integer delay = 0;
 		if (minPayCloseTime.compareTo(now) > 0) {
-			delay = (int) (minPayCloseTime.getTime() - now.getTime()) / 1000;
+			delay = (int) LocalDateTimeUtil.between(now, minPayCloseTime, ChronoUnit.SECONDS);
 		}
 		
 		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,

@@ -33,6 +33,9 @@ public interface TestFeign {
 
 	@GetMapping("/alipay")
 	Result<PayResp> alipay(@RequestParam("orderCode") String orderCode);
+	
+	@GetMapping("/aliactivitypay")
+	Result<PayResp> aliactivitypay(@RequestParam("orderCode") String orderCode);
 
 	@PostMapping("/buyNotify")
 	Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq);
@@ -46,7 +49,7 @@ public interface TestFeign {
 
 	@PostMapping("/refundNotify")
 	Result<Void> refundNotify(@RequestBody RefundNotifyReq refundNotifyReq);
-
+	
 	@Component
 	class TestFeignFactory implements FallbackFactory<TestFeign> {
 
@@ -88,6 +91,12 @@ public interface TestFeign {
 
 					return Result.onFallbackError();
 				}
+				
+				@Override
+				public Result<PayResp> aliactivitypay(String orderCode) {
+					
+					return Result.onFallbackError();
+				}
 
 				@Override
 				public Result<PayInfoResp> queryPayInfo(String orderCode) {
@@ -110,4 +119,5 @@ public interface TestFeign {
 			};
 		}
 	}
+	
 }

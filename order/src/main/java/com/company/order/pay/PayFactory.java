@@ -11,6 +11,8 @@ public class PayFactory {
 	
 	// 支付宝支付（APP）
 	public static final String ALI_PAYCLIENT = PayClient.BEAN_NAME_PREFIX + "ali";
+	// 支付宝活动支付（APP）
+	public static final String ALIACTIVITY_PAYCLIENT = PayClient.BEAN_NAME_PREFIX + "aliactivity";
 	// 微信支付（APP、小程序、H5、公众号）
 	public static final String WX_PAYCLIENT = PayClient.BEAN_NAME_PREFIX + "wx";
 	// IOS支付

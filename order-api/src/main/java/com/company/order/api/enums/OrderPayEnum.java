@@ -25,7 +25,7 @@ public interface OrderPayEnum {
 
 	@AllArgsConstructor
 	enum Method {
-		ALI("ali", "支付宝"), WX("wx", "微信"), IOS("ios", "苹果"), QUICK("quick", "云闪付");
+		ALI("ali", "支付宝"), ALIACTIVITY("aliactivity", "支付宝活动"), WX("wx", "微信"), IOS("ios", "苹果"), QUICK("quick", "云闪付");
 		@Getter
 		private String code;
 		@Getter

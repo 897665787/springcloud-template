@@ -76,4 +76,15 @@ public interface FanoutConstants {
 		String SUBSCRIBE_TOUSE_QUEUE = PREFIX + "subscribe_touse";
 		String SUBSCRIBE_EXPIRE_QUEUE = PREFIX + "subscribe_expire";
 	}
+	
+	// 退款申请结果事件
+	interface REFUND_APPLY_RESULT {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "refund_apply_result";
+		
+		String PREFIX = FanoutConstants.PREFIX + "refund_apply_result.";
+		// 队列
+		String MEMBER_REFUND_QUEUE = PREFIX + "member_refund";
+		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
+	}
 }
