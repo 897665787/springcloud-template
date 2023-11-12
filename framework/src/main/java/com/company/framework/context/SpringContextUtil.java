@@ -1,5 +1,6 @@
 package com.company.framework.context;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,6 +40,9 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 
 	/// 获取当前环境
 	public static String getActiveProfile() {
+		if (context == null) {
+			return null;
+		}
 		String profile = context.getEnvironment().getProperty("spring.profiles.active");
 		return profile;
 	}
@@ -48,8 +52,11 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	 * 
 	 * @return
 	 */
-	public static Boolean isTestProfile() {
+	public static boolean isTestProfile() {
 		String profile = getActiveProfile();
+		if (profile == null) {
+			return true;
+		}
 		return Environment.TEST_ENVIRONMENT.contains(profile);
 	}
 
@@ -58,21 +65,33 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	 * 
 	 * @return
 	 */
-	public static Boolean isProduceProfile() {
+	public static boolean isProduceProfile() {
 		String profile = getActiveProfile();
+		if (profile == null) {
+			return false;
+		}
 		return Environment.PRODUCE_ENVIRONMENT.contains(profile);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getBean(String name) {
+		if (context == null) {
+			return null;
+		}
 		return (T) context.getBean(name);
 	}
 
 	public static <T> T getBean(Class<T> requiredType) {
+		if (context == null) {
+			return null;
+		}
 		return context.getBean(requiredType);
 	}
 
 	public static <T> T getBean(String name, Class<T> requiredType) {
+		if (context == null) {
+			return null;
+		}
 		try {
 			return context.getBean(name, requiredType);
 		} catch (BeansException e) {
@@ -82,14 +101,23 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	}
 	
 	public static <T> Map<String, T> getBeansOfType(Class<T> requiredType) {
+		if (context == null) {
+			return Collections.emptyMap();
+		}
 		return context.getBeansOfType(requiredType);
 	}
 
 	public static String getProperty(String key, String defaultValue) {
+		if (context == null) {
+			return defaultValue;
+		}
 		return context.getEnvironment().getProperty(key, defaultValue);
 	}
 
 	public static String getProperty(String key) {
+		if (context == null) {
+			return null;
+		}
 		return context.getEnvironment().getProperty(key);
 	}
 

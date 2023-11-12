@@ -1,10 +1,17 @@
+server:
+  port: 7002
+
 eureka:
   instance:
+    hostname: ${spring.cloud.client.ip-address}
+    prefer-ip-address: true #访问路径可以显示IP地址
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: localhost
-    prefer-ip-address: true
+  server:
+    use-read-only-response-cache: false #禁用readOnlyCacheMap（用于优雅发版即时下线服务）
+    enable-self-preservation: true # 默认情况下，eureka间隔60s将服务清单中没有续约的服务剔除（默认90s内没有续约），本地测试，关闭保护机制，直接让它实时剔除
+    eviction-interval-timer-in-ms: 60000 #关闭自我保护，并3秒踢出宕机的服务（单位毫秒，默认是60*1000）
   client:
-    register-with-eureka: true # 注册到Eureka Server，默认true
-    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    register-with-eureka: false # 否将自己注册到Eureka Server，默认为true
+    fetch-registry: false # 是否从Eureka Server获取注册信息，默认为true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
       defaultZone: http://127.0.0.1:7001/eureka/

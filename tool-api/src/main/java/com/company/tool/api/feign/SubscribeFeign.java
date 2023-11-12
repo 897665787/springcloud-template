@@ -16,7 +16,8 @@ import com.company.tool.api.request.SubscribeSendReq;
 @FeignClient(value = "template-tool", path = "/subscribe", fallbackFactory = SubscribeFeignFallback.class)
 public interface SubscribeFeign {
 
-	Result<List<String>> selectTemplateCodeByGroup(String group);
+	@GetMapping("/selectTemplateCodeByGroup")
+	Result<List<String>> selectTemplateCodeByGroup(@RequestParam("group") String group);
 
 	/**
 	 * 授权（如果实现了SubscribeType接口会同时发送消息）
