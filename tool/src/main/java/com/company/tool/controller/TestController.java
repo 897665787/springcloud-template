@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.common.api.Result;
+import com.company.framework.util.ClasspathUtil;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.CancelUserPopupReq;
@@ -154,5 +155,11 @@ public class TestController {
 		popupFeign.cancelUserPopup(cancelUserPopupReq);
 		
 		return Result.success();
+	}
+
+	public static void main(String[] args) {
+//		String content = ClassPathUtil.readFileAsString("config-file/application-apollo-dev.yml");
+		String content = ClasspathUtil.readFileAsString("config-file/privateKey.txt");
+		System.out.println(content);
 	}
 }

@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
+import cn.hutool.core.io.FileTypeUtil;
+import cn.hutool.core.util.HexUtil;
 import cn.hutool.crypto.SecureUtil;
 
 public class Utils {
@@ -74,5 +76,18 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * 自动检测后缀
+	 * 
+	 * @param bytes
+	 * @return
+	 */
+	public static String extraSuffix(byte[] bytes) {
+		byte[] headByte = new byte[28];
+		System.arraycopy(bytes, 0, headByte, 0, 28);
+		String fileHexHead = HexUtil.encodeHexStr(headByte, false);
+		return FileTypeUtil.getType(fileHexHead);
 	}
 }
