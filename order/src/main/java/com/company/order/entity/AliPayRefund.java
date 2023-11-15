@@ -26,16 +26,6 @@ public class AliPayRefund {
 	private String appid;
 
 	/**
-	 * 私钥
-	 */
-	private String privateKey;
-
-	/**
-	 * 公钥
-	 */
-	private String pubKey;
-
-	/**
 	 * 商户订单号
 	 */
 	private String outTradeNo;

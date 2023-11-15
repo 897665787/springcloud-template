@@ -7,8 +7,6 @@ CREATE TABLE `bu_ali_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
-  `private_key` varchar(2000) DEFAULT NULL COMMENT '私钥',
-  `pub_key` varchar(1000) DEFAULT NULL COMMENT '公钥',
   `notify_url` varchar(256) DEFAULT NULL COMMENT '通知地址',
   `out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号',
   `subject` varchar(128) NOT NULL COMMENT '商品标题',
@@ -33,8 +31,6 @@ DROP TABLE IF EXISTS `bu_ali_pay_refund`;
 CREATE TABLE `bu_ali_pay_refund` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
-  `private_key` varchar(2000) DEFAULT NULL COMMENT '私钥',
-  `pub_key` varchar(1000) DEFAULT NULL COMMENT '公钥',
   `out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号',
   `out_request_no` varchar(64) NOT NULL COMMENT '商户退款单号',
   `refund_amount` decimal(12,2) NOT NULL COMMENT '退款金额(元)',
