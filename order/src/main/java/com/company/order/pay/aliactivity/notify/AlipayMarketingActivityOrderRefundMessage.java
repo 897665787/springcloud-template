@@ -117,8 +117,6 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			
 			AliActivityPayRefund aliActivityPay4Insert = new AliActivityPayRefund()
 					.setAppid(aliActivityPay.getAppid())
-					.setPrivateKey(aliActivityPay.getPrivateKey())
-					.setPubKey(aliActivityPay.getPubKey())
 					.setOutOrderNo(outOrderNo)
 					.setOutBizNo(outBizNo)
 					.setBuyerId(aliActivityPay.getBuyerId())

@@ -35,16 +35,6 @@ public class WxPay {
 	private String mchid;
 
 	/**
-	 * 商户密钥
-	 */
-	private String mchKey;
-
-	/**
-	 * 证书路径
-	 */
-	private String keyPath;
-
-	/**
 	 * 随机字符串
 	 */
 	private String nonceStr;

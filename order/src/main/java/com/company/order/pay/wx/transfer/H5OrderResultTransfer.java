@@ -14,7 +14,7 @@ import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
 public class H5OrderResultTransfer implements OrderResultTransfer {
 
 	@Override
-	public Object toPayInfo(String appid, String mchId, String mchKey, String prepayId, String codeUrl,
+	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,
 			String mwebUrl) {
 		if (mwebUrl == null) {
 			throw new BusinessException(4015, "未获取到必要的支付参数");

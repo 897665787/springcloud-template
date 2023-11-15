@@ -129,7 +129,7 @@ public class AliPayClient extends BasePayClient {
 		    
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request);
             remark = Utils.rightRemark(remark, timeExpire);
-			requestResult2AliPay(aliPayId, payParams, payConfig, request, response, remark);
+			requestResult2AliPay(aliPayId, payParams, request, response, remark);
             
 			if (!response.isSuccess()) {
 				throw new BusinessException(response.getMsg());
@@ -154,20 +154,18 @@ public class AliPayClient extends BasePayClient {
 			log.error("AliPay error", e);
 			remark = Utils.rightRemark(remark, timeExpire);
 			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
-			requestResult2AliPay(aliPayId, payParams, payConfig, request, null, remark);
+			requestResult2AliPay(aliPayId, payParams, request, null, remark);
 			throw new BusinessException(e.getErrMsg());
         }
     }
 
-	private void requestResult2AliPay(Integer aliPayId, PayParams payParams, PayConfig payConfig,
+	private void requestResult2AliPay(Integer aliPayId, PayParams payParams,
 			AlipayTradeAppPayRequest request, AlipayTradeAppPayResponse result, String remark) {
 		// 保存支付宝支付数据
     	AliPay aliPay = new AliPay()
 				.setUserId			(payParams.getUserId())
 				/* 支付参数 */
-				.setAppid              (payConfig.getAppId())
-				.setPrivateKey			(payConfig.getPrivateKey())
-				.setPubKey				(payConfig.getPubKey())
+				.setAppid              (payParams.getAppid())
 				.setNotifyUrl          (request.getNotifyUrl())
 				.setOutTradeNo         (payParams.getOutTradeNo())
 				.setSubject               (payParams.getBody())
@@ -226,12 +224,13 @@ public class AliPayClient extends BasePayClient {
 		request.setBizModel(model);
 		
 		try {
+			PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPay.getAppid());
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
 					aliPay.getAppid(),
-					aliPay.getPrivateKey(),
+					payConfig.getPrivateKey(),
 	                AliConstants.FORMAT,
 	                AliConstants.CHARSET,
-	                aliPay.getPubKey(),
+	                payConfig.getPubKey(),
 	                AliConstants.SIGNTYPE);
 			
             AlipayTradeQueryResponse response = alipayClient.sdkExecute(request);
@@ -278,12 +277,13 @@ public class AliPayClient extends BasePayClient {
 		// request.setNotifyUrl(notifyUrl);
 
 		try {
+			PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPay.getAppid());
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
 					aliPay.getAppid(),
-					aliPay.getPrivateKey(),
+					payConfig.getPrivateKey(),
 	                AliConstants.FORMAT,
 	                AliConstants.CHARSET,
-	                aliPay.getPubKey(),
+	                payConfig.getPubKey(),
 	                AliConstants.SIGNTYPE);
         	
         	refundResult2AliPayRefund(aliPayRefundId, aliPay, outRefundNo, refundAmount, null);
@@ -326,8 +326,8 @@ public class AliPayClient extends BasePayClient {
 		// 保存支付宝支付退款数据
 		AliPayRefund aliPayRefund = new AliPayRefund()
 				/* 退款参数 */
-				.setAppid(aliPay.getAppid()).setPrivateKey(aliPay.getPrivateKey())
-				.setPubKey(aliPay.getPubKey()).setOutTradeNo(aliPay.getOutTradeNo())
+				.setAppid(aliPay.getAppid())
+				.setOutTradeNo(aliPay.getOutTradeNo())
 				.setOutRequestNo(outRefundNo)
 				.setRefundAmount(refundAmount);
 
@@ -355,12 +355,13 @@ public class AliPayClient extends BasePayClient {
 		closeRequest.setBizContent(JsonUtil.toJsonString(cancelJsonObject));
 
 		try {
+			PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPay.getAppid());
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
 					aliPay.getAppid(),
-					aliPay.getPrivateKey(),
+					payConfig.getPrivateKey(),
 	                AliConstants.FORMAT,
 	                AliConstants.CHARSET,
-	                aliPay.getPubKey(),
+	                payConfig.getPubKey(),
 	                AliConstants.SIGNTYPE);
 
 			AlipayTradeCloseResponse response = alipayClient.execute(closeRequest);

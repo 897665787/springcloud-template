@@ -1,10 +1,13 @@
 package com.company.order.pay.wx.transfer;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.common.exception.BusinessException;
 import com.company.order.pay.wx.OrderResultTransfer;
+import com.company.order.pay.wx.config.WxPayConfiguration;
+import com.company.order.pay.wx.config.WxPayProperties;
 import com.company.order.pay.wx.result.WxPayAppOrderResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
 
@@ -16,8 +19,11 @@ import cn.hutool.crypto.SecureUtil;
 @Component(OrderResultTransfer.BEAN_NAME_PREFIX + TradeType.APP)
 public class AppOrderResultTransfer implements OrderResultTransfer {
 
+	@Autowired
+	private WxPayConfiguration wxPayConfiguration;
+	
 	@Override
-	public Object toPayInfo(String appid, String mchId, String mchKey, String prepayId, String codeUrl,
+	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,
 			String mwebUrl) {
 		if (prepayId == null) {
 			throw new BusinessException(4015, "未获取到必要的支付参数");
@@ -32,6 +38,8 @@ public class AppOrderResultTransfer implements OrderResultTransfer {
 		WxPayAppOrderResult result = WxPayAppOrderResult.builder().prepayId(prepayId).partnerId(partnerId).appId(appid)
 				.packageValue(packageValue).timeStamp(timestamp).nonceStr(nonceStr).build();
 		
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(mchId);
+		
 		StringBuffer signStr = new StringBuffer();
         signStr.append("appid=").append(result.getAppId())
                 .append("&noncestr=").append(result.getNonceStr())
@@ -39,7 +47,7 @@ public class AppOrderResultTransfer implements OrderResultTransfer {
                 .append("&partnerid=").append(result.getPartnerId())
                 .append("&prepayid=").append(result.getPrepayId())
                 .append("&timestamp=").append(result.getTimeStamp())
-                .append("&key=").append(mchKey);
+                .append("&key=").append(mchConfig.getMchKey());
         result.setSign(SecureUtil.md5(signStr.toString()).toUpperCase());
 		return result;
 	}

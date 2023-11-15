@@ -81,7 +81,7 @@ public class WxPayClient extends BasePayClient {
 			if (WxPayConstants.ResultCode.SUCCESS.equals(wxPay.getResultCode())) {// 已成功下过单
 				OrderResultTransfer orderResultTransfer = SpringContextUtil
 						.getBean(OrderResultTransfer.BEAN_NAME_PREFIX + tradeType, OrderResultTransfer.class);
-				Object payInfo = orderResultTransfer.toPayInfo(wxPay.getAppid(), wxPay.getMchid(), wxPay.getMchKey(),
+				Object payInfo = orderResultTransfer.toPayInfo(wxPay.getAppid(), wxPay.getMchid(),
 						wxPay.getPrepayId(), wxPay.getCodeUrl(), wxPay.getMwebUrl());
 				return payInfo;
 			}
@@ -92,7 +92,6 @@ public class WxPayClient extends BasePayClient {
 		WxPayConfig wxPayConfig = new WxPayConfig();
 		wxPayConfig.setAppId(payConfig.getAppId());
 		wxPayConfig.setMchId(payConfig.getMchId());
-		
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(payConfig.getMchId());
 		wxPayConfig.setMchKey(mchConfig.getMchKey());
 		
@@ -134,7 +133,7 @@ public class WxPayClient extends BasePayClient {
 			OrderResultTransfer orderResultTransfer = SpringContextUtil
 					.getBean(OrderResultTransfer.BEAN_NAME_PREFIX + tradeType, OrderResultTransfer.class);
 			Object payInfo = orderResultTransfer.toPayInfo(request.getAppid(), request.getMchId(),
-					mchConfig.getMchKey(), unifiedOrderResult.getPrepayId(), unifiedOrderResult.getCodeURL(),
+					unifiedOrderResult.getPrepayId(), unifiedOrderResult.getCodeURL(),
 					unifiedOrderResult.getMwebUrl());
 			
 			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
@@ -161,15 +160,12 @@ public class WxPayClient extends BasePayClient {
 
 	private void requestResult2WxPay(Integer wxPayId, Integer userId, PayConfig payConfig,
 			WxPayUnifiedOrderRequest request, WxPayUnifiedOrderResult result, String remark) {
-		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(payConfig.getMchId());
 		// 保存微信支付数据
     	WxPay wxPay = new WxPay()
 				.setUserId			(userId)
 				/* 支付参数 */
 				.setAppid              (payConfig.getAppId())
 				.setMchid              (payConfig.getMchId())
-				.setMchKey             (mchConfig.getMchKey())
-				.setKeyPath            (mchConfig.getKeyPath())
 				.setNonceStr           (request.getNonceStr())
 				.setSign           	(request.getSign())
 				.setBody               (request.getBody())
@@ -220,7 +216,7 @@ public class WxPayClient extends BasePayClient {
 		OrderResultTransfer orderResultTransfer = SpringContextUtil
 				.getBean(OrderResultTransfer.BEAN_NAME_PREFIX + tradeType, OrderResultTransfer.class);
 		Object payInfo = orderResultTransfer.toPayInfo(wxPay.getAppid(), wxPay.getMchid(),
-				wxPay.getMchKey(), wxPay.getPrepayId(), wxPay.getCodeUrl(), wxPay.getMwebUrl());
+				wxPay.getPrepayId(), wxPay.getCodeUrl(), wxPay.getMwebUrl());
 		return payInfo;
 	}
 
@@ -241,7 +237,8 @@ public class WxPayClient extends BasePayClient {
 		WxPayConfig wxPayConfig = new WxPayConfig();
 		wxPayConfig.setAppId(wxPay.getAppid());
 		wxPayConfig.setMchId(wxPay.getMchid());
-		wxPayConfig.setMchKey(wxPay.getMchKey());
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
+		wxPayConfig.setMchKey(mchConfig.getMchKey());
 		
 		try {
 			WxPayService wxPayService = new WxPayServiceImpl();
@@ -296,8 +293,9 @@ public class WxPayClient extends BasePayClient {
 		WxPayConfig wxPayConfig = new WxPayConfig();
         wxPayConfig.setAppId(wxPay.getAppid());
         wxPayConfig.setMchId(wxPay.getMchid());
-        wxPayConfig.setMchKey(wxPay.getMchKey());
-        wxPayConfig.setKeyPath(wxPay.getKeyPath());// 退款时用到证书
+        WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
+        wxPayConfig.setMchKey(mchConfig.getMchKey());
+        wxPayConfig.setKeyPath(mchConfig.getKeyPath());// 退款时用到证书
         
 		// 私有参数
 		WxPayRefundRequest request = WxPayRefundRequest.newBuilder().build();
@@ -349,8 +347,6 @@ public class WxPayClient extends BasePayClient {
 				/* 退款参数 */
     			.setAppid              (wxPayConfig.getAppId())
 				.setMchid              (wxPayConfig.getMchId())
-				.setMchKey             (wxPayConfig.getMchKey())
-				.setKeyPath            (wxPayConfig.getKeyPath())
 				.setNonceStr           (request.getNonceStr())
 				.setSign           	(request.getSign())
 				.setOutTradeNo         (request.getOutTradeNo())
@@ -394,7 +390,8 @@ public class WxPayClient extends BasePayClient {
 		WxPayConfig wxPayConfig = new WxPayConfig();
 		wxPayConfig.setAppId(wxPay.getAppid());
 		wxPayConfig.setMchId(wxPay.getMchid());
-		wxPayConfig.setMchKey(wxPay.getMchKey());
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
+		wxPayConfig.setMchKey(mchConfig.getMchKey());
 		
 		try {
 			WxPayService wxPayService = new WxPayServiceImpl();

@@ -3,8 +3,6 @@ CREATE TABLE `bu_ali_activity_pay` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `appid` varchar(32) NOT NULL DEFAULT '' COMMENT '应用ID',
-  `private_key` varchar(2000) NOT NULL DEFAULT '' COMMENT '私钥',
-  `pub_key` varchar(1000) NOT NULL DEFAULT '' COMMENT '公钥',
   `out_order_no` varchar(32) NOT NULL DEFAULT '' COMMENT '商户订单号',
   `buyer_id` varchar(32) NOT NULL DEFAULT '' COMMENT '购买者的支付宝uid',
   `total_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '订单金额(元)',
@@ -27,8 +25,6 @@ DROP TABLE IF EXISTS `bu_ali_activity_pay_refund`;
 CREATE TABLE `bu_ali_activity_pay_refund` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
-  `private_key` varchar(2000) NOT NULL DEFAULT '' COMMENT '私钥',
-  `pub_key` varchar(1000) NOT NULL DEFAULT '' COMMENT '公钥',
   `out_order_no` varchar(32) NOT NULL COMMENT '商户订单号',
   `out_biz_no` varchar(64) NOT NULL DEFAULT '' COMMENT '商户退款单号',
   `buyer_id` varchar(32) NOT NULL COMMENT '购买者的支付宝uid',
