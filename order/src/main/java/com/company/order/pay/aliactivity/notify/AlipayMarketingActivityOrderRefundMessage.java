@@ -1,5 +1,6 @@
 package com.company.order.pay.aliactivity.notify;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,18 +12,28 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.amqp.rabbitmq.Constants;
 import com.company.order.amqp.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
+import com.company.order.api.enums.OrderPayRefundEnum;
+import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.entity.AliActivityPay;
 import com.company.order.entity.AliActivityPayRefund;
+import com.company.order.entity.OrderPayRefund;
+import com.company.order.entity.PayRefundApply;
 import com.company.order.mapper.AliActivityNotifyMapper;
 import com.company.order.mapper.AliActivityPayMapper;
 import com.company.order.mapper.AliActivityPayRefundMapper;
+import com.company.order.mapper.PayRefundApplyMapper;
 import com.company.order.pay.aliactivity.AliActivityConstants;
 import com.company.order.pay.aliactivity.dto.OrderRefundBizContent;
+import com.company.order.service.FinancialFlowService;
+import com.company.order.service.OrderPayRefundService;
 import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <pre>
@@ -30,6 +41,7 @@ import com.google.common.collect.Maps;
  * 官方文档：https://opendocs.alipay.com/pre-open/02cvz6
  * </pre>
  */
+@Slf4j
 @Component(FromMessageBeanFactory.ORDERMESSAGE_REFUNDED)
 public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 
@@ -40,15 +52,18 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 
 	@Autowired
 	private AliActivityNotifyMapper aliActivityNotifyMapper;
-	
-//	@Autowired
-//	private PayRefundApplyMapper payRefundApplyMapper;
 
 	@Autowired
 	private MessageSender messageSender;
 	
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
+	@Autowired
+	private PayRefundApplyMapper payRefundApplyMapper;
+	@Autowired
+	private OrderPayRefundService orderPayRefundService;
+	@Autowired
+	private FinancialFlowService financialFlowService;
 
 	@Override
 	public void handle(Integer payNotifyId, Map<String, String> aliParams) {
@@ -109,8 +124,8 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outOrderNo);
 	
 		AliActivityPayRefund aliActivityPayRefund = aliActivityPayRefundMapper.selectByOutOrderNo(outOrderNo);
-		if (aliActivityPayRefund == null) {
-	
+		if (aliActivityPayRefund == null) {// 查不到数据，说明是‘支付宝主动退款’
+			// -> 模拟用户申请退款操作，补全退款流程相关的表数据
 			if (StringUtils.isBlank(outBizNo)) {
 				outBizNo = String.valueOf(sequenceGenerator.nextId());
 			}
@@ -133,25 +148,45 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 				aliActivityNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotifyId);
 				return;
 			}
-			/*
-			// 走统一退款申请逻辑，因为已经创建了aliActivityPayRefund，所以AliActivityPayClient.requestRefund会走第一个return;
 			
+			// 创建退款申请（补数据）
 			PayRefundApply payRefundApply = new PayRefundApply();
 			payRefundApply.setOrderCode(outBizNo);
 			payRefundApply.setOldOrderCode(outOrderNo);
 			payRefundApply.setAmount(aliActivityPay.getTotalAmount());
 			payRefundApply.setBusinessType(PayRefundApplyEnum.BusinessType.SYS_AUTO.getCode());
 			payRefundApply.setVerifyStatus(PayRefundApplyEnum.VerifyStatus.PASS.getCode());
-			payRefundApply.setRefundStatus(PayRefundApplyEnum.RefundStatus.NO_REFUND.getCode());
-			payRefundApply.setReason(refundType);
-	
+			payRefundApply.setRefundStatus(PayRefundApplyEnum.RefundStatus.REFUND_SCUESS.getCode());
+			payRefundApply.setReason("支付宝主动退款");
+			payRefundApply.setRemark("支付宝主动退款");
 			payRefundApplyMapper.insert(payRefundApply);
 			
-			// 这里需要同步调用一下，否则可能会出现后续查询不到UserPayOrder
-			Result<Boolean> result = refundApplyFeign.dealRefundApply(payRefundApply.getId());
-			log.info("dealRefundApply result:{}", JsonUtil.toJsonString(result));
-			*/
-		} else {
+			// 创建退款订单（补数据）
+			OrderPayRefund refundOrderPay = new OrderPayRefund();
+			refundOrderPay.setUserId(aliActivityPay.getUserId());
+			refundOrderPay.setBusinessType(OrderPayRefundEnum.BusinessType.SYS_AUTO.getCode());
+			refundOrderPay.setMethod(OrderPayEnum.Method.ALIACTIVITY.getCode());
+			refundOrderPay.setOrderCode(outOrderNo);
+			refundOrderPay.setRefundOrderCode(outBizNo);
+			refundOrderPay.setAmount(aliActivityPay.getTotalAmount());
+			refundOrderPay.setRefundAmount(aliActivityPay.getTotalAmount());
+			refundOrderPay.setStatus(OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
+			refundOrderPay.setRemark("支付宝主动退款");
+			orderPayRefundService.insert(refundOrderPay);
+			
+			financialFlow(orderNo, aliActivityPay.getTotalAmount(), outOrderNo, outBizNo);
+			
+			Map<String, Object> params = Maps.newHashMap();
+			params.put("success", true);
+			params.put("message", "支付宝主动退款");
+			params.put("orderCode", outOrderNo);
+			params.put("refundOrderCode", outBizNo);
+			// params.put("attach", attach);
+			params.put("thisRefundAmount", aliActivityPay.getTotalAmount());
+			params.put("totalRefundAmount", aliActivityPay.getTotalAmount());
+			
+			messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
+		} else {// 用户主动退款
 			AliActivityPayRefund aliActivityPay4Update = new AliActivityPayRefund()
 					.setOutBizNo(outBizNo)
 					.setTradeStatus(AliActivityConstants.TRADE_CLOSED)
@@ -167,23 +202,33 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 				aliActivityNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotifyId);
 				return;
 			}
+			
+			// MQ异步处理
+			Map<String, Object> params = Maps.newHashMap();
+			params.put("payNotifyId", payNotifyId);
+			params.put("outTradeNo", outOrderNo);
+			params.put("outRefundNo", outBizNo);
+			params.put("success", true);
+			
+			//财务流水信息
+			params.put("amount", aliActivityPay.getTotalAmount());
+			params.put("orderPayMethod", OrderPayEnum.Method.ALIACTIVITY.getCode());
+			params.put("merchantNo", "未配置");
+			params.put("tradeNo", aliActivityPay.getTradeNo());
+			
+			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+					Constants.QUEUE.COMMON.ROUTING_KEY);
 		}
-
-		// MQ异步处理
-		Map<String, Object> params = Maps.newHashMap();
-		params.put("payNotifyId", payNotifyId);
-		params.put("outTradeNo", outOrderNo);
-		params.put("outRefundNo", outBizNo);
-		params.put("success", true);
-
-		//财务流水信息
-		params.put("amount", aliActivityPay.getTotalAmount());
-		params.put("orderPayMethod", OrderPayEnum.Method.ALIACTIVITY.getCode());
-		params.put("merchantNo", "未配置");
-		params.put("tradeNo", aliActivityPay.getTradeNo());
-
-		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.ROUTING_KEY);
+	}
+	
+	private void financialFlow(String orderNo, BigDecimal amount, String outTradeNo, String outRefundNo) {
+		//数据落库, 生成财务流水(出账)
+		try {
+			String merchantNo =  "未配置";
+			financialFlowService.outAccount(outTradeNo, outRefundNo, orderNo, amount, OrderPayEnum.Method.ALIACTIVITY, merchantNo);
+		} catch (Exception e) {
+			log.error("生成财务流水(出账), error: {}", e);
+		}
 	}
 
 }
