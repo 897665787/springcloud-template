@@ -8,12 +8,10 @@ public interface OrderResultTransfer {
 	 * 
 	 * @param appid
 	 * @param mchId
-	 * @param mchKey
 	 * @param prepayId
 	 * @param codeUrl
 	 * @param mwebUrl
 	 * @return
 	 */
-	Object toPayInfo(String appid, String mchId, String mchKey, String prepayId, String codeUrl,
-			String mwebUrl);
+	Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl, String mwebUrl);
 }
