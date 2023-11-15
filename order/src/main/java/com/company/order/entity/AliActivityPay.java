@@ -31,16 +31,6 @@ public class AliActivityPay {
 	private String appid;
 
 	/**
-	 * 私钥
-	 */
-	private String privateKey;
-
-	/**
-	 * 公钥
-	 */
-	private String pubKey;
-
-	/**
 	 * 商户订单号，需保持唯一性
 	 */
 	private String outOrderNo;

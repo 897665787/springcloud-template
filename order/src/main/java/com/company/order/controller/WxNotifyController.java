@@ -98,9 +98,12 @@ public class WxNotifyController implements WxNotifyFeign {
 
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
 
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
+		String mchKey = mchConfig.getMchKey();
+		
 		// 校验返回结果签名
 		Map<String, String> map = orderNotifyResult.toMap();
-		if (!SignUtils.checkSign(map, null, wxPay.getMchKey())) {
+		if (!SignUtils.checkSign(map, null, mchKey)) {
 			payNotifyMapper.updateRemarkById("参数格式校验错误！", payNotify.getId());
 			return Result.success(WxPayNotifyResponse.fail("参数格式校验错误！"));
 		}

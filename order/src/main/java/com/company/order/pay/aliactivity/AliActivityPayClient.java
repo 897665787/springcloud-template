@@ -148,7 +148,7 @@ public class AliActivityPayClient extends BasePayClient {
 			}
 			 * </pre>
 			 */
-			requestResult2AliActivityPay(aliActivityPayId, payParams, payConfig, request, response, remark);
+			requestResult2AliActivityPay(aliActivityPayId, payParams, request, response, remark);
             
 			if (!response.isSuccess()) {
 				throw new BusinessException(response.getMsg());
@@ -178,20 +178,18 @@ public class AliActivityPayClient extends BasePayClient {
         	// 支付异常
 			log.error("AliActivityPay error", e);
 			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
-			requestResult2AliActivityPay(aliActivityPayId, payParams, payConfig, request, null, remark);
+			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
 			throw new BusinessException(e.getErrMsg());
         }
     }
 
-	private void requestResult2AliActivityPay(Integer aliActivityPayId, PayParams payParams, PayConfig payConfig,
+	private void requestResult2AliActivityPay(Integer aliActivityPayId, PayParams payParams,
 			AlipayMarketingActivityOrderCreateRequest request, AlipayMarketingActivityOrderCreateResponse result, String remark) {
 		// 保存支付宝支付数据
     	AliActivityPay aliActivityPay = new AliActivityPay()
 				.setUserId			(payParams.getUserId())
 				/* 支付参数 */
-				.setAppid              (payConfig.getAppId())
-				.setPrivateKey			(payConfig.getPrivateKey())
-				.setPubKey				(payConfig.getPubKey())
+				.setAppid              (payParams.getAppid())
 				.setBuyerId          	(payParams.getOpenid())
 				.setOutOrderNo         (payParams.getOutTradeNo())
 				.setSaleActivityInfoList(payParams.getBody())
@@ -311,12 +309,13 @@ public class AliActivityPayClient extends BasePayClient {
 		// request.setNotifyUrl(notifyUrl);
     	
 		try {
+			PayConfig payConfig = aliActivityPayConfiguration.getPayConfig(aliActivityPay.getAppid());
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
 					aliActivityPay.getAppid(),
-					aliActivityPay.getPrivateKey(),
+					payConfig.getPrivateKey(),
 	                AliActivityConstants.FORMAT,
 	                AliActivityConstants.CHARSET,
-	                aliActivityPay.getPubKey(),
+	                payConfig.getPubKey(),
 	                AliActivityConstants.SIGNTYPE);
         	
         	refundResult2AliActivityPayRefund(aliActivityPayRefundId, aliActivityPay, outRefundNo, refundActivityInfoListStr, null);
@@ -359,8 +358,6 @@ public class AliActivityPayClient extends BasePayClient {
 		AliActivityPayRefund aliActivityPayRefund = new AliActivityPayRefund()
 				/* 退款参数 */
 				.setAppid(aliActivityPay.getAppid())
-				.setPrivateKey(aliActivityPay.getPrivateKey())
-				.setPubKey(aliActivityPay.getPubKey())
 				.setOrderNo(aliActivityPay.getOutOrderNo())
 				.setOutBizNo(outRefundNo)
 				.setBuyerId(aliActivityPay.getBuyerId())
