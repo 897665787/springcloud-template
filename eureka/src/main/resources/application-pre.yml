@@ -6,7 +6,7 @@ eureka:
   server:
     use-read-only-response-cache: false #禁用readOnlyCacheMap（用于优雅发版即时下线服务）
     enable-self-preservation: false # 默认情况下，eureka间隔60s将服务清单中没有续约的服务剔除（默认90s内没有续约），本地测试，关闭保护机制，直接让它实时剔除
-    eviction-interval-timer-in-ms: 3000 #关闭自我保护，并3秒踢出宕机的服务（单位毫秒，默认是60*1000）
+    eviction-interval-timer-in-ms: 3000 # 扫描失效服务的间隔时间（单位毫秒，默认是60*1000）
   client:
     register-with-eureka: false # 否将自己注册到Eureka Server，默认为true
     fetch-registry: false # 是否从Eureka Server获取注册信息，默认为true
