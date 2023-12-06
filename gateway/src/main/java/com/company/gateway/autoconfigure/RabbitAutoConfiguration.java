@@ -4,7 +4,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ConfirmCallback;
@@ -13,63 +12,49 @@ import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.amqp.support.converter.SimpleMessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import com.company.common.util.HostUtil;
 import com.company.common.util.JsonUtil;
 import com.company.gateway.amqp.rabbit.constants.FanoutConstants;
+import com.company.gateway.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-//@Conditional(RabbitCondition.class)
-public class RabbitAutoConfiguration {
+@Conditional(RabbitCondition.class)
+public class RabbitAutoConfiguration extends org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration {
 
-	@Autowired
-	private RabbitProperties rabbitProperties;
-
+	// 设置消息转换器
 	@Bean
 	public MessageConverter messageConverter() {
 		return new ContentTypeDelegatingMessageConverter(new SimpleMessageConverter());
 	}
 
-	@Primary // 先注册的connectionFactory才可以创建队列
-	@Bean
-	public ConnectionFactory connectionFactory() {
-		CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-		connectionFactory.setAddresses(rabbitProperties.getAddresses());
-		connectionFactory.setUsername(rabbitProperties.getUsername());
-		connectionFactory.setPassword(rabbitProperties.getPassword());
-		connectionFactory.setVirtualHost(rabbitProperties.getVirtualHost());
-		return connectionFactory;
-	}
-
-	@Bean
-	public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
-			CachingConnectionFactory connectionFactory, MessageConverter messageConverter) {
-		connectionFactory.setPublisherConfirms(true);// publiser-confirm模式可以确保生产者到交换器exchange消息有没有发送成功
+	// 复制于源码RabbitAnnotationDrivenConfiguration
+	@Bean(name = "rabbitListenerContainerFactory")
+	public SimpleRabbitListenerContainerFactory simpleRabbitListenerContainerFactory(
+			SimpleRabbitListenerContainerFactoryConfigurer configurer, ConnectionFactory connectionFactory) {
 		SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+		configurer.configure(factory, connectionFactory);
+
+		// 设置手动acks
 		factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-		factory.setConnectionFactory(connectionFactory);
-		factory.setMessageConverter(messageConverter);
+		// 设置Consumer tag，方便通过命名查找消费者，特别是开发环境，测试数据可能会被他人消费
 		factory.setConsumerTagStrategy(
 				a -> HostUtil.identity() + "-" + HostUtil.ip() + "-" + RandomStringUtils.randomAlphanumeric(22));
 		return factory;
 	}
 
+	// 设置RabbitTemplate Callback方法
 	@Bean
-	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(messageConverter);
-		rabbitTemplate.setMandatory(true);// 使用publiser-confirm，publisher-returns属性
-
+	public Object setRabbitTemplateCallback(RabbitTemplate rabbitTemplate) {
 		rabbitTemplate.setConfirmCallback(new ConfirmCallback() {
 			@Override
 			public void confirm(CorrelationData correlationData, boolean ack, String cause) {
@@ -90,8 +75,7 @@ public class RabbitAutoConfiguration {
 						JsonUtil.toJsonString(message), replyCode, replyText, exchange, routingKey);
 			}
 		});
-
-		return rabbitTemplate;
+		return new Object();
 	}
 
 	public static class RabbitCondition extends AllNestedConditions {

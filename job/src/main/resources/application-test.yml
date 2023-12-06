@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include: eureka-test,redis-test,rabbitmq-test
+
+template:
+  domain: http://t-domain.com
+  enable:
+    redis: true
+    redisson: true
+    idempotent: false
+    rabbitmq: true

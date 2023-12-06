@@ -13,13 +13,11 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 import com.company.tool.api.enums.SubscribeEnum;
 import com.company.tool.entity.SubscribeTemplateGrant;
 import com.company.tool.service.SubscribeTemplateGrantService;
@@ -37,7 +35,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
-@Conditional(RabbitCondition.class)
 public class SendCouponConsumer {
 
 	@Autowired

@@ -1,8 +1,14 @@
+spring:
+  profiles:
+    include: eureka-pre,redis-pre,rabbitmq-pre
+    
 template:
   domain: http://p-domain.com
   enable:
     redis: true
     redisson: true
-    idempotent: true
+    idempotent: false
     rabbitmq: true
     data-encypt: false
+  mock:
+    time: false

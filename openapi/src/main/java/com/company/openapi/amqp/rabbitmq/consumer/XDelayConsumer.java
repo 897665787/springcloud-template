@@ -24,7 +24,6 @@ import com.rabbitmq.client.Channel;
  * @return
  */
 @Component
-@Conditional(RabbitCondition.class)
 public class XDelayConsumer {
 
 	@RabbitListener(

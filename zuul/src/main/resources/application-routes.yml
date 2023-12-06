@@ -17,3 +17,7 @@ zuul:
     app:
       serviceId: template-app
       path: /app/**
+    # 配置6201接口微服务
+    openapi:
+      serviceId: template-openapi
+      path: /openapi/**

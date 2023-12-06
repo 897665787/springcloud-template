@@ -1,0 +1,33 @@
+spring:
+  profiles:
+    include: eureka-test,redis-test,rabbitmq-test
+  datasource:
+    base:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+
+canal:
+  mode: simple # simple,cluster,zookeeper,kafka,rocketMQ，默认：simple 可以使用一个不存在的选项关闭canal
+  server: 127.0.0.1:11111 # canal的地址
+  destination: example # 数据同步的目的地，默认：example
+  
+template:
+  domain: http://t-domain.com
+  enable:
+    redis: true
+    redisson: true
+    idempotent: false
+    rabbitmq: true

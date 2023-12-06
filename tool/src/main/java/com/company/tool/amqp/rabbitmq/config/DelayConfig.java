@@ -22,7 +22,6 @@ import com.company.tool.amqp.rabbitmq.Constants;
  * @return
  */
 @Configuration
-@Conditional(RabbitCondition.class)
 public class DelayConfig {
 
 	@Bean

@@ -1,12 +1,40 @@
 spring:
   profiles:
-    include: redis-prod,rabbitmq-prod,apollo-prod
-    
+    include: eureka-prod,redis-prod,rabbitmq-prod,apollo-prod
+
 template:
   domain: http://domain.com
   enable:
     redis: true
     redisson: true
-    idempotent: true
+    idempotent: false
     rabbitmq: true
-    data-encypt: true
+    data-encypt: false
+  mock:
+    oauthtool: false
+    matool: false
+    mptool: false
+
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5
+
+wx:
+  miniapp:
+    configs:
+      - appid: 1111 #微信小程序的appid
+        secret: 1111 #微信小程序的Secret
+        token: 1111 #微信小程序消息服务器配置的token
+        aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
+  mp:
+    configs:
+      - appId: 1111 # 第一个公众号的appid
+        secret: 1111 # 公众号的appsecret
+        token: 111 # 接口配置里的Token值
+        aesKey: 111 # 接口配置里的EncodingAESKey值
+      - appId: 2222 # 第二个公众号的appid，以下同上
+        secret: 1111
+        token: 111
+        aesKey: 111

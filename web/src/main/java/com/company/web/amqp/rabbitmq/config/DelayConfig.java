@@ -6,10 +6,8 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 import com.company.web.amqp.rabbitmq.Constants;
 
 /**
@@ -22,7 +20,6 @@ import com.company.web.amqp.rabbitmq.Constants;
  * @return
  */
 @Configuration
-@Conditional(RabbitCondition.class)
 public class DelayConfig {
 
 	@Bean

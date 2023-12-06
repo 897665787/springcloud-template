@@ -1,0 +1,30 @@
+spring:
+  elasticsearch:
+    bboss:
+      #elasticUser: 
+      #elasticPassword: 
+      elasticsearch:
+        rest:
+          hostNames: 127.0.0.1:9200 #es服务器地址配置，逗号分隔
+        dateFormat: yyyy.MM.dd #动态索引表名称日期格式配置
+        timeZone: Asia/Shanghai
+        showTemplate: true #在控制台输出脚本调试开关showTemplate,false关闭，true打开，同时log4j至少是info级别
+        discoverHost: false #客户端动态发现es集群节点控制开关
+      dslfile:
+        refreshInterval: 5 #dsl配置文件热加载扫描时间间隔，毫秒为单位，默认5秒扫描一次，<= 0时关闭扫描机制
+      http: #http链接池配置
+        timeoutConnection: 50000
+        timeoutSocket: 50000
+        connectionRequestTimeout: 50000
+        retryTime: 1
+        maxLineLength: -1
+        maxHeaderCount: 200
+        maxTotal: 400
+        defaultMaxPerRoute: 200
+        soReuseAddress: false
+        soKeepAlive: false
+        timeToLive: 3600000
+        keepAlive: 3600000
+        keystore:
+        keyPassword:
+        hostnameVerifier:

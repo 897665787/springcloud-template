@@ -1,14 +1,6 @@
-eureka:
-  instance:
-    lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
-    lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
-  client:
-    register-with-eureka: false # 注册到Eureka Server，默认true
-    fetch-registry: false # 从Eureka Server获取注册信息，默认true
-
 spring:
   profiles:
-    include: redis-dev,rabbitmq-dev,elasticsearch-dev
+    include: eureka-dev,redis-dev,rabbitmq-dev,elasticsearch-dev
   resources:
     #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
     static-locations: file:D:/home/data/oss/buket-template-dev/
@@ -37,11 +29,6 @@ template:
     redisson: false
     idempotent: false
     rabbitmq: false
-    elasticsearch: false
-    data-encypt: false
-    access-control: false
-  mock:
-    time: false
 
 filestorage:
   active: local

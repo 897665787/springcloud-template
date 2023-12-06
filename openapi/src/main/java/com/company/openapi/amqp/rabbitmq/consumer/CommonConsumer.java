@@ -14,7 +14,6 @@ import com.company.openapi.amqp.rabbitmq.Constants;
 import com.rabbitmq.client.Channel;
 
 @Component
-@Conditional(RabbitCondition.class)
 public class CommonConsumer {
 
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.COMMON.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.COMMON.ROUTING_KEY))

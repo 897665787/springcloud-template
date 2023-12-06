@@ -1,12 +1,13 @@
 spring:
   profiles:
-    include: redis-prod,rabbitmq-prod,apollo-prod
+    include: eureka-prod,redis-prod,rabbitmq-prod
     
 template:
   domain: http://domain.com
   enable:
     redis: true
     redisson: true
-    idempotent: true
+    idempotent: false
     rabbitmq: true
-    data-encypt: true
+  sign:
+    check: true

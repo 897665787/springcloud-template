@@ -1,23 +1,25 @@
 spring:
   profiles:
-    include: redis-prod,rabbitmq-prod,apollo-prod
+    include: eureka-prod,redis-prod,rabbitmq-prod
     
 template:
   domain: http://domain.com
   enable:
     redis: true
     redisson: true
-    idempotent: true
+    idempotent: false
     rabbitmq: true
-    data-encypt: true
-    
+    data-encypt: false
+  mock:
+    time: true
+
 # knife4j文档
 knife4j:
   # 是否开启生产环境屏蔽   true:关闭swagger，false:开启swagger
   production: true
   basic:
     # 是否开启认证
-    enable: true
+    enable: false
     # Basic认证用户名
     username: admin
     # Basic认证密码

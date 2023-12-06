@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: eureka-pre
   cloud:
     config:
       server:
@@ -10,5 +12,7 @@ spring:
             - config-yml
           #username: 897665787@qq.com
           #password: ******
-          force-pull: true  # 强制拉取资源文件
-          default-label: master   # 默认拉取的分支
+          # 强制拉取资源文件
+          force-pull: true
+          # 默认拉取的分支
+          default-label: master

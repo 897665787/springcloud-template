@@ -3,6 +3,5 @@ template:
   enable:
     redis: true
     redisson: true
-    idempotent: true
+    idempotent: false
     rabbitmq: true
-    data-encypt: false

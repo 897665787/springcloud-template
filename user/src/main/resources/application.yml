@@ -10,17 +10,6 @@ spring:
 #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
 logging:
   config: classpath:logback-conf.xml
-  
-eureka:
-  instance:
-    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: localhost
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true # 注册到Eureka Server，默认true
-    fetch-registry: true # 从Eureka Server获取注册信息，默认true
-    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
-      defaultZone: http://127.0.0.1:7001/eureka/
     
 #参考https://www.cnblogs.com/zhenbianshu/p/9630167.html，https://blog.csdn.net/u010395804/article/details/80266335
 hystrix:

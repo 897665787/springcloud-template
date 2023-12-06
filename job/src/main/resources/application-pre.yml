@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include: eureka-prod,redis-prod,rabbitmq-prod
+
+template:
+  domain: http://p-domain.com
+  enable:
+    redis: true
+    redisson: true
+    idempotent: false
+    rabbitmq: true

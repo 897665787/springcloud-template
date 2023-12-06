@@ -1,7 +1,27 @@
 spring:
   profiles:
-    include: redis-prod,rabbitmq-prod,elasticsearch-prod,apollo-prod
-
+    include: eureka-prod,redis-prod,rabbitmq-prod,elasticsearch-prod
+  resources:
+    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+    static-locations: file:D:/home/data/oss/buket-template-prod/
+  datasource:
+    base:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      
 template:
   domain: http://domain.com
   enable:
@@ -9,10 +29,9 @@ template:
     redisson: true
     idempotent: true
     rabbitmq: true
-    data-encypt: true
 
 filestorage:
-  active: local
+  active: minio
   local:
     endpoint: /home/data/oss
     bucketName: buket-template
@@ -25,7 +44,7 @@ filestorage:
     domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
 
 smssender:
-  active: log
+  active: ali
   # 打印日志（用于测试环境不想发送真实短信）
   log:
     signName: 测试
@@ -42,3 +61,12 @@ smssender:
     accessKey: LTAIkcl1bVhsEpGf
     secretKey: D9hwgRigRI1Q6rIE4PBU1lmKsqTpUm
     signName: XXX公司2
+
+wx:
+  miniapp:
+    configs:
+      - appid: 1111 #微信小程序的appid
+        secret: 1111 #微信小程序的Secret
+        token: 1111 #微信小程序消息服务器配置的token
+        aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON

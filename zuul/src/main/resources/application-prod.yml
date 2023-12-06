@@ -1,9 +1,14 @@
+spring:
+  profiles:
+    include: routes,eureka-prod,rabbitmq-prod,apollo-prod
+    
 template:
   domain: http://domain.com
   enable:
-    redis: true
     rabbitmq: true
-    
-spring:
-  profiles:
-    include: routes,rabbitmq-prod,apollo-prod
+    access-control: true
+
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5

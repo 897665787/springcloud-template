@@ -10,21 +10,18 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@Conditional(RabbitCondition.class)
 public class CanalConsumer {
 
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.CANAL.USER_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.CANAL.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))

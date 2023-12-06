@@ -1,0 +1,72 @@
+spring:
+  profiles:
+    include: eureka-pre,redis-pre,rabbitmq-pre,elasticsearch-pre
+  resources:
+    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+    static-locations: file:D:/home/data/oss/buket-template-pre/
+  datasource:
+    base:
+      master:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      slave2:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+        username: root
+        password: 12345678
+      
+template:
+  domain: http://p-domain.com
+  enable:
+    redis: true
+    redisson: true
+    idempotent: false
+    rabbitmq: true
+
+filestorage:
+  active: minio
+  local:
+    endpoint: D:/home/data/oss
+    bucketName: buket-template-pre
+    domain: http://localhost:4001 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
+  minio:
+    endpoint: http://127.0.0.1:9000
+    accessKey: pRYo5fCm9ZyVNKLA
+    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+    bucketName: buket-template-pre
+    domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
+
+smssender:
+  active: ali
+  # 打印日志（用于测试环境不想发送真实短信）
+  log:
+    signName: 测试
+  # 阿里云短信
+  ali:
+    regionId: cn-hangzhou
+    accessKey: LTAI5tRK8vFDnEijSRxNyDEs
+    secretKey: ZIIW2Gt71FU8l48JyCIe4gzXmMYESe
+    signName: XXX公司1
+  # 腾讯短信
+  tencent:
+    appId: 1400006666
+    regionId: ap-guangzhou
+    accessKey: LTAIkcl1bVhsEpGf
+    secretKey: D9hwgRigRI1Q6rIE4PBU1lmKsqTpUm
+    signName: XXX公司2
+
+wx:
+  miniapp:
+    configs:
+      - appid: 1111 #微信小程序的appid
+        secret: 1111 #微信小程序的Secret
+        token: 1111 #微信小程序消息服务器配置的token
+        aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON

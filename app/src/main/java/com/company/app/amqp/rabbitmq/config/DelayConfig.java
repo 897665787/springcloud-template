@@ -6,11 +6,9 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import com.company.app.amqp.rabbitmq.Constants;
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 
 /**
  * 延时队列(用2个队列实现)
@@ -22,7 +20,6 @@ import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitConditi
  * @return
  */
 @Configuration
-@Conditional(RabbitCondition.class)
 public class DelayConfig {
 
 	@Bean
