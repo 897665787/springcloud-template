@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.web.req.GrantReq;
 
-@PublicUrl
 @RestController
 @RequestMapping("/subscribe")
 public class SubscribeController {

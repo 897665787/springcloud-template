@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.app.req.SwaggerReq;
 import com.company.app.resp.SwaggerResp;
-import com.company.common.annotation.EncryptResultData;
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.PropertyUtils;
+import com.company.framework.annotation.EncryptResultData;
 
-@PublicUrl
 @RestController
 @RequestMapping("/swagger")
 public class SwaggerController {

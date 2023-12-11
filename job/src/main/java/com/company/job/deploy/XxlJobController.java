@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 
@@ -18,7 +17,6 @@ import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
  * @author JQ棣
  *
  */
-@PublicUrl
 @RestController
 public class XxlJobController {
 

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
@@ -20,7 +19,6 @@ import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@PublicUrl
 @RestController
 @RequestMapping("/file")
 public class FileController {

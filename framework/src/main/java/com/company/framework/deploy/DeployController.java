@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.framework.context.SpringContextUtil;
 import com.netflix.discovery.DiscoveryClient;
@@ -20,7 +19,6 @@ import com.netflix.discovery.DiscoveryClient;
  * @author JQ棣
  *
  */
-@PublicUrl
 @RestController
 public class DeployController {
 

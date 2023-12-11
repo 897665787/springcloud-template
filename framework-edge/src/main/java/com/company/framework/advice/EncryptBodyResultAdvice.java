@@ -1,5 +1,6 @@
 package com.company.framework.advice;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -10,9 +11,9 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.company.common.annotation.EncryptResultData;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.framework.annotation.EncryptResultData;
 
 import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
 @ConditionalOnProperty(prefix = "template.enable", name = "data-encypt", havingValue = "true", matchIfMissing = false)
 public class EncryptBodyResultAdvice implements ResponseBodyAdvice<Object> {
-	private static final String ENCRYPT_KEY = "11111111";
 
+	@Value("${template.key.data-encypt:11111111}")
+	private String encryptKey;
+	
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {
 		// 如果使用了EncryptResultData，说明响应值需要加密
@@ -49,13 +52,13 @@ public class EncryptBodyResultAdvice implements ResponseBodyAdvice<Object> {
 			if (data2 == null) {
 				return result;
 			}
-			String encryptData = SecureUtil.des(ENCRYPT_KEY.getBytes()).encryptBase64(String.valueOf(data2));
+			String encryptData = SecureUtil.des(encryptKey.getBytes()).encryptBase64(String.valueOf(data2));
 			Result<String> encryptResult = Result.success(encryptData).setMessage(result.getMessage());
 			log.info("原数据:{},加密后数据:{}", JsonUtil.toJsonString(data), JsonUtil.toJsonString(encryptResult));
 			return encryptResult;
 		}
 		
-		String encryptData = SecureUtil.des(ENCRYPT_KEY.getBytes()).encryptBase64(String.valueOf(data));
+		String encryptData = SecureUtil.des(encryptKey.getBytes()).encryptBase64(String.valueOf(data));
 		log.info("原数据:{},加密后数据:{}", data instanceof String ? data : JsonUtil.toJsonString(data), encryptData);
 		return encryptData;
 	}

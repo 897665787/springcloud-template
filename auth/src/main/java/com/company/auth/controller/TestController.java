@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.auth.authentication.test.TestData;
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.google.common.collect.Maps;
 
-@PublicUrl
 @RestController
 @RequestMapping("/test")
 public class TestController {

@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.deploy.RefreshHandler;
@@ -40,7 +40,6 @@ import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 
-@PublicUrl
 @RestController
 @RequestMapping("/api")
 @Slf4j
@@ -111,18 +110,17 @@ public class ApiController {
 		return Result.success(map);
 	}
 	
-	@PublicUrl
 	@GetMapping(value = "/timestr")
 	public Result<String> timestr() {
 		return Result.success(timeService.getTime());
 	}
 	
-	@PublicUrl
 	@GetMapping(value = "/info")
 	public Result<String> info() {
 		return Result.success("{}");
 	}
 	
+	@RequireLogin
 	@GetMapping(value = "/getOrderById")
 	public Result<OrderResp> getOrderById(Long id) {
 //		if (true)

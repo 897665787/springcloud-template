@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
+import com.company.framework.annotation.RequireLogin;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/sa-token")
 public class SaTokenController {
 	
-	@PublicUrl
 	@PostMapping(value = "/cookie/login")
 	public Result<Object> login(@RequestBody Map<String, Object> param) {
 		// 手机号+验证码
@@ -38,6 +37,7 @@ public class SaTokenController {
 		return Result.success(tokenInfo);
 	}
 	
+	@RequireLogin
 	@GetMapping(value = "/cookie/check")
 	public Result<String> check() {
 		
@@ -63,13 +63,13 @@ public class SaTokenController {
 		return Result.success(msg);
 	}
 	
+	@RequireLogin
 	@PostMapping(value = "/cookie/logout")
 	public Result<String> logout(@RequestBody Map<String, Object> param) {
 		StpUtil.logout();
 		return Result.success("注销成功");
 	}
 	
-	@PublicUrl
 	@PostMapping(value = "/jwt/login")
 	public Result<String> jwtlogin(@RequestBody Map<String, Object> param) {
 		// 手机号+验证码
@@ -86,6 +86,7 @@ public class SaTokenController {
 		return Result.success(tokenInfo.getTokenValue());
 	}
 	
+	@RequireLogin
 	@GetMapping(value = "/jwt/check")
 	public Result<String> jwtcheck() {
 		
@@ -110,6 +111,7 @@ public class SaTokenController {
 		return Result.success(msg);
 	}
 	
+	@RequireLogin
 	@PostMapping(value = "/jwt/logout")
 	public Result<String> jwtlogout(@RequestBody Map<String, Object> param) {
 		StpUtil.logout();

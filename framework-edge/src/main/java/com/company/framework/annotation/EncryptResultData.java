@@ -1,4 +1,4 @@
-package com.company.common.annotation;
+package com.company.framework.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,11 +8,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 开放访问的API
+ * 对Result里的data进行加密
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface PublicUrl {
+public @interface EncryptResultData {
 }

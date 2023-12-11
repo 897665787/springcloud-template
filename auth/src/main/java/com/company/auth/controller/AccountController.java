@@ -16,10 +16,10 @@ import com.company.auth.authentication.LoginType;
 import com.company.auth.authentication.dto.LoginResult;
 import com.company.auth.resp.LoginResp;
 import com.company.auth.token.TokenService;
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.google.common.collect.Maps;
 
@@ -35,7 +35,6 @@ public class AccountController {
 	@Value("${token.name}")
 	private String headerToken;
 	
-	@PublicUrl
 	@GetMapping(value = "/login")
 	public Result<LoginResp> login(String loginType, String mobile, String code, String authcode, String device) {
 		LoginType.Enum loginTypeEnum = LoginType.Enum.of(loginType);
@@ -75,6 +74,7 @@ public class AccountController {
 		return Result.success(loginResp);
 	}
 	
+	@RequireLogin
 	@GetMapping(value = "/logout")
 	public Result<String> logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);

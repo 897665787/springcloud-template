@@ -10,12 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.company.common.annotation.PublicUrl;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.google.common.collect.Maps;
 
-//@PublicUrl
 @Controller
 @RequestMapping("/auth")
 public class AuthController {
