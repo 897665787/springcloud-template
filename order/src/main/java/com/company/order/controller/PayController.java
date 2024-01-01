@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.redis.redisson.DistributeLockUtils;
+import com.company.framework.redisson.DistributeLockUtils;
 import com.company.order.amqp.rabbitmq.Constants;
 import com.company.order.amqp.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;

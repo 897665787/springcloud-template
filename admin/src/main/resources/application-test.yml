@@ -1,7 +1,7 @@
 template:
   domain: http://t-domain.com
   enable:
-    redis: true
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
     redisson: true
     idempotent: false
     rabbitmq: true

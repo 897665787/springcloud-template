@@ -8,13 +8,14 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.company.common.annotation.Idempotent;
 import com.company.common.util.JsonUtil;
-import com.company.framework.redis.RedisUtils;
-import com.company.framework.redis.redisson.DistributeLockUtils;
+import com.company.framework.cache.ICache;
+import com.company.framework.redisson.DistributeLockUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +32,9 @@ public class IdempotentAspect implements InitializingBean {
 
 	private boolean needIdempotent = false;
 
+	@Autowired
+	private ICache cache;
+	
 	/**
 	 * 发起feign请求的服务
 	 * 
@@ -66,7 +70,7 @@ public class IdempotentAspect implements InitializingBean {
 			return joinPoint.proceed();
 		}
 		return DistributeLockUtils.doInDistributeLockThrow(IdempotentUtil.lock(), () -> {
-			Boolean success = RedisUtils.del(IdempotentUtil.head(idempotentId));// 删除成功代表首次执行
+			Boolean success = cache.del(IdempotentUtil.head(idempotentId));// 删除成功代表首次执行
 			if (success) {
 				Object result = null;
 				try {
@@ -76,7 +80,7 @@ public class IdempotentAspect implements InitializingBean {
 				}
 				if (result != null) {
 					// 将结果保存在redis，供重试请求直接从redis获取
-					RedisUtils.set(IdempotentUtil.data(), result, IdempotentUtil.idempotentExpireMillis(),
+					cache.set(IdempotentUtil.data(), result, IdempotentUtil.idempotentExpireMillis(),
 							TimeUnit.MILLISECONDS);
 				}
 				return result;
@@ -89,7 +93,7 @@ public class IdempotentAspect implements InitializingBean {
 					log.info("already execute:{}", idempotentId);
 					return null;
 				}
-				Object result = RedisUtils.get(IdempotentUtil.data(), returnType);
+				Object result = cache.get(IdempotentUtil.data(), returnType);
 				log.info("already execute:{},result:{}", idempotentId, JsonUtil.toJsonString(result));
 				return result;
 			}

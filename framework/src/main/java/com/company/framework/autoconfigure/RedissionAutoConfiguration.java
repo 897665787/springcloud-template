@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 import com.company.framework.autoconfigure.RedissionAutoConfiguration.RedissonCondition;
-import com.company.framework.redis.redisson.DistributeLockUtils;
+import com.company.framework.redisson.DistributeLockUtils;
 
 @Configuration
 @Conditional(RedissonCondition.class)

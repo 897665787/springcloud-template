@@ -22,7 +22,7 @@ spring:
 template:
   domain: http://d-domain.com
   enable:
-    redis: false
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
     redisson: false
     idempotent: false
     rabbitmq: false

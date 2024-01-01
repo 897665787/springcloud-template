@@ -1,7 +1,6 @@
 package com.company.web.controller;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Future;
@@ -21,10 +20,10 @@ import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.annotation.RequireLogin;
+import com.company.framework.cache.ICache;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.deploy.RefreshHandler;
-import com.company.framework.redis.RedisUtils;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
@@ -35,7 +34,6 @@ import com.company.web.amqp.rabbitmq.Constants;
 import com.company.web.amqp.strategy.StrategyConstants;
 import com.company.web.amqp.strategy.dto.UserMQDto;
 import com.company.web.service.TimeService;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
@@ -110,8 +108,23 @@ public class ApiController {
 		return Result.success(map);
 	}
 	
+	@Autowired
+	private ICache cache;
+	
 	@GetMapping(value = "/timestr")
 	public Result<String> timestr() {
+		String string1 = cache.get("aaaaaaa", () -> {
+//			int a = 1/0;
+			return ""+System.currentTimeMillis();
+//			return null;
+		});
+		System.out.println(string1);
+		
+//		String string2 = RedisUtils.get("aaaaaaa", () -> {
+////			int a = 1/0;
+//			return ""+System.currentTimeMillis();
+//		});
+//		System.out.println(string2);
 		return Result.success(timeService.getTime());
 	}
 	
@@ -199,24 +212,6 @@ public class ApiController {
 	
 	@GetMapping(value = "/retryGet")
 	public Result<OrderResp> retryGet(Long id) {
-		OrderResp aa = new OrderResp().setId(1L).setOrderCode(sequenceGenerator.nextId()+"").setType(1).setDate(new Date());
-		RedisUtils.set("aaaa", JsonUtil.toJsonString(aa));
-		
-//		ValueOperations opsForValue2 = redisTemplate.opsForValue();
-		RedisUtils.set("aa2", aa);
-		
-		RedisUtils.set("aa4", "sadsd");
-		
-		OrderResp aaa = RedisUtils.get("aa2", OrderResp.class);
-		System.out.println(aaa);
-		
-		List<OrderResp> list = Lists.newArrayList();
-		list.add(aa);
-		RedisUtils.set("aa3", list);
-		
-		List<OrderResp> list2 = RedisUtils.getList("aa3",OrderResp.class);
-		System.out.println(list2);
-		
 		log.info("retryGet");
 		Result<OrderResp> byId = orderFeign.retryGet(id);
 		log.info("retryGet:{}", byId);

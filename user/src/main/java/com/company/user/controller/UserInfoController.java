@@ -13,7 +13,7 @@ import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
-import com.company.framework.redis.redisson.DistributeLockUtils;
+import com.company.framework.redisson.DistributeLockUtils;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.request.UserInfoReq;

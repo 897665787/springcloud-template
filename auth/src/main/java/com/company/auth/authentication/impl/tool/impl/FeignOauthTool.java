@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.company.auth.authentication.impl.tool.IOauthTool;
 import com.company.auth.authentication.impl.tool.dto.MobileBindAuthCode;
 import com.company.auth.authentication.impl.tool.dto.UserIdCertificate;
-import com.company.framework.redis.RedisUtils;
+import com.company.framework.cache.ICache;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.feign.UserOauthFeign;
@@ -24,6 +24,8 @@ public class FeignOauthTool implements IOauthTool {
 	private UserInfoFeign userInfoFeign;
 	@Autowired
 	private UserOauthFeign userOauthFeign;
+	@Autowired
+	private ICache cache;
 
 	@Override
 	public UserIdCertificate getUserIdCertificate(UserOauthEnum.IdentityType identityType, String identifier) {
@@ -47,12 +49,12 @@ public class FeignOauthTool implements IOauthTool {
 
 	@Override
 	public void storeMobileBindAuthCode(String authcode, MobileBindAuthCode mobileBindAuthCode) {
-		RedisUtils.set("authcode:" + authcode, mobileBindAuthCode, 1, TimeUnit.HOURS);
+		cache.set("authcode:" + authcode, mobileBindAuthCode, 1, TimeUnit.HOURS);
 	}
 
 	@Override
 	public MobileBindAuthCode getMobileBindAuthCode4Store(String authcode) {
-		MobileBindAuthCode mobileBindAuthCode = RedisUtils.get("authcode:" + authcode, MobileBindAuthCode.class);
+		MobileBindAuthCode mobileBindAuthCode = cache.get("authcode:" + authcode, MobileBindAuthCode.class);
 		return mobileBindAuthCode;
 	}
 

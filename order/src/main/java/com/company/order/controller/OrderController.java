@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
-import com.company.framework.redis.RedisUtils;
+import com.company.framework.cache.ICache;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
@@ -45,6 +45,8 @@ public class OrderController implements OrderFeign {
 	private ApplicationContext applicationContext;
 	@Autowired
 	private UserFeign userFeign;
+	@Autowired
+	private ICache cache;
 	
 	@GetMapping(value = "/list")
 	public List<Order> list() {
@@ -120,7 +122,7 @@ public class OrderController implements OrderFeign {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Long increment = RedisUtils.increment("jiang", 1);
+		Long increment = cache.increment("jiang", 1);
 		System.out.println("increment:"+increment);
 //		UserResp userResp = userFeign.retryGet(1L);
 //		log.info("retryGet:{}", userResp);

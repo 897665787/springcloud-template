@@ -1,24 +1,18 @@
 package com.company.framework.aspect;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.redis.RedisUtils;
 import com.google.common.collect.Maps;
 
 public class IdempotentUtil {
 	
-	private static final String HEADER_IDEMPOTENT_ID = "idempotent-id";
-	private static final String HEADER_IDEMPOTENT_EXPIRE_MILLIS = "idempotent-expire-millis";
+	public static final String HEADER_IDEMPOTENT_ID = "idempotent-id";
+	public static final String HEADER_IDEMPOTENT_EXPIRE_MILLIS = "idempotent-expire-millis";
 	
 	private static final String REDIS_HEAD_PREFIX = "idempotent:head:%s";
 	private static final String REDIS_DATA_PREFIX = "idempotent:data:%s";
@@ -44,16 +38,15 @@ public class IdempotentUtil {
 		tl.remove();
 	}
 	
-	public static Map<String, Collection<String>> headers() {
+	public static Map<String, String> headers() {
 		String idempotentId = tl.get();
 		if (idempotentId == null) {
 			return Collections.emptyMap();
 		}
-		HashMap<String, Collection<String>> headers = Maps.newHashMap();
-		headers.put(HEADER_IDEMPOTENT_ID, Arrays.asList(idempotentId));
+		HashMap<String, String> headers = Maps.newHashMap();
+		headers.put(HEADER_IDEMPOTENT_ID, idempotentId);
 		int expireMillis = expireMillis();
-		headers.put(HEADER_IDEMPOTENT_EXPIRE_MILLIS, Arrays.asList(String.valueOf(expireMillis)));
-		RedisUtils.set(IdempotentUtil.head(idempotentId), StringUtils.EMPTY, expireMillis, TimeUnit.MILLISECONDS);
+		headers.put(HEADER_IDEMPOTENT_EXPIRE_MILLIS, String.valueOf(expireMillis));
 		return headers;
 	}
 	
