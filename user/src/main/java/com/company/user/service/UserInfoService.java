@@ -3,6 +3,7 @@ package com.company.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.baomidou.dynamic.datasource.annotation.Slave;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.company.user.entity.UserInfo;
@@ -14,7 +15,7 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper, UserInfo> imple
 	@Autowired
 	private UserInfoMapper userInfoMapper;
 
-//	@DataSource(Slave.SLAVE2)
+//	@Slave
 	public UserInfo selectById(Integer id) {
 		UserInfo userInfo = userInfoMapper.getById(id);
 		System.out.println("userInfo:" + userInfo);

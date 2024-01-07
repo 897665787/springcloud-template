@@ -2,7 +2,6 @@ package com.company.tool.database.transaction;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -15,7 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class TransactionAutoConfiguration {
 
 	@Bean(name = "transactionManager")
-	public PlatformTransactionManager transactionManager(@Qualifier("routingDataSource") DataSource dataSource) {
+	public PlatformTransactionManager transactionManager(DataSource dataSource) {
 		return new DataSourceTransactionManager(dataSource);
 	}
 }

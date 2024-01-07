@@ -60,14 +60,13 @@
             <version>2.3</version>
         </dependency>
         
-        <!-- 动态数据源框架，作为参考，并没有直接使用 -->
-        <!-- 
+        <!-- mybatis-plus动态数据源，可用于（主/从切换、多主库） -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
 			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-			<version>2.3.0</version>
+			<version>3.6.1</version>
 		</dependency>
-		 -->
+		
         <!-- 数据库 -->
         
         <!-- Canal 依赖 -->

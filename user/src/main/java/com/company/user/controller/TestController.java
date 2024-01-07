@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.context.SpringContextUtil;
+import com.company.user.entity.City;
 import com.company.user.entity.UserInfo;
+import com.company.user.mapper.common.CityMapper;
 import com.company.user.service.UserInfoService;
 import com.google.common.collect.Maps;
 
@@ -20,6 +22,8 @@ public class TestController{
 
 	@Autowired
 	private UserInfoService userInfoService;
+	@Autowired
+	private CityMapper cityMapper;
 	
 	@GetMapping(value = "/beans")
 	public Result<Map<?,?>> beans() {
@@ -42,5 +46,11 @@ public class TestController{
 		entity.setNickname("1111");
 		userInfoService.insert(entity);
 		return Result.success();
+	}
+	
+	@GetMapping(value = "/city")
+	public Result<City> city(Integer id) {
+		City selectById = cityMapper.selectById(id);
+		return Result.success(selectById);
 	}
 }

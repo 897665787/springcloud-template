@@ -12,4 +12,11 @@
 		<appender-ref ref="ERROR_FILE" />
 	</logger>
 	
+	<!-- 打印动态数据源切换日志 -->
+	<logger name="com.baomidou.dynamic.datasource" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="ERROR_FILE" />
+	</logger>
+	
 </configuration>
