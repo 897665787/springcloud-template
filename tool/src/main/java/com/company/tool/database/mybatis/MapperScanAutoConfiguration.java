@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Configuration;
  * MapperScan 配置
  */
 @Configuration
-@MapperScan(basePackages = "com.company.tool.mapper")
+@MapperScan(basePackages = "com.company.**.mapper")
 public class MapperScanAutoConfiguration {
 }

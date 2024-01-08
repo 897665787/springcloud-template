@@ -90,4 +90,32 @@ public class Utils {
 		String fileHexHead = HexUtil.encodeHexStr(headByte, false);
 		return FileTypeUtil.getType(fileHexHead);
 	}
+	
+	/**
+	 * 
+	 * 例子：com.company.order.mapper.AliPayMapper.selectByOutTradeNo
+	 * 返回AliPayMapper.selectByOutTradeNo
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String mapperAndId(String str) {
+		try {
+			if (str == null) {
+				return null;
+			}
+			int index = str.lastIndexOf(".");
+			if (index == -1) {
+				return str;
+			}
+			String substring = str.substring(0, index);
+			int index2 = substring.lastIndexOf(".");
+			if (index2 == -1) {
+				return str;
+			}
+			return str.substring(index2 + 1);
+		} catch (Exception e) {
+			return str;
+		}
+	}
 }

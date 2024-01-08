@@ -38,6 +38,9 @@ template:
     redisson: true
     idempotent: true
     rabbitmq: true
+  sqllimit:
+    enable: true
+    max: 9999
 
 filestorage:
   active: minio

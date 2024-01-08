@@ -36,6 +36,9 @@ template:
     idempotent: false
     rabbitmq: true
     elasticsearch: true
+  sqllimit:
+    enable: true
+    max: 9999
 
 # 支付配置
 pay:

@@ -40,3 +40,6 @@ template:
     redisson: true
     idempotent: false
     rabbitmq: true
+  sqllimit:
+    enable: true
+    max: 9999
