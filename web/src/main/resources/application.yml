@@ -9,6 +9,8 @@ spring:
     name: template-web
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
   servlet:
     multipart:
       max-file-size: 10MB #单个文件大小限制，默认1M

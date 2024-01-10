@@ -23,8 +23,8 @@
 
 | 依赖                   | 版本       |
 | ---------------------- |------------|
-| Spring Boot            | 2.0.3      |
-| Spring Cloud Netflix   | 2.0.0      |
+| Spring Boot            | 2.2.13     |
+| Spring Cloud Netflix   | 2.2.0      |
 
 ### 模块说明
 

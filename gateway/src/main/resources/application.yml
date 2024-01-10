@@ -23,10 +23,9 @@ spring:
             allowed-origins:
             - '*'
             max-age: 3600
-      #DedupeResponseHeader在高版本的springboot中才有
       # 处理重复header，相同header多个值时的处理方式，三种规则可选（RETAIN_FIRST|RETAIN_UNIQUE|RETAIN_LAST）
-      #default-filters:
-      #- DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+      default-filters:
+      - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
 
 #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
 logging:

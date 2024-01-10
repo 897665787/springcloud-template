@@ -15,8 +15,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
 		<!-- Alibaba 与springboot、cloud版本适配：https://blog.csdn.net/a749227859/article/details/120195331 -->
+		<!-- 
 		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
 		<spring-boot.version>2.0.3.RELEASE</spring-boot.version>
+		 -->
+		<spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
+		<spring-boot.version>2.2.13.RELEASE</spring-boot.version><!-- 可用jrebel进行热部署的最高版本 -->
 	</properties>
 
 	<modules>
