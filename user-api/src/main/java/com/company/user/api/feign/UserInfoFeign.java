@@ -5,11 +5,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.company.common.api.Result;
+import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.UserInfoFeignFallback;
 import com.company.user.api.request.UserInfoReq;
 import com.company.user.api.response.UserInfoResp;
 
-@FeignClient(value = "template-user", path = "/userinfo", fallbackFactory = UserInfoFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/userinfo", fallbackFactory = UserInfoFeignFallback.class)
 public interface UserInfoFeign {
 
 	@RequestMapping("/findOrCreateUser")

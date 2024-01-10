@@ -5,10 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.CouponFeignFallback;
 import com.company.user.api.response.UserCouponResp;
 
-@FeignClient(value = "template-user", path = "/coupon", fallbackFactory = CouponFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/coupon", fallbackFactory = CouponFeignFallback.class)
 public interface CouponFeign {
 
 	@RequestMapping("/getUserCouponById")

@@ -3,7 +3,6 @@ package com.company.tool.api.feign.fallback;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.UploadResp;
@@ -19,7 +18,7 @@ public class FileFeignFallback implements FallbackFactory<FileFeign> {
 
 			@Override
 			public Result<UploadResp> upload(UploadReq uploadReq) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 		};
 	}

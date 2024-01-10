@@ -11,7 +11,7 @@ import com.company.gateway.context.SpringContextUtil;
 @SpringBootApplication(scanBasePackages = "com.company", exclude = { RabbitAutoConfiguration.class })
 public class GatewayApplication {
 	public static void main(String[] args) {
-		// SpringApplication.run(WebApplication.class, args);
+		// SpringApplication.run(GatewayApplication.class, args);
 		
 		SpringApplication springApplication = new SpringApplication(GatewayApplication.class);
 		// 初始化ApplicationContext，保证在所有bean实例化前面

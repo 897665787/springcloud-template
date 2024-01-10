@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.InnerCallbackFeign.InnerCallbackFeignFactory;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-order", path = "/innerCallback", fallbackFactory = InnerCallbackFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/innerCallback", fallbackFactory = InnerCallbackFeignFactory.class)
 public interface InnerCallbackFeign {
 
 	@PostMapping("/postRestTemplate")

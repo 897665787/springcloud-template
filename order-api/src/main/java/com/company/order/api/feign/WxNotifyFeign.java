@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-order", path = "/wxnotify", fallbackFactory = WxNotifyFeign.WxNotifyFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/wxnotify", fallbackFactory = WxNotifyFeign.WxNotifyFeignFactory.class)
 public interface WxNotifyFeign {
 
 	/**

@@ -3,7 +3,6 @@ package com.company.user.api.feign.fallback;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
 import com.company.user.api.enums.UserOauthEnum.IdentityType;
 import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.request.UserOauthReq;
@@ -19,17 +18,17 @@ public class UserOauthFeignFallback implements FallbackFactory<UserOauthFeign> {
 		return new UserOauthFeign() {
 			@Override
 			public Result<Boolean> bindOauth(UserOauthReq userInfoReq) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 
 			@Override
 			public Result<UserOauthResp> selectOauth(IdentityType identityType, String identifier) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 
 			@Override
 			public Result<String> selectIdentifier(Integer userId, IdentityType identityType) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 		};
 	}

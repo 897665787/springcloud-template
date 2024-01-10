@@ -9,11 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.SubscribeFeignFallback;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.tool.api.request.SubscribeSendReq;
 
-@FeignClient(value = "template-tool", path = "/subscribe", fallbackFactory = SubscribeFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/subscribe", fallbackFactory = SubscribeFeignFallback.class)
 public interface SubscribeFeign {
 
 	@GetMapping("/selectTemplateCodeByGroup")

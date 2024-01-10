@@ -3,7 +3,6 @@ package com.company.order.api.feign.fallback;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
@@ -20,24 +19,24 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 		return new OrderFeign() {
 			public Result<OrderResp> getById(Long id) {
 				log.error("getById error", e);
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 
 			public Result<OrderResp> save(OrderReq orderReq) {
 				log.error("save error", e);
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 
 			@Override
 			public Result<OrderResp> retryGet(Long id) {
 				log.error("retryGet error", e);
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 
 			@Override
 			public Result<OrderResp> retryPost(OrderReq orderReq) {
 				log.error("retryPost error", e);
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 		};
 	}

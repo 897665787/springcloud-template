@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.PayReq;
@@ -18,7 +19,7 @@ import com.company.order.api.response.PayTradeStateResp;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-order", path = "/pay", fallbackFactory = PayFeign.PayFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/pay", fallbackFactory = PayFeign.PayFeignFactory.class)
 public interface PayFeign {
 
 	/**

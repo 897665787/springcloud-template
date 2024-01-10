@@ -3,7 +3,6 @@ package com.company.user.api.feign.fallback;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.request.UserInfoReq;
 import com.company.user.api.response.UserInfoResp;
@@ -18,7 +17,7 @@ public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
 		return new UserInfoFeign() {
 			@Override
 			public Result<UserInfoResp> findOrCreateUser(UserInfoReq userInfoReq) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 		};
 	}

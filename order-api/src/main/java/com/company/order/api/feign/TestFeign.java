@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.TestFeign.TestFeignFactory;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.RefundNotifyReq;
@@ -16,7 +17,7 @@ import com.company.order.api.response.PayResp;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-order", path = "/test", fallbackFactory = TestFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/test", fallbackFactory = TestFeignFactory.class)
 public interface TestFeign {
 
 	@GetMapping("/minipay")

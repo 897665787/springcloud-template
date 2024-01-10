@@ -6,12 +6,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.fallback.UserOauthFeignFallback;
 import com.company.user.api.request.UserOauthReq;
 import com.company.user.api.response.UserOauthResp;
 
-@FeignClient(value = "template-user", path = "/useroauth", fallbackFactory = UserOauthFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/useroauth", fallbackFactory = UserOauthFeignFallback.class)
 public interface UserOauthFeign {
 
 	@RequestMapping("/selectOauth")

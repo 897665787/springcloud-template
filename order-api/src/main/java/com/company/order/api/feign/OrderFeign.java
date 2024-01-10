@@ -7,11 +7,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.fallback.OrderFeignFallback;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 
-@FeignClient(value = "template-order", path = "/order", fallbackFactory = OrderFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
 public interface OrderFeign {
 
 	@RequestMapping("/getById")

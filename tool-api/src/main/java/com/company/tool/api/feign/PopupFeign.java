@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.PopupFeignFallback;
 import com.company.tool.api.request.BestPopupReq;
 import com.company.tool.api.request.CancelUserPopupReq;
 import com.company.tool.api.request.CreateUserPopupReq;
 import com.company.tool.api.response.BestPopupResp;
 
-@FeignClient(value = "template-tool", path = "/popup", fallbackFactory = PopupFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/popup", fallbackFactory = PopupFeignFallback.class)
 public interface PopupFeign {
 
 	@RequestMapping("/bestPopup")

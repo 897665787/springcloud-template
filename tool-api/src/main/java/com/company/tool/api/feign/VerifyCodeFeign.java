@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.VerifyCodeFeignFallback;
 import com.company.tool.api.response.CaptchaResp;
 
-@FeignClient(value = "template-tool", path = "/verifyCode", fallbackFactory = VerifyCodeFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/verifyCode", fallbackFactory = VerifyCodeFeignFallback.class)
 public interface VerifyCodeFeign {
 
 	/**

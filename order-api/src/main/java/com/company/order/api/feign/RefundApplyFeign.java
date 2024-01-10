@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 import com.company.order.api.request.PayRefundApplyReq;
 import com.company.order.api.request.RefundNotifyReq;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-order", path = "/refundApply", fallbackFactory = RefundApplyFeign.RefundApplyFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/refundApply", fallbackFactory = RefundApplyFeign.RefundApplyFeignFactory.class)
 public interface RefundApplyFeign {
 
 	/**

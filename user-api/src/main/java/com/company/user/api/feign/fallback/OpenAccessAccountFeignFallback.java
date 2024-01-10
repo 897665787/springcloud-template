@@ -3,7 +3,6 @@ package com.company.user.api.feign.fallback;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
 import com.company.user.api.feign.OpenAccessAccountFeign;
 
 import feign.hystrix.FallbackFactory;
@@ -19,7 +18,7 @@ public class OpenAccessAccountFeignFallback implements FallbackFactory<OpenAcces
 			@Override
 			public Result<String> getAppKeyByAppid(String appid) {
 				log.error("getAppKeyByAppid error", e);
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 		};
 	}

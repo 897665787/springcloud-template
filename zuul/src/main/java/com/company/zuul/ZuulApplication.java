@@ -14,7 +14,7 @@ import com.company.zuul.context.SpringContextUtil;
 @EnableZuulProxy
 public class ZuulApplication {
 	public static void main(String[] args) {
-		// SpringApplication.run(WebApplication.class, args);
+		// SpringApplication.run(ZuulApplication.class, args);
 		
 		SpringApplication springApplication = new SpringApplication(ZuulApplication.class);
 		// 初始化ApplicationContext，保证在所有bean实例化前面

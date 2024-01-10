@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.OpenAccessAccountFeignFallback;
 
-@FeignClient(value = "template-user", path = "/openAccessAccount", fallbackFactory = OpenAccessAccountFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/openAccessAccount", fallbackFactory = OpenAccessAccountFeignFallback.class)
 public interface OpenAccessAccountFeign {
 
 	@RequestMapping("/getAppKeyByAppid")

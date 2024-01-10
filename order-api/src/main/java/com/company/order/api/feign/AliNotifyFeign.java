@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
 
 import feign.hystrix.FallbackFactory;
 
-@FeignClient(value = "template-order", path = "/alinotify", fallbackFactory = AliNotifyFeign.AliNotifyFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/alinotify", fallbackFactory = AliNotifyFeign.AliNotifyFeignFactory.class)
 public interface AliNotifyFeign {
 
 	/**

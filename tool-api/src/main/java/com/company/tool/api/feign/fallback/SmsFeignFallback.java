@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
 import com.company.tool.api.feign.SmsFeign;
 
 import feign.hystrix.FallbackFactory;
@@ -19,12 +18,12 @@ public class SmsFeignFallback implements FallbackFactory<SmsFeign> {
 
 			@Override
 			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 
 			@Override
 			public Result<Void> exePreTimeSend(Integer id) {
-				return Result.fail(ResultCode.FALLBACK);
+				return Result.onFallbackError();
 			}
 		};
 	}

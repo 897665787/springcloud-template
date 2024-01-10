@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
+import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.fallback.SmsFeignFallback;
 
-@FeignClient(value = "template-tool", path = "/sms", fallbackFactory = SmsFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sms", fallbackFactory = SmsFeignFallback.class)
 public interface SmsFeign {
 
 	@GetMapping("/select4PreTimeSend")
