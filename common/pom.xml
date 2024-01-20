@@ -47,6 +47,20 @@
 		</dependency>
 		<!-- ################## slf4j ################## -->
 		
+		<!-- ################## 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 ################## -->
+		<!-- 启动参数加上：-javaagent:/path/to/transmittable-thread-local-2.x.x.jar -->
+		<dependency>
+		    <groupId>com.ofpay</groupId>
+		    <artifactId>logback-mdc-ttl</artifactId>
+		    <version>1.0.2</version>
+		</dependency>
+        <dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>transmittable-thread-local</artifactId>
+			<version>2.14.5</version>
+		</dependency>
+		<!-- ################## 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 ################## -->
+		
 		<dependency>
 		    <groupId>org.projectlombok</groupId>
 		    <artifactId>lombok</artifactId>

@@ -7,6 +7,9 @@
 	<!-- 日志输出格式 -->
 	<property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n" />
 	<contextName>${APP_NAME}</contextName>
+	
+	<!-- 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 -->
+	<contextListener class="com.ofpay.logback.TtlMdcListener"/>
 
 	<!-- 控制台日志：输出全部日志到控制台 -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
