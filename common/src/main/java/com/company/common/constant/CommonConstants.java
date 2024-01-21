@@ -10,6 +10,7 @@ public interface CommonConstants {
 		int MDC = -10;
 		int RESPONSE = -1;// 这个过滤器值必须小于0，否则不起作用
 		int HTTPCONTEXT = 5;
+		int SOURCE = 7;
 		int REQUEST = 10;
 		int SQLINJECT = 20;
 		int TOKEN = 30;

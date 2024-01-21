@@ -35,6 +35,16 @@ public interface FanoutConstants {
 		String COUNTMONEY_QUEUE = PREFIX + "countmoney";
 	}
 
+	// 用户来源事件
+	interface USER_SOURCE {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "user_source";
+
+		String PREFIX = FanoutConstants.PREFIX + "user_source.";
+		// 队列
+		String SOURCE_RECORD_QUEUE = PREFIX + "source_record";
+	}
+	
 	// 用户登录事件
 	interface USER_LOGIN {
 		// 交换机
