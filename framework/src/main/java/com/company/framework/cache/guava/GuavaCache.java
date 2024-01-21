@@ -76,4 +76,20 @@ public class GuavaCache implements ICache {
 			lock4cache.unlock();
 		}
 	}
+
+	@Override
+	public long increment(String key, long delta, long timeout, TimeUnit unit) {
+		// guava缓存不支持灵活配置过期时间，所以忽略参数timeout、unit
+		// guava缓存不支持自增，所以通过锁的方式实现
+		try {
+			lock4cache.lock();
+
+			String value = get(key, () -> "0");
+			long result = Long.parseLong(value) + delta;
+			set(key, String.valueOf(result));
+			return result;
+		} finally {// 一定要在finally解锁
+			lock4cache.unlock();
+		}
+	}
 }

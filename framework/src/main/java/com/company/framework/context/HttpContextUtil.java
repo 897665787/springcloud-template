@@ -20,12 +20,12 @@ import com.google.common.collect.Maps;
 
 public class HttpContextUtil {
 	// 公共请求头（与用户无关）
-	public static final String HEADER_PLATFORM = "x-platform";// 平台
-	public static final String HEADER_OPERATOR = "x-operator";// 操作系统
-	public static final String HEADER_VERSION = "x-version";// 版本号
-	public static final String HEADER_DEVICEID = "x-deviceid";// 设备ID
-	public static final String HEADER_SOURCE = "x-source";// 请求来源
-	public static final String HEADER_REQUESTIP = "x-requestip";// 请求IP
+	public static final String HEADER_PLATFORM = "x-platform";// 平台：app(APP)、mini(微信小程序)、h5(H5页面)、alimini(支付宝小程序)、alipaymini(支付宝小程序内H5)
+	public static final String HEADER_OPERATOR = "x-operator";// 操作系统：ios(iOS)、mac(iOS)、android(Android)、win(Windows,如果获取不到可以不要)、devtools(小程序开发工具)
+	public static final String HEADER_VERSION = "x-version";// 版本号：4.1.0
+	public static final String HEADER_DEVICEID = "x-deviceid";// 设备ID：82b6fe22b2063733af477a8df7358238
+	public static final String HEADER_SOURCE = "x-source";// 请求来源：wx(微信小程序)、ios(苹果应用商店)、xiaomi(小米应用商店)、huawei(华为应用商店)等
+	public static final String HEADER_REQUESTIP = "x-requestip";// 请求IP（最外层的请求）
 
 	// 用户请求头（注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值）
 	public static final String HEADER_CURRENT_USER_ID = HeaderConstants.HEADER_CURRENT_USER_ID;// 当前登录用户id

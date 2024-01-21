@@ -12,7 +12,7 @@ public interface CommonConstants {
 		int HTTPCONTEXT = 5;
 		int REQUEST = 10;
 		int SQLINJECT = 20;
-		int TOKEK = 30;
+		int TOKEN = 30;
 	}
 	
 	/**

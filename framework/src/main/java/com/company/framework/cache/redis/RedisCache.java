@@ -100,4 +100,12 @@ public class RedisCache implements ICache {
 		ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
 		return opsForValue.increment(key, delta);
 	}
+
+	@Override
+	public long increment(String key, long delta, long timeout, TimeUnit unit) {
+		ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
+		Long result = opsForValue.increment(key, delta);
+		stringRedisTemplate.expire(key, timeout, unit);
+		return result;
+	}
 }

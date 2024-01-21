@@ -23,7 +23,7 @@ import com.company.zuul.token.TokenService;
  * token解析，把token转换为USER_ID
  */
 @Component
-@Order(CommonConstants.FilterOrdered.TOKEK)
+@Order(CommonConstants.FilterOrdered.TOKEN)
 public class TokenFilter extends OncePerRequestFilter {
 	
 	@Autowired

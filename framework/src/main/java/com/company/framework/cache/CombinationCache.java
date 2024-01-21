@@ -2,17 +2,40 @@ package com.company.framework.cache;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+import org.apache.commons.lang3.concurrent.EventCountCircuitBreaker;
 
 import com.company.framework.cache.exception.ValueRetrievalException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 组合缓存（先查redis，redis不可用的情况下使用本地缓存）
  */
+@Slf4j
 public class CombinationCache implements ICache {
+
+	int openingThreshold = 10;// 单位时间内请求超过openingThreshold就打开断路器
+	long openingInterval = 10;
+	TimeUnit openingUnit = TimeUnit.SECONDS;
+
+	int closingThreshold = 5;// 单位时间内请求小于closingThreshold就关闭断路器
+	long closingInterval = 10;
+	TimeUnit closingUnit = TimeUnit.SECONDS;
+
+	// 断路器
+	EventCountCircuitBreaker breaker = new EventCountCircuitBreaker(openingThreshold, openingInterval, openingUnit,
+			closingThreshold, closingInterval, closingUnit);
+	{
+		breaker.addChangeListener(event -> {
+			log.info("event:{}", event);
+		});
+	}
 
 	private ICache redisCache;
 	private ICache guavaCache;
-
+	
 	public CombinationCache(ICache redisCache, ICache guavaCache) {
 		this.redisCache = redisCache;
 		this.guavaCache = guavaCache;
@@ -20,77 +43,65 @@ public class CombinationCache implements ICache {
 
 	@Override
 	public void set(String key, String value) {
-		try {
-			redisCache.set(key, value);
-		} catch (ValueRetrievalException e) {
-			// 如果是redis导致的异常，就用本地缓存
-			guavaCache.set(key, value);
-		}
+		breakerNoReturn(() -> redisCache.set(key, value), () -> guavaCache.set(key, value));
 	}
 
 	@Override
 	public void set(String key, String value, long timeout, TimeUnit unit) {
-		try {
-			redisCache.set(key, value, timeout, unit);
-		} catch (ValueRetrievalException e) {
-			// 如果是redis导致的异常，就用本地缓存
-			guavaCache.set(key, value, timeout, unit);
-		}
+		breakerNoReturn(() -> redisCache.set(key, value, timeout, unit),
+				() -> guavaCache.set(key, value, timeout, unit));
 	}
-	
+
 	@Override
 	public String get(String key) {
-		try {
-			return redisCache.get(key);
-		} catch (ValueRetrievalException e) {
-			// 如果是redis导致的异常，就用本地缓存
-			return guavaCache.get(key);
-		}
+		return breakerReturn(() -> redisCache.get(key), () -> guavaCache.get(key));
 	}
 
 	@Override
 	public String get(String key, Callable<String> valueLoader) {
-		String value = null;
-		try {
-			value = redisCache.get(key, valueLoader);
-		} catch (ValueRetrievalException e) {
-			try {
-				// 如果是redis导致的异常，就用本地缓存
-				value = guavaCache.get(key, valueLoader);
-			} catch (ValueRetrievalException e2) {
-				// 如果是redis和本地缓存都异常，就直接执行valueLoader获取数据
-				if (valueLoader != null) {
-					try {
-						value = valueLoader.call();
-					} catch (Exception e1) {
-						throw new RuntimeException(e1);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw e;
-		}
-		return value;
+		return breakerReturn(() -> redisCache.get(key, valueLoader), () -> guavaCache.get(key, valueLoader));
 	}
 
 	@Override
 	public boolean del(String key) {
-		try {
-			return redisCache.del(key);
-		} catch (ValueRetrievalException e) {
-			// 如果是redis导致的异常，就用本地缓存
-			return guavaCache.del(key);
-		}
+		return breakerReturn(() -> redisCache.del(key), () -> guavaCache.del(key));
 	}
 
 	@Override
 	public long increment(String key, long delta) {
+		return breakerReturn(() -> redisCache.increment(key, delta), () -> guavaCache.increment(key, delta));
+	}
+
+	@Override
+	public long increment(String key, long delta, long timeout, TimeUnit unit) {
+		return breakerReturn(() -> redisCache.increment(key, delta, timeout, unit),
+				() -> guavaCache.increment(key, delta, timeout, unit));
+	}
+
+	private <T> T breakerReturn(Supplier<T> redisSupplier, Supplier<T> guavaSupplier) {
+		if (!breaker.checkState()) {
+			return guavaSupplier.get();
+		}
 		try {
-			return redisCache.increment(key, delta);
+			return redisSupplier.get();
 		} catch (ValueRetrievalException e) {
+			breaker.incrementAndCheckState();
 			// 如果是redis导致的异常，就用本地缓存
-			return guavaCache.increment(key, delta);
+			return guavaSupplier.get();
 		}
 	}
 
+	private void breakerNoReturn(Runnable redisRunnable, Runnable guavaRunnable) {
+		if (!breaker.checkState()) {
+			guavaRunnable.run();
+			return;
+		}
+		try {
+			redisRunnable.run();
+		} catch (ValueRetrievalException e) {
+			breaker.incrementAndCheckState();
+			// 如果是redis导致的异常，就用本地缓存
+			guavaRunnable.run();
+		}
+	}
 }

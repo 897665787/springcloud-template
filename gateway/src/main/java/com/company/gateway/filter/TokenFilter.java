@@ -33,7 +33,7 @@ public class TokenFilter implements GlobalFilter, Ordered {
 
 	@Override
 	public int getOrder() {
-		return CommonConstants.FilterOrdered.TOKEK;
+		return CommonConstants.FilterOrdered.TOKEN;
 	}
 	
 	@Override

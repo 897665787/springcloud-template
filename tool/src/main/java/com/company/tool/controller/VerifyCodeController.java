@@ -2,12 +2,14 @@ package com.company.tool.controller;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.framework.cache.ICache;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
 import com.company.tool.enums.SmsEnum;
@@ -27,13 +29,24 @@ public class VerifyCodeController implements VerifyCodeFeign {
 	private VerifyCodeService verifyCodeService;
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;
+	@Autowired
+	private ICache cache;
 	
 	@Override
 	public Result<String> sms(String mobile, String type) {
+		// 限制验证码短信发送频率
+		String key = String.format("verifyCode:sms:%s:%s", mobile, type);
+		String cacheVal = cache.get(key);
+		if (cacheVal != null) {
+			return Result.fail("短信验证码已发送");
+		}
+		cache.set(key, "1", 1, TimeUnit.MINUTES);
+		
 		String code = RandomUtil.randomNumbers(6);
 
 		verifyCodeService.save(type, mobile, code);
 
+		// 发送短信
 		Map<String, String> templateParamMap = Maps.newHashMap();
 		templateParamMap.put("code", code);
 		LocalDateTime planSendTime = LocalDateTime.now();

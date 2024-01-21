@@ -42,4 +42,7 @@ public interface ICache {
 	}
 
 	long increment(String key, long delta);
+	
+	long increment(String key, long delta, long timeout, TimeUnit unit);
+	
 }
