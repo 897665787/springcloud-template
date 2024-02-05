@@ -1,0 +1,20 @@
+server:
+  port: 3001
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
+
+spring:
+  application:
+    name: template-monitor
+  profiles:
+    active: dev
+
+#为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
+logging:
+  config: classpath:logback-conf.xml
+
+management:
+  endpoint:
+    health:
+      show-details: always

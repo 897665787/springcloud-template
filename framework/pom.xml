@@ -38,6 +38,19 @@
 			<version>1.9.2</version>
 		</dependency>
 		<!-- 配置中心，config和apollo选其中一个就行 -->
+		
+		<!-- 监控 -->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId> <!-- 各版本都不适配jrebel -->
+        </dependency>
+        <!-- spring-boot-admin-client -->
+	    <dependency>
+	        <groupId>de.codecentric</groupId>
+	        <artifactId>spring-boot-admin-starter-client</artifactId>
+	        <version>2.2.4</version>
+	    </dependency>
+		<!-- 监控 -->
         
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

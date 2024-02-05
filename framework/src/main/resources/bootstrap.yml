@@ -9,3 +9,16 @@ spring:
       name: ${spring.application.name} # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
       profile: ${spring.profiles.active} # 如果没有默认值，会从spring.profiles.active里面获取
       label: master # 拉取的分支
+
+# 本配置用于Actuator端点
+# SpringBoot2.0的Actuator只暴露了/health、/info两个端点（为了安全考虑）
+management:
+  endpoint:
+    health:
+      show-details: always #显示详细信息
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*" # 暴露了所有的端点
