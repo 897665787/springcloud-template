@@ -3,6 +3,7 @@ package com.company.framework.filter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -10,21 +11,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.constant.CommonConstants;
+import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
-import com.company.framework.filter.request.HeaderMapRequestWrapper;
+import com.google.common.collect.Maps;
 
 /**
- * Http上下文公共请求信息设置到header
- * （只有接收外部请求的服务才会用到，内部请求的服务通过FeignHeaderInterceptor已经直接放到header）
+ * <pre>
+ * source拦截器，记录用户来源（可用于引流统计、邀请奖励、地推业绩计算等业务场景）
+ * </pre>
  */
 @Component
 @Order(CommonConstants.FilterOrdered.SOURCE)
 public class SourceFilter extends OncePerRequestFilter {
+
+	@Autowired
+	private MessageSender messageSender;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -34,15 +42,15 @@ public class SourceFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
-		
+
 		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
 		if (StringUtils.isBlank(source)) {
 			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
 		}
 
 		if (StringUtils.isBlank(source)) {
-			chain.doFilter(headerRequest, response);
+			// 请求头和参数都找不到source
+			chain.doFilter(request, response);
 			return;
 		}
 
@@ -50,16 +58,24 @@ public class SourceFilter extends OncePerRequestFilter {
 		if (StringUtils.isBlank(deviceid)) {
 			deviceid = request.getParameter(HttpContextUtil.HEADER_DEVICEID);
 		}
-		
+
 		if (StringUtils.isBlank(deviceid)) {
-			chain.doFilter(headerRequest, response);
+			// 请求头和参数都找不到deviceid
+			chain.doFilter(request, response);
 			return;
 		}
 
-		// source、deviceid、时间 发送到MQ异步记录来源
+		// 记录deviceid是来自哪个source
 		LocalDateTime now = LocalDateTime.now();
-		now.format(DateTimeFormatter.ofPattern(""));
+		String time = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-		chain.doFilter(headerRequest, response);
+		// 发布用户来源事件
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("source", source);
+		params.put("deviceid", deviceid);
+		params.put("time", time);
+		messageSender.sendFanoutMessage(params, FanoutConstants.USER_SOURCE.EXCHANGE);
+
+		chain.doFilter(request, response);
 	}
 }

@@ -1,6 +1,7 @@
 package com.company.user.amqp.rabbitmq.consumer;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -21,6 +22,8 @@ import com.company.framework.cache.ICache;
 import com.company.user.entity.UserSource;
 import com.company.user.mapper.user.UserSourceMapper;
 import com.rabbitmq.client.Channel;
+
+import cn.hutool.core.date.LocalDateTimeUtil;
 
 @Component
 public class UserSourceConsumer {
@@ -48,12 +51,13 @@ public class UserSourceConsumer {
 				}
 
 				// 保存source、deviceid关联关系到DB
-				// String time = MapUtils.getString(params, "time");
-				LocalDateTime time = null;
+				String timeStr = MapUtils.getString(params, "time");
+				LocalDateTime time = LocalDateTimeUtil.parse(timeStr,
+						DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 				save2db(deviceid, source, time);
 
 				// 数据量可能很大，需要快速过滤重复的数据，加快处理速度
-				cache.set(key, EXIST_VALUE, 30, TimeUnit.DAYS);
+				cache.set(key, EXIST_VALUE, 30, TimeUnit.MINUTES);
 			}
 		});
 	}

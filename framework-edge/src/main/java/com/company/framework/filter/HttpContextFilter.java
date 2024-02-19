@@ -68,11 +68,11 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			}
 		}
 
-		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
-		if (StringUtils.isBlank(source)) {
-			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
-			if (StringUtils.isNotBlank(source)) {
-				headerRequest.addHeader(HttpContextUtil.HEADER_SOURCE, source);
+		String channel = request.getHeader(HttpContextUtil.HEADER_CHANNEL);
+		if (StringUtils.isBlank(channel)) {
+			channel = request.getParameter(HttpContextUtil.HEADER_CHANNEL);
+			if (StringUtils.isNotBlank(channel)) {
+				headerRequest.addHeader(HttpContextUtil.HEADER_CHANNEL, channel);
 			}
 		}
 		
