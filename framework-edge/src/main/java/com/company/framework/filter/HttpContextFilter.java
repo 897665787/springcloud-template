@@ -84,6 +84,14 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			}
 		}
 		
+		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
+		if (StringUtils.isBlank(source)) {
+			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
+			if (StringUtils.isNotBlank(source)) {
+				headerRequest.addHeader(HttpContextUtil.HEADER_SOURCE, source);
+			}
+		}
+		
 		chain.doFilter(headerRequest, response);
 	}
 }
