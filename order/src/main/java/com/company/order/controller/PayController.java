@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.redisson.DistributeLockUtils;
 import com.company.order.amqp.rabbitmq.Constants;
@@ -116,6 +117,9 @@ public class PayController implements PayFeign {
 					
 					PayClient tradeClient = PayFactory.of(payReq.getMethod());
 					PayResp payResp = tradeClient.pay(payParams);
+					if (!payResp.getSuccess()) {
+						throw new BusinessException(payResp.getMessage());
+					}
 					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
 					
 					return payResp;
@@ -149,10 +153,13 @@ public class PayController implements PayFeign {
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}
-		PayClient tradeClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
+		
+		OrderPayEnum.Method method = OrderPayEnum.Method.of(orderPay.getMethod());
+		PayClient tradeClient = PayFactory.of(method);
 		Object payInfo = tradeClient.getPayInfo(orderCode);
 
 		PayInfoResp payInfoResp = new PayInfoResp();
+		payInfoResp.setMethod(method);
 		payInfoResp.setPayInfo(payInfo);
 
 		return Result.success(payInfoResp);
@@ -164,7 +171,9 @@ public class PayController implements PayFeign {
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}
-		PayClient tradeClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
+		
+		OrderPayEnum.Method method = OrderPayEnum.Method.of(orderPay.getMethod());
+		PayClient tradeClient = PayFactory.of(method);
 		PayTradeStateResp payTradeState = tradeClient.queryTradeState(orderCode);
 		return Result.success(payTradeState);
 	}

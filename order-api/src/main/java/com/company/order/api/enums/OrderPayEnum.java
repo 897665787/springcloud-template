@@ -7,7 +7,11 @@ public interface OrderPayEnum {
 
 	@AllArgsConstructor
 	enum BusinessType {
-		NOMAL("nomal", "普通下单"), KILL("kill", "秒杀下单"), MEMBER("member", "购买会员");
+		NOMAL("nomal", "普通下单"), 
+		KILL("kill", "秒杀下单"), 
+		MEMBER("member", "购买会员"),
+		DISTRIBUTE("distribute", "配送订单")
+		;
 		@Getter
 		private String code;
 		@Getter

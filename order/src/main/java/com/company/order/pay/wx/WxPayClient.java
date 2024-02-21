@@ -1,6 +1,7 @@
 package com.company.order.pay.wx;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -154,7 +155,7 @@ public class WxPayClient extends BasePayClient {
 			WxPayUnifiedOrderResult result = BaseWxPayResult.fromXML(e.getXmlString(), WxPayUnifiedOrderResult.class);
 			requestResult2WxPay(wxPayId, payParams.getUserId(), payConfig, request, result,
 					"请求异常,logid:" + MdcUtil.get());
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
     }
 
@@ -272,7 +273,7 @@ public class WxPayClient extends BasePayClient {
 		} catch (WxPayException e) {
 			// 查询异常
 			log.error("WxPay queryTradeState error", e);
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
 	}
 	
@@ -335,7 +336,7 @@ public class WxPayClient extends BasePayClient {
 				result.setErrCodeDes(e.getCustomErrorMsg());
 			}
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, result, "请求异常,logid:" + MdcUtil.get());
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
 	}
 
@@ -416,7 +417,7 @@ public class WxPayClient extends BasePayClient {
 
 		} catch (WxPayException e) {
 			log.error("Wx pay close order error.", e);
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
 	}
 }
