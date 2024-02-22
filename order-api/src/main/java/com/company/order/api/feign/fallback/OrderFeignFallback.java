@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 import com.company.common.api.Result;
 import com.company.order.api.enums.OrderEnum.StatusEnum;
 import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.request.ChangeOrderStatusReq;
+import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderFinishReq;
+import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderResp;
 
@@ -25,7 +27,17 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<OrderResp> changeStatus(ChangeOrderStatusReq changeOrderStatusReq) {
+			public Result<OrderResp> cancel(OrderCancelReq orderCancelReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Void> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Void> finish(OrderFinishReq orderFinishReq) {
 				return Result.onFallbackError();
 			}
 
@@ -40,9 +52,10 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<OrderResp> cancel(String orderCode) {
+			public Result<Boolean> validOrderCodeUserId(String orderCode, Integer userId) {
 				return Result.onFallbackError();
 			}
+
 		};
 	}
 }

@@ -12,7 +12,9 @@ import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.fallback.OrderFeignFallback;
-import com.company.order.api.request.ChangeOrderStatusReq;
+import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderFinishReq;
+import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderResp;
 
@@ -29,13 +31,31 @@ public interface OrderFeign {
 	Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
 
 	/**
-	 * 修改订单状态
+	 * 修改订单状态（取消订单）
 	 * 
-	 * @param changeOrderStatusReq
+	 * @param orderCancelReq
 	 * @return
 	 */
-	@PostMapping("/changeStatus")
-	Result<OrderResp> changeStatus(@RequestBody ChangeOrderStatusReq changeOrderStatusReq);
+	@PostMapping("/cancel")
+	Result<OrderResp> cancel(@RequestBody OrderCancelReq orderCancelReq);
+	
+	/**
+	 * 修改订单状态（支付成功）
+	 * 
+	 * @param orderPaySuccessReq
+	 * @return
+	 */
+	@PostMapping("/paySuccess")
+	Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
+	
+	/**
+	 * 修改订单状态（完成订单）
+	 * 
+	 * @param orderFinishReq
+	 * @return
+	 */
+	@PostMapping("/finish")
+	Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq);
 
 	/**
 	 * 分页查询订单列表
@@ -57,11 +77,13 @@ public interface OrderFeign {
 	Result<OrderResp> queryByOrderCode(@RequestParam("orderCode") String orderCode);
 
 	/**
-	 * 根据订单号取消订单
+	 * 校验订单是否属于该用户
 	 * 
 	 * @param orderCode
+	 * @param userId
 	 * @return
 	 */
-	@GetMapping("/cancel")
-	Result<OrderResp> cancel(@RequestParam("orderCode") String orderCode);
+	@GetMapping("/validOrderCodeUserId")
+	Result<Boolean> validOrderCodeUserId(@RequestParam("orderCode") String orderCode,
+			@RequestParam("userId") Integer userId);
 }

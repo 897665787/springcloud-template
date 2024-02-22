@@ -1,7 +1,5 @@
 package com.company.order.api.enums;
 
-import com.company.order.api.constant.Constants;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,13 +7,13 @@ public interface OrderEnum {
 	// 订单类型order_type
 	@AllArgsConstructor
     enum OrderType {
-		BUY_MEMBER(Constants.Order.BusinessType.BUY_MEMBER, "配送"),
-		DISTRIBUTE(Constants.Order.BusinessType.DISTRIBUTE, "配送"),
-		WRITEOFF(Constants.Order.BusinessType.WRITEOFF, "核销码"),
-		GROUP_MEAL(Constants.Order.BusinessType.GROUP_MEAL, "团餐"),
-		ENT_GROUP_MEAL(Constants.Order.BusinessType.ENT_GROUP_MEAL, "企业团餐"),
-		GROUP_MEAL_COUPON(Constants.Order.BusinessType.GROUP_MEAL_COUPON, "外卖团购券"),
-		GROUP_MEAL_HELP_BUY(Constants.Order.BusinessType.GROUP_MEAL_HELP_BUY, "外卖助力")
+		BUY_MEMBER("buy_member", "配送"),
+		DISTRIBUTE("distribute", "配送"),
+		WRITEOFF("writeoff", "核销码"),
+		GROUP_MEAL("group_meal", "团餐"),
+		ENT_GROUP_MEAL("ent_group_meal", "企业团餐"),
+		GROUP_MEAL_COUPON("group_meal_coupon", "外卖团购券"),
+		GROUP_MEAL_HELP_BUY("group_meal_help_buy", "外卖助力")
 		;
 		@Getter
 		private String code;

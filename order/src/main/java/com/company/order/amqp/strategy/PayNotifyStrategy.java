@@ -1,6 +1,8 @@
 package com.company.order.amqp.strategy;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -74,6 +76,13 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		String message = MapUtils.getString(params, "message");
 		payNotifyReq.setMessage(message);
 		payNotifyReq.setOrderCode(outTradeNo);
+		
+		LocalDateTime time = LocalDateTime.now();
+		String timeStr = MapUtils.getString(params, "time");
+		if (StringUtils.isNotBlank(timeStr)) {
+			time = LocalDateTime.parse(timeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		}
+		payNotifyReq.setTime(time);
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("支付回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));

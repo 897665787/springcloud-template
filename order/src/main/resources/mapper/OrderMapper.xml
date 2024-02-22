@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.company.order.mapper.OrderMapper">
-
-	<select id="selectByUserIdAndStatus" resultType="com.company.order.entity.Order">
-		select
-		*
-		from bu_order
+	<select id="pageByUserIdAndStatus" resultType="com.company.order.entity.Order">
+		select * from bu_order
 		<where>
 			user_id = #{userId}
 			<if test="statusEnum != null">
@@ -14,75 +11,4 @@
 		</where>
 		order by id desc
 	</select>
-
-	<select id="selectCompleteForComment" resultType="com.company.order.entity.Order">
-		select
-		business_type,order_code,status,sub_status,pay_amount,pay_time,finish_time,refund_time,create_time
-		from bu_order
-		where status = 5
-		and business_type in ('distribute', 'writeoff')
-		and update_date between DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 day),
-		'%Y-%m-%d 00:00:00') and DATE_FORMAT(NOW(), '%Y-%m-%d 00:00:00')
-
-	</select>
-	<select id="selectIsNewPerson" resultType="com.company.order.entity.Order">
-		select *
-		from bu_order
-		where user_id = #{userId}
-		and status in (1, 3, 4, 5)
-		and business_type = #{businessType}
-		limit 1
-	</select>
-	<select id="selectByOrderCodesAndStatus" resultType="com.company.order.entity.Order">
-		select *
-		from bu_order
-		where
-		<choose>
-			<when test="orderCodeSet != null and orderCodeSet.size() > 0">
-				order_code in
-				<foreach collection="orderCodeSet" item="item" open="("
-					separator="," close=")">
-					#{item}
-				</foreach>
-			</when>
-			<otherwise>
-				1 <![CDATA[<>]]>
-				1
-			</otherwise>
-		</choose>
-		<choose>
-			<when test="statusSet != null and statusSet.size() > 0">
-				and status in
-				<foreach collection="statusSet" item="item" open="("
-					separator="," close=")">
-					#{item}
-				</foreach>
-			</when>
-			<otherwise>
-				and 1 <![CDATA[<>]]>
-				1
-			</otherwise>
-		</choose>
-	</select>
-
-	<select id="selectFirstOrder" resultType="com.company.order.entity.Order">
-		select *
-		from bu_order
-		where user_id = #{userId}
-		and status in (1, 3, 4, 5)
-		and business_type = 'groupmeal'
-		order by create_time
-		limit 1
-	</select>
-
-	<select id="selectNewestMealSuccessOrder4GroupMeal" resultType="com.company.order.entity.Order">
-		select b.*
-		from bu_group_meal_order a
-		join bu_order b on a.order_code = b.order_code
-		where a.user_id = #{userId}
-		and b.status = 5
-		order by a.plan_delivery_time_begin desc
-		limit 1
-	</select>
-
 </mapper>

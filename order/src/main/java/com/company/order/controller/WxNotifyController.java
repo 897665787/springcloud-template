@@ -1,6 +1,8 @@
 package com.company.order.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
 
@@ -143,6 +145,12 @@ public class WxNotifyController implements WxNotifyFeign {
 		if (!success) {
 			params.put("message", orderNotifyResult.getErrCodeDes());
 		}
+
+		LocalDateTime time = LocalDateTime.now();
+		if (StringUtils.isNotBlank(orderNotifyResult.getTimeEnd())) {
+			time = LocalDateTime.parse(orderNotifyResult.getTimeEnd(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+		}
+		params.put("time", time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 		// 财务流水信息
 		params.put("amount", new BigDecimal(wxPay.getTotalFee())

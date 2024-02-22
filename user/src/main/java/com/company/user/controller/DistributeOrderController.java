@@ -1,6 +1,7 @@
 package com.company.user.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,7 +21,8 @@ import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
-import com.company.order.api.request.ChangeOrderStatusReq;
+import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
@@ -63,8 +65,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 */
 	@Override
 	public Result<?> buy(@RequestBody DistributeOrderReq distributeOrderReq) {
-//		Integer userId = HttpContextUtil.currentUserIdInt();
-		Integer userId = 1;
+		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
 		BigDecimal orderAmount = distributeOrderReq.getOrderAmount();
 		BigDecimal payAmount = distributeOrderReq.getPayAmount();
@@ -162,13 +163,17 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	@PostMapping("/buyNotify")
 	public Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
-
+		LocalDateTime time = payNotifyReq.getTime();
+		
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘业务订单’数据
 			
 			// 修改‘订单中心’数据
-			orderFeign.cancel(orderCode);
+			OrderCancelReq orderCancelReq = new OrderCancelReq();
+			orderCancelReq.setOrderCode(orderCode);
+			orderCancelReq.setCancelTime(time);
+			orderFeign.cancel(orderCancelReq);
 			
 			return Result.success();
 		}
@@ -188,8 +193,10 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		// 修改‘业务订单’数据
 		
 		// 修改‘订单中心’数据
-		ChangeOrderStatusReq changeOrderStatusReq = new ChangeOrderStatusReq();
-		orderFeign.changeStatus(changeOrderStatusReq);
+		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq();
+		orderPaySuccessReq.setOrderCode(orderCode);
+		orderPaySuccessReq.setPayTime(time);
+		orderFeign.paySuccess(orderPaySuccessReq);
 		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();

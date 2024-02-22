@@ -1,5 +1,6 @@
 package com.company.app.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.annotation.RequireLogin;
+import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
+import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayInfoResp;
 
@@ -66,7 +69,13 @@ public class OrderCenterController {
 	 */
 	@GetMapping("/cancel")
 	public Result<OrderResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
-		return orderFeign.cancel(orderCode);
+		Integer userId = HttpContextUtil.currentUserIdInt();
+		orderFeign.validOrderCodeUserId(orderCode, userId).dataOrThrow();
+		
+		OrderCancelReq orderCancelReq = new OrderCancelReq();
+		orderCancelReq.setOrderCode(orderCode);
+		orderCancelReq.setCancelTime(LocalDateTime.now());
+		return orderFeign.cancel(orderCancelReq);
 	}
 
 	/**

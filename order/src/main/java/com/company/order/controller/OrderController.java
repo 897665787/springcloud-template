@@ -36,9 +36,10 @@ import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
-import com.company.order.api.enums.OrderEnum.SubStatusEnum;
 import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.request.ChangeOrderStatusReq;
+import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderFinishReq;
+import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderResp;
@@ -97,10 +98,52 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<OrderResp> changeStatus(@RequestBody ChangeOrderStatusReq changeOrderStatusReq) {
-		String orderCode = changeOrderStatusReq.getOrderCode();
-		SubStatusEnum targetSubStatusEnum = changeOrderStatusReq.getTargetSubStatusEnum();
-		orderService.updateStatus(orderCode, targetSubStatusEnum);
+	public Result<OrderResp> cancel(@RequestBody OrderCancelReq orderCancelReq) {
+		String orderCode = orderCancelReq.getOrderCode();
+		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
+		Integer affect = orderService.cancel(orderCode, cancelTime);
+		if (affect == 0) {
+			return Result.fail("取消订单失败，请刷新订单");
+		}
+
+		Order order = orderService.selectByOrderCode(orderCode);
+
+		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
+		Map<String, List<OrderProduct>> orderCodeThisListMap = Maps.newHashMap();
+		orderCodeThisListMap.put(orderCode, orderProductList);
+
+		OrderResp orderResp = toOrderResp(order, orderCodeThisListMap);
+
+		// 发布订单取消事件
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("orderCode", orderCode);
+		params.put("orderType", order.getOrderType());
+		messageSender.sendFanoutMessage(params, FanoutConstants.ORDER_CANCEL.EXCHANGE);
+
+		return Result.success(orderResp);
+	}
+
+	@Override
+	public Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
+		String orderCode = orderPaySuccessReq.getOrderCode();
+		LocalDateTime payTime = orderPaySuccessReq.getPayTime();
+
+		int affect = orderService.paySuccess(orderCode, payTime);
+		if (affect == 0) {
+			return Result.fail("修改为支付成功失败");
+		}
+		return Result.success();
+	}
+
+	@Override
+	public Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq) {
+		String orderCode = orderFinishReq.getOrderCode();
+		LocalDateTime finishTime = orderFinishReq.getFinishTime();
+
+		int affect = orderService.finish(orderCode, finishTime);
+		if (affect == 0) {
+			return Result.fail("修改为完成失败");
+		}
 		return Result.success();
 	}
 
@@ -108,21 +151,20 @@ public class OrderController implements OrderFeign {
 	public Result<List<OrderResp>> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size, OrderEnum.StatusEnum status) {
-//		Integer userId = HttpContextUtil.currentUserIdInt();
-		Integer userId = 1;
+		Integer userId = HttpContextUtil.currentUserIdInt();
 		Page<Order> page = new Page<>(current, size);
-		List<Order> orderList = orderService.selectByUserIdAndStatus(page, userId, status);
+		List<Order> orderList = orderService.pageByUserIdAndStatus(page, userId, status);
 
 		List<String> orderCodeList = orderList.stream().map(Order::getOrderCode).collect(Collectors.toList());
 		Map<String, List<OrderProduct>> orderCodeThisListMap = orderProductService.groupByOrderCodes(orderCodeList);
-		
+
 		String traceId = MdcUtil.get();
 		List<OrderResp> orderRespList = orderList.parallelStream().map(v -> {
 			String subTraceId = MdcUtil.get();
 			if (subTraceId == null) {
 				MdcUtil.put(traceId);
 			}
-			
+
 			OrderResp orderResp = toOrderResp(v, orderCodeThisListMap);
 
 			if (subTraceId == null) {
@@ -132,7 +174,7 @@ public class OrderController implements OrderFeign {
 		}).collect(Collectors.toList());
 		return Result.success(orderRespList);
 	}
-	
+
 	private OrderResp toOrderResp(Order order, Map<String, List<OrderProduct>> orderCodeThisListMap) {
 		OrderResp orderResp = new OrderResp();
 		orderResp.setOrderCode(order.getOrderCode());
@@ -141,11 +183,12 @@ public class OrderController implements OrderFeign {
 		orderResp.setNeedPayAmount(order.getNeedPayAmount());
 		orderResp.setPayAmount(order.getPayAmount());
 
-		List<OrderProduct> orderProductList = orderCodeThisListMap.getOrDefault(order.getOrderCode(), Collections.emptyList());
+		List<OrderProduct> orderProductList = orderCodeThisListMap.getOrDefault(order.getOrderCode(),
+				Collections.emptyList());
 		List<OrderResp.ProductResp> productRespList = PropertyUtils.copyArrayProperties(orderProductList,
 				OrderResp.ProductResp.class);
 		orderResp.setProductList(productRespList);
-		
+
 		OrderEnum.StatusEnum statusEnum = OrderEnum.StatusEnum.of(order.getStatus());
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.of(order.getSubStatus());
 
@@ -153,7 +196,7 @@ public class OrderController implements OrderFeign {
 		if (OrderEnum.SubStatusEnum.COMPLETE == subStatusEnum) {
 			orderResp.setStatusText(statusEnum.getMessage());
 		}
-		
+
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {
 			orderResp.setTimeText("下单时间");
 			orderResp.setTime(order.getCreateTime());
@@ -190,12 +233,12 @@ public class OrderController implements OrderFeign {
 			orderResp.setCancelBtn(true);
 			orderResp.setToPayBtn(true);
 		}
-		
+
 		String subOrderUrl = order.getSubOrderUrl();
 
 		Object data = requestSubOrder(subOrderUrl, order, orderProductList);
 		orderResp.setSubOrder(data);
-		
+
 		// 如果data里面有statusText字段，则覆盖外层的statusText
 		JSONObject dataJSON = JSON.parseObject(JSON.toJSONString(data));
 		if (dataJSON.containsKey("statusText")) {
@@ -213,45 +256,26 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayText(dataJSON.getString("payText"));
 		}
 
-        return orderResp;
+		return orderResp;
 	}
-	
+
 	@Override
 	public Result<OrderResp> queryByOrderCode(String orderCode) {
+		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
 			return Result.fail("订单不存在");
 		}
-
-		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
-		Map<String, List<OrderProduct>> orderCodeThisListMap = Maps.newHashMap();
-		orderCodeThisListMap.put(orderCode, orderProductList);
-
-		OrderResp orderResp = toOrderResp(order, orderCodeThisListMap);
-
-		return Result.success(orderResp);
-	}
-
-	@Override
-	public Result<OrderResp> cancel(String orderCode) {
-		Integer affect = orderService.cancel(orderCode);
-		if (affect <= 0) {
-			return Result.fail("取消订单失败");
+		if (!order.getUserId().equals(userId)) {
+			// return Result.fail("订单不存在");
+			return Result.fail("订单不匹配");
 		}
 
-		Order order = orderService.selectByOrderCode(orderCode);
-		
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
 		Map<String, List<OrderProduct>> orderCodeThisListMap = Maps.newHashMap();
 		orderCodeThisListMap.put(orderCode, orderProductList);
-		
-		OrderResp orderResp = toOrderResp(order, orderCodeThisListMap);
 
-		// 发布订单取消事件
-		Map<String, Object> params = Maps.newHashMap();
-		params.put("orderCode", orderCode);
-		params.put("orderType", order.getOrderType());
-		messageSender.sendFanoutMessage(params, FanoutConstants.ORDER_CANCEL.EXCHANGE);
+		OrderResp orderResp = toOrderResp(order, orderCodeThisListMap);
 
 		return Result.success(orderResp);
 	}
@@ -279,11 +303,12 @@ public class OrderController implements OrderFeign {
 
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	private Object postRestTemplate(String url, OrderReq orderReq) {
 		Object paramObject = orderReq;
 		String remark = null;
-		log.info("回调,请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject), JsonUtil.toJsonString(paramObject));
+		log.info("回调,请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject),
+				JsonUtil.toJsonString(paramObject));
 		long start = System.currentTimeMillis();
 		try {
 			HttpHeaders headers = new HttpHeaders();
@@ -291,8 +316,7 @@ public class OrderController implements OrderFeign {
 			HttpContextUtil.httpContextHeaders().forEach((k, v) -> headers.addAll(k, v));// 请求头
 			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject, headers);
 			@SuppressWarnings("rawtypes")
-			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(url, httpEntity,
-					Result.class);
+			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(url, httpEntity, Result.class);
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {
 				@SuppressWarnings("unchecked")
 				Result<Object> result = responseEntity.getBody();
@@ -312,4 +336,18 @@ public class OrderController implements OrderFeign {
 		dataMap.put("message", remark);
 		return dataMap;
 	}
+
+	@Override
+	public Result<Boolean> validOrderCodeUserId(String orderCode, Integer userId) {
+		Order order = orderService.selectByOrderCode(orderCode);
+		if (order == null) {
+			return Result.fail("订单不存在");
+		}
+		if (!order.getUserId().equals(userId)) {
+			// return Result.fail("订单不存在");
+			return Result.fail("订单不匹配");
+		}
+		return Result.success(true);
+	}
+
 }

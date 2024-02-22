@@ -2,12 +2,10 @@ package com.company.order.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +13,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.company.common.util.Utils;
 import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.enums.OrderEnum.SubStatusEnum;
 import com.company.order.entity.Order;
-import com.company.order.entity.OrderProduct;
 import com.company.order.mapper.OrderMapper;
-import com.company.order.mapper.OrderProductMapper;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,11 +27,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	@Autowired
 	private OrderMapper orderMapper;
-	@Autowired
-	private OrderProductMapper orderProductMapper;
 
-	public List<Order> selectByUserIdAndStatus(Page<Order> page, Integer userId, OrderEnum.StatusEnum status) {
-		return orderMapper.selectByUserIdAndStatus(page, userId, status);
+	public List<Order> pageByUserIdAndStatus(Page<Order> page, Integer userId, OrderEnum.StatusEnum status) {
+		return orderMapper.pageByUserIdAndStatus(page, userId, status);
 	}
 
 	public Order selectByOrderCode(String orderCode) {
@@ -61,41 +56,73 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		return order;
 	}
 
-	public Integer updateStatus(String orderCode, OrderEnum.SubStatusEnum subStatusEnum) {
+	public int cancel(String orderCode, LocalDateTime cancelTime) {
 		Order order4Update = new Order();
-		return updateStatus(orderCode, order4Update, subStatusEnum);
+		order4Update.setPayTime(cancelTime);
+		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.CANCELED;
+		return updateStatus(orderCode, order4Update, subStatusEnum,
+				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY));
 	}
 
-	public Integer paySuccess(String orderCode) {
+	public int paySuccess(String orderCode, LocalDateTime payTime) {
 		Order order4Update = new Order();
-		order4Update.setPayTime(LocalDateTime.now());
+		order4Update.setPayTime(payTime);
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.PAYED;
-		return updateStatus(orderCode, order4Update, subStatusEnum);
+		return updateStatus(orderCode, order4Update, subStatusEnum,
+				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY, OrderEnum.SubStatusEnum.CANCELED));
 	}
 
-	public Integer finish(String orderCode) {
-		Order order4Update = new Order();
-		order4Update.setFinishTime(LocalDateTime.now());
-		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;
-		return updateStatus(orderCode, order4Update, subStatusEnum);
-	}
-
-	public Integer finish(String orderCode, LocalDateTime finishTime) {
+	public int finish(String orderCode, LocalDateTime finishTime) {
 		Order order4Update = new Order();
 		order4Update.setFinishTime(finishTime);
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;
-		return updateStatus(orderCode, order4Update, subStatusEnum);
+		return updateStatus(orderCode, order4Update, subStatusEnum,
+				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY, OrderEnum.SubStatusEnum.CANCELED,
+						OrderEnum.SubStatusEnum.PAYED, OrderEnum.SubStatusEnum.WAIT_SEND,
+						OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
+						OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW));
 	}
 
-	private Integer updateStatus(String orderCode, Order order4Update, OrderEnum.SubStatusEnum subStatusEnum) {
+	/**
+	 * 更新状态
+	 * 
+	 * @param orderCode
+	 *            订单号
+	 * @param order4Update
+	 *            更新对象信息
+	 * @param subStatusEnum
+	 *            子状态
+	 * @param conditionSubStatusEnums
+	 *            条件状态，为null表示不加条件
+	 * @return
+	 */
+	private int updateStatus(String orderCode, Order order4Update, OrderEnum.SubStatusEnum subStatusEnum,
+			List<OrderEnum.SubStatusEnum> conditionSubStatusEnums) {
 		Order orderDB = orderMapper.selectByOrderCode(orderCode);
 		if (orderDB == null) {
 			log.warn("订单不存在:{}", orderCode);
 			return 0;
 		}
 
+		SubStatusEnum subStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
+		if (conditionSubStatusEnums != null && conditionSubStatusEnums.contains(subStatus)) {// 条件状态集合，满足条件才能更新成功
+			// 只有在条件集合下的状态才能更新
+			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, subStatus);
+			return 0;
+		}
+
 		EntityWrapper<Order> wrapper = new EntityWrapper<>();
 		wrapper.eq("order_code", orderCode);
+
+		if (conditionSubStatusEnums != null) {
+			if (conditionSubStatusEnums.isEmpty()) {// 条件状态集合，满足条件才能更新成功
+				wrapper.eq("sub_status", -1);// -1无意义
+			} else {
+				List<Integer> subStatusList = conditionSubStatusEnums.stream().map(v -> v.getStatus())
+						.collect(Collectors.toList());
+				wrapper.in("sub_status", subStatusList);
+			}
+		}
 		order4Update.setStatus(OrderEnum.SubStatusEnum.toStatusEnum(subStatusEnum).getStatus());
 		order4Update.setSubStatus(subStatusEnum.getStatus());
 		order4Update.setUpdateTime(LocalDateTime.now());
@@ -107,122 +134,4 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		return affect;
 	}
 
-	public Integer cancel(String orderCode) {
-		Order orderDB = orderMapper.selectByOrderCode(orderCode);
-		if (orderDB == null) {
-			log.warn("订单不存在:{}", orderCode);
-			return 0;
-		}
-
-		if (OrderEnum.StatusEnum.WAIT_PAY != OrderEnum.StatusEnum.of(orderDB.getStatus())) {
-			// 只有待付款状态才可以取消订单
-			log.info("{}不是待付款状态，不能取消，当前状态为:{}", orderCode, OrderEnum.StatusEnum.of(orderDB.getStatus()).getMessage());
-			return 0;
-		}
-
-		Order order4Update = new Order();
-		order4Update.setPayTime(LocalDateTime.now());
-		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.CANCELED;
-
-		EntityWrapper<Order> wrapper = new EntityWrapper<>();
-		wrapper.eq("order_code", orderCode);
-		wrapper.eq("status", OrderEnum.StatusEnum.WAIT_PAY.getStatus());// 只有待付款状态才可以取消订单
-		order4Update.setStatus(OrderEnum.SubStatusEnum.toStatusEnum(subStatusEnum).getStatus());
-		order4Update.setSubStatus(subStatusEnum.getStatus());
-		order4Update.setUpdateTime(LocalDateTime.now());
-		int affect = orderMapper.update(order4Update, wrapper);
-
-		log.info("状态修改:{}|{} -> {}|{},{}", orderDB.getStatus(), orderDB.getSubStatus(), order4Update.getStatus(),
-				order4Update.getSubStatus(), affect);
-
-//		// 库存回滚
-//		if (affect > 0) {
-//			OrderEnum.OrderType businessType = OrderEnum.OrderType.of(orderDB.getBusinessType());
-//			OrderTool orderTool = OrderToolBeanFactory.fromBusinessType(businessType);
-//			orderTool.rollbackInventory(orderDB);
-//
-//			// 处理业务逻辑
-//			orderTool.handleCancelOrderBusiness(orderDB);
-//		}
-//
-//		if (affect > 0) {
-//			UserOrderData userOrderData = OrderToolBeanFactory
-//					.fromBusinessType(OrderEnum.OrderType.of(orderDB.getBusinessType())).getBusiness(orderCode);
-//			// 修改‘我的订单’订单状态
-//			UserOrderUpdateStatusReq userOrderUpdateStatusReq = new UserOrderUpdateStatusReq();
-//			userOrderUpdateStatusReq.setBusinessId(userOrderData.getBusinessId());
-//			userOrderUpdateStatusReq.setBusinessTypeEnum(userOrderData.getBusinessType());
-//			userOrderUpdateStatusReq.setTargetSubStatusEnum(UserOrderEnum.SubStatusEnum.CANCELED);
-//			userOrderServiceFeign.changeStatus(userOrderUpdateStatusReq).parseDataThrow();
-//		}
-		return affect;
-	}
-
-	public int payFail(String orderCode, String remark) {
-		// 支付失败
-		Order orderDB = this.selectByOrderCode(orderCode);
-		Order order4Update = new Order();
-		order4Update.setId(orderDB.getId());
-		order4Update.setRemark(Utils.appendRemark(orderDB.getRemark(), remark));
-		int affect = orderMapper.updateById(order4Update);
-
-//		if (affect > 0) {
-//			OrderEnum.OrderType businessType = OrderEnum.OrderType.of(orderDB.getBusinessType());
-//			if (businessType != null) {
-//				OrderTool orderTool = OrderToolBeanFactory.fromBusinessType(businessType);
-//				orderTool.handlePayFailBusiness(orderCode);
-//			}
-//		}
-		return affect;
-	}
-
-	public List<Order> selectUnFinishOrder(Integer userId) {
-		return baseMapper.selectUnFinishOrder(userId);
-	}
-
-	public List<Order> selectUnfinishedGroupMealOrder(Integer userId) {
-		return baseMapper.selectUnfinishedGroupMealOrder(userId);
-	}
-
-	public Order selectNewestMealSuccessOrder4GroupMeal(Integer userId) {
-		return baseMapper.selectNewestMealSuccessOrder4GroupMeal(userId);
-	}
-
-	public Boolean judgeIsNewPerson(Integer userId, String businessType) {
-		Order order = orderMapper.selectIsNewPerson(userId, businessType);
-		return order == null;
-	}
-
-	public List<Order> selectByOrderCodesAndStatus(Set<String> orderCodeSet, Set<Integer> statusSet) {
-		return orderMapper.selectByOrderCodesAndStatus(orderCodeSet, statusSet);
-	}
-
-	public List<Order> selectByOrderCodeList(List<String> orderCodeList) {
-		if (CollectionUtils.isEmpty(orderCodeList)) {
-			return new ArrayList<>();
-		}
-		return baseMapper.selectList(new EntityWrapper<Order>().in("order_code", orderCodeList).eq("del_flag", "0"));
-	}
-
-	public List<OrderProduct> selectOrderProductByOrderCodeList(List<String> orderCodeList) {
-		if (CollectionUtils.isEmpty(orderCodeList)) {
-			return new ArrayList<>();
-		}
-		return orderProductMapper
-				.selectList(new EntityWrapper<OrderProduct>().in("order_code", orderCodeList).eq("del_flag", "0"));
-	}
-
-	public Integer countGroupMealCompleted(Integer userId) {
-		return selectCount(new EntityWrapper<Order>().eq("app_user_id", userId)
-				.eq("business_type", OrderEnum.OrderType.GROUP_MEAL.getCode())
-				.eq("status", OrderEnum.StatusEnum.COMPLETE.getStatus()).eq("del_flag", "0"));
-	}
-
-	public Date lastOrderTime(Integer userId) {
-		return baseMapper.lastOrderTime(userId);
-	}
-
-	public Order selectFirstOrder(Integer userId) {
-		return baseMapper.selectFirstOrder(userId);
-	}
 }

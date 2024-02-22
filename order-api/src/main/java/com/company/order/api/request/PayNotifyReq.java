@@ -1,5 +1,7 @@
 package com.company.order.api.request;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
@@ -31,6 +33,11 @@ public class PayNotifyReq {
 	 */
 	@NotBlank(message = "订单号不能为空")
 	private String orderCode;
+	
+	/**
+	 * 支付/关闭时间<非必填>
+	 */
+	private LocalDateTime time;
 	
 	/**
 	 * 附加参数<非必填>
