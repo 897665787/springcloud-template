@@ -16,6 +16,7 @@ import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
@@ -74,7 +75,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@GetMapping("/queryByOrderCode")
-	Result<OrderResp> queryByOrderCode(@RequestParam("orderCode") String orderCode);
+	Result<OrderDetailResp> queryByOrderCode(@RequestParam("orderCode") String orderCode);
 
 	/**
 	 * 校验订单是否属于该用户

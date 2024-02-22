@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.company.common.api.Result;
@@ -42,13 +43,17 @@ import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.OrderDetailResp;
+import com.company.order.api.response.OrderDetailResp.TextValueResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.entity.Order;
 import com.company.order.entity.OrderProduct;
 import com.company.order.service.OrderProductService;
 import com.company.order.service.OrderService;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -260,7 +265,7 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<OrderResp> queryByOrderCode(String orderCode) {
+	public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
@@ -271,13 +276,115 @@ public class OrderController implements OrderFeign {
 			return Result.fail("订单不匹配");
 		}
 
-		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
-		Map<String, List<OrderProduct>> orderCodeThisListMap = Maps.newHashMap();
-		orderCodeThisListMap.put(orderCode, orderProductList);
-
-		OrderResp orderResp = toOrderResp(order, orderCodeThisListMap);
+		OrderDetailResp orderResp = toOrderDetailResp(order);
 
 		return Result.success(orderResp);
+	}
+
+	private OrderDetailResp toOrderDetailResp(Order order) {
+		OrderDetailResp orderDetailResp = new OrderDetailResp();
+		orderDetailResp.setOrderCode(order.getOrderCode());
+		String orderType = order.getOrderType();
+		orderDetailResp.setOrderType(orderType);
+		orderDetailResp.setNeedPayAmount(order.getNeedPayAmount());
+		orderDetailResp.setPayAmount(order.getPayAmount());
+
+		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
+		List<OrderDetailResp.ProductResp> productRespList = PropertyUtils.copyArrayProperties(orderProductList,
+				OrderDetailResp.ProductResp.class);
+		orderDetailResp.setProductList(productRespList);
+
+		OrderEnum.StatusEnum statusEnum = OrderEnum.StatusEnum.of(order.getStatus());
+		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.of(order.getSubStatus());
+
+		orderDetailResp.setStatusText(subStatusEnum.getMessage());
+		if (OrderEnum.SubStatusEnum.COMPLETE == subStatusEnum) {
+			orderDetailResp.setStatusText(statusEnum.getMessage());
+		}
+
+		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {
+			orderDetailResp.setPayText("需付款");
+		} else if (OrderEnum.StatusEnum.CANCELED == statusEnum) {
+			orderDetailResp.setPayText("需付款");
+		} else if (OrderEnum.StatusEnum.WAIT_SEND == statusEnum || OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum) {
+			orderDetailResp.setPayText("实付款");
+		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
+			orderDetailResp.setPayText("实付款");
+		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
+			orderDetailResp.setPayText("实付款");
+		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
+			orderDetailResp.setPayText("实付款");
+		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
+			orderDetailResp.setPayText("实付款");
+		}
+
+		orderDetailResp.setCancelBtn(false);
+		orderDetailResp.setToPayBtn(false);
+		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {// 待支付情况下需返回支付参数
+			orderDetailResp.setCancelBtn(true);
+			orderDetailResp.setToPayBtn(true);
+		}
+
+		List<OrderDetailResp.TextValueResp> textValueList = Lists.newArrayList();
+		textValueList.add(
+				new TextValueResp().setText("下单时间").setValue(LocalDateTimeUtil.formatNormal(order.getCreateTime())));
+		if (OrderEnum.StatusEnum.CANCELED == statusEnum) {
+			textValueList.add(
+					new TextValueResp().setText("关闭时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+		} else if (OrderEnum.StatusEnum.WAIT_SEND == statusEnum || OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum) {
+			textValueList.add(
+					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
+			textValueList.add(
+					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp().setText("完成时间")
+					.setValue(LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
+			textValueList.add(
+					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp().setText("申请退款时间")
+					.setValue(LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
+			textValueList.add(
+					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp().setText("申请退款时间")
+					.setValue(LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
+			textValueList.add(
+					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp().setText("退款时间")
+					.setValue(LocalDateTimeUtil.formatNormal(order.getRefundTime())));
+			textValueList
+					.add(new TextValueResp().setText("退款金额").setValue(order.getRefundAmount().toPlainString() + "元"));
+		}
+
+		orderDetailResp.setTextValueList(textValueList);
+
+		String subOrderUrl = order.getSubOrderUrl();
+
+		Object data = requestSubOrder(subOrderUrl, order, orderProductList);
+		orderDetailResp.setSubOrder(data);
+
+		// 如果data里面有statusText字段，则覆盖外层的statusText
+		JSONObject dataJSON = JSON.parseObject(JSON.toJSONString(data));
+		if (dataJSON.containsKey("statusText")) {
+			orderDetailResp.setStatusText(dataJSON.getString("statusText"));
+		}
+		// 如果data里面有textValueList字段，则追加到外层的textValueList
+		if (dataJSON.containsKey("textValueList")) {
+			JSONArray dataJSONArray = dataJSON.getJSONArray("textValueList");
+			for (int i = 0; i < dataJSONArray.size(); i++) {
+				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
+				String text = textValueJSON.getString("text");
+				String value = textValueJSON.getString("value");
+				textValueList.add(new TextValueResp().setText(text).setValue(value));
+			}
+		}
+		if (dataJSON.containsKey("payText")) {
+			orderDetailResp.setPayText(dataJSON.getString("payText"));
+		}
+
+		return orderDetailResp;
 	}
 
 	private Object requestSubOrder(String subOrderUrl, Order order, List<OrderProduct> orderProductList) {

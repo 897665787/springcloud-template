@@ -11,6 +11,7 @@ import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderResp;
 
 import feign.hystrix.FallbackFactory;
@@ -47,7 +48,7 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<OrderResp> queryByOrderCode(String orderCode) {
+			public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
 				return Result.onFallbackError();
 			}
 

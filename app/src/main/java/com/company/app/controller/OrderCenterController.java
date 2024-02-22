@@ -19,6 +19,7 @@ import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayInfoResp;
 
@@ -57,7 +58,7 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/detail")
-	public Result<OrderResp> detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+	public Result<OrderDetailResp> detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
 		return orderFeign.queryByOrderCode(orderCode);
 	}
 

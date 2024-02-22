@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.company.order.api.enums.OrderEnum;
-import com.company.order.api.enums.OrderEnum.SubStatusEnum;
 import com.company.order.entity.Order;
 import com.company.order.mapper.OrderMapper;
 import com.google.common.collect.Lists;
@@ -104,7 +102,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 			return 0;
 		}
 
-		SubStatusEnum subStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
+		OrderEnum.SubStatusEnum subStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
 		if (conditionSubStatusEnums != null && conditionSubStatusEnums.contains(subStatus)) {// 条件状态集合，满足条件才能更新成功
 			// 只有在条件集合下的状态才能更新
 			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, subStatus);
@@ -118,7 +116,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 			if (conditionSubStatusEnums.isEmpty()) {// 条件状态集合，满足条件才能更新成功
 				wrapper.eq("sub_status", -1);// -1无意义
 			} else {
-				List<Integer> subStatusList = conditionSubStatusEnums.stream().map(v -> v.getStatus())
+				List<Integer> subStatusList = conditionSubStatusEnums.stream().map(OrderEnum.SubStatusEnum::getStatus)
 						.collect(Collectors.toList());
 				wrapper.in("sub_status", subStatusList);
 			}
