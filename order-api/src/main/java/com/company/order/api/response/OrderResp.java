@@ -32,12 +32,6 @@ public class OrderResp {
      * 付款文案
      */
     private String payText;
-    
-    /**
-     * 需付金额
-     */
-    @FormatNumber(pattern = "0.0#")
-    private BigDecimal needPayAmount;
 	
     /**
      * 实付金额
@@ -116,29 +110,5 @@ public class OrderResp {
 		 * 商品小图
 		 */
 		private String productImage;
-
-		/**
-		 * 规格JSON
-		 */
-		private String specJson;
-		/**
-		 * 规格内容
-		 */
-		private String specContent;
-
-		/**
-		 * 商品备注
-		 */
-		private String productRemark;
-
-		/**
-		 * 店铺 ID
-		 */
-		private String storeId;
-
-		/**
-		 * 店铺名称
-		 */
-		private String storeName;
 	}
 }

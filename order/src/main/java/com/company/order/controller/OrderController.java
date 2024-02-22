@@ -185,8 +185,6 @@ public class OrderController implements OrderFeign {
 		orderResp.setOrderCode(order.getOrderCode());
 		String orderType = order.getOrderType();
 		orderResp.setOrderType(orderType);
-		orderResp.setNeedPayAmount(order.getNeedPayAmount());
-		orderResp.setPayAmount(order.getPayAmount());
 
 		List<OrderProduct> orderProductList = orderCodeThisListMap.getOrDefault(order.getOrderCode(),
 				Collections.emptyList());
@@ -206,30 +204,37 @@ public class OrderController implements OrderFeign {
 			orderResp.setTimeText("下单时间");
 			orderResp.setTime(order.getCreateTime());
 			orderResp.setPayText("需付款");
+			orderResp.setPayAmount(order.getNeedPayAmount());
 		} else if (OrderEnum.StatusEnum.CANCELED == statusEnum) {
 			orderResp.setTimeText("关闭时间");
 			orderResp.setTime(order.getPayTime());
 			orderResp.setPayText("需付款");
+			orderResp.setPayAmount(order.getNeedPayAmount());
 		} else if (OrderEnum.StatusEnum.WAIT_SEND == statusEnum || OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum) {
 			orderResp.setTimeText("付款时间");
 			orderResp.setTime(order.getPayTime());
 			orderResp.setPayText("实付款");
+			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
 			orderResp.setTimeText("完成时间");
 			orderResp.setTime(order.getFinishTime());
 			orderResp.setPayText("实付款");
+			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderResp.setTimeText("完成时间");
 			orderResp.setTime(order.getFinishTime());
 			orderResp.setPayText("实付款");
+			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
 			orderResp.setTimeText("付款时间");
 			orderResp.setTime(order.getPayTime());
 			orderResp.setPayText("实付款");
+			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			orderResp.setTimeText("退款时间");
 			orderResp.setTime(order.getRefundTime());
 			orderResp.setPayText("实付款");
+			orderResp.setPayAmount(order.getPayAmount());
 		}
 
 		orderResp.setCancelBtn(false);
@@ -241,7 +246,7 @@ public class OrderController implements OrderFeign {
 
 		String subOrderUrl = order.getSubOrderUrl();
 
-		Object data = requestSubOrder(subOrderUrl, order, orderProductList);
+		Object data = requestSubOrder(OrderEnum.SearchTypeEnum.ITEM, subOrderUrl, order, orderProductList);
 		orderResp.setSubOrder(data);
 
 		// 如果data里面有statusText字段，则覆盖外层的statusText
@@ -286,8 +291,6 @@ public class OrderController implements OrderFeign {
 		orderDetailResp.setOrderCode(order.getOrderCode());
 		String orderType = order.getOrderType();
 		orderDetailResp.setOrderType(orderType);
-		orderDetailResp.setNeedPayAmount(order.getNeedPayAmount());
-		orderDetailResp.setPayAmount(order.getPayAmount());
 
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
 		List<OrderDetailResp.ProductResp> productRespList = PropertyUtils.copyArrayProperties(orderProductList,
@@ -304,18 +307,25 @@ public class OrderController implements OrderFeign {
 
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {
 			orderDetailResp.setPayText("需付款");
+			orderDetailResp.setPayAmount(order.getNeedPayAmount());
 		} else if (OrderEnum.StatusEnum.CANCELED == statusEnum) {
 			orderDetailResp.setPayText("需付款");
+			orderDetailResp.setPayAmount(order.getNeedPayAmount());
 		} else if (OrderEnum.StatusEnum.WAIT_SEND == statusEnum || OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum) {
 			orderDetailResp.setPayText("实付款");
+			orderDetailResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
 			orderDetailResp.setPayText("实付款");
+			orderDetailResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderDetailResp.setPayText("实付款");
+			orderDetailResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
 			orderDetailResp.setPayText("实付款");
+			orderDetailResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			orderDetailResp.setPayText("实付款");
+			orderDetailResp.setPayAmount(order.getPayAmount());
 		}
 
 		orderDetailResp.setCancelBtn(false);
@@ -362,7 +372,7 @@ public class OrderController implements OrderFeign {
 
 		String subOrderUrl = order.getSubOrderUrl();
 
-		Object data = requestSubOrder(subOrderUrl, order, orderProductList);
+		Object data = requestSubOrder(OrderEnum.SearchTypeEnum.DETAIL, subOrderUrl, order, orderProductList);
 		orderDetailResp.setSubOrder(data);
 
 		// 如果data里面有statusText字段，则覆盖外层的statusText
@@ -387,12 +397,13 @@ public class OrderController implements OrderFeign {
 		return orderDetailResp;
 	}
 
-	private Object requestSubOrder(String subOrderUrl, Order order, List<OrderProduct> orderProductList) {
+	private Object requestSubOrder(OrderEnum.SearchTypeEnum searchType, String subOrderUrl, Order order, List<OrderProduct> orderProductList) {
 		Object data = null;
 		if (StringUtils.isNotBlank(subOrderUrl)) {
 			long start = System.currentTimeMillis();
 			OrderReq orderReq = PropertyUtils.copyProperties(order, OrderReq.class);
-
+			orderReq.setSearchType(searchType);
+			
 			List<OrderReq.ProductReq> productReqList = PropertyUtils.copyArrayProperties(orderProductList,
 					OrderReq.ProductReq.class);
 			orderReq.setProductList(productReqList);

@@ -31,6 +31,8 @@ import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.DistributeOrderFeign;
 import com.company.user.api.request.DistributeOrderReq;
+import com.company.user.api.response.DistributeSubOrderDetailResp;
+import com.company.user.api.response.DistributeSubOrderDetailResp.TextValueResp;
 import com.company.user.api.response.DistributeSubOrderResp;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -214,8 +216,28 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 */
 	@PostMapping("/subOrder")
 	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
+		OrderEnum.SearchTypeEnum searchType = orderReq.getSearchType();
+		if (searchType == OrderEnum.SearchTypeEnum.ITEM) {
+			return Result.success(item(orderReq));
+		} else if (searchType == OrderEnum.SearchTypeEnum.DETAIL) {
+			return Result.success(detail(orderReq));
+		}
+		return Result.success();
+	}
+
+	private DistributeSubOrderResp item(OrderReq orderReq) {
 		DistributeSubOrderResp resp = new DistributeSubOrderResp();
 		resp.setMealCode("1111");
-		return Result.success(resp);
+		return resp;
+	}
+	
+	private DistributeSubOrderDetailResp detail(OrderReq orderReq) {
+		DistributeSubOrderDetailResp resp = new DistributeSubOrderDetailResp();
+		resp.setMealCode("1111");
+
+		List<TextValueResp> textValueList = Lists.newArrayList();
+		textValueList.add(new TextValueResp().setText("aaaaa").setValue("bbbbb"));
+		resp.setTextValueList(textValueList);
+		return resp;
 	}
 }

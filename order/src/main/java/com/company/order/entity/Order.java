@@ -119,6 +119,18 @@ public class Order {
     @TableField(value = "sub_order_url")
     private String subOrderUrl;
 
+	/**
+	 * 用户备注
+	 */
+	@TableField("user_remark")
+	private String userRemark;
+	
+	/**
+	 * 附加参数
+	 */
+	@TableField("attach")
+	private String attach;
+
     /**
      * 备注(多个使用/分隔)
      */

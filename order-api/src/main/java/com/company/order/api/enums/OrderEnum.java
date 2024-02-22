@@ -119,5 +119,16 @@ public interface OrderEnum {
 			return null;
 		}
 	}
+	
+	@AllArgsConstructor
+	enum SearchTypeEnum {
+		ITEM("item", "订单列表子项"), //
+		DETAIL("detail", "订单详情");
+		
+		@Getter
+		private String code;
+		@Getter
+		private String desc;
+	}
 
 }

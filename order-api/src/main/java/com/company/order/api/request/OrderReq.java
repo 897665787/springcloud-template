@@ -4,12 +4,18 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.company.order.api.enums.OrderEnum;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 public class OrderReq {
+	/**
+	 * 查询类型(item:订单列表子项,detail:订单详情)
+	 */
+	private OrderEnum.SearchTypeEnum searchType;
     /**
      * 订单编号
      */
@@ -75,20 +81,20 @@ public class OrderReq {
      */
     private LocalDateTime refundTime;
 
-    /**
-     * 备注(多个使用/分隔)
-     */
-    private String remark;
+	/**
+	 * 用户备注
+	 */
+	private String userRemark;
+	
+	/**
+	 * 附加参数
+	 */
+	private String attach;
 
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
 
 	/**
 	 * 商品列表
@@ -131,29 +137,10 @@ public class OrderReq {
 		 * 商品小图
 		 */
 		private String productImage;
-
+		
 		/**
-		 * 规格JSON
+		 * 附加参数
 		 */
-		private String specJson;
-		/**
-		 * 规格内容
-		 */
-		private String specContent;
-
-		/**
-		 * 商品备注
-		 */
-		private String productRemark;
-
-		/**
-		 * 店铺 ID
-		 */
-		private String storeId;
-
-		/**
-		 * 店铺名称
-		 */
-		private String storeName;
+		private String attach;
 	}
 }

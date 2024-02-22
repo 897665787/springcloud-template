@@ -32,6 +32,7 @@ import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.MemberBuyFeign;
 import com.company.user.api.request.MemberBuyOrderReq;
+import com.company.user.api.response.MemberBuySubOrderDetailResp;
 import com.company.user.api.response.MemberBuySubOrderResp;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -193,7 +194,7 @@ public class MemberBuyController implements MemberBuyFeign {
     	
 		return Result.success();
 	}
-	
+
 	/**
 	 * 根据订单号查询子订单详情(使用restTemplate的方式调用)
 	 * 
@@ -202,12 +203,31 @@ public class MemberBuyController implements MemberBuyFeign {
 	 */
 	@PostMapping("/subOrder")
 	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
+		OrderEnum.SearchTypeEnum searchType = orderReq.getSearchType();
+		if (searchType == OrderEnum.SearchTypeEnum.ITEM) {
+			return Result.success(item(orderReq));
+		} else if (searchType == OrderEnum.SearchTypeEnum.DETAIL) {
+			return Result.success(detail(orderReq));
+		}
+		return Result.success();
+	}
+
+	private MemberBuySubOrderResp item(OrderReq orderReq) {
 		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
 		resp.setMemberCode("2222");
 		resp.setValidDate(new Date());
 		
 		resp.setPayText("已付款111");
+		return resp;
+	}
+	
+	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
+		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
+		resp.setMemberCode("2222");
+		resp.setValidDate(new Date());
 		
-		return Result.success(resp);
+		resp.setPayText("已付款111");
+
+		return resp;
 	}
 }
