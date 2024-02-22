@@ -202,7 +202,7 @@ public class WxPayClient extends BasePayClient {
 	public Object getPayInfo(String outTradeNo) {
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
 		if (wxPay == null) {
-			return null;
+			throw new BusinessException("未找到订单，请重新下单");
 		}
 
 		if (!Objects.equal(wxPay.getReturnCode(), WxPayConstants.ResultCode.SUCCESS)

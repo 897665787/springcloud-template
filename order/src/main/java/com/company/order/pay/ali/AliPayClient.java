@@ -190,6 +190,10 @@ public class AliPayClient extends BasePayClient {
 	@Override
 	public Object getPayInfo(String outTradeNo) {
 		AliPay aliPay = aliPayMapper.selectByOutTradeNo(outTradeNo);
+		if (aliPay == null) {
+			throw new BusinessException("未找到订单，请重新下单");
+		}
+
 		/*
 		 * 缩短支付宝订单有效时间，预防pay body被利用
 		 * 

@@ -216,9 +216,8 @@ public class AliActivityPayClient extends BasePayClient {
 	@Override
 	public Object getPayInfo(String outTradeNo) {
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outTradeNo);
-		
 		if (aliActivityPay == null) {
-			return null;
+			throw new BusinessException("未找到订单，请重新下单");
 		}
 		if (StringUtils.isNotBlank(aliActivityPay.getTradeNo())) {
 			return aliActivityPay.getTradeNo();
