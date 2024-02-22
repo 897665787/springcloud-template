@@ -163,7 +163,6 @@ public class AliPayClient extends BasePayClient {
 			AlipayTradeAppPayRequest request, AlipayTradeAppPayResponse result, String remark) {
 		// 保存支付宝支付数据
     	AliPay aliPay = new AliPay()
-				.setUserId			(payParams.getUserId())
 				/* 支付参数 */
 				.setAppid              (payParams.getAppid())
 				.setNotifyUrl          (request.getNotifyUrl())
@@ -201,7 +200,6 @@ public class AliPayClient extends BasePayClient {
 		*/
 		PayParams payParams = new PayParams();
 		payParams.setAppid(aliPay.getAppid());
-		payParams.setUserId(aliPay.getUserId());
 		payParams.setAmount(aliPay.getTotalAmount());
 		payParams.setBody(aliPay.getSubject());
 		payParams.setOutTradeNo(aliPay.getOutTradeNo());

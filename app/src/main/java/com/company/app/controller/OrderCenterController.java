@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.framework.annotation.RequireLogin;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
@@ -21,6 +22,7 @@ import com.company.order.api.response.PayInfoResp;
 /**
  * 用户订单中心
  */
+@RequireLogin
 @RestController
 @RequestMapping("/orderCenter")
 public class OrderCenterController {

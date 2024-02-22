@@ -187,7 +187,6 @@ public class AliActivityPayClient extends BasePayClient {
 			AlipayMarketingActivityOrderCreateRequest request, AlipayMarketingActivityOrderCreateResponse result, String remark) {
 		// 保存支付宝支付数据
     	AliActivityPay aliActivityPay = new AliActivityPay()
-				.setUserId			(payParams.getUserId())
 				/* 支付参数 */
 				.setAppid              (payParams.getAppid())
 				.setBuyerId          	(payParams.getOpenid())
@@ -227,7 +226,6 @@ public class AliActivityPayClient extends BasePayClient {
 		
 		PayParams payParams = new PayParams();
 		payParams.setAppid(aliActivityPay.getAppid());
-		payParams.setUserId(aliActivityPay.getUserId());
 		payParams.setAmount(aliActivityPay.getTotalAmount());
 		payParams.setBody(aliActivityPay.getSaleActivityInfoList());
 		payParams.setOutTradeNo(aliActivityPay.getOutOrderNo());

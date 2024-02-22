@@ -7,7 +7,6 @@ import java.util.List;
 import com.company.common.jackson.annotation.AutoDesc;
 import com.company.common.jackson.annotation.FormatNumber;
 import com.company.order.api.enums.OrderEnum;
-import com.company.order.api.enums.OrderPayEnum;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -63,11 +62,7 @@ public class OrderResp {
 	/**
 	 * 是否展示去付款按钮
 	 */
-	private Boolean toPayBtn;
-
-	@AutoDesc(value = OrderPayEnum.Method.class)
-	private OrderPayEnum.Method payMethod;// toPayBtn=true有值
-	private Object payInfo;// toPayBtn=true有值
+	private Boolean toPayBtn;// 去付款信息通过单独的接口获取
 
 	/**
 	 * 商品列表

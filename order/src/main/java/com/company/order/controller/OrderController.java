@@ -38,12 +38,10 @@ import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderEnum.SubStatusEnum;
 import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.ChangeOrderStatusReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderResp;
-import com.company.order.api.response.PayInfoResp;
 import com.company.order.entity.Order;
 import com.company.order.entity.OrderProduct;
 import com.company.order.service.OrderProductService;
@@ -61,8 +59,6 @@ public class OrderController implements OrderFeign {
 	private OrderService orderService;
 	@Autowired
 	private OrderProductService orderProductService;
-	@Autowired
-	private PayFeign payFeign;
 	@Autowired
 	private MessageSender messageSender;
 
@@ -193,10 +189,6 @@ public class OrderController implements OrderFeign {
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {// 待支付情况下需返回支付参数
 			orderResp.setCancelBtn(true);
 			orderResp.setToPayBtn(true);
-			
-			PayInfoResp payInfoResp = payFeign.queryPayInfo(order.getOrderCode()).dataOrThrow();
-			orderResp.setPayMethod(payInfoResp.getMethod());
-			orderResp.setPayInfo(payInfoResp.getPayInfo());
 		}
 		
 		String subOrderUrl = order.getSubOrderUrl();

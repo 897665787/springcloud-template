@@ -101,12 +101,8 @@ public class PayController implements PayFeign {
 						orderPayService.updateById(orderPay4Update);
 					}
 
-					PayParams payParams = new PayParams();
-
-					// 业务参数
-					payParams.setUserId(payReq.getUserId());
-
 					// 支付参数
+					PayParams payParams = new PayParams();
 					payParams.setAppid(payReq.getAppid());
 					payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
 					payParams.setBody(payReq.getBody());

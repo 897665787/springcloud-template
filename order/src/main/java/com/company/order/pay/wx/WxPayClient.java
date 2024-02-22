@@ -1,6 +1,7 @@
 package com.company.order.pay.wx;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -118,8 +119,7 @@ public class WxPayClient extends BasePayClient {
 			
 			WxPayUnifiedOrderResult unifiedOrderResult = wxPayService.unifiedOrder(request);
 			
-			requestResult2WxPay(wxPayId, payParams.getUserId(), payConfig, request,
-					unifiedOrderResult, null);
+			requestResult2WxPay(wxPayId, payConfig, request, unifiedOrderResult, null);
 
 			String returnCode = unifiedOrderResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
@@ -153,17 +153,15 @@ public class WxPayClient extends BasePayClient {
 			// 支付异常
 			log.error("WxPay error", e);
 			WxPayUnifiedOrderResult result = BaseWxPayResult.fromXML(e.getXmlString(), WxPayUnifiedOrderResult.class);
-			requestResult2WxPay(wxPayId, payParams.getUserId(), payConfig, request, result,
-					"请求异常,logid:" + MdcUtil.get());
+			requestResult2WxPay(wxPayId, payConfig, request, result, "请求异常,logid:" + MdcUtil.get());
 			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
-    }
+	}
 
-	private void requestResult2WxPay(Integer wxPayId, Integer userId, PayConfig payConfig,
-			WxPayUnifiedOrderRequest request, WxPayUnifiedOrderResult result, String remark) {
+	private void requestResult2WxPay(Integer wxPayId, PayConfig payConfig, WxPayUnifiedOrderRequest request,
+			WxPayUnifiedOrderResult result, String remark) {
 		// 保存微信支付数据
-    	WxPay wxPay = new WxPay()
-				.setUserId			(userId)
+		WxPay wxPay = new WxPay()
 				/* 支付参数 */
 				.setAppid              (payConfig.getAppId())
 				.setMchid              (payConfig.getMchId())
@@ -209,7 +207,18 @@ public class WxPayClient extends BasePayClient {
 
 		if (!Objects.equal(wxPay.getReturnCode(), WxPayConstants.ResultCode.SUCCESS)
 				|| !Objects.equal(wxPay.getResultCode(), WxPayConstants.ResultCode.SUCCESS)) {
-			return null;
+			// 无有效支付参数，重新下单获取
+			PayParams payParams = new PayParams();
+			payParams.setAppid(wxPay.getAppid());
+			BigDecimal amount = new BigDecimal(wxPay.getTotalFee()).divide(new BigDecimal(100), 2,
+					RoundingMode.HALF_UP);
+			payParams.setAmount(amount);
+			payParams.setBody(wxPay.getBody());
+			payParams.setOutTradeNo(wxPay.getOutTradeNo());
+			payParams.setSpbillCreateIp(wxPay.getSpbillCreateIp());
+			payParams.setOpenid(wxPay.getOpenid());
+			payParams.setProductId(wxPay.getProductId());
+			return requestPayInfo(payParams);
 		}
 
 		// 策略模式

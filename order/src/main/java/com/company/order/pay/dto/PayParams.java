@@ -9,12 +9,6 @@ import lombok.Data;
  */
 @Data
 public class PayParams {
-	
-	/**
-	 * 用户ID
-	 */
-	private Integer userId;
-	
 	/**
 	 * 订单金额(元)
 	 */

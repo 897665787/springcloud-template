@@ -21,11 +21,6 @@ public class AliActivityPay {
 	private Integer id;
 
 	/**
-	 * bu_user_info.id
-	 */
-	private Integer userId;
-
-	/**
 	 * 申请商户号的appid或商户号绑定的appid
 	 */
 	private String appid;
