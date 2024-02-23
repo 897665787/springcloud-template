@@ -17,6 +17,12 @@ public class MemberBuySubOrderDetailResp {
 	 * 会员有效期
 	 */
 	private Date validDate;
+	
+	/**
+	 * 用户备注
+	 */
+	private String userRemark;
+	
 	/* 与前端约定添加子订单特有的字段 */
 
 	/* 如有需要，使用相同的字段名覆盖OrderDetailResp的字段值 */

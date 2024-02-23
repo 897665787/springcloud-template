@@ -54,6 +54,11 @@ public class RegisterOrderReq {
 	 * 子订单查询url
 	 */
 	private String subOrderUrl;
+
+	/**
+	 * 附加参数
+	 */
+	private String attach;
 	
 	/**
 	 * 商品列表
@@ -78,11 +83,6 @@ public class RegisterOrderReq {
 		private BigDecimal salesAmount;
 
 		/**
-		 * 总额(售价*数量)
-		 */
-		private BigDecimal amount;
-
-		/**
 		 * 商品编码
 		 */
 		private String productCode;
@@ -98,27 +98,8 @@ public class RegisterOrderReq {
 		private String productImage;
 
 		/**
-		 * 规格JSON
+		 * 附加参数
 		 */
-		private String specJson;
-		/**
-		 * 规格内容
-		 */
-		private String specContent;
-
-		/**
-		 * 商品备注
-		 */
-		private String productRemark;
-
-		/**
-		 * 店铺 ID
-		 */
-		private String storeId;
-
-		/**
-		 * 店铺名称
-		 */
-		private String storeName;
+		private String attach;
 	}
 }

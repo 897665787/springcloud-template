@@ -18,8 +18,8 @@ public class DistributeSubOrderResp {
 	 */
 	private Boolean inviteBtn;
 	
-	private String brandLogo;
-	private String brandName;
+	private String shopLogo;
+	private String shopName;
 
 	/**
 	 * 取餐码

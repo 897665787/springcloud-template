@@ -5,7 +5,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -24,6 +28,7 @@ import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
+import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
@@ -32,8 +37,10 @@ import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.DistributeOrderFeign;
 import com.company.user.api.request.DistributeOrderReq;
 import com.company.user.api.response.DistributeSubOrderDetailResp;
+import com.company.user.api.response.DistributeSubOrderDetailResp.ProductDetailResp;
 import com.company.user.api.response.DistributeSubOrderDetailResp.TextValueResp;
 import com.company.user.api.response.DistributeSubOrderResp;
+import com.company.user.dto.DistributeAttach;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -99,31 +106,29 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
 		
-		RegisterOrderReq.OrderProductReq rrderProductReq = new RegisterOrderReq.OrderProductReq();
-		rrderProductReq.setNumber(1);
-		rrderProductReq.setOriginAmount(new BigDecimal("20"));
-		rrderProductReq.setSalesAmount(new BigDecimal("20"));
-		rrderProductReq.setAmount(new BigDecimal("20"));
-		rrderProductReq.setProductCode("1212313");
-		rrderProductReq.setProductName("卡片");
-		rrderProductReq.setProductImage("http://www.image.com/aaa.png");
-		rrderProductReq.setSpecJson("[]");
-		rrderProductReq.setSpecContent("辣/ah");
-//		rrderProductReq.setProductRemark(productRemark);
-		orderProductReqList.add(rrderProductReq);
+		RegisterOrderReq.OrderProductReq orderProductReq = new RegisterOrderReq.OrderProductReq();
+		orderProductReq.setNumber(1);
+		orderProductReq.setOriginAmount(new BigDecimal("20"));
+		orderProductReq.setSalesAmount(new BigDecimal("20"));
+		orderProductReq.setProductCode("1212313");
+		orderProductReq.setProductName("卡片");
+		orderProductReq.setProductImage("http://www.image.com/aaa.png");
 		
-		RegisterOrderReq.OrderProductReq rrderProductReq2 = new RegisterOrderReq.OrderProductReq();
-		rrderProductReq2.setNumber(2);
-		rrderProductReq2.setOriginAmount(new BigDecimal("30"));
-		rrderProductReq2.setSalesAmount(new BigDecimal("30"));
-		rrderProductReq2.setAmount(new BigDecimal("30"));
-		rrderProductReq2.setProductCode("561616");
-		rrderProductReq2.setProductName("卡片2");
-		rrderProductReq2.setProductImage("http://www.image.com/aaa22.png");
-		rrderProductReq2.setSpecJson("[]");
-		rrderProductReq2.setSpecContent("辣2/ah2");
-//		rrderProductReq2.setProductRemark(productRemark);
-		orderProductReqList.add(rrderProductReq2);
+		DistributeAttach distributeAttach = new DistributeAttach().setSpecContent("辣/加料");
+		orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach));
+		orderProductReqList.add(orderProductReq);
+		
+		RegisterOrderReq.OrderProductReq orderProductReq2 = new RegisterOrderReq.OrderProductReq();
+		orderProductReq2.setNumber(2);
+		orderProductReq2.setOriginAmount(new BigDecimal("30"));
+		orderProductReq2.setSalesAmount(new BigDecimal("30"));
+		orderProductReq2.setProductCode("561616");
+		orderProductReq2.setProductName("卡片2");
+		orderProductReq2.setProductImage("http://www.image.com/aaa22.png");
+		
+		DistributeAttach distributeAttach2 = new DistributeAttach().setSpecContent("辣/热").setUserRemark("汤饭分离");
+		orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach2));
+		orderProductReqList.add(orderProductReq2);
 		
 		registerOrderReq.setProductList(orderProductReqList);
 		
@@ -227,14 +232,35 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 	private DistributeSubOrderResp item(OrderReq orderReq) {
 		DistributeSubOrderResp resp = new DistributeSubOrderResp();
-		resp.setMealCode("1111");
+		resp.setMealCode("123456");
 		return resp;
 	}
 	
 	private DistributeSubOrderDetailResp detail(OrderReq orderReq) {
 		DistributeSubOrderDetailResp resp = new DistributeSubOrderDetailResp();
-		resp.setMealCode("1111");
+		resp.setMealCode("123456");
 
+		List<ProductReq> productList = orderReq.getProductList();
+		List<ProductDetailResp> productDetailRespList = productList.stream().map(v -> {
+			ProductDetailResp productDetailResp = new ProductDetailResp();
+			productDetailResp.setNumber(v.getNumber());
+			productDetailResp.setOriginAmount(v.getOriginAmount());
+			productDetailResp.setSalesAmount(v.getSalesAmount());
+			productDetailResp.setAmount(v.getAmount());
+			productDetailResp.setProductCode(v.getProductCode());
+			productDetailResp.setProductName(v.getProductName());
+			productDetailResp.setProductImage(v.getProductImage());
+			
+			String attach = v.getAttach();
+			if(StringUtils.isNotBlank(attach)){
+				DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
+				productDetailResp.setSpecContent(distributeAttach.getSpecContent());
+				productDetailResp.setUserRemark(distributeAttach.getUserRemark());
+			}
+			return productDetailResp;
+		}).collect(Collectors.toList());
+		resp.setProductList(productDetailRespList);
+		
 		List<TextValueResp> textValueList = Lists.newArrayList();
 		textValueList.add(new TextValueResp().setText("aaaaa").setValue("bbbbb"));
 		resp.setTextValueList(textValueList);

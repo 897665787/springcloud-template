@@ -36,7 +36,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	public Order saveOrUpdate(Integer userId, OrderEnum.OrderType orderTypeEnum, String orderCode,
 			OrderEnum.SubStatusEnum subStatusEnum, BigDecimal productAmount, BigDecimal orderAmount,
-			BigDecimal reduceAmount, BigDecimal needPayAmount, String subOrderUrl) {
+			BigDecimal reduceAmount, BigDecimal needPayAmount, String subOrderUrl, String attach) {
 		Order order = new Order();
 		order.setUserId(userId);
 		order.setOrderCode(orderCode);
@@ -49,6 +49,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		order.setReduceAmount(reduceAmount);
 		order.setNeedPayAmount(needPayAmount);
 		order.setSubOrderUrl(subOrderUrl);
+		order.setAttach(attach);
 
 		orderMapper.saveOrUpdate(order);// 正常情况下都是save，为了避免极端情况下不影响业务功能加了update
 		return order;

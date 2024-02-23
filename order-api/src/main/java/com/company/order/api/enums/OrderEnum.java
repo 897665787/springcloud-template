@@ -6,14 +6,11 @@ import lombok.Getter;
 public interface OrderEnum {
 	// 订单类型order_type
 	@AllArgsConstructor
-    enum OrderType {
-		BUY_MEMBER("buy_member", "配送"),
-		DISTRIBUTE("distribute", "配送"),
-		WRITEOFF("writeoff", "核销码"),
-		GROUP_MEAL("group_meal", "团餐"),
-		ENT_GROUP_MEAL("ent_group_meal", "企业团餐"),
-		GROUP_MEAL_COUPON("group_meal_coupon", "外卖团购券"),
-		GROUP_MEAL_HELP_BUY("group_meal_help_buy", "外卖助力")
+	enum OrderType {
+		BUY_MEMBER("buy_member", "购买会员"), // 开会员订单
+		DISTRIBUTE("distribute", "配送"), // 含运力配送订单
+		WRITEOFF("writeoff", "核销码"), // 需核销订单
+		MOVIE("movie", "电影票"),// 电影票订单
 		;
 		@Getter
 		private String code;
@@ -32,14 +29,14 @@ public interface OrderEnum {
 
 	// 主状态status
 	@AllArgsConstructor
-    enum StatusEnum {
-        WAIT_PAY(1, "待付款"),// 待支付
-        CANCELED(2, "已关闭"),// 已取消 END
-        WAIT_SEND(3, "已付款"),//(待发货)
-        WAIT_RECEIVE(4, "待收货"),
-        COMPLETE(5, "已完成"),
-        REFUND(6, "退款")
-        ;
+	enum StatusEnum {
+		WAIT_PAY(1, "待付款"), // 待支付
+		CANCELED(2, "已关闭"), // 已取消 END
+		WAIT_SEND(3, "已付款"), // (待发货)
+		WAIT_RECEIVE(4, "待收货"), //
+		COMPLETE(5, "已完成"), //
+		REFUND(6, "退款"),//
+		;
 
 		@Getter
 		private Integer status;
@@ -55,25 +52,25 @@ public interface OrderEnum {
 			return null;
 		}
 
-    }
+	}
 
 	// 子状态sub_status
 	@AllArgsConstructor
-    enum SubStatusEnum {
-        WAIT_PAY(11, "待付款"),// 待支付
-        CANCELED(21, "已关闭"),// 已取消 END
-        PAYED(30, "已付款"),
-        WAIT_SEND(31, "待发货"),
-        SENDING(32, "发货中"),
-        SEND_FAIL(33, "发货失败"),
-        SEND_SUCCESS(41, "已发货"),
-        WAIT_REVIEW(51, "待评价"),
+	enum SubStatusEnum {
+		WAIT_PAY(11, "待付款"), // 待支付
+		CANCELED(21, "已关闭"), // 已取消 END
+		PAYED(30, "已付款"), //
+		WAIT_SEND(31, "待发货"), //
+		SENDING(32, "发货中"), //
+		SEND_FAIL(33, "发货失败"), //
+		SEND_SUCCESS(41, "已发货"), //
+		WAIT_REVIEW(51, "待评价"), //
 		COMPLETE(52, "已结束"), // END
-		CHECK(60, "退款审核中"),//退款待审核
-        REFUNDING(61, "退款中"),
-        REFUND_SUCCESS(62, "退款成功"),// END
-        REFUND_FAIL(63, "退款失败")
-        ;
+		CHECK(60, "退款审核中"), // 退款待审核
+		REFUNDING(61, "退款中"), //
+		REFUND_SUCCESS(62, "退款成功"), // END
+		REFUND_FAIL(63, "退款失败"),//
+		;
 
 		@Getter
 		private Integer status;
@@ -119,12 +116,13 @@ public interface OrderEnum {
 			return null;
 		}
 	}
-	
+
 	@AllArgsConstructor
 	enum SearchTypeEnum {
 		ITEM("item", "订单列表子项"), //
-		DETAIL("detail", "订单详情");
-		
+		DETAIL("detail", "订单详情"),//
+		;
+
 		@Getter
 		private String code;
 		@Getter

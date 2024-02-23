@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -34,6 +36,7 @@ import com.company.user.api.feign.MemberBuyFeign;
 import com.company.user.api.request.MemberBuyOrderReq;
 import com.company.user.api.response.MemberBuySubOrderDetailResp;
 import com.company.user.api.response.MemberBuySubOrderResp;
+import com.company.user.dto.MemberBuyAttach;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -97,21 +100,21 @@ public class MemberBuyController implements MemberBuyFeign {
 		registerOrderReq.setNeedPayAmount(needPayAmount);
 		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/memberBuy/subOrder");
 
+		MemberBuyAttach memberBuyAttach = new MemberBuyAttach().setUserRemark("不好用就退钱");
+		registerOrderReq.setAttach(JsonUtil.toJsonString(memberBuyAttach));
+		
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
+
+		RegisterOrderReq.OrderProductReq orderProductReq = new RegisterOrderReq.OrderProductReq();
+		orderProductReq.setNumber(1);
+		orderProductReq.setOriginAmount(new BigDecimal("20"));
+		orderProductReq.setSalesAmount(new BigDecimal("20"));
+		orderProductReq.setProductCode("M_321516516");
+		orderProductReq.setProductName("会员月卡");
+		orderProductReq.setProductImage("http://www.image.com/member_month.png");
 		
-		RegisterOrderReq.OrderProductReq rrderProductReq = new RegisterOrderReq.OrderProductReq();
-		rrderProductReq.setNumber(1);
-		rrderProductReq.setOriginAmount(new BigDecimal("20"));
-		rrderProductReq.setSalesAmount(new BigDecimal("20"));
-		rrderProductReq.setAmount(new BigDecimal("20"));
-		rrderProductReq.setProductCode("1212313");
-		rrderProductReq.setProductName("卡片");
-		rrderProductReq.setProductImage("http://www.image.com/aaa.png");
-		rrderProductReq.setSpecJson("[]");
-		rrderProductReq.setSpecContent("辣/ah");
-//		rrderProductReq.setProductRemark(productRemark);
-		orderProductReqList.add(rrderProductReq);
-		
+		orderProductReqList.add(orderProductReq);
+
 		registerOrderReq.setProductList(orderProductReqList);
 		
 		orderFeign.registerOrder(registerOrderReq);
@@ -214,20 +217,27 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	private MemberBuySubOrderResp item(OrderReq orderReq) {
 		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
-		resp.setMemberCode("2222");
+		resp.setMemberCode("666666");
 		resp.setValidDate(new Date());
 		
 		resp.setPayText("已付款111");
+		
 		return resp;
 	}
 	
 	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
 		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
-		resp.setMemberCode("2222");
+		resp.setMemberCode("666666");
 		resp.setValidDate(new Date());
 		
 		resp.setPayText("已付款111");
-
+		
+		String attach = orderReq.getAttach();
+		if(StringUtils.isNotBlank(attach)){
+			MemberBuyAttach distributeAttach = JsonUtil.toEntity(attach, MemberBuyAttach.class);
+			resp.setUserRemark(distributeAttach.getUserRemark());
+		}
+		
 		return resp;
 	}
 }

@@ -22,7 +22,7 @@ public class OrderReq {
     private String orderCode;
 
     /**
-     * 订单类型(distribute:配送类,writeoff:核销码,groupmeal:外卖,groupmealhelp:外卖助力)
+     * 订单类型(buy_member:开通会员,distribute:配送类,writeoff:核销码)
      */
     private String orderType;
 

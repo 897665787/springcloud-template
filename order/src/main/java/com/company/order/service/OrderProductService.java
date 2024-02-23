@@ -1,9 +1,11 @@
 package com.company.order.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.service.IService;
@@ -20,6 +22,9 @@ public class OrderProductService extends ServiceImpl<OrderProductMapper, OrderPr
 	}
 
 	public List<OrderProduct> selectByOrderCodes(List<String> orderCodes) {
+		if (CollectionUtils.isEmpty(orderCodes)) {
+			return Collections.emptyList();
+		}
 		return baseMapper.selectByOrderCodes(orderCodes);
 	}
 

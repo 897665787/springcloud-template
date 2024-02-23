@@ -17,7 +17,6 @@ CREATE TABLE `bu_order` (
   `refund_time` datetime DEFAULT NULL COMMENT '退款时间(最后1次)',
   `user_del` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户删除(1:未删除,2:已删除)',
   `sub_order_url` varchar(128) NOT NULL DEFAULT '' COMMENT '子订单查询地址',
-  `user_remark` varchar(255) DEFAULT '' COMMENT '用户备注',
   `attach` varchar(255) DEFAULT null COMMENT '附加参数',
 
   `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',

@@ -82,19 +82,28 @@ public class OrderController implements OrderFeign {
 		}
 		BigDecimal needPayAmount = registerOrderReq.getNeedPayAmount();
 		String subOrderUrl = registerOrderReq.getSubOrderUrl();
+		String attach = registerOrderReq.getAttach();
 
 		Order order = orderService.saveOrUpdate(userId, orderTypeEnum, orderCode, subStatusEnum, productAmount,
-				orderAmount, reduceAmount, needPayAmount, subOrderUrl);
+				orderAmount, reduceAmount, needPayAmount, subOrderUrl, attach);
 
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
 		if (orderProductList.isEmpty()) {
 			List<RegisterOrderReq.OrderProductReq> orderProductReqList = registerOrderReq.getProductList();
 			if (CollectionUtils.isNotEmpty(orderProductReqList)) {
-				List<OrderProduct> orderProductList4Insert = PropertyUtils.copyArrayProperties(orderProductReqList,
-						OrderProduct.class);
-				for (OrderProduct orderProduct : orderProductList4Insert) {
+				List<OrderProduct> orderProductList4Insert = orderProductReqList.stream().map(v -> {
+					OrderProduct orderProduct = new OrderProduct();
 					orderProduct.setOrderCode(orderCode);
-				}
+					orderProduct.setNumber(v.getNumber());
+					orderProduct.setOriginAmount(v.getOriginAmount());
+					orderProduct.setSalesAmount(v.getSalesAmount());
+					orderProduct.setAmount(v.getSalesAmount().multiply(new BigDecimal(v.getNumber())));
+					orderProduct.setProductCode(v.getProductCode());
+					orderProduct.setProductName(v.getProductName());
+					orderProduct.setProductImage(v.getProductImage());
+					orderProduct.setAttach(v.getAttach());
+					return orderProduct;
+				}).collect(Collectors.toList());
 				orderProductService.insertBatch(orderProductList4Insert);
 			}
 		}
