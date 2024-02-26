@@ -128,6 +128,26 @@ public interface FanoutConstants {
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
 	
+	// 子订单demo3-支付失败事件
+	interface SUBORDERDEMO3_PAY_FAIL {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "subOrderDemo3_pay_fail";
+		
+		String PREFIX = FanoutConstants.PREFIX + "subOrderDemo3_pay_fail.";
+		// 队列
+//		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
+	}
+	
+	// 子订单demo3-支付成功事件
+	interface SUBORDERDEMO3_PAY_SUCCESS {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "subOrderDemo3_pay_success";
+		
+		String PREFIX = FanoutConstants.PREFIX + "subOrderDemo3_pay_success.";
+		// 队列
+//		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
+	}
+	
 	// 订单取消事件
 	interface ORDER_CANCEL {
 		// 交换机

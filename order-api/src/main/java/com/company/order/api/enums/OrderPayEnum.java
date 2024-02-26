@@ -10,7 +10,8 @@ public interface OrderPayEnum {
 		NOMAL("nomal", "普通下单"), //
 		KILL("kill", "秒杀下单"), //
 		MEMBER("member", "购买会员"), //
-		DISTRIBUTE("distribute", "配送订单")//
+		DISTRIBUTE("distribute", "配送订单"), //
+		SUBORDERDEMO3("subOrderDemo3", "子订单demo3"), //
 		;
 		@Getter
 		private String code;

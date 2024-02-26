@@ -1,13 +1,11 @@
-package com.company.user.controller;
+package com.company.tool.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -31,24 +28,23 @@ import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.PayResp;
+import com.company.tool.api.feign.SubOrderDemo3Feign;
+import com.company.tool.api.request.SubOrderDemo3OrderReq;
+import com.company.tool.api.response.SubOrderDemo3SubOrderDetailResp;
+import com.company.tool.api.response.SubOrderDemo3SubOrderResp;
 import com.company.user.api.constant.Constants;
-import com.company.user.api.feign.MemberBuyFeign;
-import com.company.user.api.request.MemberBuyOrderReq;
-import com.company.user.api.response.MemberBuySubOrderDetailResp;
-import com.company.user.api.response.MemberBuySubOrderResp;
-import com.company.user.dto.MemberBuyAttach;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 购买会员子订单demo
+ * 子订单demo3(表示不同的业务子订单)
  */
 @Slf4j
 @RestController
-@RequestMapping("/memberBuy")
-public class MemberBuyController implements MemberBuyFeign {
+@RequestMapping("/subOrderDemo3")
+public class SubOrderDemo3Controller implements SubOrderDemo3Feign {
 	
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
@@ -65,15 +61,15 @@ public class MemberBuyController implements MemberBuyFeign {
 	/**
 	 * 购买
 	 * 
-	 * @param memberBuyOrderReq
+	 * @param subOrderDemo3OrderReq
 	 * @return
 	 */
 	@Override
-	public Result<?> buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq) {
+	public Result<?> buy(@RequestBody SubOrderDemo3OrderReq subOrderDemo3OrderReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
-		BigDecimal orderAmount = memberBuyOrderReq.getOrderAmount();
-		BigDecimal payAmount = memberBuyOrderReq.getPayAmount();
+		BigDecimal orderAmount = subOrderDemo3OrderReq.getOrderAmount();
+		BigDecimal payAmount = subOrderDemo3OrderReq.getPayAmount();
 		BigDecimal needPayAmount = new BigDecimal("17.5");
 		if (payAmount.compareTo(needPayAmount) != 0) {
 			return Result.fail("");
@@ -92,16 +88,13 @@ public class MemberBuyController implements MemberBuyFeign {
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
 		registerOrderReq.setUserId(userId);
 		registerOrderReq.setOrderCode(orderCode);
-		registerOrderReq.setOrderTypeEnum(OrderEnum.OrderType.BUY_MEMBER);
+		registerOrderReq.setOrderTypeEnum(OrderEnum.OrderType.SUBORDERDEMO3);
 		registerOrderReq.setSubStatusEnum(OrderEnum.SubStatusEnum.WAIT_PAY);
 		registerOrderReq.setProductAmount(productAmount);
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/memberBuy/subOrder");
-
-		MemberBuyAttach memberBuyAttach = new MemberBuyAttach().setUserRemark("不好用就退钱");
-		registerOrderReq.setAttach(JsonUtil.toJsonString(memberBuyAttach));
+		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/subOrderDemo3/subOrder");
 		
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
 
@@ -109,9 +102,9 @@ public class MemberBuyController implements MemberBuyFeign {
 		orderProductReq.setNumber(1);
 		orderProductReq.setOriginAmount(new BigDecimal("20"));
 		orderProductReq.setSalesAmount(new BigDecimal("20"));
-		orderProductReq.setProductCode("M_321516516");
-		orderProductReq.setProductName("会员月卡");
-		orderProductReq.setProductImage("http://www.image.com/member_month.png");
+		orderProductReq.setProductCode("XG3313213131");
+		orderProductReq.setProductName("子订单demo3");
+		orderProductReq.setProductImage("http://www.image.com/demo3_month.png");
 		
 		orderProductReqList.add(orderProductReq);
 
@@ -127,15 +120,15 @@ public class MemberBuyController implements MemberBuyFeign {
 		PayReq payReq = new PayReq();
 		payReq.setUserId(userId);
 		payReq.setOrderCode(orderCode);
-		payReq.setBusinessType(OrderPayEnum.BusinessType.MEMBER);
+		payReq.setBusinessType(OrderPayEnum.BusinessType.SUBORDERDEMO3);
 		payReq.setMethod(OrderPayEnum.Method.WX);
 		payReq.setAppid("wxeb6ffb3sdadda333");
 		payReq.setAmount(needPayAmount);
-		payReq.setBody("购买会员");
+		payReq.setBody("子订单demo3");
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 //		payReq.setProductId(productId);
 		payReq.setOpenid(HttpContextUtil.deviceid());
-		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/memberBuy/buyNotify");
+		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/subOrderDemo3/buyNotify");
 //		payReq.setAttach(attach);
 //		payReq.setTimeoutSeconds(timeoutSeconds);
 //		payReq.setRemark(remark);
@@ -176,7 +169,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			// 发布‘支付失败’事件
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("orderCode", orderCode);
-			messageSender.sendFanoutMessage(params, FanoutConstants.MEMBER_BUY_PAY_FAIL.EXCHANGE);
+			messageSender.sendFanoutMessage(params, FanoutConstants.SUBORDERDEMO3_PAY_FAIL.EXCHANGE);
 
 			return Result.success();
 		}
@@ -193,9 +186,9 @@ public class MemberBuyController implements MemberBuyFeign {
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
-		messageSender.sendFanoutMessage(params, FanoutConstants.MEMBER_BUY_PAY_SUCCESS.EXCHANGE);
+		messageSender.sendFanoutMessage(params, FanoutConstants.SUBORDERDEMO3_PAY_SUCCESS.EXCHANGE);
     	
-		// TODO 会员过期时间续期
+		// TODO 子订单demo3业务逻辑
 		
 		return Result.success();
 	}
@@ -217,28 +210,18 @@ public class MemberBuyController implements MemberBuyFeign {
 		return Result.success();
 	}
 
-	private MemberBuySubOrderResp item(OrderReq orderReq) {
-		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
-		resp.setMemberCode("666666");
-		resp.setValidDate(new Date());
+	private SubOrderDemo3SubOrderResp item(OrderReq orderReq) {
+		SubOrderDemo3SubOrderResp resp = new SubOrderDemo3SubOrderResp();
 		
-		resp.setPayText("已付款111");
+		resp.setPayText("已付款（覆盖文案）");
 		
 		return resp;
 	}
 	
-	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
-		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
-		resp.setMemberCode("666666");
-		resp.setValidDate(new Date());
+	private SubOrderDemo3SubOrderDetailResp detail(OrderReq orderReq) {
+		SubOrderDemo3SubOrderDetailResp resp = new SubOrderDemo3SubOrderDetailResp();
 		
-		resp.setPayText("已付款111");
-		
-		String attach = orderReq.getAttach();
-		if(StringUtils.isNotBlank(attach)){
-			MemberBuyAttach distributeAttach = JsonUtil.toEntity(attach, MemberBuyAttach.class);
-			resp.setUserRemark(distributeAttach.getUserRemark());
-		}
+		resp.setPayText("已付款（覆盖文案）");
 		
 		return resp;
 	}

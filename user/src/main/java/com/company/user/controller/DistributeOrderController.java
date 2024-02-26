@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,13 +173,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
-			// 修改‘业务订单’数据
-			
 			// 修改‘订单中心’数据
 			OrderCancelReq orderCancelReq = new OrderCancelReq();
 			orderCancelReq.setOrderCode(orderCode);
 			orderCancelReq.setCancelTime(time);
 			orderFeign.cancel(orderCancelReq);
+			
+			// TODO 修改‘业务订单’数据
 			
 			return Result.success();
 		}
@@ -197,19 +196,21 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		}
 		// 支付成功
 		
-		// 修改‘业务订单’数据
-		
 		// 修改‘订单中心’数据
 		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq();
 		orderPaySuccessReq.setOrderCode(orderCode);
 		orderPaySuccessReq.setPayTime(time);
 		orderFeign.paySuccess(orderPaySuccessReq);
 		
+		// TODO 修改‘业务订单’数据
+		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
 		messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_SUCCESS.EXCHANGE);
     	
+		// TODO 处理‘业务订单’逻辑
+		
 		return Result.success();
 	}
 	

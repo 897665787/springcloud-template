@@ -434,7 +434,7 @@ public class OrderController implements OrderFeign {
 	private Object postRestTemplate(String url, OrderReq orderReq) {
 		Object paramObject = orderReq;
 		String remark = null;
-		log.info("回调,请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject),
+		log.info("请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject),
 				JsonUtil.toJsonString(paramObject));
 		long start = System.currentTimeMillis();
 		try {
@@ -447,7 +447,7 @@ public class OrderController implements OrderFeign {
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {
 				@SuppressWarnings("unchecked")
 				Result<Object> result = responseEntity.getBody();
-				log.info("{}ms,回调结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
+				log.info("{}ms,结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
 				remark = result.getMessage();
 				if (result.successCode()) {
 					return result.getData();
@@ -456,7 +456,7 @@ public class OrderController implements OrderFeign {
 				remark = "响应码:" + responseEntity.getStatusCodeValue();
 			}
 		} catch (Exception e) {
-			log.error("{}ms,回调异常", System.currentTimeMillis() - start, e);
+			log.error("{}ms,异常", System.currentTimeMillis() - start, e);
 			remark = ExceptionUtils.getMessage(e);
 		}
 		Map<String, String> dataMap = Maps.newHashMap();

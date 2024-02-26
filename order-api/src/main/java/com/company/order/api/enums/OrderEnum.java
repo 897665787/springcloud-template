@@ -11,6 +11,7 @@ public interface OrderEnum {
 		DISTRIBUTE("distribute", "配送"), // 含运力配送订单
 		WRITEOFF("writeoff", "核销码"), // 需核销订单
 		MOVIE("movie", "电影票"),// 电影票订单
+		SUBORDERDEMO3("subOrderDemo3", "子订单demo3"),// 子订单demo3
 		;
 		@Getter
 		private String code;
