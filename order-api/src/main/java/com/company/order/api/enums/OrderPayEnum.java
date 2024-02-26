@@ -7,6 +7,9 @@ public interface OrderPayEnum {
 
 	@AllArgsConstructor
 	enum BusinessType {
+		@Deprecated
+		UNKNOWN("unknown", "未知"), // 不能在别的地方用
+		
 		NOMAL("nomal", "普通下单"), //
 		KILL("kill", "秒杀下单"), //
 		MEMBER("member", "购买会员"), //
@@ -24,7 +27,10 @@ public interface OrderPayEnum {
 					return item;
 				}
 			}
-			return null;
+			// 替换UNKNOWN的code返回，可以在getCode时获取到没有写到枚举中的code(注意：这里会持久化改掉UNKNOWN的code)
+			BusinessType unknown = UNKNOWN;
+			unknown.code = code;
+			return unknown;
 		}
 	}
 
