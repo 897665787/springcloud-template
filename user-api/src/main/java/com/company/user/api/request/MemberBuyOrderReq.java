@@ -6,34 +6,19 @@ import lombok.Data;
 
 @Data
 public class MemberBuyOrderReq {
-	// 公共参数
-	private BigDecimal amount;
-	private Integer payMethod;
-	private Integer platform;
-
-	private String goodsNo;
+	// 商品参数
+	private String productCode;
 	private Integer number;
-	private BigDecimal realAmt;
-	private BigDecimal orderAmount;
-	private BigDecimal cardAmount;
 	private BigDecimal payAmount;
-	private Integer couponInfoId;
-	private Integer newUserGift;// 新手礼包功能已废弃，该字段废弃
 
-	private String openid;
+	// 支付方式
+	private Integer payMethod;
+	// 使用的优惠券id
+	private Integer userCouponId;
 
-	private String clientIp;
-
-	// 卡券参数
-
-	// 直充参数
+	// 充值号码
 	private String rechargeNumber;
 	
-	private Integer reqSource;
-    private Integer reqPlatform;
-	/**
-	 * 订单类型
-	 */
-	private Integer orderType;
+	private String userRemark;
 
 }

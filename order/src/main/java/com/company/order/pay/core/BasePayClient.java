@@ -26,8 +26,7 @@ public abstract class BasePayClient implements PayClient {
 			payResp.setPayInfo(payInfo);
 		} catch (BusinessException e) {
 			payResp.setSuccess(false);
-			// payResp.setMessage(e.getMessage());
-			payResp.setMessage("支付失败，请稍后重试");
+			payResp.setMessage(e.getMessage());
 		}
 		return payResp;
 	}
@@ -40,8 +39,7 @@ public abstract class BasePayClient implements PayClient {
 			payRefundResp.setSuccess(true);
 		} catch (BusinessException e) {
 			payRefundResp.setSuccess(false);
-			// payRefundResp.setMessage(e.getMessage());
-			payRefundResp.setMessage("退款失败，请稍后重试");
+			payRefundResp.setMessage(e.getMessage());
 		}
 		return payRefundResp;
 	}
@@ -56,8 +54,7 @@ public abstract class BasePayClient implements PayClient {
 			payCloseResp.setMessage("成功");
 		} catch (BusinessException e) {
 			payCloseResp.setSuccess(false);
-			// payCloseResp.setMessage(e.getMessage());
-			payCloseResp.setMessage("关闭订单失败，请稍后重试");
+			payCloseResp.setMessage(e.getMessage());
 		}
 		return payCloseResp;
 	}

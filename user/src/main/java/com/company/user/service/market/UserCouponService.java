@@ -60,4 +60,8 @@ public class UserCouponService extends ServiceImpl<UserCouponMapper, UserCoupon>
 		params.put("userId", userId);
 		messageSender.sendFanoutMessage(params, FanoutConstants.SEND_COUPON.EXCHANGE);
 	}
+
+	public Integer updateStatus(Integer id, String oldStatus, String newStatus) {
+		return baseMapper.updateStatus(id, oldStatus, newStatus);
+	}
 }
