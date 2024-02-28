@@ -36,6 +36,7 @@ import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.MemberBuyFeign;
 import com.company.user.api.request.MemberBuyOrderReq;
+import com.company.user.api.response.MemberBuyOrderResp;
 import com.company.user.api.response.MemberBuySubOrderDetailResp;
 import com.company.user.api.response.MemberBuySubOrderResp;
 import com.company.user.coupon.UseCouponService;
@@ -83,7 +84,7 @@ public class MemberBuyController implements MemberBuyFeign {
 	 * @return
 	 */
 	@Override
-	public Result<?> buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq) {
+	public Result<MemberBuyOrderResp> buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
 		Integer number = memberBuyOrderReq.getNumber();
@@ -162,6 +163,8 @@ public class MemberBuyController implements MemberBuyFeign {
 		OrderResp orderResp = orderFeign.registerOrder(registerOrderReq).dataOrThrow();
 		log.info("orderResp:{}", JsonUtil.toJsonString(orderResp));
 
+		MemberBuyOrderResp resp = new MemberBuyOrderResp();
+		
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			executor.submit(() -> {
 				PayNotifyReq payNotifyReq = new PayNotifyReq();
@@ -173,7 +176,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				Result<Void> buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
 			});
-			return Result.success("0元付，跳过支付流程");
+			return Result.success(new MemberBuyOrderResp().setNeedPay(false));
 		}
 
 		// 获取支付参数
@@ -181,7 +184,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		payReq.setUserId(userId);
 		payReq.setOrderCode(orderCode);
 		payReq.setBusinessType(OrderPayEnum.BusinessType.MEMBER);
-		payReq.setMethod(OrderPayEnum.Method.WX);
+		payReq.setMethod(OrderPayEnum.Method.of(memberBuyOrderReq.getPayMethod()));
 		payReq.setAppid("wxeb6ffb3sdadda333");
 		payReq.setAmount(needPayAmount);
 		payReq.setBody("购买会员");
@@ -196,7 +199,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		if (!payResp.getSuccess()) {
 			return Result.fail("支付失败，请稍后重试");
 		}
-		return Result.success(payResp.getPayInfo());
+		return Result.success(new MemberBuyOrderResp().setNeedPay(false).setPayInfo(payResp.getPayInfo()));
 	}
 
 	/**
@@ -268,13 +271,15 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	private MemberBuySubOrderResp item(OrderReq orderReq) {
 		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
-		resp.setAddDays(30);
+		Integer addDays = 30; // TODO 根据业务订单获得
+		resp.setAddDays(addDays);
 		return resp;
 	}
 	
 	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
 		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
-		resp.setAddDays(30);
+		Integer addDays = 30; // TODO 根据业务订单获得
+		resp.setAddDays(addDays);
 		
 		String attach = orderReq.getAttach();
 		if(StringUtils.isNotBlank(attach)){

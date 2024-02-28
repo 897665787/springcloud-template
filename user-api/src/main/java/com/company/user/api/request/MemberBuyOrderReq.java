@@ -12,7 +12,7 @@ public class MemberBuyOrderReq {
 	private BigDecimal payAmount;
 
 	// 支付方式
-	private Integer payMethod;
+	private String payMethod;
 	// 使用的优惠券id
 	private Integer userCouponId;
 

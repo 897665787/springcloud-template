@@ -104,7 +104,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		}
 
 		OrderEnum.SubStatusEnum subStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
-		if (conditionSubStatusEnums != null && conditionSubStatusEnums.contains(subStatus)) {// 条件状态集合，满足条件才能更新成功
+		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(subStatus)) {// 条件状态集合，满足条件才能更新成功
 			// 只有在条件集合下的状态才能更新
 			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, subStatus);
 			return 0;

@@ -8,6 +8,7 @@ import com.company.common.api.Result;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.MemberBuyFeignFallback;
 import com.company.user.api.request.MemberBuyOrderReq;
+import com.company.user.api.response.MemberBuyOrderResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/memberBuy", fallbackFactory = MemberBuyFeignFallback.class)
 public interface MemberBuyFeign {
@@ -19,6 +20,6 @@ public interface MemberBuyFeign {
 	 * @return
 	 */
 	@PostMapping("/buy")
-	Result<?> buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq);
+	Result<MemberBuyOrderResp> buy(@RequestBody MemberBuyOrderReq memberBuyOrderReq);
 
 }

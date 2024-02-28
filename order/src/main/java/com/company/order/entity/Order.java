@@ -134,12 +134,12 @@ public class Order {
     /**
      * 创建时间
      */
-    @TableField(value = "create_date")
+    @TableField(value = "create_time")
     private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    @TableField(value = "update_date")
+    @TableField(value = "update_time")
     private LocalDateTime updateTime;
 }

@@ -45,7 +45,7 @@ public class SpringEventMessageSender implements MessageSender {
 
 	@Override
 	public void sendFanoutMessage(Object toJson, String exchange) {
-		throw new UnsupportedOperationException("不支持广播消息");
+//		throw new UnsupportedOperationException("不支持广播消息");
 	}
 
 	@Override
