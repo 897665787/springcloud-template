@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class DistributeAttach   {
+public class DistributeAttach {
 	String specContent;
 	String userRemark;
 }

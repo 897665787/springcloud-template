@@ -2,7 +2,6 @@ package com.company.user.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -269,20 +268,13 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	private MemberBuySubOrderResp item(OrderReq orderReq) {
 		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
-		resp.setMemberCode("666666");
-		resp.setValidDate(new Date());
-		
-		resp.setPayText("已付款111");
-		
+		resp.setAddDays(30);
 		return resp;
 	}
 	
 	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
 		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
-		resp.setMemberCode("666666");
-		resp.setValidDate(new Date());
-		
-		resp.setPayText("已付款111");
+		resp.setAddDays(30);
 		
 		String attach = orderReq.getAttach();
 		if(StringUtils.isNotBlank(attach)){

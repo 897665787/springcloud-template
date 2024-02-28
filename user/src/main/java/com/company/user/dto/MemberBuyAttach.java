@@ -5,6 +5,6 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class MemberBuyAttach   {
+public class MemberBuyAttach {
 	String userRemark;
 }
