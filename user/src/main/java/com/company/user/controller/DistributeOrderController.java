@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,24 +26,30 @@ import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
-import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.DistributeOrderFeign;
-import com.company.user.api.request.DistributeOrderReq;
+import com.company.user.api.request.DistributeBuyOrderReq;
+import com.company.user.api.request.DistributeBuyOrderReq.UserRemarkReq;
+import com.company.user.api.response.DistributeBuyOrderResp;
 import com.company.user.api.response.DistributeSubOrderDetailResp;
-import com.company.user.api.response.DistributeSubOrderDetailResp.ProductDetailResp;
-import com.company.user.api.response.DistributeSubOrderDetailResp.TextValueResp;
 import com.company.user.api.response.DistributeSubOrderResp;
+import com.company.user.coupon.UseCouponService;
+import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.dto.DistributeAttach;
+import com.company.user.service.market.UserCouponService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -64,34 +71,108 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	
 	@Autowired
 	private MessageSender messageSender;
+	
+	@Autowired
+	private UseCouponService useCouponService;
+	
+	@Autowired
+	private UserCouponService userCouponService;
+	
+	@Autowired
+	private ThreadPoolTaskExecutor executor;
 
+
+	@Data
+	@Accessors(chain = true)
+	public static class ShopCartData {
+		String cartType;
+		Integer number;
+		BigDecimal originAmount;
+		BigDecimal salesAmount;
+		
+		String uniqueCode;
+		String productCode;
+		String productName;
+		String productImage;
+		String specJson;
+		String specContent;
+	}
+
+	private List<ShopCartData> testDataList = Lists.newArrayList(
+//			new ShopCartData().setProductCode("M_7").setProductAmount(new BigDecimal("10")).setNumber(7),
+//			new ShopCartData().setProductCode("M_30").setProductAmount(new BigDecimal("30")).setNumber(30),
+//			new ShopCartData().setProductCode("M_365").setProductAmount(new BigDecimal("300")).setNumber(365)
+			);
+	
 	/**
 	 * 购买
 	 * 
-	 * @param memberBuyOrderReq
+	 * @param distributeBuyOrderReq
 	 * @return
 	 */
 	@Override
-	public Result<?> buy(@RequestBody DistributeOrderReq distributeOrderReq) {
+	public Result<DistributeBuyOrderResp> buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
-		BigDecimal orderAmount = distributeOrderReq.getOrderAmount();
-		BigDecimal payAmount = distributeOrderReq.getPayAmount();
-		BigDecimal needPayAmount = new BigDecimal("77.5");
-		if (payAmount.compareTo(needPayAmount) != 0) {
-			return Result.fail("");
+		
+		// TODO 从购物车获取商品数据
+		if (testDataList.isEmpty()) {
+			return Result.fail("购物车未找到商品");
 		}
 		
-		// 条件校验（下单限制、风控）
-		
+		BigDecimal productAmount = BigDecimal.ZERO;
+		for (ShopCartData shopCartData : testDataList) {
+			BigDecimal salesAmount = shopCartData.getSalesAmount();
+			Integer number = shopCartData.getNumber();
+			productAmount = productAmount.add(salesAmount.multiply(new BigDecimal(number)));
+		}
 
-		// 创建业务订单（订单中心子订单）
+		// TODO 计算配送费
+		BigDecimal distributeAmount = new BigDecimal("2");
+		
+		// TODO 计算保温费
+		BigDecimal baowenAmount = new BigDecimal("1");
+		
+		// 订单总金额
+		BigDecimal orderAmount = productAmount.add(distributeAmount).add(baowenAmount);
+
+		BigDecimal reduceAmount = BigDecimal.ZERO;
+		Integer userCouponId = distributeBuyOrderReq.getUserCouponId();
+		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券
+			Map<String, String> runtimeAttach = Maps.newHashMap();
+			String productCodes = testDataList.stream().map(ShopCartData::getProductCode)
+					.collect(Collectors.joining(","));
+			runtimeAttach.put("productCode", productCodes);
+			runtimeAttach.put("orderAmount", orderAmount.toPlainString());
+			UserCouponCanUse userCouponCanUse = useCouponService.canUse(userCouponId, userId, orderAmount,
+					runtimeAttach);
+			if (!userCouponCanUse.getCanUse()) {
+				return Result.fail("优惠券不可用");
+			}
+			reduceAmount = userCouponCanUse.getReduceAmount();
+		}
+
+		BigDecimal needPayAmount = orderAmount.subtract(reduceAmount);
+		
+		BigDecimal payAmount = distributeBuyOrderReq.getPayAmount();
+		if (payAmount.compareTo(needPayAmount) != 0) {
+			return Result.fail("支付金额不匹配");
+		}
+
+		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，锁定优惠券
+			Integer affect = userCouponService.updateStatus(userCouponId, "nouse", "used");
+			if (affect == 0) {
+				return Result.fail("优惠券不可用");
+			}
+		}
+		
+		// TODO 条件校验（下单限制、风控）
+
 		String orderCode = String.valueOf(sequenceGenerator.nextId());
-
-		// 注册到‘订单中心’
-		BigDecimal productAmount = new BigDecimal("80");
-		BigDecimal reduceAmount = new BigDecimal("2.5");
+		// TODO 创建业务订单（订单中心子订单）
+		// userId、orderCode、userCouponId、门店
 		
+		// 注册到‘订单中心’
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
 		registerOrderReq.setUserId(userId);
 		registerOrderReq.setOrderCode(orderCode);
@@ -101,63 +182,65 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distributeOrder/subOrder");
-		
+		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distribute/subOrder");
+
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
-		
-		RegisterOrderReq.OrderProductReq orderProductReq = new RegisterOrderReq.OrderProductReq();
-		orderProductReq.setNumber(1);
-		orderProductReq.setOriginAmount(new BigDecimal("20"));
-		orderProductReq.setSalesAmount(new BigDecimal("20"));
-		orderProductReq.setProductCode("1212313");
-		orderProductReq.setProductName("卡片");
-		orderProductReq.setProductImage("http://www.image.com/aaa.png");
-		
-		DistributeAttach distributeAttach = new DistributeAttach().setSpecContent("辣/加料");
-		orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach));
-		orderProductReqList.add(orderProductReq);
-		
-		RegisterOrderReq.OrderProductReq orderProductReq2 = new RegisterOrderReq.OrderProductReq();
-		orderProductReq2.setNumber(2);
-		orderProductReq2.setOriginAmount(new BigDecimal("30"));
-		orderProductReq2.setSalesAmount(new BigDecimal("30"));
-		orderProductReq2.setProductCode("561616");
-		orderProductReq2.setProductName("卡片2");
-		orderProductReq2.setProductImage("http://www.image.com/aaa22.png");
-		
-		DistributeAttach distributeAttach2 = new DistributeAttach().setSpecContent("辣/热").setUserRemark("汤饭分离");
-		orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach2));
-		orderProductReqList.add(orderProductReq2);
-		
+
+		List<UserRemarkReq> userRemarkList = distributeBuyOrderReq.getUserRemarkList();
+		Map<String, String> productCodeUserRemarkMap = userRemarkList.stream()
+				.collect(Collectors.toMap(UserRemarkReq::getProductCode, UserRemarkReq::getUserRemark, (a, b) -> b));
+		for (ShopCartData shopCartData : testDataList) {
+			String productCode = shopCartData.getProductCode();
+			RegisterOrderReq.OrderProductReq orderProductReq = new RegisterOrderReq.OrderProductReq();
+			orderProductReq.setNumber(shopCartData.getNumber());
+			orderProductReq.setOriginAmount(shopCartData.getOriginAmount());
+			orderProductReq.setSalesAmount(shopCartData.getSalesAmount());
+			orderProductReq.setProductCode(productCode);
+			orderProductReq.setProductName(shopCartData.getProductName());
+			orderProductReq.setProductImage(shopCartData.getProductImage());
+
+			DistributeAttach distributeAttach = new DistributeAttach().setSpecContent(shopCartData.getSpecContent())
+					.setUserRemark(productCodeUserRemarkMap.get(productCode));
+			orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach));
+			orderProductReqList.add(orderProductReq);
+		}
+
 		registerOrderReq.setProductList(orderProductReqList);
-		
-		orderFeign.registerOrder(registerOrderReq);
+
+		OrderResp orderResp = orderFeign.registerOrder(registerOrderReq).dataOrThrow();
+		log.info("orderResp:{}", JsonUtil.toJsonString(orderResp));
 
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
-
+			executor.submit(() -> {
+				PayNotifyReq payNotifyReq = new PayNotifyReq();
+				payNotifyReq.setEvent(PayNotifyReq.EVENT.PAY);
+				payNotifyReq.setSuccess(true);
+				payNotifyReq.setMessage("0元付，跳过支付流程");
+				payNotifyReq.setOrderCode(orderCode);
+				payNotifyReq.setTime(LocalDateTime.now());
+				Result<Void> buyNotifyResult = buyNotify(payNotifyReq);
+				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
+			});
+			return Result.success(new DistributeBuyOrderResp().setNeedPay(false));
 		}
-		
+
 		// 获取支付参数
 		PayReq payReq = new PayReq();
 		payReq.setUserId(userId);
 		payReq.setOrderCode(orderCode);
 		payReq.setBusinessType(OrderPayEnum.BusinessType.DISTRIBUTE);
-		payReq.setMethod(OrderPayEnum.Method.WX);
+		payReq.setMethod(OrderPayEnum.Method.of(distributeBuyOrderReq.getPayMethod()));
 		payReq.setAppid("wxeb6ffb3sdadda333");
 		payReq.setAmount(needPayAmount);
-		payReq.setBody("配送订单下单");
+		payReq.setBody("购买会员");
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
-//		payReq.setProductId(productId);
 		payReq.setOpenid(HttpContextUtil.deviceid());
-		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distributeOrder/buyNotify");
-//		payReq.setAttach(attach);
-//		payReq.setTimeoutSeconds(timeoutSeconds);
-//		payReq.setRemark(remark);
+		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distribute/buyNotify");
 		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
 		if (!payResp.getSuccess()) {
-			return Result.fail("");
+			return Result.fail("支付失败，请稍后重试");
 		}
-		return Result.success(payResp.getPayInfo());
+		return Result.success(new DistributeBuyOrderResp().setNeedPay(false).setPayInfo(payResp.getPayInfo()));
 	}
 
 	/**
@@ -174,46 +257,42 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
-			OrderCancelReq orderCancelReq = new OrderCancelReq();
-			orderCancelReq.setOrderCode(orderCode);
-			orderCancelReq.setCancelTime(time);
-			orderFeign.cancel(orderCancelReq);
-			
-			// TODO 修改‘业务订单’数据
+			orderFeign.cancel(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
+
+			Integer userCouponId = 0;// TODO 根据业务订单获得
+			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，锁定优惠券
+				userCouponService.updateStatus(userCouponId, "used", "nouse");
+			}
 			
 			return Result.success();
 		}
 		
-		if (!payNotifyReq.getSuccess()) {
-			// 支付失败
-
+		if (!payNotifyReq.getSuccess()) {// 支付失败
 			// 发布‘支付失败’事件
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("orderCode", orderCode);
 			messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_FAIL.EXCHANGE);
-
+			
 			return Result.success();
 		}
 		// 支付成功
-		
+
 		// 修改‘订单中心’数据
-		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq();
-		orderPaySuccessReq.setOrderCode(orderCode);
-		orderPaySuccessReq.setPayTime(time);
-		orderFeign.paySuccess(orderPaySuccessReq);
-		
-		// TODO 修改‘业务订单’数据
+		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayTime(time));
 		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
 		messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_SUCCESS.EXCHANGE);
     	
-		// TODO 处理‘业务订单’逻辑
+		// TODO 会员过期时间续期，根据业务订单获得‘续期时间长’
+		
+		// 修改‘订单中心’数据
+		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
 		
 		return Result.success();
 	}
-	
+
 	/**
 	 * 根据订单号查询子订单详情(使用restTemplate的方式调用)
 	 * 
@@ -241,9 +320,9 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		DistributeSubOrderDetailResp resp = new DistributeSubOrderDetailResp();
 		resp.setMealCode("123456");
 
-		List<ProductReq> productList = orderReq.getProductList();
-		List<ProductDetailResp> productDetailRespList = productList.stream().map(v -> {
-			ProductDetailResp productDetailResp = new ProductDetailResp();
+		List<OrderReq.ProductReq> productList = orderReq.getProductList();
+		List<DistributeSubOrderDetailResp.ProductDetailResp> productDetailRespList = productList.stream().map(v -> {
+			DistributeSubOrderDetailResp.ProductDetailResp productDetailResp = new DistributeSubOrderDetailResp.ProductDetailResp();
 			productDetailResp.setNumber(v.getNumber());
 			productDetailResp.setOriginAmount(v.getOriginAmount());
 			productDetailResp.setSalesAmount(v.getSalesAmount());
@@ -262,8 +341,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		}).collect(Collectors.toList());
 		resp.setProductList(productDetailRespList);
 		
-		List<TextValueResp> textValueList = Lists.newArrayList();
-		textValueList.add(new TextValueResp().setText("aaaaa").setValue("bbbbb"));
+		List<DistributeSubOrderDetailResp.TextValueResp> textValueList = Lists.newArrayList();
+		textValueList.add(new DistributeSubOrderDetailResp.TextValueResp().setText("aaaaa").setValue("bbbbb"));
 		resp.setTextValueList(textValueList);
 		return resp;
 	}

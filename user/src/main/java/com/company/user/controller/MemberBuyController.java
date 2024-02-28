@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ import com.company.user.service.market.UserCouponService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -77,6 +80,21 @@ public class MemberBuyController implements MemberBuyFeign {
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
 
+	@Data
+	@Accessors(chain = true)
+	public static class MemberData {
+		String productCode;
+		BigDecimal productAmount;
+		Integer addDays;
+	}
+
+	private List<MemberData> testDataList = Lists.newArrayList(
+			new MemberData().setProductCode("M_7").setProductAmount(new BigDecimal("10")).setAddDays(7),
+			new MemberData().setProductCode("M_30").setProductAmount(new BigDecimal("30")).setAddDays(30),
+			new MemberData().setProductCode("M_365").setProductAmount(new BigDecimal("300")).setAddDays(365)
+			);
+	private Map<String, MemberData> testDataMap = testDataList.stream().collect(Collectors.toMap(MemberData::getProductCode, a->a));
+	
 	/**
 	 * 购买
 	 * 
@@ -90,7 +108,12 @@ public class MemberBuyController implements MemberBuyFeign {
 		Integer number = memberBuyOrderReq.getNumber();
 		
 		String productCode = memberBuyOrderReq.getProductCode();
-		BigDecimal productAmount = new BigDecimal("20");// TODO 通过productCode得到
+		MemberData memberData = testDataMap.get(productCode);
+		if (memberData == null) {
+			return Result.fail("商品不存在");
+		}
+		// TODO 通过productCode得到
+		BigDecimal productAmount = memberData.getProductAmount();
 
 		// 订单总金额
 		BigDecimal orderAmount = productAmount.multiply(new BigDecimal(number));
@@ -163,8 +186,6 @@ public class MemberBuyController implements MemberBuyFeign {
 		OrderResp orderResp = orderFeign.registerOrder(registerOrderReq).dataOrThrow();
 		log.info("orderResp:{}", JsonUtil.toJsonString(orderResp));
 
-		MemberBuyOrderResp resp = new MemberBuyOrderResp();
-		
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			executor.submit(() -> {
 				PayNotifyReq payNotifyReq = new PayNotifyReq();

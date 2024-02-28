@@ -4,7 +4,8 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
 import com.company.user.api.feign.DistributeOrderFeign;
-import com.company.user.api.request.DistributeOrderReq;
+import com.company.user.api.request.DistributeBuyOrderReq;
+import com.company.user.api.response.DistributeBuyOrderResp;
 
 import feign.hystrix.FallbackFactory;
 
@@ -15,7 +16,7 @@ public class DistributeOrderFeignFallback implements FallbackFactory<DistributeO
 	public DistributeOrderFeign create(final Throwable e) {
 		return new DistributeOrderFeign() {
 			@Override
-			public Result<?> buy(DistributeOrderReq distributeOrderReq) {
+			public Result<DistributeBuyOrderResp> buy(DistributeBuyOrderReq distributeBuyOrderReq) {
 				return Result.onFallbackError();
 			}
 		};

@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.company.common.api.Result;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.DistributeOrderFeignFallback;
-import com.company.user.api.request.DistributeOrderReq;
+import com.company.user.api.request.DistributeBuyOrderReq;
+import com.company.user.api.response.DistributeBuyOrderResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/distributeOrder", fallbackFactory = DistributeOrderFeignFallback.class)
 public interface DistributeOrderFeign {
@@ -19,6 +20,6 @@ public interface DistributeOrderFeign {
 	 * @return
 	 */
 	@PostMapping("/buy")
-	Result<?> buy(@RequestBody DistributeOrderReq distributeOrderReq);
+	Result<DistributeBuyOrderResp> buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq);
 
 }
