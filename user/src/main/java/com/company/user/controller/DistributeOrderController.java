@@ -25,11 +25,11 @@ import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.enums.OrderEnum.StatusEnum;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.OrderCancelReq;
-import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.OrderReq.ProductReq;
@@ -282,11 +282,6 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
 		messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_SUCCESS.EXCHANGE);
-    	
-		// TODO 会员过期时间续期，根据业务订单获得‘续期时间长’
-		
-		// 修改‘订单中心’数据
-		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
 		
 		return Result.success();
 	}
@@ -310,13 +305,42 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 	private DistributeSubOrderResp item(OrderReq orderReq) {
 		DistributeSubOrderResp resp = new DistributeSubOrderResp();
-		resp.setMealCode("123456");
+		resp.setDistributeAmount(new BigDecimal("2"));
+		resp.setBaowenAmount(new BigDecimal("1"));
+		
+		// 只有发货之后才有取餐码
+		StatusEnum status = orderReq.getStatus();
+		if (status == StatusEnum.WAIT_RECEIVE || status == StatusEnum.COMPLETE || status == StatusEnum.REFUND) {
+			resp.setMealCode("123456");
+		}
+
+		List<OrderReq.ProductReq> productList = orderReq.getProductList();
+		Integer totalNumber = productList.stream().map(OrderReq.ProductReq::getNumber).reduce(Integer::sum).orElse(0);
+		resp.setTotalNumber(totalNumber);
+
+		ProductReq productReq = productList.get(0);
+		resp.setProductCode(productReq.getProductCode());
+		resp.setProductName(productReq.getProductName());
+		resp.setProductImage(productReq.getProductImage());
+
+		String attach = productReq.getAttach();
+		DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
+		resp.setShopCode(distributeAttach.getShopCode());
+		resp.setShopName(distributeAttach.getShopName());
+		resp.setShopLogo(distributeAttach.getShopLogo());
 		return resp;
 	}
 
 	private DistributeSubOrderDetailResp detail(OrderReq orderReq) {
 		DistributeSubOrderDetailResp resp = new DistributeSubOrderDetailResp();
-		resp.setMealCode("123456");
+		resp.setDistributeAmount(new BigDecimal("2"));
+		resp.setBaowenAmount(new BigDecimal("1"));
+		
+		// 只有发货之后才有取餐码
+		StatusEnum status = orderReq.getStatus();
+		if (status == StatusEnum.WAIT_RECEIVE || status == StatusEnum.COMPLETE || status == StatusEnum.REFUND) {
+			resp.setMealCode("123456");
+		}
 
 		List<OrderReq.ProductReq> productList = orderReq.getProductList();
 		Map<DistributeSubOrderDetailResp.ShopResp, List<OrderReq.ProductReq>> shopCodeProductListMap = productList

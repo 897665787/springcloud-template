@@ -3,6 +3,8 @@ package com.company.user.api.response;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.company.common.jackson.annotation.FormatNumber;
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -10,19 +12,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DistributeSubOrderDetailResp {
 	/* 与前端约定添加子订单特有的字段 */
-	/**
-	 * 是否展示评价按钮
-	 */
-	private Boolean commentBtn;
-	/**
-	 * 是否展示邀请按钮
-	 */
-	private Boolean inviteBtn;
-
 	// 配送费
+	@FormatNumber(pattern = "0.0#")
 	BigDecimal distributeAmount;
 
 	// 保温费
+	@FormatNumber(pattern = "0.0#")
 	BigDecimal baowenAmount;
 	
 	/**
@@ -31,7 +26,7 @@ public class DistributeSubOrderDetailResp {
 	private String mealCode;
 
 	/**
-	 * 商品列表（以门店分组展示）
+	 * 门店列表（以门店分组展示）
 	 */
 	private List<ShopResp> shopList;
 	

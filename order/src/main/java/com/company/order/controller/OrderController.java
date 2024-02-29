@@ -412,6 +412,8 @@ public class OrderController implements OrderFeign {
 			long start = System.currentTimeMillis();
 			OrderReq orderReq = PropertyUtils.copyProperties(order, OrderReq.class);
 			orderReq.setSearchType(searchType);
+			orderReq.setStatus(OrderEnum.StatusEnum.of(order.getStatus()));
+			orderReq.setSubStatus(OrderEnum.SubStatusEnum.of(order.getSubStatus()));
 			
 			List<OrderReq.ProductReq> productReqList = PropertyUtils.copyArrayProperties(orderProductList,
 					OrderReq.ProductReq.class);

@@ -29,12 +29,12 @@ public class OrderReq {
     /**
      * 状态(1:待支付,2:已取消(END)3:已支付[待发货],4:待收货,5.已完成(END),6:退款(END))
      */
-    private Integer status;
+    private OrderEnum.StatusEnum status;
 
     /**
      * 子状态(11:待支付,21:已取消(END),31:待发货,32:发货中,33:发货失败,41:已发货,51:待评价,52:已结束(END),61:待审核,61:退款中,62:退款成功(END),63:退款失败,64:部分退款成功(END))
      */
-    private Integer subStatus;
+    private OrderEnum.SubStatusEnum subStatus;
 
     /**
      * 商品总额
