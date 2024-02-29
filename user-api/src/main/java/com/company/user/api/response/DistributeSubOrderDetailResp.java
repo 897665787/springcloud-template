@@ -18,11 +18,13 @@ public class DistributeSubOrderDetailResp {
 	 * 是否展示邀请按钮
 	 */
 	private Boolean inviteBtn;
-	
-	String shopCode;
-	String shopName;
-	String shopLogo;
 
+	// 配送费
+	BigDecimal distributeAmount;
+
+	// 保温费
+	BigDecimal baowenAmount;
+	
 	/**
 	 * 取餐码
 	 */

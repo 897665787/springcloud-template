@@ -19,10 +19,16 @@ public class DistributeSubOrderResp {
 	 */
 	private Boolean inviteBtn;
 	
+	// 第一个商品
+	private String productCode;
+	private String productName;
+	private String productImage;
+
+	// 第一个商品的门店
 	String shopCode;
 	String shopName;
 	String shopLogo;
-
+	
 	/**
 	 * 取餐码
 	 */
