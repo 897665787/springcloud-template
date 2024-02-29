@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +42,12 @@ import com.company.user.api.response.MemberBuySubOrderResp;
 import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.dto.MemberBuyAttach;
+import com.company.user.service.MemberService;
+import com.company.user.service.MemberService.MemberData;
 import com.company.user.service.market.UserCouponService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -79,21 +78,9 @@ public class MemberBuyController implements MemberBuyFeign {
 	
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-
-	@Data
-	@Accessors(chain = true)
-	public static class MemberData {
-		String productCode;
-		BigDecimal productAmount;
-		Integer addDays;
-	}
-
-	private List<MemberData> testDataList = Lists.newArrayList(
-			new MemberData().setProductCode("M_7").setProductAmount(new BigDecimal("10")).setAddDays(7),
-			new MemberData().setProductCode("M_30").setProductAmount(new BigDecimal("30")).setAddDays(30),
-			new MemberData().setProductCode("M_365").setProductAmount(new BigDecimal("300")).setAddDays(365)
-			);
-	private Map<String, MemberData> testDataMap = testDataList.stream().collect(Collectors.toMap(MemberData::getProductCode, a->a));
+	
+	@Autowired
+	private MemberService memberService;
 	
 	/**
 	 * 购买
@@ -108,7 +95,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		Integer number = memberBuyOrderReq.getNumber();
 		
 		String productCode = memberBuyOrderReq.getProductCode();
-		MemberData memberData = testDataMap.get(productCode);
+		MemberData memberData = memberService.selectByProductCode(productCode);
 		if (memberData == null) {
 			return Result.fail("商品不存在");
 		}
@@ -220,7 +207,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		if (!payResp.getSuccess()) {
 			return Result.fail("支付失败，请稍后重试");
 		}
-		return Result.success(new MemberBuyOrderResp().setNeedPay(false).setPayInfo(payResp.getPayInfo()));
+		return Result.success(new MemberBuyOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo()));
 	}
 
 	/**

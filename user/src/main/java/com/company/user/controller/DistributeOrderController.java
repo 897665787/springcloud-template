@@ -2,9 +2,12 @@ package com.company.user.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +32,7 @@ import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
+import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
@@ -44,12 +48,16 @@ import com.company.user.api.response.DistributeSubOrderResp;
 import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.dto.DistributeAttach;
+import com.company.user.service.ShopCartService;
+import com.company.user.service.ShopCartService.ShopCart;
+import com.company.user.service.ShopProductService;
+import com.company.user.service.ShopProductService.ShopProduct;
+import com.company.user.service.ShopService;
+import com.company.user.service.ShopService.Shop;
 import com.company.user.service.market.UserCouponService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -80,29 +88,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-
-
-	@Data
-	@Accessors(chain = true)
-	public static class ShopCartData {
-		String cartType;
-		Integer number;
-		BigDecimal originAmount;
-		BigDecimal salesAmount;
-		
-		String uniqueCode;
-		String productCode;
-		String productName;
-		String productImage;
-		String specJson;
-		String specContent;
-	}
-
-	private List<ShopCartData> testDataList = Lists.newArrayList(
-//			new ShopCartData().setProductCode("M_7").setProductAmount(new BigDecimal("10")).setNumber(7),
-//			new ShopCartData().setProductCode("M_30").setProductAmount(new BigDecimal("30")).setNumber(30),
-//			new ShopCartData().setProductCode("M_365").setProductAmount(new BigDecimal("300")).setNumber(365)
-			);
+	
+	@Autowired
+	private ShopCartService shopCartService;
+	@Autowired
+	private ShopService shopService;
+	@Autowired
+	private ShopProductService shopProductService;
 	
 	/**
 	 * 购买
@@ -116,14 +108,15 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		// 参数校验
 		
 		// TODO 从购物车获取商品数据
-		if (testDataList.isEmpty()) {
+		List<ShopCart> shopCartList = shopCartService.selectByUserId(userId);
+		if (shopCartList.isEmpty()) {
 			return Result.fail("购物车未找到商品");
 		}
 		
 		BigDecimal productAmount = BigDecimal.ZERO;
-		for (ShopCartData shopCartData : testDataList) {
-			BigDecimal salesAmount = shopCartData.getSalesAmount();
-			Integer number = shopCartData.getNumber();
+		for (ShopCart shopCart : shopCartList) {
+			BigDecimal salesAmount = shopCart.getSalesAmount();
+			Integer number = shopCart.getNumber();
 			productAmount = productAmount.add(salesAmount.multiply(new BigDecimal(number)));
 		}
 
@@ -140,8 +133,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		Integer userCouponId = distributeBuyOrderReq.getUserCouponId();
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券
 			Map<String, String> runtimeAttach = Maps.newHashMap();
-			String productCodes = testDataList.stream().map(ShopCartData::getProductCode)
-					.collect(Collectors.joining(","));
+			String productCodes = shopCartList.stream().map(ShopCart::getProductCode).collect(Collectors.joining(","));
 			runtimeAttach.put("productCode", productCodes);
 			runtimeAttach.put("orderAmount", orderAmount.toPlainString());
 			UserCouponCanUse userCouponCanUse = useCouponService.canUse(userCouponId, userId, orderAmount,
@@ -182,25 +174,31 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distribute/subOrder");
+		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distributeOrder/subOrder");
 
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
 
 		List<UserRemarkReq> userRemarkList = distributeBuyOrderReq.getUserRemarkList();
 		Map<String, String> productCodeUserRemarkMap = userRemarkList.stream()
 				.collect(Collectors.toMap(UserRemarkReq::getProductCode, UserRemarkReq::getUserRemark, (a, b) -> b));
-		for (ShopCartData shopCartData : testDataList) {
-			String productCode = shopCartData.getProductCode();
+		for (ShopCart shopCart : shopCartList) {
+			String productCode = shopCart.getProductCode();
 			RegisterOrderReq.OrderProductReq orderProductReq = new RegisterOrderReq.OrderProductReq();
-			orderProductReq.setNumber(shopCartData.getNumber());
-			orderProductReq.setOriginAmount(shopCartData.getOriginAmount());
-			orderProductReq.setSalesAmount(shopCartData.getSalesAmount());
+			orderProductReq.setNumber(shopCart.getNumber());
+			orderProductReq.setOriginAmount(shopCart.getOriginAmount());
+			orderProductReq.setSalesAmount(shopCart.getSalesAmount());
 			orderProductReq.setProductCode(productCode);
-			orderProductReq.setProductName(shopCartData.getProductName());
-			orderProductReq.setProductImage(shopCartData.getProductImage());
+			orderProductReq.setProductName(shopCart.getProductName());
+			orderProductReq.setProductImage(shopCart.getProductImage());
 
-			DistributeAttach distributeAttach = new DistributeAttach().setSpecContent(shopCartData.getSpecContent())
-					.setUserRemark(productCodeUserRemarkMap.get(productCode));
+			ShopProduct shopProduct = shopProductService.selectByProductCode(productCode);
+			Shop shop = shopService.selectByShopCode(shopProduct.getShopCode());
+			String shopCode = shop.getShopCode();
+			String shopName = shop.getShopName();
+			String shopLogo = shop.getShopLogo();
+			DistributeAttach distributeAttach = new DistributeAttach().setSpecContent(shopCart.getSpecContent())
+					.setUserRemark(productCodeUserRemarkMap.get(productCode)).setShopCode(shopCode)
+					.setShopName(shopName).setShopLogo(shopLogo);
 			orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach));
 			orderProductReqList.add(orderProductReq);
 		}
@@ -232,15 +230,15 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		payReq.setMethod(OrderPayEnum.Method.of(distributeBuyOrderReq.getPayMethod()));
 		payReq.setAppid("wxeb6ffb3sdadda333");
 		payReq.setAmount(needPayAmount);
-		payReq.setBody("购买会员");
+		payReq.setBody("配送下单");
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		payReq.setOpenid(HttpContextUtil.deviceid());
-		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distribute/buyNotify");
+		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distributeOrder/buyNotify");
 		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
 		if (!payResp.getSuccess()) {
 			return Result.fail("支付失败，请稍后重试");
 		}
-		return Result.success(new DistributeBuyOrderResp().setNeedPay(false).setPayInfo(payResp.getPayInfo()));
+		return Result.success(new DistributeBuyOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo()));
 	}
 
 	/**
@@ -315,32 +313,61 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setMealCode("123456");
 		return resp;
 	}
-	
+
 	private DistributeSubOrderDetailResp detail(OrderReq orderReq) {
 		DistributeSubOrderDetailResp resp = new DistributeSubOrderDetailResp();
 		resp.setMealCode("123456");
 
 		List<OrderReq.ProductReq> productList = orderReq.getProductList();
-		List<DistributeSubOrderDetailResp.ProductDetailResp> productDetailRespList = productList.stream().map(v -> {
-			DistributeSubOrderDetailResp.ProductDetailResp productDetailResp = new DistributeSubOrderDetailResp.ProductDetailResp();
-			productDetailResp.setNumber(v.getNumber());
-			productDetailResp.setOriginAmount(v.getOriginAmount());
-			productDetailResp.setSalesAmount(v.getSalesAmount());
-			productDetailResp.setAmount(v.getAmount());
-			productDetailResp.setProductCode(v.getProductCode());
-			productDetailResp.setProductName(v.getProductName());
-			productDetailResp.setProductImage(v.getProductImage());
-			
-			String attach = v.getAttach();
-			if(StringUtils.isNotBlank(attach)){
-				DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
-				productDetailResp.setSpecContent(distributeAttach.getSpecContent());
-				productDetailResp.setUserRemark(distributeAttach.getUserRemark());
-			}
-			return productDetailResp;
-		}).collect(Collectors.toList());
-		resp.setProductList(productDetailRespList);
-		
+		Map<DistributeSubOrderDetailResp.ShopResp, List<OrderReq.ProductReq>> shopCodeProductListMap = productList
+				.stream().collect(Collectors.groupingBy(v -> {
+					String attach = v.getAttach();
+					DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
+
+					DistributeSubOrderDetailResp.ShopResp shopResp = new DistributeSubOrderDetailResp.ShopResp();
+					shopResp.setShopCode(distributeAttach.getShopCode());
+					shopResp.setShopName(distributeAttach.getShopName());
+					shopResp.setShopLogo(distributeAttach.getShopLogo());
+					return shopResp;
+				}, LinkedHashMap::new, Collectors.toList()));
+
+		List<DistributeSubOrderDetailResp.ShopResp> shopRespList = Lists.newArrayList();
+		Set<Entry<DistributeSubOrderDetailResp.ShopResp, List<ProductReq>>> entrySet = shopCodeProductListMap
+				.entrySet();
+		for (Entry<DistributeSubOrderDetailResp.ShopResp, List<ProductReq>> entry : entrySet) {
+			DistributeSubOrderDetailResp.ShopResp key = entry.getKey();
+			List<ProductReq> value = entry.getValue();
+
+			List<DistributeSubOrderDetailResp.ShopResp.ProductDetailResp> productDetailRespList = value.stream()
+					.map(v -> {
+						DistributeSubOrderDetailResp.ShopResp.ProductDetailResp productDetailResp = new DistributeSubOrderDetailResp.ShopResp.ProductDetailResp();
+						productDetailResp.setNumber(v.getNumber());
+						productDetailResp.setOriginAmount(v.getOriginAmount());
+						productDetailResp.setSalesAmount(v.getSalesAmount());
+						productDetailResp.setAmount(v.getAmount());
+						productDetailResp.setProductCode(v.getProductCode());
+						productDetailResp.setProductName(v.getProductName());
+						productDetailResp.setProductImage(v.getProductImage());
+
+						String attach = v.getAttach();
+						if (StringUtils.isNotBlank(attach)) {
+							DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
+							productDetailResp.setSpecContent(distributeAttach.getSpecContent());
+							productDetailResp.setUserRemark(distributeAttach.getUserRemark());
+						}
+						return productDetailResp;
+					}).collect(Collectors.toList());
+
+			DistributeSubOrderDetailResp.ShopResp shopResp = new DistributeSubOrderDetailResp.ShopResp();
+			shopResp.setShopCode(key.getShopCode());
+			shopResp.setShopName(key.getShopName());
+			shopResp.setShopLogo(key.getShopLogo());
+			shopResp.setProductList(productDetailRespList);
+			shopRespList.add(shopResp);
+		}
+
+		resp.setShopList(shopRespList);
+
 		List<DistributeSubOrderDetailResp.TextValueResp> textValueList = Lists.newArrayList();
 		textValueList.add(new DistributeSubOrderDetailResp.TextValueResp().setText("aaaaa").setValue("bbbbb"));
 		resp.setTextValueList(textValueList);

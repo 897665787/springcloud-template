@@ -1,5 +1,6 @@
 package com.company.user.api.response;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
@@ -18,13 +19,21 @@ public class DistributeSubOrderResp {
 	 */
 	private Boolean inviteBtn;
 	
-	private String shopLogo;
-	private String shopName;
+	String shopCode;
+	String shopName;
+	String shopLogo;
 
 	/**
 	 * 取餐码
 	 */
 	private String mealCode;
+
+	// 配送费
+	BigDecimal distributeAmount;
+
+	// 保温费
+	BigDecimal baowenAmount;
+
 	/* 与前端约定添加子订单特有的字段 */
 
 	/* 如有需要，使用相同的字段名覆盖OrderResp的字段值 */

@@ -8,4 +8,8 @@ import lombok.experimental.Accessors;
 public class DistributeAttach {
 	String specContent;
 	String userRemark;
+	
+	String shopCode;
+	String shopName;
+	String shopLogo;
 }
