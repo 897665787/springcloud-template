@@ -309,8 +309,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setBaowenAmount(new BigDecimal("1"));
 		
 		// 只有发货之后才有取餐码
-		StatusEnum status = orderReq.getStatus();
-		if (status == StatusEnum.WAIT_RECEIVE || status == StatusEnum.COMPLETE || status == StatusEnum.REFUND) {
+		StatusEnum statusEnum = orderReq.getStatus();
+		if (statusEnum == StatusEnum.WAIT_RECEIVE || statusEnum == StatusEnum.COMPLETE || statusEnum == StatusEnum.REFUND) {
 			resp.setMealCode("123456");
 		}
 
@@ -328,6 +328,14 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setShopCode(distributeAttach.getShopCode());
 		resp.setShopName(distributeAttach.getShopName());
 		resp.setShopLogo(distributeAttach.getShopLogo());
+		
+		List<DistributeSubOrderResp.BottonResp> bottonList = Lists.newArrayList();
+		if (OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum || OrderEnum.StatusEnum.COMPLETE == statusEnum
+				|| OrderEnum.StatusEnum.REFUND == statusEnum) { // 发货成功之后才有物流信息
+			bottonList.add(new DistributeSubOrderResp.BottonResp("查看物流", "/{前端提供页面路径和需要的参数}/delivery?orderCode=" + orderReq.getOrderCode(), 40));
+			bottonList.add(new DistributeSubOrderResp.BottonResp("保险服务", "/{前端提供页面路径和需要的参数}/baoxian?orderCode=" + orderReq.getOrderCode(), 60));
+		}
+		resp.setBottonList(bottonList);
 		return resp;
 	}
 
@@ -337,8 +345,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setBaowenAmount(new BigDecimal("1"));
 		
 		// 只有发货之后才有取餐码
-		StatusEnum status = orderReq.getStatus();
-		if (status == StatusEnum.WAIT_RECEIVE || status == StatusEnum.COMPLETE || status == StatusEnum.REFUND) {
+		StatusEnum statusEnum = orderReq.getStatus();
+		if (statusEnum == StatusEnum.WAIT_RECEIVE || statusEnum == StatusEnum.COMPLETE || statusEnum == StatusEnum.REFUND) {
 			resp.setMealCode("123456");
 		}
 
@@ -393,7 +401,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setShopList(shopRespList);
 
 		List<DistributeSubOrderDetailResp.TextValueResp> textValueList = Lists.newArrayList();
-		textValueList.add(new DistributeSubOrderDetailResp.TextValueResp().setText("aaaaa").setValue("bbbbb"));
+		textValueList.add(new DistributeSubOrderDetailResp.TextValueResp("补一条数据展示", "bbbbb"));
 		resp.setTextValueList(textValueList);
 		return resp;
 	}

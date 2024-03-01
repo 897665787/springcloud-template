@@ -2,9 +2,11 @@ package com.company.user.api.response;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.company.common.jackson.annotation.FormatNumber;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -63,5 +65,30 @@ public class DistributeSubOrderResp {
 	 * 时间
 	 */
 	private Date time;
+
+	/**
+	 * 按钮列表(超过n个按钮则放入更多，前端控制)
+	 */
+	private List<BottonResp> bottonList;
+
+	@Data
+	@AllArgsConstructor
+	public static class BottonResp {
+		/**
+		 * 文案
+		 */
+		private String text;
+		
+		/**
+		 * 点击后重定向页面
+		 */
+		private String url;
+		
+		/**
+		 * 排序（从右到左，值小到大）
+		 */
+		private Integer sort;
+	}
+	
 	/* 如有需要，使用相同的字段名覆盖OrderResp的字段值 */
 }

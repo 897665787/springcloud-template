@@ -8,6 +8,7 @@ import com.company.common.jackson.annotation.AutoDesc;
 import com.company.common.jackson.annotation.FormatNumber;
 import com.company.order.api.enums.OrderEnum;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -50,14 +51,39 @@ public class OrderResp {
 	private LocalDateTime time;
 	
 	/**
-	 * 是否展示取消订单按钮
+	 * 是否展示‘删除订单’按钮
+	 */
+	private Boolean deleteBtn;
+	
+	/**
+	 * 是否展示‘取消订单’按钮
 	 */
 	private Boolean cancelBtn;
-	/**
-	 * 是否展示去付款按钮
-	 */
-	private Boolean toPayBtn;// 去付款信息通过单独的接口获取
 
+	/**
+	 * 按钮列表(超过n个按钮则放入更多，前端控制)
+	 */
+	private List<BottonResp> bottonList;
+
+	@Data
+	@AllArgsConstructor
+	public static class BottonResp {
+		/**
+		 * 文案
+		 */
+		private String text;
+		
+		/**
+		 * 点击后重定向页面
+		 */
+		private String url;
+		
+		/**
+		 * 排序（从右到左，值小到大）
+		 */
+		private Integer sort;
+	}
+	
 	/**
 	 * 商品列表
 	 */
@@ -68,9 +94,6 @@ public class OrderResp {
 	 */
 	private Object subOrder;
 
-	/**
-	 * 订单表
-	 */
 	@Data
 	public static class ProductResp {
 		/**

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.company.common.jackson.annotation.FormatNumber;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -139,7 +140,7 @@ public class DistributeSubOrderDetailResp {
 	private List<TextValueResp> textValueList;
 
 	@Data
-	@Accessors(chain = true)
+	@AllArgsConstructor
 	public static class TextValueResp {
 		private String text;// 文本
 		private String value;// 值

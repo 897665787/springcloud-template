@@ -209,6 +209,7 @@ public class OrderController implements OrderFeign {
 			orderResp.setStatusText(statusEnum.getMessage());
 		}
 
+		List<OrderResp.BottonResp> bottonList = Lists.newArrayList();
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {
 			orderResp.setTimeText("下单时间");
 			orderResp.setTime(order.getCreateTime());
@@ -229,6 +230,9 @@ public class OrderController implements OrderFeign {
 			orderResp.setTime(order.getFinishTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
+			if (OrderEnum.SubStatusEnum.WAIT_REVIEW == subStatusEnum) {
+				bottonList.add(new OrderResp.BottonResp("评价", "/{前端提供页面路径和需要的参数}/comment?orderCode=" + order.getOrderCode(), 20));
+			}
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderResp.setTimeText("完成时间");
 			orderResp.setTime(order.getFinishTime());
@@ -245,12 +249,19 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
 		}
-
+		
 		orderResp.setCancelBtn(false);
-		orderResp.setToPayBtn(false);
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {// 待支付情况下需返回支付参数
 			orderResp.setCancelBtn(true);
-			orderResp.setToPayBtn(true);
+			bottonList.add(new OrderResp.BottonResp("去支付", "/{前端提供页面路径和需要的参数}/topay?orderCode=" + order.getOrderCode(), 10));
+		}
+		
+		orderResp.setDeleteBtn(false);
+		if (OrderEnum.SubStatusEnum.CANCELED == subStatusEnum || OrderEnum.SubStatusEnum.COMPLETE == subStatusEnum
+				|| OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {// 终态才可以删除订单、再来一单
+			orderResp.setDeleteBtn(true);
+			String firstProductCode = orderProductList.stream().map(OrderProduct::getProductCode).findFirst().orElse("");
+			bottonList.add(new OrderResp.BottonResp("再来一单", "/{前端提供页面路径和需要的参数}/onemore?productCode=" + firstProductCode, 10));
 		}
 
 		String subOrderUrl = order.getSubOrderUrl();
@@ -275,6 +286,21 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayText(dataJSON.getString("payText"));
 		}
 
+		// 如果data里面有textValueList字段，则追加到外层的textValueList
+		if (dataJSON.containsKey("bottonList")) {
+			JSONArray dataJSONArray = dataJSON.getJSONArray("bottonList");
+			for (int i = 0; i < dataJSONArray.size(); i++) {
+				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
+				String text = textValueJSON.getString("text");
+				String url = textValueJSON.getString("url");
+				Integer sort = textValueJSON.getInteger("sort");
+				bottonList.add(new OrderResp.BottonResp(text, url, sort));
+			}
+		}
+		
+		bottonList.sort((a, b) -> Integer.compare(b.getSort(), a.getSort()));
+		orderResp.setBottonList(bottonList);
+		
 		return orderResp;
 	}
 
@@ -346,35 +372,31 @@ public class OrderController implements OrderFeign {
 
 		List<OrderDetailResp.TextValueResp> textValueList = Lists.newArrayList();
 		textValueList.add(
-				new TextValueResp().setText("下单时间").setValue(LocalDateTimeUtil.formatNormal(order.getCreateTime())));
+				new TextValueResp("下单时间", LocalDateTimeUtil.formatNormal(order.getCreateTime())));
 		if (OrderEnum.StatusEnum.CANCELED == statusEnum) {
 			textValueList.add(
-					new TextValueResp().setText("关闭时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+					new TextValueResp("关闭时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 		} else if (OrderEnum.StatusEnum.WAIT_SEND == statusEnum || OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum) {
 			textValueList.add(
-					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
+					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
 			textValueList.add(
-					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp().setText("完成时间")
-					.setValue(LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("完成时间", LocalDateTimeUtil.formatNormal(order.getFinishTime())));
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			textValueList.add(
-					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp().setText("申请退款时间")
-					.setValue(LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("申请退款时间", LocalDateTimeUtil.formatNormal(order.getFinishTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
 			textValueList.add(
-					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp().setText("申请退款时间")
-					.setValue(LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("申请退款时间", LocalDateTimeUtil.formatNormal(order.getFinishTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			textValueList.add(
-					new TextValueResp().setText("付款时间").setValue(LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp().setText("退款时间")
-					.setValue(LocalDateTimeUtil.formatNormal(order.getRefundTime())));
+					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("退款时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
 			textValueList
-					.add(new TextValueResp().setText("退款金额").setValue(order.getRefundAmount().toPlainString() + "元"));
+					.add(new TextValueResp("退款金额", order.getRefundAmount().toPlainString() + "元"));
 		}
 
 		orderDetailResp.setTextValueList(textValueList);
@@ -396,7 +418,7 @@ public class OrderController implements OrderFeign {
 				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
 				String text = textValueJSON.getString("text");
 				String value = textValueJSON.getString("value");
-				textValueList.add(new TextValueResp().setText(text).setValue(value));
+				textValueList.add(new TextValueResp(text, value));
 			}
 		}
 		if (dataJSON.containsKey("payText")) {
