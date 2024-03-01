@@ -50,14 +50,21 @@ public class UrlParamHandler extends ChannelInboundHandlerAdapter {
 		if (!url.contains("?")) {
 			return url;
 		}
-		String[] up = StringUtils.split(url, "?");
+		String[] up = StringUtils.split(url, "?", 2);
+		if (up.length != 2) {
+			return url;
+		}
 		String paramsStr = up[1];
 
 		String[] nvps = StringUtils.split(paramsStr, "&");
 		List<String> paramList = Lists.newArrayList();
 		for (String nvp : nvps) {
-			String[] nv = StringUtils.split(nvp, "=");
-			paramList.add(nv[0] + "=" + URLUtil.encodeAll(URLUtil.decode(nv[1])));
+			String[] nv = StringUtils.split(nvp, "=", 2);
+			if (nv.length == 2) {
+				paramList.add(nv[0] + "=" + URLUtil.encodeAll(URLUtil.decode(nv[1])));
+			} else {
+				paramList.add(nvp);
+			}
 		}
 		return up[0] + "?" + paramList.stream().collect(Collectors.joining("&"));
 	}
