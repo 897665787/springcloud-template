@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import com.company.common.util.JsonUtil;
 import com.company.gateway.context.SpringContextUtil;
 
-import cn.hutool.core.util.URLUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -854,7 +853,6 @@ public abstract class CustomHttpObjectDecoder extends ByteToMessageDecoder {
     		int size = list.size();
     		String aStr = list.get(0);
     		String bStr = list.subList(1, size - 1).stream().collect(Collectors.joining());
-    		bStr = URLUtil.encodeQuery(URLUtil.decode(bStr));// 防止多次encode，所以需要先decode
 			String cStr = list.get(size - 1);
 			log.info("aStr:{},bStr:{},cStr:{}", aStr, bStr, cStr);
 			return new String[] { aStr, bStr, cStr };
