@@ -16,6 +16,7 @@ import com.company.common.api.Result;
 import com.company.common.util.Utils;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.feign.RefundApplyFeign;
@@ -124,7 +125,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		PayRefundReq payRefundReq = new PayRefundReq();
 		payRefundReq.setRefundOrderCode(payRefundApply.getOldOrderCode());// 原订单号
 		payRefundReq.setOrderCode(payRefundApply.getOrderCode());// 退款订单号
-		payRefundReq.setNotifyUrl("http://template-order/refundApply/refundNotify");
+		payRefundReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/refundApply/refundNotify");
 		payRefundReq.setRefundRemark(payRefundApply.getReason());
 		payRefundReq.setAttach(payRefundApply.getAttach());
 		payRefundReq.setRefundAmount(payRefundApply.getAmount());

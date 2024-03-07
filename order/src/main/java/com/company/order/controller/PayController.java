@@ -63,7 +63,7 @@ public class PayController implements PayFeign {
 	@Autowired
 	private IInnerCallbackService innerCallbackService;
 	
-	private static final String NOTIFY_URL_REFUND = "http://template-order/pay/refundWithRetry";
+	private static final String NOTIFY_URL_REFUND = "http://" + com.company.order.api.constant.Constants.FEIGNCLIENT_VALUE + "/pay/refundWithRetry";
 	
 	@Override
 	public Result<PayResp> unifiedorder(@RequestBody @Valid PayReq payReq) {
