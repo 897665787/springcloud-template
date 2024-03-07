@@ -155,6 +155,10 @@ public class PayController implements PayFeign {
 			return Result.fail("数据不存在");
 		}
 
+		if (OrderPayEnum.Status.of(orderPay.getStatus()) != OrderPayEnum.Status.WAITPAY) {
+			return Result.fail("订单不是待支付状态，不允许支付");
+		}
+		
 		OrderPayEnum.Method method = toPayReq.getMethod();
 		if (method == null) {
 			method = OrderPayEnum.Method.of(orderPay.getMethod());
@@ -271,7 +275,6 @@ public class PayController implements PayFeign {
 	@Override
 	public Result<Void> refundWithRetry(@RequestBody RefundReq refundReq) {
 		OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
-
 		if (refundOrderPay == null) {
 			return Result.fail("数据不存在");
 		}
@@ -292,7 +295,6 @@ public class PayController implements PayFeign {
 	@Override
 	public Result<Void> payClose(@RequestBody @Valid PayCloseReq payCloseReq) {
 		OrderPay orderPay = orderPayService.selectByOrderCode(payCloseReq.getOrderCode());
-
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}
