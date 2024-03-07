@@ -1,8 +1,8 @@
 package com.company.framework.context;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -94,7 +95,16 @@ public class HttpContextUtil {
 	}
 	
 	public static String requestip() {
-		return head(HEADER_REQUESTIP);
+		String requestip = head(HEADER_REQUESTIP);
+		if (StringUtils.isNotBlank(requestip)) {
+			return requestip;
+		}
+		HttpServletRequest request = request();
+		if (request == null) {
+			return "127.0.0.1";
+		} else {
+			return IpUtil.getRequestIp(request);// 后续需要完善成链式传输
+		}
 	}
 	
 	public static Map<String, String> httpContextHeader() {
@@ -128,10 +138,10 @@ public class HttpContextUtil {
 		return headers;
 	}
 	
-	public static Map<String, Collection<String>> httpContextHeaders() {
+	public static Map<String, List<String>> httpContextHeaders() {
 		Set<Entry<String, String>> entrySet = httpContextHeader().entrySet();
 		
-		Map<String, Collection<String>> headers = Maps.newHashMap();
+		Map<String, List<String>> headers = Maps.newHashMap();
 		for (Entry<String, String> entry : entrySet) {
 			headers.put(entry.getKey(), Arrays.asList(entry.getValue()));
 		}

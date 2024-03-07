@@ -138,9 +138,10 @@ public class ApiController {
 	public Result<OrderResp> getOrderById(Long id) {
 //		if (true)
 //			throw new BusinessException(1, "aaaaaaaaaaa");
-		Result<OrderResp> byId = orderFeign.getById(id);
+//		Result<OrderResp> byId = orderFeign.getById(id);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
-		return byId;
+//		return byId;
+		return Result.success();
 	}
 	
 	@GetMapping(value = "/getUserById")
@@ -195,8 +196,8 @@ public class ApiController {
 	@GetMapping(value = "/onoff")
 	public Result<OrderResp> onoff() {
 		for (int i = 0; i < 3000; i++) {
-			Result<OrderResp> byId = orderFeign.getById((long)i);
-			log.info("onoff:{}",byId);
+//			Result<OrderResp> byId = orderFeign.getById((long)i);
+//			log.info("onoff:{}",byId);
 		}
 		return Result.success(new OrderResp());
 	}
@@ -213,17 +214,19 @@ public class ApiController {
 	@GetMapping(value = "/retryGet")
 	public Result<OrderResp> retryGet(Long id) {
 		log.info("retryGet");
-		Result<OrderResp> byId = orderFeign.retryGet(id);
-		log.info("retryGet:{}", byId);
-		return byId;
+//		Result<OrderResp> byId = orderFeign.retryGet(id);
+//		log.info("retryGet:{}", byId);
+//		return byId;
+		return Result.success();
 	}
 
 	@GetMapping(value = "/retryPost")
 	public Result<OrderResp> retryPost(Long id) {
 		log.info("retryPost");
-		Result<OrderResp> byId = orderFeign.retryPost(new OrderReq().setId(id));
-		log.info("retryPost:{}", byId);
-		return byId;
+//		Result<OrderResp> byId = orderFeign.retryPost(new OrderReq().setId(id));
+//		log.info("retryPost:{}", byId);
+//		return byId;
+		return Result.success();
 	}
 	
 	@GetMapping(value = "/threadpool")

@@ -5,7 +5,6 @@
 DROP TABLE IF EXISTS `bu_ali_pay`;
 CREATE TABLE `bu_ali_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
   `notify_url` varchar(256) DEFAULT NULL COMMENT '通知地址',
   `out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号',
@@ -20,8 +19,7 @@ CREATE TABLE `bu_ali_pay` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_otn` (`out_trade_no`) USING HASH,
-  KEY `idx_ui` (`user_id`) USING BTREE
+  UNIQUE KEY `uni_otn` (`out_trade_no`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='支付宝支付表';
 
 -- ----------------------------
@@ -96,13 +94,12 @@ CREATE TABLE `bu_inner_callback` (
 DROP TABLE IF EXISTS `bu_order_pay`;
 CREATE TABLE `bu_order_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `order_code` varchar(32) NOT NULL COMMENT '订单编号',
   `business_type` varchar(16) NOT NULL COMMENT '业务类型(nomal:普通下单,kill:秒杀下单,member:购买会员)',
   `method` varchar(8) NOT NULL COMMENT '支付方式(ali:支付宝,wx:微信,ios:苹果,quick:云闪付)',
-  `appid` varchar(32) NOT NULL COMMENT '支付应用ID',
   `amount` decimal(12,2) NOT NULL COMMENT '金额(元)',
   `body` varchar(127) NOT NULL COMMENT '商品描述',
+  `product_id` varchar(127) DEFAULT NULL COMMENT '商品Id',
   `status` varchar(8) NOT NULL COMMENT '状态(waitpay:待支付,closed:已关闭,payed:已支付)',
   `notify_url` varchar(128) DEFAULT NULL COMMENT '通知地址(关闭/支付订单都会通知)',
   `notify_attach` varchar(256) DEFAULT NULL COMMENT '通知地址的附加数据',
@@ -111,8 +108,7 @@ CREATE TABLE `bu_order_pay` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_order_code` (`order_code`) USING BTREE,
-  KEY `idx_userid` (`user_id`) USING BTREE
+  UNIQUE KEY `uniq_order_code` (`order_code`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='订单支付表';
 
 -- ----------------------------
@@ -121,7 +117,6 @@ CREATE TABLE `bu_order_pay` (
 DROP TABLE IF EXISTS `bu_order_pay_refund`;
 CREATE TABLE `bu_order_pay_refund` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `refund_order_code` varchar(32) NOT NULL COMMENT '退款订单编号',
   `order_code` varchar(32) NOT NULL COMMENT '订单编号',
   `business_type` varchar(16) NOT NULL COMMENT '业务类型(user:用户申请,sys_auto:系统自动退款,amdin:管理后台申请)',
@@ -136,8 +131,7 @@ CREATE TABLE `bu_order_pay_refund` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_refundordercode` (`refund_order_code`) USING BTREE,
-  KEY `idx_ordercode` (`order_code`) USING HASH,
-  KEY `idx_userid` (`user_id`) USING BTREE
+  KEY `idx_ordercode` (`order_code`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='订单支付退款表';
 
 -- ----------------------------
@@ -182,7 +176,6 @@ CREATE TABLE `bu_pay_refund_apply` (
 DROP TABLE IF EXISTS `bu_wx_pay`;
 CREATE TABLE `bu_wx_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `appid` varchar(32) NOT NULL COMMENT '小程序ID|公众账号ID|应用ID',
   `mchid` varchar(32) NOT NULL COMMENT '商户号',
   `nonce_str` varchar(32) NOT NULL COMMENT '随机字符串',
@@ -213,8 +206,7 @@ CREATE TABLE `bu_wx_pay` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_otn` (`out_trade_no`) USING HASH,
-  KEY `idx_ui` (`user_id`)
+  UNIQUE KEY `uni_otn` (`out_trade_no`) USING HASH
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='微信支付表';
 
 -- ----------------------------

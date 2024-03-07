@@ -160,7 +160,9 @@ public class IosNotifyController implements IosNotifyFeign {
 		params.put("payNotifyId", payNotify.getId());
 		params.put("outTradeNo", outTradeNo);
 		params.put("success", true);
-
+		
+		params.put("time", iosParams.get("tradeId"));
+		
 		// 财务流水信息
 		params.put("amount", iosParams.get("total_amount"));
 		params.put("orderPayMethod", OrderPayEnum.Method.IOS.getCode());

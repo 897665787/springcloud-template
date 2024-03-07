@@ -40,11 +40,6 @@ public class OrderPay {
 	 */
 	@TableField("method")
 	private String method;
-	/**
-	 * 支付应用ID
-	 */
-	@TableField("appid")
-	private String appid;
 	
 	/**
 	 * 金额(元)
@@ -55,6 +50,11 @@ public class OrderPay {
 	 * 商品描述
 	 */
 	private String body;
+	
+	/**
+	 * 商品Id
+	 */
+	private String productId;
 	
 	/**
 	 * 状态(waitpay:待支付,closed:已关闭,payed:已支付)

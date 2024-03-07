@@ -1,43 +1,62 @@
 package com.company.order.api.feign.fallback;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
+import com.company.order.api.enums.OrderEnum.StatusEnum;
 import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.request.OrderReq;
+import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderFinishReq;
+import com.company.order.api.request.OrderPaySuccessReq;
+import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderResp;
 
 import feign.hystrix.FallbackFactory;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 	@Override
 	public OrderFeign create(final Throwable e) {
 		return new OrderFeign() {
-			public Result<OrderResp> getById(Long id) {
-				log.error("getById error", e);
-				return Result.onFallbackError();
-			}
-
-			public Result<OrderResp> save(OrderReq orderReq) {
-				log.error("save error", e);
+			@Override
+			public Result<OrderResp> registerOrder(RegisterOrderReq registerOrderReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<OrderResp> retryGet(Long id) {
-				log.error("retryGet error", e);
+			public Result<OrderResp> cancel(OrderCancelReq orderCancelReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<OrderResp> retryPost(OrderReq orderReq) {
-				log.error("retryPost error", e);
+			public Result<Void> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
 				return Result.onFallbackError();
 			}
+
+			@Override
+			public Result<Void> finish(OrderFinishReq orderFinishReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Boolean> validOrderCodeUserId(String orderCode, Integer userId) {
+				return Result.onFallbackError();
+			}
+
 		};
 	}
 }

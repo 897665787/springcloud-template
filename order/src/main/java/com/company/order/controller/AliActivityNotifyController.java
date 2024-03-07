@@ -1,5 +1,7 @@
 package com.company.order.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -183,6 +185,9 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		params.put("outOrderNo", outOrderNo);
 		params.put("success", true);
 
+		LocalDateTime time = LocalDateTime.now();
+		params.put("time", time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+		
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outOrderNo);
 		
 		// 财务流水信息

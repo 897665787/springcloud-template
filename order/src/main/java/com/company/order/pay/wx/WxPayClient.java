@@ -1,6 +1,7 @@
 package com.company.order.pay.wx;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -117,8 +118,7 @@ public class WxPayClient extends BasePayClient {
 			
 			WxPayUnifiedOrderResult unifiedOrderResult = wxPayService.unifiedOrder(request);
 			
-			requestResult2WxPay(wxPayId, payParams.getUserId(), payConfig, request,
-					unifiedOrderResult, null);
+			requestResult2WxPay(wxPayId, payConfig, request, unifiedOrderResult, null);
 
 			String returnCode = unifiedOrderResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
@@ -152,17 +152,15 @@ public class WxPayClient extends BasePayClient {
 			// 支付异常
 			log.error("WxPay error", e);
 			WxPayUnifiedOrderResult result = BaseWxPayResult.fromXML(e.getXmlString(), WxPayUnifiedOrderResult.class);
-			requestResult2WxPay(wxPayId, payParams.getUserId(), payConfig, request, result,
-					"请求异常,logid:" + MdcUtil.get());
-			throw new BusinessException(e.getErrCodeDes());
+			requestResult2WxPay(wxPayId, payConfig, request, result, "请求异常,logid:" + MdcUtil.get());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
-    }
+	}
 
-	private void requestResult2WxPay(Integer wxPayId, Integer userId, PayConfig payConfig,
-			WxPayUnifiedOrderRequest request, WxPayUnifiedOrderResult result, String remark) {
+	private void requestResult2WxPay(Integer wxPayId, PayConfig payConfig, WxPayUnifiedOrderRequest request,
+			WxPayUnifiedOrderResult result, String remark) {
 		// 保存微信支付数据
-    	WxPay wxPay = new WxPay()
-				.setUserId			(userId)
+		WxPay wxPay = new WxPay()
 				/* 支付参数 */
 				.setAppid              (payConfig.getAppId())
 				.setMchid              (payConfig.getMchId())
@@ -197,27 +195,6 @@ public class WxPayClient extends BasePayClient {
 			wxPay.setId(wxPayId);
 			wxPayMapper.updateById(wxPay);
 		}
-	}
-
-	@Override
-	public Object getPayInfo(String outTradeNo) {
-		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
-		if (wxPay == null) {
-			return null;
-		}
-
-		if (!Objects.equal(wxPay.getReturnCode(), WxPayConstants.ResultCode.SUCCESS)
-				|| !Objects.equal(wxPay.getResultCode(), WxPayConstants.ResultCode.SUCCESS)) {
-			return null;
-		}
-
-		// 策略模式
-		String tradeType = wxPay.getTradeType();
-		OrderResultTransfer orderResultTransfer = SpringContextUtil
-				.getBean(OrderResultTransfer.BEAN_NAME_PREFIX + tradeType, OrderResultTransfer.class);
-		Object payInfo = orderResultTransfer.toPayInfo(wxPay.getAppid(), wxPay.getMchid(),
-				wxPay.getPrepayId(), wxPay.getCodeUrl(), wxPay.getMwebUrl());
-		return payInfo;
 	}
 
 	@Override
@@ -272,7 +249,7 @@ public class WxPayClient extends BasePayClient {
 		} catch (WxPayException e) {
 			// 查询异常
 			log.error("WxPay queryTradeState error", e);
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
 	}
 	
@@ -335,7 +312,7 @@ public class WxPayClient extends BasePayClient {
 				result.setErrCodeDes(e.getCustomErrorMsg());
 			}
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, result, "请求异常,logid:" + MdcUtil.get());
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
 	}
 
@@ -416,7 +393,7 @@ public class WxPayClient extends BasePayClient {
 
 		} catch (WxPayException e) {
 			log.error("Wx pay close order error.", e);
-			throw new BusinessException(e.getErrCodeDes());
+			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
 		}
 	}
 }

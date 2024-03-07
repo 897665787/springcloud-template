@@ -226,6 +226,8 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("payNotifyId", payNotify.getId());
 			params.put("outTradeNo", outTradeNo);
 			params.put("success", true);
+			
+			params.put("time", aliParams.get("gmt_payment"));
 
 			//财务流水信息
 			params.put("amount", aliParams.get("total_amount"));

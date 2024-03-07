@@ -4,9 +4,13 @@ CREATE TABLE `mk_popup_pop_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bean_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'bean名称(PopCondition的实现类)',
   `descrpition` varchar(255) DEFAULT NULL COMMENT '描述',
+  `has_param` char(1) NOT NULL DEFAULT 'N' COMMENT '有参数（Y是 N否）',
+  `sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uniq_beanname` (`bean_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹窗条件';

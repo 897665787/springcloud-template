@@ -35,6 +35,11 @@
 			<artifactId>template-user-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-order-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		
 		<!-- 文件系统 -->
 		<!-- 源码：https://gitee.com/jq_di/file-storage -->

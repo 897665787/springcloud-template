@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS `bu_ali_activity_pay`;
 CREATE TABLE `bu_ali_activity_pay` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
   `appid` varchar(32) NOT NULL DEFAULT '' COMMENT '应用ID',
   `out_order_no` varchar(32) NOT NULL DEFAULT '' COMMENT '商户订单号',
   `buyer_id` varchar(32) NOT NULL DEFAULT '' COMMENT '购买者的支付宝uid',
@@ -17,8 +16,7 @@ CREATE TABLE `bu_ali_activity_pay` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uniq_otn` (`out_order_no`),
-  KEY `idx_aui` (`user_id`) USING BTREE
+  UNIQUE KEY `uniq_otn` (`out_order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付宝活动支付表';
 
 DROP TABLE IF EXISTS `bu_ali_activity_pay_refund`;

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.redisson.DistributeLockUtils;
 import com.company.order.amqp.rabbitmq.Constants;
@@ -25,7 +26,7 @@ import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RefundReq;
-import com.company.order.api.response.PayInfoResp;
+import com.company.order.api.request.ToPayReq;
 import com.company.order.api.response.PayRefundResp;
 import com.company.order.api.response.PayResp;
 import com.company.order.api.response.PayTradeStateResp;
@@ -43,6 +44,9 @@ import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 
+/**
+ * 收银台
+ */
 @RestController
 @RequestMapping(value = "/pay")
 public class PayController implements PayFeign {
@@ -59,7 +63,7 @@ public class PayController implements PayFeign {
 	@Autowired
 	private IInnerCallbackService innerCallbackService;
 	
-	private static final String NOTIFY_URL_REFUND = "http://template-order/pay/refundWithRetry";
+	private static final String NOTIFY_URL_REFUND = "http://" + com.company.order.api.constant.Constants.FEIGNCLIENT_VALUE + "/pay/refundWithRetry";
 	
 	@Override
 	public Result<PayResp> unifiedorder(@RequestBody @Valid PayReq payReq) {
@@ -75,9 +79,9 @@ public class PayController implements PayFeign {
 						orderPay.setOrderCode(orderCode);
 						orderPay.setBusinessType(payReq.getBusinessType().getCode());
 						orderPay.setMethod(payReq.getMethod().getCode());
-						orderPay.setAppid(payReq.getAppid());
 						orderPay.setAmount(payReq.getAmount());
 						orderPay.setBody(payReq.getBody());
+						orderPay.setProductId(payReq.getProductId());
 						orderPay.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
 						orderPay.setNotifyUrl(payReq.getNotifyUrl());
 						orderPay.setNotifyAttach(payReq.getAttach());
@@ -89,9 +93,9 @@ public class PayController implements PayFeign {
 						orderPay4Update.setId(orderPay.getId());
 						orderPay4Update.setBusinessType(payReq.getBusinessType().getCode());
 						orderPay4Update.setMethod(payReq.getMethod().getCode());
-						orderPay4Update.setAppid(payReq.getAppid());
 						orderPay4Update.setAmount(payReq.getAmount());
-						orderPay.setBody(payReq.getBody());
+						orderPay4Update.setBody(payReq.getBody());
+						orderPay4Update.setProductId(payReq.getProductId());
 						orderPay4Update.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
 						orderPay4Update.setNotifyUrl(payReq.getNotifyUrl());
 						orderPay4Update.setNotifyAttach(payReq.getAttach());
@@ -99,13 +103,11 @@ public class PayController implements PayFeign {
 						
 						orderPayService.updateById(orderPay4Update);
 					}
-
-					PayParams payParams = new PayParams();
-
-					// 业务参数
-					payParams.setUserId(payReq.getUserId());
-
+					
+					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
+					
 					// 支付参数
+					PayParams payParams = new PayParams();
 					payParams.setAppid(payReq.getAppid());
 					payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
 					payParams.setBody(payReq.getBody());
@@ -116,7 +118,9 @@ public class PayController implements PayFeign {
 					
 					PayClient tradeClient = PayFactory.of(payReq.getMethod());
 					PayResp payResp = tradeClient.pay(payParams);
-					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
+					if (!payResp.getSuccess()) {
+						throw new BusinessException(payResp.getMessage());
+					}
 					
 					return payResp;
 				});
@@ -144,18 +148,44 @@ public class PayController implements PayFeign {
 	}
 	
 	@Override
-	public Result<PayInfoResp> queryPayInfo(String orderCode) {
+	public Result<PayResp> toPay(@RequestBody ToPayReq toPayReq) {
+		String orderCode = toPayReq.getOrderCode();
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}
-		PayClient tradeClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
-		Object payInfo = tradeClient.getPayInfo(orderCode);
 
-		PayInfoResp payInfoResp = new PayInfoResp();
-		payInfoResp.setPayInfo(payInfo);
+		if (OrderPayEnum.Status.of(orderPay.getStatus()) != OrderPayEnum.Status.WAITPAY) {
+			return Result.fail("订单不是待支付状态，不允许支付");
+		}
+		
+		OrderPayEnum.Method method = toPayReq.getMethod();
+		if (method == null) {
+			method = OrderPayEnum.Method.of(orderPay.getMethod());
+		} else {// 更换支付方式
+			OrderPay orderPay4Update = new OrderPay();
+			orderPay4Update.setId(orderPay.getId());
+			orderPay4Update.setMethod(method.getCode());
+			orderPayService.updateById(orderPay4Update);
+		}
+		
+		// 支付参数
+		PayParams payParams = new PayParams();
+		payParams.setAppid(toPayReq.getAppid());
+		payParams.setAmount(orderPay.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
+		payParams.setBody(orderPay.getBody());
+		payParams.setOutTradeNo(orderCode);
+		payParams.setSpbillCreateIp(toPayReq.getSpbillCreateIp());
+		payParams.setProductId(orderPay.getProductId());
+		payParams.setOpenid(toPayReq.getOpenid());
+		
+		PayClient tradeClient = PayFactory.of(method);
+		PayResp payResp = tradeClient.pay(payParams);
+		if (!payResp.getSuccess()) {
+			throw new BusinessException(payResp.getMessage());
+		}
 
-		return Result.success(payInfoResp);
+		return Result.success(payResp);
 	}
 
 	@Override
@@ -164,7 +194,9 @@ public class PayController implements PayFeign {
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}
-		PayClient tradeClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
+		
+		OrderPayEnum.Method method = OrderPayEnum.Method.of(orderPay.getMethod());
+		PayClient tradeClient = PayFactory.of(method);
 		PayTradeStateResp payTradeState = tradeClient.queryTradeState(orderCode);
 		return Result.success(payTradeState);
 	}
@@ -243,7 +275,6 @@ public class PayController implements PayFeign {
 	@Override
 	public Result<Void> refundWithRetry(@RequestBody RefundReq refundReq) {
 		OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
-
 		if (refundOrderPay == null) {
 			return Result.fail("数据不存在");
 		}
@@ -264,7 +295,6 @@ public class PayController implements PayFeign {
 	@Override
 	public Result<Void> payClose(@RequestBody @Valid PayCloseReq payCloseReq) {
 		OrderPay orderPay = orderPayService.selectByOrderCode(payCloseReq.getOrderCode());
-
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}

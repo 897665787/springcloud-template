@@ -21,6 +21,7 @@ import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.entity.AliActivityPay;
 import com.company.order.entity.AliActivityPayRefund;
+import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.entity.PayRefundApply;
 import com.company.order.mapper.AliActivityNotifyMapper;
@@ -31,6 +32,7 @@ import com.company.order.pay.aliactivity.AliActivityConstants;
 import com.company.order.pay.aliactivity.dto.OrderRefundBizContent;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
+import com.company.order.service.OrderPayService;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,8 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 	private SequenceGenerator sequenceGenerator;
 	@Autowired
 	private PayRefundApplyMapper payRefundApplyMapper;
+	@Autowired
+	private OrderPayService orderPayService;
 	@Autowired
 	private OrderPayRefundService orderPayRefundService;
 	@Autowired
@@ -163,7 +167,8 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			
 			// 创建退款订单（补数据）
 			OrderPayRefund refundOrderPay = new OrderPayRefund();
-			refundOrderPay.setUserId(aliActivityPay.getUserId());
+			OrderPay orderPay = orderPayService.selectByOrderCode(outOrderNo);
+			refundOrderPay.setUserId(orderPay.getUserId());
 			refundOrderPay.setBusinessType(OrderPayRefundEnum.BusinessType.SYS_AUTO.getCode());
 			refundOrderPay.setMethod(OrderPayEnum.Method.ALIACTIVITY.getCode());
 			refundOrderPay.setOrderCode(outOrderNo);
