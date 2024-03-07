@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.company.gateway.context.SpringContextUtil;
 import com.google.common.collect.Lists;
 
 import cn.hutool.core.util.URLUtil;
@@ -41,12 +40,6 @@ public class UrlParamHandler extends ChannelInboundHandlerAdapter {
 	 * @return
 	 */
 	private String encodeParam(String url) {
-		// 开关控制，在新逻辑有问题的情况下可以快速切回旧逻辑（如果经过生产环境验证无问题后可去掉该开关）
-		boolean enable = SpringContextUtil.getBooleanProperty("template.encodeParam", true);
-		if (!enable) {
-			return url;
-		}
-		
 		if (!url.contains("?")) {
 			return url;
 		}

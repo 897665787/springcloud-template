@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.company.common.util.JsonUtil;
-import com.company.gateway.context.SpringContextUtil;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -833,12 +832,6 @@ public abstract class CustomHttpObjectDecoder extends ByteToMessageDecoder {
 	 * @return
 	 */
     private static String[] splitInitialLine(AppendableCharSequence sb) {
-    	// 开关控制，在新逻辑有问题的情况下可以快速切回旧逻辑（如果经过生产环境验证无问题后可去掉该开关）
-		boolean enable = SpringContextUtil.getBooleanProperty("template.splitInitialLine", true);
-		if (!enable) {
-			return splitInitialLineOld(sb);
-		}
-		
 		try {
     		List<String> list = new ArrayList<>();
     		int start = 0;
