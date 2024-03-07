@@ -12,6 +12,8 @@ public class DistributeBuyOrderReq {
 
 	// 支付方式
 	private String payMethod;
+	// 支付应用ID
+	private String appid;
 	// 使用的优惠券id
 	private Integer userCouponId;
 

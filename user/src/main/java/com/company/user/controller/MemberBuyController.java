@@ -193,7 +193,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		payReq.setOrderCode(orderCode);
 		payReq.setBusinessType(OrderPayEnum.BusinessType.MEMBER);
 		payReq.setMethod(OrderPayEnum.Method.of(memberBuyOrderReq.getPayMethod()));
-		payReq.setAppid("wxeb6ffb3sdadda333");
+		payReq.setAppid(memberBuyOrderReq.getAppid());
 		payReq.setAmount(needPayAmount);
 		payReq.setBody("购买会员");
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());

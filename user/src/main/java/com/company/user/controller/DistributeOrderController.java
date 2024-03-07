@@ -228,7 +228,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		payReq.setOrderCode(orderCode);
 		payReq.setBusinessType(OrderPayEnum.BusinessType.DISTRIBUTE);
 		payReq.setMethod(OrderPayEnum.Method.of(distributeBuyOrderReq.getPayMethod()));
-		payReq.setAppid("wxeb6ffb3sdadda333");
+		payReq.setAppid(distributeBuyOrderReq.getAppid());
 		payReq.setAmount(needPayAmount);
 		payReq.setBody("配送下单");
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
