@@ -23,12 +23,6 @@ public class IOSPayClient extends BasePayClient {
 	private String domain;
 
 	@Override
-	public Object getPayInfo(String outTradeNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public PayTradeStateResp queryTradeState(String outTradeNo) {
 		// TODO Auto-generated method stub
 		return null;

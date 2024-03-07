@@ -30,15 +30,6 @@ public interface PayClient {
 	 * @return
 	 */
 	PayCloseResp payClose(String outTradeNo);
-	
-	/**
-	 * 获取支付信息
-	 * 
-	 * @param outTradeNo
-	 *            交易订单号
-	 * @return
-	 */
-	Object getPayInfo(String outTradeNo);
 
 	/**
 	 * 查询交易状态

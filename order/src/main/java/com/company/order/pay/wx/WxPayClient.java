@@ -1,7 +1,6 @@
 package com.company.order.pay.wx;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -196,38 +195,6 @@ public class WxPayClient extends BasePayClient {
 			wxPay.setId(wxPayId);
 			wxPayMapper.updateById(wxPay);
 		}
-	}
-
-	@Override
-	public Object getPayInfo(String outTradeNo) {
-		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
-		if (wxPay == null) {
-			throw new BusinessException("未找到订单，请重新下单");
-		}
-
-		if (!Objects.equal(wxPay.getReturnCode(), WxPayConstants.ResultCode.SUCCESS)
-				|| !Objects.equal(wxPay.getResultCode(), WxPayConstants.ResultCode.SUCCESS)) {
-			// 无有效支付参数，重新下单获取
-			PayParams payParams = new PayParams();
-			payParams.setAppid(wxPay.getAppid());
-			BigDecimal amount = new BigDecimal(wxPay.getTotalFee()).divide(new BigDecimal(100), 2,
-					RoundingMode.HALF_UP);
-			payParams.setAmount(amount);
-			payParams.setBody(wxPay.getBody());
-			payParams.setOutTradeNo(wxPay.getOutTradeNo());
-			payParams.setSpbillCreateIp(wxPay.getSpbillCreateIp());
-			payParams.setOpenid(wxPay.getOpenid());
-			payParams.setProductId(wxPay.getProductId());
-			return requestPayInfo(payParams);
-		}
-
-		// 策略模式
-		String tradeType = wxPay.getTradeType();
-		OrderResultTransfer orderResultTransfer = SpringContextUtil
-				.getBean(OrderResultTransfer.BEAN_NAME_PREFIX + tradeType, OrderResultTransfer.class);
-		Object payInfo = orderResultTransfer.toPayInfo(wxPay.getAppid(), wxPay.getMchid(),
-				wxPay.getPrepayId(), wxPay.getCodeUrl(), wxPay.getMwebUrl());
-		return payInfo;
 	}
 
 	@Override

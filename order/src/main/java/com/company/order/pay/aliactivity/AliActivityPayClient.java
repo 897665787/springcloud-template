@@ -180,6 +180,12 @@ public class AliActivityPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
 			throw new BusinessException(e.getErrMsg());
+        } catch (Exception e) {
+        	// 支付异常
+			log.error("AliActivityPay error", e);
+			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
+			throw new BusinessException(e.getMessage());
         }
     }
 
@@ -211,26 +217,6 @@ public class AliActivityPayClient extends BasePayClient {
 			aliActivityPay.setId(aliActivityPayId);
 			aliActivityPayMapper.updateById(aliActivityPay);
 		}
-	}
-	
-	@Override
-	public Object getPayInfo(String outTradeNo) {
-		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outTradeNo);
-		if (aliActivityPay == null) {
-			throw new BusinessException("未找到订单，请重新下单");
-		}
-		if (StringUtils.isNotBlank(aliActivityPay.getTradeNo())) {
-			return aliActivityPay.getTradeNo();
-		}
-		
-		PayParams payParams = new PayParams();
-		payParams.setAppid(aliActivityPay.getAppid());
-		payParams.setAmount(aliActivityPay.getTotalAmount());
-		payParams.setBody(aliActivityPay.getSaleActivityInfoList());
-		payParams.setOutTradeNo(aliActivityPay.getOutOrderNo());
-		payParams.setOpenid(aliActivityPay.getBuyerId());
-		return requestPayInfo(payParams);
-		
 	}
 
 	@Override

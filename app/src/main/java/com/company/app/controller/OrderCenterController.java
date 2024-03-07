@@ -9,9 +9,11 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
@@ -21,7 +23,7 @@ import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderResp;
-import com.company.order.api.response.PayInfoResp;
+import com.company.order.api.response.PayResp;
 
 /**
  * 用户订单中心
@@ -80,13 +82,24 @@ public class OrderCenterController {
 	}
 
 	/**
-	 * 去支付
+	 * 去支付（获取支付参数）
 	 * 
-	 * @param orderCode
+	 * @param toPayReq
 	 * @return
 	 */
 	@GetMapping("/toPay")
-	public Result<PayInfoResp> toPay(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
-		return payFeign.queryPayInfo(orderCode);
+	public Result<Object> toPay(@Valid @RequestBody ToPayReq toPayReq) {
+		com.company.order.api.request.ToPayReq toPayReqApi = new com.company.order.api.request.ToPayReq();
+		toPayReqApi.setOrderCode(toPayReq.getOrderCode());
+		toPayReqApi.setMethod(toPayReq.getMethod());
+		toPayReqApi.setAppid(toPayReq.getAppid());
+		toPayReqApi.setSpbillCreateIp(HttpContextUtil.requestip());
+		toPayReqApi.setOpenid(HttpContextUtil.deviceid());
+
+		PayResp payResp = payFeign.toPay(toPayReqApi).dataOrThrow();
+		if (!payResp.getSuccess()) {
+			return Result.fail("支付失败，请稍后重试");
+		}
+		return Result.success(payResp.getPayInfo());
 	}
 }

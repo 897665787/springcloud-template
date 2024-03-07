@@ -26,7 +26,7 @@ import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RefundReq;
-import com.company.order.api.response.PayInfoResp;
+import com.company.order.api.request.ToPayReq;
 import com.company.order.api.response.PayRefundResp;
 import com.company.order.api.response.PayResp;
 import com.company.order.api.response.PayTradeStateResp;
@@ -44,6 +44,9 @@ import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 
+/**
+ * 收银台
+ */
 @RestController
 @RequestMapping(value = "/pay")
 public class PayController implements PayFeign {
@@ -76,9 +79,9 @@ public class PayController implements PayFeign {
 						orderPay.setOrderCode(orderCode);
 						orderPay.setBusinessType(payReq.getBusinessType().getCode());
 						orderPay.setMethod(payReq.getMethod().getCode());
-						orderPay.setAppid(payReq.getAppid());
 						orderPay.setAmount(payReq.getAmount());
 						orderPay.setBody(payReq.getBody());
+						orderPay.setProductId(payReq.getProductId());
 						orderPay.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
 						orderPay.setNotifyUrl(payReq.getNotifyUrl());
 						orderPay.setNotifyAttach(payReq.getAttach());
@@ -90,9 +93,9 @@ public class PayController implements PayFeign {
 						orderPay4Update.setId(orderPay.getId());
 						orderPay4Update.setBusinessType(payReq.getBusinessType().getCode());
 						orderPay4Update.setMethod(payReq.getMethod().getCode());
-						orderPay4Update.setAppid(payReq.getAppid());
 						orderPay4Update.setAmount(payReq.getAmount());
-						orderPay.setBody(payReq.getBody());
+						orderPay4Update.setBody(payReq.getBody());
+						orderPay4Update.setProductId(payReq.getProductId());
 						orderPay4Update.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
 						orderPay4Update.setNotifyUrl(payReq.getNotifyUrl());
 						orderPay4Update.setNotifyAttach(payReq.getAttach());
@@ -100,7 +103,9 @@ public class PayController implements PayFeign {
 						
 						orderPayService.updateById(orderPay4Update);
 					}
-
+					
+					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
+					
 					// 支付参数
 					PayParams payParams = new PayParams();
 					payParams.setAppid(payReq.getAppid());
@@ -116,7 +121,6 @@ public class PayController implements PayFeign {
 					if (!payResp.getSuccess()) {
 						throw new BusinessException(payResp.getMessage());
 					}
-					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
 					
 					return payResp;
 				});
@@ -144,21 +148,40 @@ public class PayController implements PayFeign {
 	}
 	
 	@Override
-	public Result<PayInfoResp> queryPayInfo(String orderCode) {
+	public Result<PayResp> toPay(@RequestBody ToPayReq toPayReq) {
+		String orderCode = toPayReq.getOrderCode();
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
 		}
+
+		OrderPayEnum.Method method = toPayReq.getMethod();
+		if (method == null) {
+			method = OrderPayEnum.Method.of(orderPay.getMethod());
+		} else {// 更换支付方式
+			OrderPay orderPay4Update = new OrderPay();
+			orderPay4Update.setId(orderPay.getId());
+			orderPay4Update.setMethod(method.getCode());
+			orderPayService.updateById(orderPay4Update);
+		}
 		
-		OrderPayEnum.Method method = OrderPayEnum.Method.of(orderPay.getMethod());
+		// 支付参数
+		PayParams payParams = new PayParams();
+		payParams.setAppid(toPayReq.getAppid());
+		payParams.setAmount(orderPay.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
+		payParams.setBody(orderPay.getBody());
+		payParams.setOutTradeNo(orderCode);
+		payParams.setSpbillCreateIp(toPayReq.getSpbillCreateIp());
+		payParams.setProductId(orderPay.getProductId());
+		payParams.setOpenid(toPayReq.getOpenid());
+		
 		PayClient tradeClient = PayFactory.of(method);
-		Object payInfo = tradeClient.getPayInfo(orderCode);
+		PayResp payResp = tradeClient.pay(payParams);
+		if (!payResp.getSuccess()) {
+			throw new BusinessException(payResp.getMessage());
+		}
 
-		PayInfoResp payInfoResp = new PayInfoResp();
-		payInfoResp.setMethod(method);
-		payInfoResp.setPayInfo(payInfo);
-
-		return Result.success(payInfoResp);
+		return Result.success(payResp);
 	}
 
 	@Override

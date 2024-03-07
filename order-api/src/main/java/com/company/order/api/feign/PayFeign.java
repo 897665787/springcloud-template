@@ -13,7 +13,7 @@ import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RefundReq;
-import com.company.order.api.response.PayInfoResp;
+import com.company.order.api.request.ToPayReq;
 import com.company.order.api.response.PayResp;
 import com.company.order.api.response.PayTradeStateResp;
 
@@ -32,13 +32,13 @@ public interface PayFeign {
 	Result<PayResp> unifiedorder(@RequestBody PayReq payReq);
 
 	/**
-	 * 查询支付信息
+	 * 去支付（可切换支付方式）
 	 * 
-	 * @param orderCode
-	 * @return 支付信息
+	 * @param toPayReq
+	 * @return 支付结果
 	 */
-	@GetMapping("/queryPayInfo")
-	Result<PayInfoResp> queryPayInfo(@RequestParam("orderCode") String orderCode);
+	@PostMapping("/toPay")
+	Result<PayResp> toPay(@RequestBody ToPayReq toPayReq);
 
 	/**
 	 * 查询交易状态
@@ -88,7 +88,7 @@ public interface PayFeign {
 				}
 
 				@Override
-				public Result<PayInfoResp> queryPayInfo(String orderCode) {
+				public Result<PayResp> toPay(ToPayReq toPayReq) {
 					return Result.onFallbackError();
 				}
 

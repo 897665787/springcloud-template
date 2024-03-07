@@ -156,6 +156,13 @@ public class AliPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
 			requestResult2AliPay(aliPayId, payParams, request, null, remark);
 			throw new BusinessException(e.getErrMsg());
+        } catch (Exception e) {
+        	// 支付异常
+			log.error("AliPay error", e);
+			remark = Utils.rightRemark(remark, timeExpire);
+			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			requestResult2AliPay(aliPayId, payParams, request, null, remark);
+			throw new BusinessException(e.getMessage());
         }
     }
 
@@ -185,29 +192,6 @@ public class AliPayClient extends BasePayClient {
 			aliPay.setId(aliPayId);
 			aliPayMapper.updateById(aliPay);
 		}
-	}
-	
-	@Override
-	public Object getPayInfo(String outTradeNo) {
-		AliPay aliPay = aliPayMapper.selectByOutTradeNo(outTradeNo);
-		if (aliPay == null) {
-			throw new BusinessException("未找到订单，请重新下单");
-		}
-
-		/*
-		 * 缩短支付宝订单有效时间，预防pay body被利用
-		 * 
-		if (aliPay == null) {
-			return null;
-		}
-		return aliPay.getPayBody();
-		*/
-		PayParams payParams = new PayParams();
-		payParams.setAppid(aliPay.getAppid());
-		payParams.setAmount(aliPay.getTotalAmount());
-		payParams.setBody(aliPay.getSubject());
-		payParams.setOutTradeNo(aliPay.getOutTradeNo());
-		return requestPayInfo(payParams);
 	}
 
 	@Override
