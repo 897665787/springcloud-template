@@ -1,7 +1,6 @@
 package com.company.order.pay.wx;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -153,7 +152,7 @@ public class WxPayClient extends BasePayClient {
 			log.error("WxPay error", e);
 			WxPayUnifiedOrderResult result = BaseWxPayResult.fromXML(e.getXmlString(), WxPayUnifiedOrderResult.class);
 			requestResult2WxPay(wxPayId, payConfig, request, result, "请求异常,logid:" + MdcUtil.get());
-			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
+			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -249,7 +248,7 @@ public class WxPayClient extends BasePayClient {
 		} catch (WxPayException e) {
 			// 查询异常
 			log.error("WxPay queryTradeState error", e);
-			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
+			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 	
@@ -312,7 +311,7 @@ public class WxPayClient extends BasePayClient {
 				result.setErrCodeDes(e.getCustomErrorMsg());
 			}
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, result, "请求异常,logid:" + MdcUtil.get());
-			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
+			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -356,11 +355,13 @@ public class WxPayClient extends BasePayClient {
 	protected void requestPayCloseOrder(String outTradeNo) {
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
 		if (wxPay == null) {
-			throw new BusinessException("未找到订单，不用关闭");
+			// 未找到订单，不用关闭（可认为是关闭成功）
+			return;
 		}
 		// 未成功下过单，不用关闭
 		if (!WxPayConstants.ResultCode.SUCCESS.equals(wxPay.getResultCode())) {
-			throw new BusinessException("未成功下过单，不用关闭");
+			// 未成功下过单，不用关闭（可认为是关闭成功）
+			return;
 		}
 
 		// 公共参数
@@ -387,13 +388,16 @@ public class WxPayClient extends BasePayClient {
 			}
 
 			String resultCode = orderCloseResult.getResultCode();
+			if (Objects.equal(resultCode, "ORDERCLOSED")) {// 订单已关闭，无需继续调用
+				return;
+			}
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
 				throw new BusinessException(orderCloseResult.getErrCodeDes());
 			}
 
 		} catch (WxPayException e) {
 			log.error("Wx pay close order error.", e);
-			throw new BusinessException(Optional.ofNullable(e.getErrCodeDes()).orElse(e.getReturnMsg()));
+			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 }

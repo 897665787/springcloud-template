@@ -6,7 +6,6 @@ import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.BaseStrategy;
 import com.company.order.api.enums.OrderPayEnum;
@@ -32,17 +31,5 @@ public class PayCloseStrategy implements BaseStrategy<Map<String, Object>> {
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
 		PayCloseResp payCloseResp = payClient.payClose(outTradeNo);// 不管关闭订单结果怎样，都应该当关闭成功处理
 		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
-		
-		// 修改状态为已关闭
-		OrderPay orderPay4Update = new OrderPay();
-		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
-		EntityWrapper<OrderPay> wrapper = new EntityWrapper<>();
-		wrapper.eq("id", orderPay.getId());
-		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
-		boolean affect = orderPayService.update(orderPay4Update, wrapper);
-		if (!affect) {// 更新不成功，说明订单不是处理中状态
-			log.info("update订单不是处理中状态，不操作关闭:{}", outTradeNo);
-			return;
-		}
 	}
 }

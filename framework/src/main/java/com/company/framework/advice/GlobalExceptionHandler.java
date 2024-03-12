@@ -3,6 +3,7 @@ package com.company.framework.advice;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,11 +21,13 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.company.common.api.Result;
@@ -73,6 +76,29 @@ public class GlobalExceptionHandler {
 			HttpServletRequest request, HttpServletResponse response) {
 		String message = MessageFormat.format("仅支持{0}媒体类型", JsonUtil.toJsonString(e.getSupportedMediaTypes()));
 		log.warn(message, e);
+		return Result.fail(message);
+	}
+	
+	/**
+	 * 参数缺失
+	 */
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public Result<?> missingServletRequestParameter(MissingServletRequestParameterException e,
+			HttpServletRequest request, HttpServletResponse response) {
+		String message = MessageFormat.format("参数{0}({1})缺失", e.getParameterName(), e.getParameterType());
+//		log.warn(message, e);
+		return Result.fail(message);
+	}
+	
+	/**
+	 * 参数类型不匹配
+	 */
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public Result<?> methodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request,
+			HttpServletResponse response) {
+		String message = MessageFormat.format("参数{0}({1})不匹配{2}类型", e.getName(), e.getValue(),
+				Optional.ofNullable(e.getRequiredType()).map(Class::getName).orElse(null));
+//		log.warn(message, e);
 		return Result.fail(message);
 	}
 	

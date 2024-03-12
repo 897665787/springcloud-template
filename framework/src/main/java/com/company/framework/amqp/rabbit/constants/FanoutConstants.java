@@ -147,14 +147,4 @@ public interface FanoutConstants {
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
-	
-	// 订单取消事件
-	interface ORDER_CANCEL {
-		// 交换机
-		String EXCHANGE = FanoutConstants.PREFIX + "order_cancel";
-
-		String PREFIX = FanoutConstants.PREFIX + "order_cancel.";
-		// 队列
-		String LOGIN_RECORD_QUEUE = PREFIX + "login_record";
-	}
 }

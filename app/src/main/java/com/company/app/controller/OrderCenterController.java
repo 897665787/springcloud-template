@@ -72,13 +72,10 @@ public class OrderCenterController {
 	 */
 	@GetMapping("/cancel")
 	public Result<OrderResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
-		orderFeign.validOrderCodeUserId(orderCode, userId).dataOrThrow();
-		
 		OrderCancelReq orderCancelReq = new OrderCancelReq();
 		orderCancelReq.setOrderCode(orderCode);
 		orderCancelReq.setCancelTime(LocalDateTime.now());
-		return orderFeign.cancel(orderCancelReq);
+		return orderFeign.cancelByUser(orderCancelReq);
 	}
 
 	/**

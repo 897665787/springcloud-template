@@ -13,9 +13,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class OrderReq {
 	/**
-	 * 查询类型(item:订单列表子项,detail:订单详情)
+	 * 子订单事件
 	 */
-	private OrderEnum.SearchTypeEnum searchType;
+	private OrderEnum.SubOrderEventEnum subOrderEvent;
     /**
      * 订单编号
      */

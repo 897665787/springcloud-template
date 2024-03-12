@@ -8,5 +8,4 @@ public interface StrategyConstants {
 	String PAY_CLOSE_STRATEGY = "payCloseStrategy";
 	String PAY_NOTIFY_STRATEGY = "payNotifyStrategy";
 	String REFUND_NOTIFY_STRATEGY = "refundNotifyStrategy";
-	String PAY_TIMEOUT_STRATEGY = "pay_timeout_strategy";
 }

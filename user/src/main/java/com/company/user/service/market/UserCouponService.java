@@ -62,6 +62,9 @@ public class UserCouponService extends ServiceImpl<UserCouponMapper, UserCoupon>
 	}
 
 	public Integer updateStatus(Integer id, String oldStatus, String newStatus) {
+		if (id == null || id <= 0) {// 无效的用户优惠券id
+			return 0;
+		}
 		return baseMapper.updateStatus(id, oldStatus, newStatus);
 	}
 }

@@ -2,7 +2,6 @@ package com.company.order.pay.aliactivity;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -325,7 +324,7 @@ public class AliActivityPayClient extends BasePayClient {
 		if (response != null) {
 			// 支付退款结果
 			if (!response.isSuccess()) {
-				String msg = Optional.ofNullable(response.getSubMsg()).orElse(response.getMsg());
+				String msg = StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg());
 				String remark = Utils.rightRemark(aliActivityPayRefunddb.getRemark(), msg);
 				aliActivityPayRefund.setRemark(remark);
 			}

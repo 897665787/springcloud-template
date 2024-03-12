@@ -28,7 +28,12 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<OrderResp> cancel(OrderCancelReq orderCancelReq) {
+			public Result<OrderDetailResp> cancelByUser(OrderCancelReq orderCancelReq) {
+				return Result.onFallbackError();
+			}
+			
+			@Override
+			public Result<Void> cancelByTimeout(OrderCancelReq orderCancelReq) {
 				return Result.onFallbackError();
 			}
 
@@ -49,11 +54,6 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 			@Override
 			public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
-				return Result.onFallbackError();
-			}
-
-			@Override
-			public Result<Boolean> validOrderCodeUserId(String orderCode, Integer userId) {
 				return Result.onFallbackError();
 			}
 

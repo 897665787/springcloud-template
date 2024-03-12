@@ -23,6 +23,7 @@ public abstract class BasePayClient implements PayClient {
 		try {
 			Object payInfo = requestPayInfo(payParams);
 			payResp.setSuccess(true);
+			payResp.setMessage("成功");
 			payResp.setPayInfo(payInfo);
 		} catch (BusinessException e) {
 			payResp.setSuccess(false);
@@ -37,6 +38,7 @@ public abstract class BasePayClient implements PayClient {
 		try {
 			requestRefund(outTradeNo, outRefundNo, refundAmount);
 			payRefundResp.setSuccess(true);
+			payRefundResp.setMessage("成功");
 		} catch (BusinessException e) {
 			payRefundResp.setSuccess(false);
 			payRefundResp.setMessage(e.getMessage());

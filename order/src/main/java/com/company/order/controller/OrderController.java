@@ -33,8 +33,6 @@ import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
-import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -65,8 +63,6 @@ public class OrderController implements OrderFeign {
 	private OrderService orderService;
 	@Autowired
 	private OrderProductService orderProductService;
-	@Autowired
-	private MessageSender messageSender;
 
 	@Override
 	public Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
@@ -112,7 +108,7 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<OrderResp> cancel(@RequestBody OrderCancelReq orderCancelReq) {
+	public Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
 		Integer affect = orderService.cancel(orderCode, cancelTime);
@@ -121,20 +117,25 @@ public class OrderController implements OrderFeign {
 		}
 
 		Order order = orderService.selectByOrderCode(orderCode);
+		String subOrderUrl = order.getSubOrderUrl();
+		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
+		
+		OrderDetailResp orderDetailResp = toOrderDetailResp(order);
+		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.USER_CANCEL, subOrderUrl, order, orderProductList);
+		orderDetailResp.setSubOrder(data);
 
-		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
-		Map<String, List<OrderProduct>> orderCodeThisListMap = Maps.newHashMap();
-		orderCodeThisListMap.put(orderCode, orderProductList);
-
-		OrderResp orderResp = toOrderResp(order, orderCodeThisListMap);
-
-		// 发布订单取消事件
-		Map<String, Object> params = Maps.newHashMap();
-		params.put("orderCode", orderCode);
-		params.put("orderType", order.getOrderType());
-		messageSender.sendFanoutMessage(params, FanoutConstants.ORDER_CANCEL.EXCHANGE);
-
-		return Result.success(orderResp);
+		return Result.success(orderDetailResp);
+	}
+	
+	@Override
+	public Result<Void> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
+		String orderCode = orderCancelReq.getOrderCode();
+		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
+		Integer affect = orderService.cancel(orderCode, cancelTime);
+		if (affect == 0) {
+			return Result.fail("取消订单失败");
+		}
+		return Result.success();
 	}
 
 	@Override
@@ -231,7 +232,7 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
 			if (OrderEnum.SubStatusEnum.WAIT_REVIEW == subStatusEnum) {
-				bottonList.add(new OrderResp.BottonResp("评价", "/{前端提供页面路径和需要的参数}/comment?orderCode=" + order.getOrderCode(), 20));
+				bottonList.add(new OrderResp.BottonResp("评价", "comment", "orderCode=" + order.getOrderCode(), 20));
 			}
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderResp.setTimeText("完成时间");
@@ -253,7 +254,7 @@ public class OrderController implements OrderFeign {
 		orderResp.setCancelBtn(false);
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {// 待支付情况下需返回支付参数
 			orderResp.setCancelBtn(true);
-			bottonList.add(new OrderResp.BottonResp("去支付", "/{前端提供页面路径和需要的参数}/topay?orderCode=" + order.getOrderCode(), 10));
+			bottonList.add(new OrderResp.BottonResp("去支付", "topay", "orderCode=" + order.getOrderCode(), 10));
 		}
 		
 		orderResp.setDeleteBtn(false);
@@ -261,12 +262,12 @@ public class OrderController implements OrderFeign {
 				|| OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {// 终态才可以删除订单、再来一单
 			orderResp.setDeleteBtn(true);
 			String firstProductCode = orderProductList.stream().map(OrderProduct::getProductCode).findFirst().orElse("");
-			bottonList.add(new OrderResp.BottonResp("再来一单", "/{前端提供页面路径和需要的参数}/onemore?productCode=" + firstProductCode, 10));
+			bottonList.add(new OrderResp.BottonResp("再来一单", "onemore", "productCode=" + firstProductCode, 10));
 		}
 
 		String subOrderUrl = order.getSubOrderUrl();
 
-		Object data = requestSubOrder(OrderEnum.SearchTypeEnum.ITEM, subOrderUrl, order, orderProductList);
+		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.QUERY_ITEM, subOrderUrl, order, orderProductList);
 		orderResp.setSubOrder(data);
 
 		// 如果data里面有statusText字段，则覆盖外层的statusText
@@ -292,9 +293,10 @@ public class OrderController implements OrderFeign {
 			for (int i = 0; i < dataJSONArray.size(); i++) {
 				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
 				String text = textValueJSON.getString("text");
-				String url = textValueJSON.getString("url");
+				String pageKey = textValueJSON.getString("pageKey");
+				String params = textValueJSON.getString("params");
 				Integer sort = textValueJSON.getInteger("sort");
-				bottonList.add(new OrderResp.BottonResp(text, url, sort));
+				bottonList.add(new OrderResp.BottonResp(text, pageKey, params, sort));
 			}
 		}
 		
@@ -312,13 +314,12 @@ public class OrderController implements OrderFeign {
 			return Result.fail("订单不存在");
 		}
 		if (!order.getUserId().equals(userId)) {
-			// return Result.fail("订单不存在");
 			return Result.fail("订单不匹配");
 		}
 
-		OrderDetailResp orderResp = toOrderDetailResp(order);
+		OrderDetailResp orderDetailResp = toOrderDetailResp(order);
 
-		return Result.success(orderResp);
+		return Result.success(orderDetailResp);
 	}
 
 	private OrderDetailResp toOrderDetailResp(Order order) {
@@ -403,7 +404,7 @@ public class OrderController implements OrderFeign {
 
 		String subOrderUrl = order.getSubOrderUrl();
 
-		Object data = requestSubOrder(OrderEnum.SearchTypeEnum.DETAIL, subOrderUrl, order, orderProductList);
+		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.QUERY_DETAIL, subOrderUrl, order, orderProductList);
 		orderDetailResp.setSubOrder(data);
 
 		// 如果data里面有statusText字段，则覆盖外层的statusText
@@ -428,12 +429,12 @@ public class OrderController implements OrderFeign {
 		return orderDetailResp;
 	}
 
-	private Object requestSubOrder(OrderEnum.SearchTypeEnum searchType, String subOrderUrl, Order order, List<OrderProduct> orderProductList) {
+	private Object requestSubOrder(OrderEnum.SubOrderEventEnum subOrderEvent, String subOrderUrl, Order order, List<OrderProduct> orderProductList) {
 		Object data = null;
 		if (StringUtils.isNotBlank(subOrderUrl)) {
 			long start = System.currentTimeMillis();
 			OrderReq orderReq = PropertyUtils.copyProperties(order, OrderReq.class);
-			orderReq.setSearchType(searchType);
+			orderReq.setSubOrderEvent(subOrderEvent);
 			orderReq.setStatus(OrderEnum.StatusEnum.of(order.getStatus()));
 			orderReq.setSubStatus(OrderEnum.SubStatusEnum.of(order.getSubStatus()));
 			
@@ -487,18 +488,4 @@ public class OrderController implements OrderFeign {
 		dataMap.put("message", remark);
 		return dataMap;
 	}
-
-	@Override
-	public Result<Boolean> validOrderCodeUserId(String orderCode, Integer userId) {
-		Order order = orderService.selectByOrderCode(orderCode);
-		if (order == null) {
-			return Result.fail("订单不存在");
-		}
-		if (!order.getUserId().equals(userId)) {
-			// return Result.fail("订单不存在");
-			return Result.fail("订单不匹配");
-		}
-		return Result.success(true);
-	}
-
 }

@@ -125,9 +125,10 @@ public interface OrderEnum {
 	}
 
 	@AllArgsConstructor
-	enum SearchTypeEnum {
-		ITEM("item", "订单列表子项"), //
-		DETAIL("detail", "订单详情"),//
+	enum SubOrderEventEnum {
+		USER_CANCEL("user_cancel", "用户主动取消订单"), //
+		QUERY_ITEM("query_item", "查询订单列表子项"), //
+		QUERY_DETAIL("query_detail", "查询订单详情"),//
 		;
 
 		@Getter

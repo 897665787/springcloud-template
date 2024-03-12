@@ -32,13 +32,22 @@ public interface OrderFeign {
 	Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
 
 	/**
-	 * 修改订单状态（取消订单）
+	 * 修改订单状态（用户取消订单）
 	 * 
 	 * @param orderCancelReq
 	 * @return
 	 */
-	@PostMapping("/cancel")
-	Result<OrderResp> cancel(@RequestBody OrderCancelReq orderCancelReq);
+	@PostMapping("/cancelByUser")
+	Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq);
+	
+	/**
+	 * 修改订单状态（超时取消订单）
+	 * 
+	 * @param orderCancelReq
+	 * @return
+	 */
+	@PostMapping("/cancelByTimeout")
+	Result<Void> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
 	
 	/**
 	 * 修改订单状态（支付成功）
@@ -76,15 +85,4 @@ public interface OrderFeign {
 	 */
 	@GetMapping("/queryByOrderCode")
 	Result<OrderDetailResp> queryByOrderCode(@RequestParam("orderCode") String orderCode);
-
-	/**
-	 * 校验订单是否属于该用户
-	 * 
-	 * @param orderCode
-	 * @param userId
-	 * @return
-	 */
-	@GetMapping("/validOrderCodeUserId")
-	Result<Boolean> validOrderCodeUserId(@RequestParam("orderCode") String orderCode,
-			@RequestParam("userId") Integer userId);
 }

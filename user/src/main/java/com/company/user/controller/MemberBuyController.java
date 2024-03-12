@@ -28,6 +28,7 @@ import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
+import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
@@ -42,6 +43,8 @@ import com.company.user.api.response.MemberBuySubOrderResp;
 import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.dto.MemberBuyAttach;
+import com.company.user.entity.MemberBuyOrder;
+import com.company.user.service.MemberBuyOrderService;
 import com.company.user.service.MemberService;
 import com.company.user.service.MemberService.MemberData;
 import com.company.user.service.market.UserCouponService;
@@ -81,6 +84,8 @@ public class MemberBuyController implements MemberBuyFeign {
 	
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private MemberBuyOrderService memberBuyOrderService;
 	
 	/**
 	 * 购买
@@ -136,8 +141,16 @@ public class MemberBuyController implements MemberBuyFeign {
 		// TODO 条件校验（下单限制、风控）
 
 		String orderCode = String.valueOf(sequenceGenerator.nextId());
-		// TODO 创建业务订单（订单中心子订单）
-		// userId、orderCode、userCouponId、续期时间长
+		
+		// 创建业务订单（订单中心子订单）
+		MemberBuyOrder memberBuyOrder = new MemberBuyOrder();
+		memberBuyOrder.setUserId(userId);
+		memberBuyOrder.setOrderCode(orderCode);
+		memberBuyOrder.setUserCouponId(userCouponId);
+		memberBuyOrder.setProductCode(memberData.getProductCode());
+		memberBuyOrder.setAmount(memberData.getProductAmount());
+		memberBuyOrder.setAddDays(memberData.getAddDays());
+		memberBuyOrderService.insert(memberBuyOrder);
 		
 		// 注册到‘订单中心’
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
@@ -224,10 +237,11 @@ public class MemberBuyController implements MemberBuyFeign {
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
-			orderFeign.cancel(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
+			orderFeign.cancelByTimeout(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
 
-			Integer userCouponId = 0;// TODO 根据业务订单获得
-			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，锁定优惠券
+			MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
+			Integer userCouponId = memberBuyOrder.getUserCouponId();
+			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
 			
@@ -244,6 +258,13 @@ public class MemberBuyController implements MemberBuyFeign {
 		}
 		// 支付成功
 
+		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
+		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
+		Integer userCouponId = memberBuyOrder.getUserCouponId();
+		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，使用优惠券
+			userCouponService.updateStatus(userCouponId, "nouse", "used");
+		}
+		
 		// 修改‘订单中心’数据
 		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayTime(time));
 		
@@ -253,6 +274,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		messageSender.sendFanoutMessage(params, FanoutConstants.MEMBER_BUY_PAY_SUCCESS.EXCHANGE);
     	
 		// TODO 会员过期时间续期，根据业务订单获得‘续期时间长’
+//		Integer addDays = memberBuyOrder.getAddDays();
 		
 		// 修改‘订单中心’数据
 		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
@@ -261,32 +283,58 @@ public class MemberBuyController implements MemberBuyFeign {
 	}
 
 	/**
-	 * 根据订单号查询子订单详情(使用restTemplate的方式调用)
+	 * 根据订单号执行/查询子订单(使用restTemplate的方式调用)
 	 * 
 	 * @param orderReq
 	 * @return
 	 */
 	@PostMapping("/subOrder")
 	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
-		OrderEnum.SearchTypeEnum searchType = orderReq.getSearchType();
-		if (searchType == OrderEnum.SearchTypeEnum.ITEM) {
+		OrderEnum.SubOrderEventEnum subOrderEvent = orderReq.getSubOrderEvent();
+		if (subOrderEvent == OrderEnum.SubOrderEventEnum.USER_CANCEL) {
+			userCancel(orderReq);
+			return Result.success(detail(orderReq));
+		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_ITEM) {
 			return Result.success(item(orderReq));
-		} else if (searchType == OrderEnum.SearchTypeEnum.DETAIL) {
+		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_DETAIL) {
 			return Result.success(detail(orderReq));
 		}
 		return Result.success();
 	}
 
+	private void userCancel(OrderReq orderReq) {
+		String orderCode = orderReq.getOrderCode();
+		
+		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
+		Integer userCouponId = memberBuyOrder.getUserCouponId();
+		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
+			userCouponService.updateStatus(userCouponId, "used", "nouse");
+		}
+		
+		// 关闭支付订单，不关心结果
+		PayCloseReq payCloseReq = new PayCloseReq();
+		payCloseReq.setOrderCode(orderCode);
+		Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
+		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+	}
+
 	private MemberBuySubOrderResp item(OrderReq orderReq) {
 		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
-		Integer addDays = 30; // TODO 根据业务订单获得
+		
+		String orderCode = orderReq.getOrderCode();
+		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
+		Integer addDays = memberBuyOrder.getAddDays();
 		resp.setAddDays(addDays);
+		
 		return resp;
 	}
 	
 	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
 		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
-		Integer addDays = 30; // TODO 根据业务订单获得
+		
+		String orderCode = orderReq.getOrderCode();
+		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
+		Integer addDays = memberBuyOrder.getAddDays();
 		resp.setAddDays(addDays);
 		
 		String attach = orderReq.getAttach();

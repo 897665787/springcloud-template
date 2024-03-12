@@ -33,6 +33,7 @@ import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.OrderReq.ProductReq;
+import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
@@ -255,10 +256,10 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
-			orderFeign.cancel(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
+			orderFeign.cancelByTimeout(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
 
 			Integer userCouponId = 0;// TODO 根据业务订单获得
-			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，锁定优惠券
+			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
 			
@@ -275,6 +276,12 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		}
 		// 支付成功
 
+		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
+		Integer userCouponId = 0;// TODO 根据业务订单获得
+		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，使用优惠券
+			userCouponService.updateStatus(userCouponId, "nouse", "used");
+		}
+		
 		// 修改‘订单中心’数据
 		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayTime(time));
 		
@@ -294,13 +301,31 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 */
 	@PostMapping("/subOrder")
 	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
-		OrderEnum.SearchTypeEnum searchType = orderReq.getSearchType();
-		if (searchType == OrderEnum.SearchTypeEnum.ITEM) {
+		OrderEnum.SubOrderEventEnum subOrderEvent = orderReq.getSubOrderEvent();
+		if (subOrderEvent == OrderEnum.SubOrderEventEnum.USER_CANCEL) {
+			userCancel(orderReq);
+			return Result.success(detail(orderReq));
+		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_ITEM) {
 			return Result.success(item(orderReq));
-		} else if (searchType == OrderEnum.SearchTypeEnum.DETAIL) {
+		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_DETAIL) {
 			return Result.success(detail(orderReq));
 		}
 		return Result.success();
+	}
+
+	private void userCancel(OrderReq orderReq) {
+		String orderCode = orderReq.getOrderCode();
+		
+		Integer userCouponId = 0;// TODO 根据业务订单获得
+		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
+			userCouponService.updateStatus(userCouponId, "used", "nouse");
+		}
+		
+		// 关闭支付订单，不关心结果
+		PayCloseReq payCloseReq = new PayCloseReq();
+		payCloseReq.setOrderCode(orderCode);
+		Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
+		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
 	}
 
 	private DistributeSubOrderResp item(OrderReq orderReq) {

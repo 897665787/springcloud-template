@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -132,7 +131,7 @@ public class AliPayClient extends BasePayClient {
 			requestResult2AliPay(aliPayId, payParams, request, response, remark);
             
 			if (!response.isSuccess()) {
-				throw new BusinessException(response.getMsg());
+				throw new BusinessException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 			}
 			
 			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
@@ -223,12 +222,12 @@ public class AliPayClient extends BasePayClient {
             
 			if (!response.isSuccess()) {
 				payTradeStateResp.setResult(false);
-				payTradeStateResp.setMessage(response.getMsg());
+				payTradeStateResp.setMessage(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 				return payTradeStateResp;
 			}
 			
 			payTradeStateResp.setResult(true);
-			payTradeStateResp.setMessage(response.getMsg());
+			payTradeStateResp.setMessage(StringUtils.defaultIfBlank(response.getSubMsg(), response.getMsg()));
 			payTradeStateResp.setPaySuccess(Objects.equals(response.getTradeStatus(), AliConstants.TRADE_SUCCESS));
 			return payTradeStateResp;
         } catch (AlipayApiException e) {
@@ -278,7 +277,7 @@ public class AliPayClient extends BasePayClient {
 			updateRefundResult(outRefundNo, response);
 
 			if (!response.isSuccess()) {
-				throw new BusinessException(response.getMsg());
+				throw new BusinessException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 			}
 		} catch (AlipayApiException e) {
 			// 退款异常
@@ -296,7 +295,7 @@ public class AliPayClient extends BasePayClient {
 		if (response != null) {
 			// 支付退款结果
 			if (!response.isSuccess()) {
-				String msg = Optional.ofNullable(response.getSubMsg()).orElse(response.getMsg());
+				String msg = StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg());
 				String remark = Utils.rightRemark(aliPayRefunddb.getRemark(), msg);
 				aliPayRefund.setRemark(remark);
 			}
@@ -332,9 +331,13 @@ public class AliPayClient extends BasePayClient {
 		AliPay aliPay = aliPayMapper.selectByOutTradeNo(outTradeNo);
 
 		if (aliPay == null) {
-			throw new BusinessException("未找到订单，不用关闭");
+			// 未找到订单，不用关闭（可认为是关闭成功）
+			return;
 		}
 
+		/**
+		 * 官方文档：https://opendocs.alipay.com/pre-open/02e5yz?pathHash=e5f631b6
+		 */
 		AlipayTradeCloseRequest closeRequest = new AlipayTradeCloseRequest();
 		Map<String, String> cancelJsonObject = new HashMap<>();
 		cancelJsonObject.put("out_trade_no", outTradeNo);
@@ -353,8 +356,12 @@ public class AliPayClient extends BasePayClient {
 			AlipayTradeCloseResponse response = alipayClient.execute(closeRequest);
 			log.info("requestPayCloseOrder is {}", JsonUtil.toJsonString(response));
 			// 未支付的订单支付宝不会创建订单，所以响应‘交易不存在’，保留调用该接口，或许其他支付业务会用到
+			String subCode = response.getSubCode();
+			if ("ACQ.TRADE_NOT_EXIST".equals(subCode)) {// 交易不存在（可认为是关闭成功）
+				return;
+			}
 			if (!response.isSuccess()) {
-				throw new BusinessException(response.getMsg());
+				throw new BusinessException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 			}
 		} catch (AlipayApiException e) {
 			// 关闭异常

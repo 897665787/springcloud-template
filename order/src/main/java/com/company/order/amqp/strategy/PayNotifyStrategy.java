@@ -23,6 +23,7 @@ import com.company.order.innercallback.service.IInnerCallbackService;
 import com.company.order.mapper.PayNotifyMapper;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayService;
+import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,9 +53,12 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 			orderPay4Update.setStatus(OrderPayEnum.Status.PAYED.getCode());
 			Wrapper<OrderPay> wrapper = new EntityWrapper<OrderPay>();
 			wrapper.eq("order_code", outTradeNo);
-			wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
+			// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘待支付、已关闭’变为‘已支付’
+			wrapper.in("status",
+					Lists.newArrayList(OrderPayEnum.Status.WAITPAY.getCode(), OrderPayEnum.Status.CLOSED.getCode()));
 			boolean affect = orderPayService.update(orderPay4Update, wrapper);
 			if (!affect) {
+				log.warn("修改支付订单状态失败,可能存在重复回调,payNotifyId:{},outTradeNo:{}", payNotifyId, outTradeNo);
 				return;
 			}
 
