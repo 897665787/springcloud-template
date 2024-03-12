@@ -71,7 +71,7 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/cancel")
-	public Result<OrderResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+	public Result<OrderDetailResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
 		OrderCancelReq orderCancelReq = new OrderCancelReq();
 		orderCancelReq.setOrderCode(orderCode);
 		orderCancelReq.setCancelTime(LocalDateTime.now());
