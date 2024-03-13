@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.company.common.exception.BusinessException;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.entity.Order;
 import com.company.order.mapper.OrderMapper;
@@ -63,8 +64,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY));
 	}
 
-	public int paySuccess(String orderCode, LocalDateTime payTime) {
+	public int paySuccess(String orderCode, BigDecimal payAmount, LocalDateTime payTime) {
 		Order order4Update = new Order();
+		order4Update.setPayAmount(payAmount);
 		order4Update.setPayTime(payTime);
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.PAYED;
 		return updateStatus(orderCode, order4Update, subStatusEnum,
@@ -81,33 +83,23 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 						OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
 						OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW));
 	}
-
-	/**
-	 * 更新状态
-	 * 
-	 * @param orderCode
-	 *            订单号
-	 * @param order4Update
-	 *            更新对象信息
-	 * @param subStatusEnum
-	 *            子状态
-	 * @param conditionSubStatusEnums
-	 *            条件状态，为null表示不加条件
-	 * @return
-	 */
-	private int updateStatus(String orderCode, Order order4Update, OrderEnum.SubStatusEnum subStatusEnum,
-			List<OrderEnum.SubStatusEnum> conditionSubStatusEnums) {
+	
+	public OrderEnum.SubStatusEnum refundApply(String orderCode, LocalDateTime refundApplyTime) {
 		Order orderDB = orderMapper.selectByOrderCode(orderCode);
-		if (orderDB == null) {
-			log.warn("订单不存在:{}", orderCode);
-			return 0;
-		}
 
-		OrderEnum.SubStatusEnum subStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
-		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(subStatus)) {// 条件状态集合，满足条件才能更新成功
+		OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
+
+		OrderEnum.SubStatusEnum newSubStatus = OrderEnum.SubStatusEnum.CHECK;
+		List<OrderEnum.SubStatusEnum> conditionSubStatusEnums = Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED,
+				OrderEnum.SubStatusEnum.WAIT_SEND, OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
+				OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
+				OrderEnum.SubStatusEnum.COMPLETE);
+
+		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(oldSubStatus)) {// 条件状态集合，满足条件才能更新成功
 			// 只有在条件集合下的状态才能更新
-			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, subStatus);
-			return 0;
+			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
+			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
+//			return 0;
 		}
 
 		EntityWrapper<Order> wrapper = new EntityWrapper<>();
@@ -122,8 +114,95 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 				wrapper.in("sub_status", subStatusList);
 			}
 		}
-		order4Update.setStatus(OrderEnum.SubStatusEnum.toStatusEnum(subStatusEnum).getStatus());
-		order4Update.setSubStatus(subStatusEnum.getStatus());
+		Order order4Update = new Order();
+		order4Update.setRefundTime(refundApplyTime);
+		order4Update.setStatus(OrderEnum.SubStatusEnum.toStatusEnum(newSubStatus).getStatus());
+		order4Update.setSubStatus(newSubStatus.getStatus());
+		order4Update.setUpdateTime(LocalDateTime.now());
+		int affect = orderMapper.update(order4Update, wrapper);
+
+		log.info("状态修改:{}|{} -> {}|{},{}", orderDB.getStatus(), orderDB.getSubStatus(), order4Update.getStatus(),
+				order4Update.getSubStatus(), affect);
+
+		if (affect == 0) {
+			orderDB = orderMapper.selectByOrderCode(orderCode);
+			oldSubStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
+			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
+		}
+		return oldSubStatus;
+	}
+	
+	public int refundReject(String orderCode, OrderEnum.SubStatusEnum oldSubStatus) {
+		Order order4Update = new Order();
+		OrderEnum.SubStatusEnum subStatusEnum = oldSubStatus;
+		return updateStatus(orderCode, order4Update, subStatusEnum,
+				Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED, OrderEnum.SubStatusEnum.WAIT_SEND,
+						OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
+						OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
+						OrderEnum.SubStatusEnum.COMPLETE, OrderEnum.SubStatusEnum.CHECK));
+	}
+	
+	public int refundFinish(String orderCode, LocalDateTime refundFinishTime, BigDecimal thisRefundAmount) {
+		Order orderDB = orderMapper.selectByOrderCode(orderCode);
+		if (orderDB == null) {
+			throw new BusinessException("订单" + orderCode + "不存在");
+		}
+		BigDecimal payAmount = orderDB.getPayAmount();
+		BigDecimal totalRefundAmount = orderDB.getRefundAmount();
+		totalRefundAmount = totalRefundAmount.add(thisRefundAmount);
+		
+		Order order4Update = new Order();
+		order4Update.setRefundAmount(totalRefundAmount);
+		order4Update.setRefundTime(refundFinishTime);
+		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.REFUND_SUCCESS;// 全额退款
+		if (payAmount.compareTo(totalRefundAmount) > 0) {
+			subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;// 部分退款
+		}
+		return updateStatus(orderCode, order4Update, subStatusEnum, Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED,
+				OrderEnum.SubStatusEnum.WAIT_SEND, OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
+				OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
+				OrderEnum.SubStatusEnum.COMPLETE, OrderEnum.SubStatusEnum.CHECK, OrderEnum.SubStatusEnum.REFUNDING));
+	}
+
+	/**
+	 * 更新状态
+	 * 
+	 * @param orderCode
+	 *            订单号
+	 * @param order4Update
+	 *            更新对象信息
+	 * @param newSubStatus
+	 *            子状态
+	 * @param conditionSubStatusEnums
+	 *            条件状态，为null表示不加条件
+	 * @return
+	 */
+	private int updateStatus(String orderCode, Order order4Update, OrderEnum.SubStatusEnum newSubStatus,
+			List<OrderEnum.SubStatusEnum> conditionSubStatusEnums) {
+		Order orderDB = orderMapper.selectByOrderCode(orderCode);
+
+		OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
+		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(oldSubStatus)) {// 条件状态集合，满足条件才能更新成功
+			// 只有在条件集合下的状态才能更新
+			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
+			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
+//			return 0;
+		}
+
+		EntityWrapper<Order> wrapper = new EntityWrapper<>();
+		wrapper.eq("order_code", orderCode);
+
+		if (conditionSubStatusEnums != null) {
+			if (conditionSubStatusEnums.isEmpty()) {// 条件状态集合，满足条件才能更新成功
+				wrapper.eq("sub_status", -1);// -1无意义
+			} else {
+				List<Integer> subStatusList = conditionSubStatusEnums.stream().map(OrderEnum.SubStatusEnum::getStatus)
+						.collect(Collectors.toList());
+				wrapper.in("sub_status", subStatusList);
+			}
+		}
+		order4Update.setStatus(OrderEnum.SubStatusEnum.toStatusEnum(newSubStatus).getStatus());
+		order4Update.setSubStatus(newSubStatus.getStatus());
 		order4Update.setUpdateTime(LocalDateTime.now());
 		int affect = orderMapper.update(order4Update, wrapper);
 

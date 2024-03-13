@@ -1,5 +1,6 @@
 package com.company.order.api.request;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
@@ -33,6 +34,11 @@ public class PayNotifyReq {
 	 */
 	@NotBlank(message = "订单号不能为空")
 	private String orderCode;
+	
+	/**
+	 * 支付金额<非必填>
+	 */
+	private BigDecimal payAmount;
 	
 	/**
 	 * 支付/关闭时间<非必填>

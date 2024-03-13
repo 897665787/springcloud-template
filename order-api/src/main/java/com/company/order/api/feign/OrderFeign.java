@@ -15,8 +15,12 @@ import com.company.order.api.feign.fallback.OrderFeignFallback;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFinishReq;
+import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
+import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
@@ -67,6 +71,15 @@ public interface OrderFeign {
 	@PostMapping("/finish")
 	Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq);
 
+	@PostMapping("/refundApply")
+	Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
+
+	@PostMapping("/refundReject")
+	Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq);
+
+	@PostMapping("/refundFinish")
+	Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+	
 	/**
 	 * 分页查询订单列表
 	 * 
@@ -83,6 +96,7 @@ public interface OrderFeign {
 	 * @param orderCode
 	 * @return
 	 */
-	@GetMapping("/queryByOrderCode")
-	Result<OrderDetailResp> queryByOrderCode(@RequestParam("orderCode") String orderCode);
+	@GetMapping("/detail")
+	Result<OrderDetailResp> detail(@RequestParam("orderCode") String orderCode);
+	
 }

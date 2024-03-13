@@ -80,6 +80,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		String message = MapUtils.getString(params, "message");
 		payNotifyReq.setMessage(message);
 		payNotifyReq.setOrderCode(outTradeNo);
+		payNotifyReq.setPayAmount(orderPay.getAmount());
 		
 		LocalDateTime time = LocalDateTime.now();
 		String timeStr = MapUtils.getString(params, "time");

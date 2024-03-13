@@ -30,19 +30,25 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.enums.OrderEnum.SubStatusEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFinishReq;
+import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderDetailResp.TextValueResp;
+import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.entity.Order;
 import com.company.order.entity.OrderProduct;
@@ -141,9 +147,10 @@ public class OrderController implements OrderFeign {
 	@Override
 	public Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
 		String orderCode = orderPaySuccessReq.getOrderCode();
+		BigDecimal payAmount = orderPaySuccessReq.getPayAmount();
 		LocalDateTime payTime = orderPaySuccessReq.getPayTime();
 
-		int affect = orderService.paySuccess(orderCode, payTime);
+		int affect = orderService.paySuccess(orderCode, payAmount, payTime);
 		if (affect == 0) {
 			return Result.fail("修改为支付成功失败");
 		}
@@ -162,6 +169,59 @@ public class OrderController implements OrderFeign {
 		return Result.success();
 	}
 
+	@Override
+	public Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq) {
+		String orderCode = orderRefundApplyReq.getOrderCode();
+		Order order = orderService.selectByOrderCode(orderCode);
+		if (order == null) {
+			throw new BusinessException("订单" + orderCode + "不存在");
+		}
+
+		BigDecimal payAmount = order.getPayAmount();
+		BigDecimal refundAmount = order.getRefundAmount();
+		if (payAmount.compareTo(refundAmount) <= 0) {
+			return Result.fail("无可退款金额");
+		}
+
+		OrderRefundApplyResp resp = new OrderRefundApplyResp();
+		LocalDateTime refundApplyTime = orderRefundApplyReq.getRefundApplyTime();
+		OrderEnum.SubStatusEnum oldSubStatus = orderService.refundApply(orderCode, refundApplyTime);
+//		if (affect == 0) {
+//			resp.setSuccess(false);
+//			resp.setMessage("修改为退款审核中失败");
+//			return Result.fail("修改为退款审核中失败");
+//		}
+		resp.setSuccess(true);
+		resp.setOldSubStatus(oldSubStatus);
+		resp.setCanRefundAmount(BigDecimal.ZERO);
+		
+		return Result.success(resp);
+	}
+	
+	@Override
+	public Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
+		String orderCode = orderRefundRejectReq.getOrderCode();
+		OrderEnum.SubStatusEnum oldSubStatus = orderRefundRejectReq.getOldSubStatus();
+		
+		int affect = orderService.refundReject(orderCode, oldSubStatus);
+		if (affect == 0) {
+			return Result.fail("修改为退款审核中失败");
+		}
+		return Result.success();
+	}
+	
+	@Override
+	public Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
+		String orderCode = orderRefundFinishReq.getOrderCode();
+		LocalDateTime refundFinishTime = orderRefundFinishReq.getRefundFinishTime();
+		
+		int affect = orderService.refundFinish(orderCode, refundFinishTime, thisRefundAmount);
+		if (affect == 0) {
+			return Result.fail("修改为退款完成失败");
+		}
+		return Result.success();
+	}
+	
 	@Override
 	public Result<List<OrderResp>> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
@@ -307,7 +367,7 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
+	public Result<OrderDetailResp> detail(String orderCode) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {

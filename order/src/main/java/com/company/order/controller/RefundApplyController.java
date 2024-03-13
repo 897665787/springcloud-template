@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -148,7 +149,13 @@ public class RefundApplyController implements RefundApplyFeign {
 		// 后续逻辑 ----------> refundNotify
 	}
 
-	@Override
+	/**
+	 * 退款回调(使用restTemplate的方式调用)
+	 * 
+	 * @param refundNotifyReq
+	 * @return
+	 */
+	@PostMapping("/refundNotify")
 	public Result<Void> refundNotify(@RequestBody RefundNotifyReq refundNotifyReq) {
 		String refundOrderCode = refundNotifyReq.getRefundOrderCode();
 		PayRefundApply payRefundApply = payRefundApplyMapper.selectByOrderCode(refundOrderCode);
