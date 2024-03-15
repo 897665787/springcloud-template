@@ -3,14 +3,12 @@ package com.company.order.controller;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -158,7 +156,7 @@ public class PayController implements PayFeign {
 		if (timeoutSeconds == null) {
 			timeoutSeconds = 1800;// 默认30分钟,1800秒
 		}
-		Date timeoutTime = DateUtils.addSeconds(new Date(), timeoutSeconds);
+		LocalDateTime timeoutTime = LocalDateTime.now().plusSeconds(timeoutSeconds);
 		innerCallbackService.postRestTemplate(NOTIFY_URL_TIMEOUT, payTimeoutReq, processorBeanName, 2, 10,
 				InnerCallbackEnum.SecondsStrategy.INCREMENT, timeoutTime);
 	}

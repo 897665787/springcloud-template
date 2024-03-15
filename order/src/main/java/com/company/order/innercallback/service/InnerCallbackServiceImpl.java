@@ -1,12 +1,13 @@
 package com.company.order.innercallback.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
@@ -32,6 +34,7 @@ import com.company.order.innercallback.processor.bean.ProcessorBeanName;
 import com.company.order.innercallback.strategy.SecondsStrategyBeanFactory;
 import com.company.order.mapper.InnerCallbackMapper;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -80,12 +83,12 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 	@Override
 	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
 			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy) {
-		return postRestTemplate(notifyUrl, jsonParams, processorBeanName, increaseSeconds, maxFailure, secondsStrategy, new Date());
+		return postRestTemplate(notifyUrl, jsonParams, processorBeanName, increaseSeconds, maxFailure, secondsStrategy, LocalDateTime.now());
 	}
 
 	@Override
 	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
-			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy, Date nextDisposeTime) {
+			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy, LocalDateTime nextDisposeTime) {
 		InnerCallback innerCallback = new InnerCallback().setUrl(notifyUrl).setJsonParams(JsonUtil.toJsonString(jsonParams))
 				.setProcessorBeanName(processorBeanName == null ? null : JsonUtil.toJsonString(processorBeanName))
 				.setStatus(InnerCallbackEnum.Status.PRE_CALLBACK.getCode())
@@ -95,7 +98,7 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 				.setSecondsStrategy(secondsStrategy.getCode());
 		baseMapper.insert(innerCallback);
 		
-		if (nextDisposeTime.after(new Date())) {
+		if (nextDisposeTime.isAfter(LocalDateTime.now())) {
 			// 如果传入的nextDisposeTime在当前时间之后，说明需要延迟一段时间才开始执行，把状态修改为CALLBACK_FAIL利用selectId4CallbackFail来跑
 			InnerCallback innerCallback4Update = new InnerCallback().setId(innerCallback.getId())
 					.setStatus(InnerCallbackEnum.Status.CALLBACK_FAIL.getCode());
@@ -105,10 +108,21 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 		return postRestTemplateAsync(innerCallback);
 	}
 
+	@Value("${innerCallback.maxDays:30}")
+	private Integer maxDays;
+
 	@Override
 	public Boolean postRestTemplate(Integer id) {
 		InnerCallback innerCallback = baseMapper.selectById(id);
 		Optional.ofNullable(innerCallback.getTraceId()).ifPresent(MdcUtil::put);// 重试情况下使用同一个logid方便追踪日志
+
+		// 安全措施，防止很久之前的数据被误调用
+		LocalDateTime createTime = innerCallback.getCreateTime();
+		long days = LocalDateTimeUtil.between(createTime, LocalDateTime.now(), ChronoUnit.DAYS);
+		if (days > maxDays) {
+			throw new BusinessException(id + "创建" + days + "天，超过" + maxDays + "天，不允许执行");
+		}
+
 		InnerCallback innerCallback4Update = new InnerCallback();
 		innerCallback4Update.setId(id);
 		innerCallback4Update.setStatus(InnerCallbackEnum.Status.PRE_CALLBACK.getCode());
@@ -177,7 +191,7 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 		String secondsStrategy = innerCallback.getSecondsStrategy();
 		int nextSeconds = SecondsStrategyBeanFactory.of(secondsStrategy).nextSeconds(innerCallback.getIncreaseSeconds(),
 				innerCallback.getFailure());
-		Date nextDisposeTime = DateUtils.addSeconds(innerCallback.getNextDisposeTime(), nextSeconds);
+		LocalDateTime nextDisposeTime = innerCallback.getNextDisposeTime().plusSeconds(nextSeconds);
 		baseMapper.callbackFail(InnerCallbackEnum.Status.CALLBACK_FAIL, nextDisposeTime,
 				remark, innerCallback.getId());
 		if (abandonCallback || innerCallback.getFailure() + 1 >= innerCallback.getMaxFailure()) {
