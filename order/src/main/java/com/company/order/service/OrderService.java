@@ -92,15 +92,14 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 		OrderEnum.SubStatusEnum newSubStatus = OrderEnum.SubStatusEnum.CHECK;
 		List<OrderEnum.SubStatusEnum> conditionSubStatusEnums = Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED,
-				OrderEnum.SubStatusEnum.WAIT_SEND, OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
-				OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
+				OrderEnum.SubStatusEnum.WAIT_SEND, /*OrderEnum.SubStatusEnum.SENDING, */OrderEnum.SubStatusEnum.SEND_FAIL,
+				/*OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,*/
 				OrderEnum.SubStatusEnum.COMPLETE);
 
 		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(oldSubStatus)) {// 条件状态集合，满足条件才能更新成功
 			// 只有在条件集合下的状态才能更新
 			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
-			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
-//			return 0;
+			throw new BusinessException("当前不可申请退款，请刷新后重试！");
 		}
 
 		EntityWrapper<Order> wrapper = new EntityWrapper<>();
@@ -128,7 +127,8 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		if (affect == 0) {
 			orderDB = orderMapper.selectByOrderCode(orderCode);
 			oldSubStatus = OrderEnum.SubStatusEnum.of(orderDB.getSubStatus());
-			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
+			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
+			throw new BusinessException("当前不可申请退款，请刷新后重试！");
 		}
 		return oldSubStatus;
 	}
@@ -141,11 +141,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		Order order4Update = new Order();
 		order4Update.setAttach(attach);
 		OrderEnum.SubStatusEnum subStatusEnum = oldSubStatus;
-		return updateStatus(orderCode, order4Update, subStatusEnum,
-				Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED, OrderEnum.SubStatusEnum.WAIT_SEND,
-						OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
-						OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
-						OrderEnum.SubStatusEnum.COMPLETE, OrderEnum.SubStatusEnum.CHECK));
+		return updateStatus(orderCode, order4Update, subStatusEnum, Lists.newArrayList(OrderEnum.SubStatusEnum.CHECK));
 	}
 	
 	public int refundFinish(String orderCode, LocalDateTime refundFinishTime, BigDecimal totalRefundAmount) {
@@ -159,10 +155,8 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		if (payAmount.compareTo(totalRefundAmount) > 0) {
 			subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;// 部分退款
 		}
-		return updateStatus(orderCode, order4Update, subStatusEnum, Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED,
-				OrderEnum.SubStatusEnum.WAIT_SEND, OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
-				OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
-				OrderEnum.SubStatusEnum.COMPLETE, OrderEnum.SubStatusEnum.CHECK, OrderEnum.SubStatusEnum.REFUNDING));
+		return updateStatus(orderCode, order4Update, subStatusEnum,
+				Lists.newArrayList(OrderEnum.SubStatusEnum.CHECK, OrderEnum.SubStatusEnum.REFUNDING));
 	}
 
 	/**
@@ -187,7 +181,6 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 			// 只有在条件集合下的状态才能更新
 			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
 			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
-//			return 0;
 		}
 
 		EntityWrapper<Order> wrapper = new EntityWrapper<>();

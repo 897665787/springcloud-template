@@ -11,15 +11,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class OrderRefundApplyResp {
 	/**
-	 * 成功
-	 */
-	private Boolean success;
-	/**
-	 * 信息
-	 */
-	private String message;
-	
-	/**
 	 * 旧状态
 	 */
 	private OrderEnum.SubStatusEnum oldSubStatus;

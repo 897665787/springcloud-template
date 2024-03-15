@@ -3,6 +3,7 @@ package com.company.order.controller;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -182,12 +183,6 @@ public class OrderController implements OrderFeign {
 		OrderRefundApplyResp resp = new OrderRefundApplyResp();
 		LocalDateTime refundApplyTime = orderRefundApplyReq.getRefundApplyTime();
 		OrderEnum.SubStatusEnum oldSubStatus = orderService.refundApply(orderCode, refundApplyTime);
-//		if (affect == 0) {
-//			resp.setSuccess(false);
-//			resp.setMessage("修改为退款审核中失败");
-//			return Result.fail("修改为退款审核中失败");
-//		}
-		resp.setSuccess(true);
 		resp.setOldSubStatus(oldSubStatus);
 		BigDecimal canRefundAmount = payAmount.subtract(refundAmount);
 		resp.setCanRefundAmount(canRefundAmount);
@@ -285,6 +280,8 @@ public class OrderController implements OrderFeign {
 			orderResp.setTime(order.getPayTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
+			
+			bottonList.add(new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
 			orderResp.setTimeText("完成时间");
 			orderResp.setTime(order.getFinishTime());
@@ -292,6 +289,11 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayAmount(order.getPayAmount());
 			if (OrderEnum.SubStatusEnum.WAIT_REVIEW == subStatusEnum) {
 				bottonList.add(new OrderResp.BottonResp("评价", "comment", "orderCode=" + order.getOrderCode(), 20));
+			}
+			
+			long hours = LocalDateTimeUtil.between(order.getFinishTime(), LocalDateTime.now(), ChronoUnit.HOURS);
+			if (hours < 24) {// 订单完成n小时内可以申请退款
+				bottonList.add(new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
 			}
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderResp.setTimeText("退款申请时间");
