@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.company.common.exception.BusinessException;
+import com.company.common.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.entity.Order;
 import com.company.order.mapper.OrderMapper;
@@ -132,8 +133,13 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		return oldSubStatus;
 	}
 	
-	public int refundReject(String orderCode, OrderEnum.SubStatusEnum oldSubStatus) {
+	public int refundReject(String orderCode, OrderEnum.SubStatusEnum oldSubStatus, String rejectReason) {
+		Order orderDB = orderMapper.selectByOrderCode(orderCode);
+		String attach = orderDB.getAttach();
+		attach = Utils.append2Json(attach, "rejectReason", rejectReason);
+		
 		Order order4Update = new Order();
+		order4Update.setAttach(attach);
 		OrderEnum.SubStatusEnum subStatusEnum = oldSubStatus;
 		return updateStatus(orderCode, order4Update, subStatusEnum,
 				Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED, OrderEnum.SubStatusEnum.WAIT_SEND,
@@ -142,14 +148,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 						OrderEnum.SubStatusEnum.COMPLETE, OrderEnum.SubStatusEnum.CHECK));
 	}
 	
-	public int refundFinish(String orderCode, LocalDateTime refundFinishTime, BigDecimal thisRefundAmount) {
+	public int refundFinish(String orderCode, LocalDateTime refundFinishTime, BigDecimal totalRefundAmount) {
 		Order orderDB = orderMapper.selectByOrderCode(orderCode);
-		if (orderDB == null) {
-			throw new BusinessException("订单" + orderCode + "不存在");
-		}
 		BigDecimal payAmount = orderDB.getPayAmount();
-		BigDecimal totalRefundAmount = orderDB.getRefundAmount();
-		totalRefundAmount = totalRefundAmount.add(thisRefundAmount);
 		
 		Order order4Update = new Order();
 		order4Update.setRefundAmount(totalRefundAmount);

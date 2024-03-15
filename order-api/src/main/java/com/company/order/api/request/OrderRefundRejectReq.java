@@ -21,4 +21,9 @@ public class OrderRefundRejectReq {
 	 */
 	@NotNull(message = "退款申请旧状态不能为空")
 	private OrderEnum.SubStatusEnum oldSubStatus;
+	
+	/**
+	 * 拒绝原因
+	 */
+	private String rejectReason;
 }

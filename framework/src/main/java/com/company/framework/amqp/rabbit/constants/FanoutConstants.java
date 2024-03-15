@@ -84,7 +84,7 @@ public interface FanoutConstants {
 		
 		String PREFIX = FanoutConstants.PREFIX + "refund_apply_result.";
 		// 队列
-		String MEMBER_REFUND_QUEUE = PREFIX + "member_refund";
+		String MEMBER_BUY_QUEUE = PREFIX + "member_buy";
 		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
 	

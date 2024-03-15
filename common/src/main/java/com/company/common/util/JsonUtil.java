@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -131,6 +132,14 @@ public class JsonUtil {
 			logger.error("io exception error,jsonString:{}", jsonString, e);
 		}
 		return null;
+	}
+	
+	public static ObjectNode toNotNullObjectNode(String jsonString) {
+		JsonNode jsonNode = toJsonNode(jsonString);
+		if (jsonNode == null) {
+			return new ObjectNode(mapper.getNodeFactory());
+		}
+		return (ObjectNode) jsonNode;
 	}
 	
 	public static ObjectMapper mapper() {

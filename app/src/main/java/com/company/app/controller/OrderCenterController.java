@@ -126,9 +126,9 @@ public class OrderCenterController {
 		orderRefundApplyReq.setRefundApplyTime(LocalDateTime.now());
 		OrderRefundApplyResp orderRefundApplyResp = orderFeign.refundApply(orderRefundApplyReq).dataOrThrow();
 		if (!orderRefundApplyResp.getSuccess()) {
-			return Result.fail(orderRefundApplyResp.getMessage());
+			return Result.fail("申请退款失败，请稍后重试！");
 		}
-		
+
 		String refundOrderCode = String.valueOf(sequenceGenerator.nextId());
 		PayRefundApplyReq payRefundApplyReq = new PayRefundApplyReq();
 		payRefundApplyReq.setOrderCode(refundOrderCode);
@@ -140,7 +140,6 @@ public class OrderCenterController {
 		
 		Map<String, Object> attachMap = Maps.newHashMap();
 		attachMap.put("oldSubStatus", orderRefundApplyResp.getOldSubStatus().getStatus());
-		attachMap.put("canRefundAmount", orderRefundApplyResp.getCanRefundAmount());
 		payRefundApplyReq.setAttach(JsonUtil.toJsonString(attachMap));
 
 		refundApplyFeign.refundApply(payRefundApplyReq);

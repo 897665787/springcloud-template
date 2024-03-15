@@ -1,5 +1,6 @@
 package com.company.order.api.request;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
@@ -21,4 +22,10 @@ public class OrderRefundFinishReq {
 	 */
 	@NotNull(message = "退款完成时间不能为空")
 	private LocalDateTime refundFinishTime;
+	
+	/**
+	 * 总退款金额
+	 */
+	@NotNull(message = "总退款金额不能为空")
+	private BigDecimal totalRefundAmount;
 }

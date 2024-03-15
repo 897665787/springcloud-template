@@ -394,16 +394,16 @@ public class PayController implements PayFeign {
 	 */
 	@PostMapping("/refundWithRetry")
 	public Result<Void> refundWithRetry(@RequestBody RefundReq refundReq) {
-		OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
-		if (refundOrderPay == null) {
+		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
+		if (orderPayRefund == null) {
 			return Result.fail("数据不存在");
 		}
 
-		String outTradeNo = refundOrderPay.getOrderCode();
-		BigDecimal refundAmount = refundOrderPay.getRefundAmount().setScale(2, BigDecimal.ROUND_HALF_UP);// 向上取整，保留2位小数
+		String outTradeNo = orderPayRefund.getOrderCode();
+		BigDecimal refundAmount = orderPayRefund.getRefundAmount().setScale(2, BigDecimal.ROUND_HALF_UP);// 向上取整，保留2位小数
 
-		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(refundOrderPay.getMethod()));
-		PayRefundResp payRefundResp = payClient.refund(outTradeNo, refundOrderPay.getOrderCode(), refundAmount);
+		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPayRefund.getMethod()));
+		PayRefundResp payRefundResp = payClient.refund(outTradeNo, orderPayRefund.getOrderCode(), refundAmount);
 
 		if (!payRefundResp.getSuccess()) {
 			return Result.fail(payRefundResp.getMessage());

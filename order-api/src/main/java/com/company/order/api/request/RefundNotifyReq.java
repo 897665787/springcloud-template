@@ -47,4 +47,9 @@ public class RefundNotifyReq {
 	 * 总退款金额<success=true时必填>
 	 */
 	private BigDecimal totalRefundAmount;
+	
+	/**
+	 * 是否全额退款<success=true时必填>
+	 */
+	private Boolean refundAll;
 }
