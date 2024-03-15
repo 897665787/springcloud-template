@@ -2,7 +2,6 @@ package com.company.app.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.common.util.Utils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
@@ -32,7 +31,6 @@ import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayResp;
-import com.google.common.collect.Maps;
 
 /**
  * 用户订单中心
@@ -138,9 +136,9 @@ public class OrderCenterController {
 		payRefundApplyReq.setVerifyStatus(PayRefundApplyEnum.VerifyStatus.WAIT_VERIFY);
 		payRefundApplyReq.setReason(refundReason);
 		
-		Map<String, Object> attachMap = Maps.newHashMap();
-		attachMap.put("oldSubStatus", orderRefundApplyResp.getOldSubStatus().getStatus());
-		payRefundApplyReq.setAttach(JsonUtil.toJsonString(attachMap));
+		String attach = Utils.append2Json(null, "oldSubStatus",
+				String.valueOf(orderRefundApplyResp.getOldSubStatus().getStatus()));
+		payRefundApplyReq.setAttach(attach);
 
 		refundApplyFeign.refundApply(payRefundApplyReq);
 		
