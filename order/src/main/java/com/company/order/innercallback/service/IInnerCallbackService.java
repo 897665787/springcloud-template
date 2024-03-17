@@ -1,6 +1,6 @@
 package com.company.order.innercallback.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.baomidou.mybatisplus.service.IService;
@@ -133,7 +133,7 @@ public interface IInnerCallbackService extends IService<InnerCallback> {
 	 * @return 成功/失败
 	 */
 	Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
-			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy, Date nextDisposeTime);
+			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy, LocalDateTime nextDisposeTime);
 
 	/**
 	 * 使用RestTemplate POST方式进行回调

@@ -15,13 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
+import com.company.common.util.Utils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
+import com.company.order.api.feign.RefundApplyFeign;
 import com.company.order.api.request.OrderCancelReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.PayRefundApplyReq;
 import com.company.order.api.response.OrderDetailResp;
+import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayResp;
 
@@ -37,6 +44,10 @@ public class OrderCenterController {
 	private OrderFeign orderFeign;
 	@Autowired
 	private PayFeign payFeign;
+	@Autowired
+	private RefundApplyFeign refundApplyFeign;
+	@Autowired
+	private SequenceGenerator sequenceGenerator;
 
 	/**
 	 * 分页查询订单列表
@@ -61,7 +72,7 @@ public class OrderCenterController {
 	 */
 	@GetMapping("/detail")
 	public Result<OrderDetailResp> detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
-		return orderFeign.queryByOrderCode(orderCode);
+		return orderFeign.detail(orderCode);
 	}
 
 	/**
@@ -98,5 +109,36 @@ public class OrderCenterController {
 			return Result.fail("支付失败，请稍后重试");
 		}
 		return Result.success(payResp.getPayInfo());
+	}
+
+	/**
+	 * 退款申请
+	 * 
+	 * @param orderCode
+	 * @return
+	 */
+	@GetMapping("/refundApply")
+	public Result<Void> refundApply(@Valid @NotNull(message = "订单号不能为空") String orderCode, String refundReason) {
+		OrderRefundApplyReq orderRefundApplyReq = new OrderRefundApplyReq();
+		orderRefundApplyReq.setOrderCode(orderCode);
+		orderRefundApplyReq.setRefundApplyTime(LocalDateTime.now());
+		OrderRefundApplyResp orderRefundApplyResp = orderFeign.refundApply(orderRefundApplyReq).dataOrThrow();
+
+		String refundOrderCode = String.valueOf(sequenceGenerator.nextId());
+		PayRefundApplyReq payRefundApplyReq = new PayRefundApplyReq();
+		payRefundApplyReq.setOrderCode(refundOrderCode);
+		payRefundApplyReq.setOldOrderCode(orderCode);
+		payRefundApplyReq.setAmount(orderRefundApplyResp.getCanRefundAmount());
+		payRefundApplyReq.setBusinessType(PayRefundApplyEnum.BusinessType.USER);
+		payRefundApplyReq.setVerifyStatus(PayRefundApplyEnum.VerifyStatus.WAIT_VERIFY);
+		payRefundApplyReq.setReason(refundReason);
+		
+		String attach = Utils.append2Json(null, "oldSubStatus",
+				String.valueOf(orderRefundApplyResp.getOldSubStatus().getStatus()));
+		payRefundApplyReq.setAttach(attach);
+
+		refundApplyFeign.refundApply(payRefundApplyReq);
+		
+		return Result.success();
 	}
 }

@@ -1,7 +1,6 @@
 package com.company.order.entity;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
@@ -51,7 +50,7 @@ public class InnerCallback {
 	/**
 	 * 下次处理时间
 	 */
-	private Date nextDisposeTime;
+	private LocalDateTime nextDisposeTime;
 	/**
 	 * 最大允许失败次数
 	 */

@@ -1,6 +1,6 @@
 package com.company.tool.mapper;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -18,7 +18,7 @@ public interface InnerCallbackMapper extends BaseMapper<InnerCallback> {
 			@Param("jsonResult") String jsonResult, @Param("remark") String remark, @Param("id") Integer id);
 
 	@Update("update bu_inner_callback set status = #{status.code},next_dispose_time = #{nextDisposeTime},failure = failure + 1,remark = #{remark} where id = #{id}")
-	int callbackFail(@Param("status") InnerCallbackEnum.Status callbackFail, @Param("nextDisposeTime") Date nextDisposeTime,
+	int callbackFail(@Param("status") InnerCallbackEnum.Status callbackFail, @Param("nextDisposeTime") LocalDateTime nextDisposeTime,
 			@Param("remark") String remark, @Param("id") Integer id);
 	
 	@Update("update bu_inner_callback set status = #{status.code} where id = #{id}")

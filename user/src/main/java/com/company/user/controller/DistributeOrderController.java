@@ -213,9 +213,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			executor.submit(() -> {
 				PayNotifyReq payNotifyReq = new PayNotifyReq();
 				payNotifyReq.setEvent(PayNotifyReq.EVENT.PAY);
-				payNotifyReq.setSuccess(true);
-				payNotifyReq.setMessage("0元付，跳过支付流程");
 				payNotifyReq.setOrderCode(orderCode);
+				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
 				Result<Void> buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
@@ -266,14 +265,6 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			return Result.success();
 		}
 		
-		if (!payNotifyReq.getSuccess()) {// 支付失败
-			// 发布‘支付失败’事件
-			Map<String, Object> params = Maps.newHashMap();
-			params.put("orderCode", orderCode);
-			messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_FAIL.EXCHANGE);
-			
-			return Result.success();
-		}
 		// 支付成功
 
 		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
@@ -283,7 +274,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		}
 		
 		// 修改‘订单中心’数据
-		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayTime(time));
+		BigDecimal payAmount = payNotifyReq.getPayAmount();
+		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount).setPayTime(time));
 		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
@@ -321,11 +313,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			userCouponService.updateStatus(userCouponId, "used", "nouse");
 		}
 		
-		// 关闭支付订单，不关心结果
-		PayCloseReq payCloseReq = new PayCloseReq();
-		payCloseReq.setOrderCode(orderCode);
-		Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
-		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+		if (orderReq.getNeedPayAmount().compareTo(BigDecimal.ZERO) > 0) {
+			// 关闭支付订单，不关心结果
+			PayCloseReq payCloseReq = new PayCloseReq();
+			payCloseReq.setOrderCode(orderCode);
+			Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
+			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+		}
 	}
 
 	private DistributeSubOrderResp item(OrderReq orderReq) {

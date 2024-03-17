@@ -78,15 +78,16 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		refundNotifyReq.setOrderCode(outTradeNo);
 		refundNotifyReq.setRefundOrderCode(outRefundNo);
 		refundNotifyReq.setAttach(orderPayRefund.getNotifyAttach());
-		refundNotifyReq.setThisRefundAmount(orderPayRefund.getAmount());
+		refundNotifyReq.setThisRefundAmount(orderPayRefund.getRefundAmount());
 
 		List<OrderPayRefund> refundOrderList = orderPayRefundService.listByOrderCode(outTradeNo);
 		// 该订单所有的‘退款成功’订单金额求和
 		BigDecimal totalRefundAmount = refundOrderList.stream()
-				.filter(o -> OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode().equals(o.getStatus()))
-				.map(OrderPayRefund::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-
+				.filter(o -> OrderPayRefundEnum.Status.REFUND_SUCCESS == OrderPayRefundEnum.Status.of(o.getStatus()))
+				.map(OrderPayRefund::getRefundAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+		
 		refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
+		refundNotifyReq.setRefundAll(totalRefundAmount.compareTo(orderPayRefund.getAmount()) == 0);
 
 		innerCallbackService.postRestTemplate(notifyUrl, refundNotifyReq);
 	}

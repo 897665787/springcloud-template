@@ -1,16 +1,15 @@
 package com.company.order.api.request;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import javax.validation.constraints.NotNull;
+
+import com.company.order.api.enums.OrderEnum;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class OrderPaySuccessReq {
+public class OrderRefundRejectReq {
 	/**
 	 * 订单号
 	 */
@@ -18,14 +17,13 @@ public class OrderPaySuccessReq {
 	private String orderCode;
 	
 	/**
-	 * 支付金额
+	 * 退款申请旧状态
 	 */
-	@NotNull(message = "支付金额不能为空")
-	private BigDecimal payAmount;
+	@NotNull(message = "退款申请旧状态不能为空")
+	private OrderEnum.SubStatusEnum oldSubStatus;
 	
 	/**
-	 * 支付时间
+	 * 拒绝原因
 	 */
-	@NotNull(message = "支付时间不能为空")
-	private LocalDateTime payTime;
+	private String rejectReason;
 }

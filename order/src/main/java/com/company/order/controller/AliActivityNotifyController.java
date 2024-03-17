@@ -183,7 +183,6 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("payNotifyId", payNotifyId);
 		params.put("outOrderNo", outOrderNo);
-		params.put("success", true);
 
 		LocalDateTime time = LocalDateTime.now();
 		params.put("time", time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

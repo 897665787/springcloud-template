@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.request.PayRefundApplyReq;
-import com.company.order.api.request.RefundNotifyReq;
 
 import feign.hystrix.FallbackFactory;
 
@@ -44,15 +43,6 @@ public interface RefundApplyFeign {
 	@PostMapping("/dealRefundApply")
 	Result<Boolean> dealRefundApply(@RequestParam("id") Integer id);
 
-	/**
-	 * 退款回调
-	 * 
-	 * @param refundNotifyReq
-	 * @return
-	 */
-	@PostMapping("/refundNotify")
-	Result<Void> refundNotify(@RequestBody RefundNotifyReq refundNotifyReq);
-
 	@Component
 	class RefundApplyFeignFactory implements FallbackFactory<RefundApplyFeign> {
 
@@ -72,11 +62,6 @@ public interface RefundApplyFeign {
 
 				@Override
 				public Result<Boolean> dealRefundApply(Integer id) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<Void> refundNotify(RefundNotifyReq refundNotifyReq) {
 					return Result.onFallbackError();
 				}
 			};

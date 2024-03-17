@@ -10,8 +10,12 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFinishReq;
+import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
+import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 
 import feign.hystrix.FallbackFactory;
@@ -48,12 +52,27 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
+			public Result<OrderRefundApplyResp> refundApply(OrderRefundApplyReq orderRefundApplyReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Void> refundReject(OrderRefundRejectReq orderRefundRejectReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Void> refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
 			public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
+			public Result<OrderDetailResp> detail(String orderCode) {
 				return Result.onFallbackError();
 			}
 

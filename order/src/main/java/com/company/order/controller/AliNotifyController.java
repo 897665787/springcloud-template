@@ -213,7 +213,6 @@ public class AliNotifyController implements AliNotifyFeign {
 			Wrapper<AliPay> wrapper = new EntityWrapper<AliPay>();
 			wrapper.eq("out_trade_no", outTradeNo);
 			wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.TRADE_SUCCESS);
-//			wrapper.and(a -> a.isNull("trade_status").or().ne("trade_status", AliConstants.TRADE_SUCCESS));
 			int affect = aliPayMapper.update(aliPay4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
@@ -225,7 +224,6 @@ public class AliNotifyController implements AliNotifyFeign {
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("payNotifyId", payNotify.getId());
 			params.put("outTradeNo", outTradeNo);
-			params.put("success", true);
 			
 			params.put("time", aliParams.get("gmt_payment"));
 

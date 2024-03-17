@@ -3,6 +3,7 @@ package com.company.order.controller;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +40,14 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFinishReq;
+import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderDetailResp.TextValueResp;
+import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.entity.Order;
 import com.company.order.entity.OrderProduct;
@@ -141,9 +146,10 @@ public class OrderController implements OrderFeign {
 	@Override
 	public Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
 		String orderCode = orderPaySuccessReq.getOrderCode();
+		BigDecimal payAmount = orderPaySuccessReq.getPayAmount();
 		LocalDateTime payTime = orderPaySuccessReq.getPayTime();
 
-		int affect = orderService.paySuccess(orderCode, payTime);
+		int affect = orderService.paySuccess(orderCode, payAmount, payTime);
 		if (affect == 0) {
 			return Result.fail("修改为支付成功失败");
 		}
@@ -162,6 +168,54 @@ public class OrderController implements OrderFeign {
 		return Result.success();
 	}
 
+	@Override
+	public Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq) {
+		String orderCode = orderRefundApplyReq.getOrderCode();
+		Order order = orderService.selectByOrderCode(orderCode);
+
+		BigDecimal needPayAmount = order.getNeedPayAmount();
+		BigDecimal payAmount = order.getPayAmount();
+		BigDecimal refundAmount = order.getRefundAmount();
+		if (needPayAmount.compareTo(BigDecimal.ZERO) != 0 && payAmount.compareTo(refundAmount) <= 0) {
+			return Result.fail("无可退款金额");
+		}
+
+		OrderRefundApplyResp resp = new OrderRefundApplyResp();
+		LocalDateTime refundApplyTime = orderRefundApplyReq.getRefundApplyTime();
+		OrderEnum.SubStatusEnum oldSubStatus = orderService.refundApply(orderCode, refundApplyTime);
+		resp.setOldSubStatus(oldSubStatus);
+		BigDecimal canRefundAmount = payAmount.subtract(refundAmount);
+		resp.setCanRefundAmount(canRefundAmount);
+		
+		return Result.success(resp);
+	}
+	
+	@Override
+	public Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
+		String orderCode = orderRefundRejectReq.getOrderCode();
+		OrderEnum.SubStatusEnum oldSubStatus = orderRefundRejectReq.getOldSubStatus();
+		String rejectReason = orderRefundRejectReq.getRejectReason();
+
+		int affect = orderService.refundReject(orderCode, oldSubStatus, rejectReason);
+		if (affect == 0) {
+			return Result.fail("修改为退款审核拒绝失败");
+		}
+		return Result.success();
+	}
+	
+	@Override
+	public Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
+		String orderCode = orderRefundFinishReq.getOrderCode();
+		LocalDateTime refundFinishTime = orderRefundFinishReq.getRefundFinishTime();
+		BigDecimal totalRefundAmount = orderRefundFinishReq.getTotalRefundAmount();
+
+		int affect = orderService.refundFinish(orderCode, refundFinishTime, totalRefundAmount);
+		if (affect == 0) {
+			return Result.fail("修改为退款完成失败");
+		}
+		return Result.success();
+	}
+	
 	@Override
 	public Result<List<OrderResp>> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
@@ -226,6 +280,8 @@ public class OrderController implements OrderFeign {
 			orderResp.setTime(order.getPayTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
+			
+			bottonList.add(new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
 			orderResp.setTimeText("完成时间");
 			orderResp.setTime(order.getFinishTime());
@@ -234,14 +290,19 @@ public class OrderController implements OrderFeign {
 			if (OrderEnum.SubStatusEnum.WAIT_REVIEW == subStatusEnum) {
 				bottonList.add(new OrderResp.BottonResp("评价", "comment", "orderCode=" + order.getOrderCode(), 20));
 			}
+			
+			long hours = LocalDateTimeUtil.between(order.getFinishTime(), LocalDateTime.now(), ChronoUnit.HOURS);
+			if (hours < 24) {// 订单完成n小时内可以申请退款
+				bottonList.add(new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
+			}
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
-			orderResp.setTimeText("完成时间");
-			orderResp.setTime(order.getFinishTime());
+			orderResp.setTimeText("退款申请时间");
+			orderResp.setTime(order.getRefundTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
-			orderResp.setTimeText("付款时间");
-			orderResp.setTime(order.getPayTime());
+			orderResp.setTimeText("退款申请时间");
+			orderResp.setTime(order.getRefundTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
@@ -270,7 +331,7 @@ public class OrderController implements OrderFeign {
 		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.QUERY_ITEM, subOrderUrl, order, orderProductList);
 		orderResp.setSubOrder(data);
 
-		// 如果data里面有statusText字段，则覆盖外层的statusText
+		// 如果data里面有同名的字段，则覆盖外层的字段
 		JSONObject dataJSON = JSON.parseObject(JSON.toJSONString(data));
 		if (dataJSON.containsKey("statusText")) {
 			orderResp.setStatusText(dataJSON.getString("statusText"));
@@ -287,7 +348,7 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayText(dataJSON.getString("payText"));
 		}
 
-		// 如果data里面有textValueList字段，则追加到外层的textValueList
+		// 如果data里面有bottonList字段，则追加到外层的bottonList
 		if (dataJSON.containsKey("bottonList")) {
 			JSONArray dataJSONArray = dataJSON.getJSONArray("bottonList");
 			for (int i = 0; i < dataJSONArray.size(); i++) {
@@ -307,7 +368,7 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<OrderDetailResp> queryByOrderCode(String orderCode) {
+	public Result<OrderDetailResp> detail(String orderCode) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
@@ -387,11 +448,11 @@ public class OrderController implements OrderFeign {
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			textValueList.add(
 					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp("申请退款时间", LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+			textValueList.add(new TextValueResp("退款申请时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
 			textValueList.add(
 					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp("申请退款时间", LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+			textValueList.add(new TextValueResp("退款申请时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			textValueList.add(
 					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
@@ -407,10 +468,13 @@ public class OrderController implements OrderFeign {
 		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.QUERY_DETAIL, subOrderUrl, order, orderProductList);
 		orderDetailResp.setSubOrder(data);
 
-		// 如果data里面有statusText字段，则覆盖外层的statusText
+		// 如果data里面有同名的字段，则覆盖外层的字段
 		JSONObject dataJSON = JSON.parseObject(JSON.toJSONString(data));
 		if (dataJSON.containsKey("statusText")) {
 			orderDetailResp.setStatusText(dataJSON.getString("statusText"));
+		}
+		if (dataJSON.containsKey("payText")) {
+			orderDetailResp.setPayText(dataJSON.getString("payText"));
 		}
 		// 如果data里面有textValueList字段，则追加到外层的textValueList
 		if (dataJSON.containsKey("textValueList")) {
@@ -421,9 +485,6 @@ public class OrderController implements OrderFeign {
 				String value = textValueJSON.getString("value");
 				textValueList.add(new TextValueResp(text, value));
 			}
-		}
-		if (dataJSON.containsKey("payText")) {
-			orderDetailResp.setPayText(dataJSON.getString("payText"));
 		}
 
 		return orderDetailResp;

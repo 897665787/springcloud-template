@@ -2,7 +2,6 @@ package com.company.order.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -77,7 +76,7 @@ public class OrderPay {
 	 * 关闭/支付时间
 	 */
 	@TableField(value = "pay_time")
-	private Date payTime;
+	private LocalDateTime payTime;
 
 	/**
 	 * 备注

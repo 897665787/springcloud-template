@@ -46,24 +46,21 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		Integer payNotifyId = MapUtils.getInteger(params, "payNotifyId");
 
 		String outTradeNo = MapUtils.getString(params, "outTradeNo");
-		Boolean success = MapUtils.getBoolean(params, "success");
-		if (success) {
-			// 支付成功
-			OrderPay orderPay4Update = new OrderPay();
-			orderPay4Update.setStatus(OrderPayEnum.Status.PAYED.getCode());
-			Wrapper<OrderPay> wrapper = new EntityWrapper<OrderPay>();
-			wrapper.eq("order_code", outTradeNo);
-			// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘待支付、已关闭’变为‘已支付’
-			wrapper.in("status",
-					Lists.newArrayList(OrderPayEnum.Status.WAITPAY.getCode(), OrderPayEnum.Status.CLOSED.getCode()));
-			boolean affect = orderPayService.update(orderPay4Update, wrapper);
-			if (!affect) {
-				log.warn("修改支付订单状态失败,可能存在重复回调,payNotifyId:{},outTradeNo:{}", payNotifyId, outTradeNo);
-				return;
-			}
-
-			financialFlow(params, outTradeNo);
+		// 支付成功
+		OrderPay orderPay4Update = new OrderPay();
+		orderPay4Update.setStatus(OrderPayEnum.Status.PAYED.getCode());
+		Wrapper<OrderPay> wrapper = new EntityWrapper<OrderPay>();
+		wrapper.eq("order_code", outTradeNo);
+		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘待支付、已关闭’变为‘已支付’
+		wrapper.in("status",
+				Lists.newArrayList(OrderPayEnum.Status.WAITPAY.getCode(), OrderPayEnum.Status.CLOSED.getCode()));
+		boolean affect = orderPayService.update(orderPay4Update, wrapper);
+		if (!affect) {
+			log.warn("修改支付订单状态失败,可能存在重复回调,payNotifyId:{},outTradeNo:{}", payNotifyId, outTradeNo);
+			return;
 		}
+
+		financialFlow(params, outTradeNo);
 
 		OrderPay orderPay = orderPayService.selectByOrderCode(outTradeNo);
 
@@ -76,10 +73,8 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		// 回调支付到对应业务中
 		PayNotifyReq payNotifyReq = new PayNotifyReq();
 		payNotifyReq.setEvent(PayNotifyReq.EVENT.PAY);
-		payNotifyReq.setSuccess(success);
-		String message = MapUtils.getString(params, "message");
-		payNotifyReq.setMessage(message);
 		payNotifyReq.setOrderCode(outTradeNo);
+		payNotifyReq.setPayAmount(orderPay.getAmount());
 		
 		LocalDateTime time = LocalDateTime.now();
 		String timeStr = MapUtils.getString(params, "time");

@@ -1,5 +1,6 @@
 package com.company.order.api.request;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
@@ -19,20 +20,17 @@ public class PayNotifyReq {
 	 * 事件(取值PayNotifyReq.EVENT)
 	 */
 	private String event;
-	/**
-	 * 成功
-	 */
-	private Boolean success;
-	/**
-	 * 信息
-	 */
-	private String message;
 	
 	/**
 	 * 订单号<必填>
 	 */
 	@NotBlank(message = "订单号不能为空")
 	private String orderCode;
+	
+	/**
+	 * 支付金额<非必填>
+	 */
+	private BigDecimal payAmount;
 	
 	/**
 	 * 支付/关闭时间<非必填>

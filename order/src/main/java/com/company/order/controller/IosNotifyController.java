@@ -159,7 +159,6 @@ public class IosNotifyController implements IosNotifyFeign {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("payNotifyId", payNotify.getId());
 		params.put("outTradeNo", outTradeNo);
-		params.put("success", true);
 		
 		params.put("time", iosParams.get("tradeId"));
 		

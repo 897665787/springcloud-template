@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,16 +136,18 @@ public class WxNotifyController implements WxNotifyFeign {
 
 		String resultCode = orderNotifyResult.getResultCode();
 
+		boolean success = WxPayConstants.ResultCode.SUCCESS.equals(resultCode);
+		if (!success) {// 不是支付成功
+			String message = Optional.ofNullable(orderNotifyResult.getErrCodeDes())
+					.orElse(orderNotifyResult.getReturnMsg());
+			log.warn("resultCode不是SUCCESS:{},{}", resultCode, message);
+			payNotifyMapper.updateRemarkById(message, payNotify.getId());
+			return Result.success(WxPayNotifyResponse.fail("resultCode不是SUCCESS"));
+		}
 		// MQ异步处理
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("payNotifyId", payNotify.getId());
 		params.put("outTradeNo", outTradeNo);
-
-		boolean success = WxPayConstants.ResultCode.SUCCESS.equals(resultCode);
-		params.put("success", success);
-		if (!success) {
-			params.put("message", orderNotifyResult.getErrCodeDes());
-		}
 
 		LocalDateTime time = LocalDateTime.now();
 		if (StringUtils.isNotBlank(orderNotifyResult.getTimeEnd())) {
@@ -233,7 +236,6 @@ public class WxNotifyController implements WxNotifyFeign {
 		Wrapper<WxPayRefund> wrapper = new EntityWrapper<WxPayRefund>();
 		wrapper.eq("out_refund_no", outRefundNo);
 		wrapper.and("(refund_status is null or refund_status != {0})", WxPayConstants.RefundStatus.SUCCESS);
-//		wrapper.and(a -> a.isNull("refund_status").or().ne("refund_status", WxPayConstants.RefundStatus.SUCCESS));
 		int affect = wxPayRefundMapper.update(wxPay4Update, wrapper);
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理

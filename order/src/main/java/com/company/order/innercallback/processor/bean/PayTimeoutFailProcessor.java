@@ -1,5 +1,7 @@
 package com.company.order.innercallback.processor.bean;
 
+import java.time.LocalDateTime;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,6 +45,8 @@ public class PayTimeoutFailProcessor implements AbandonRequestProcessor {
 		// 修改状态为已关闭
 		OrderPay orderPay4Update = new OrderPay();
 		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
+		LocalDateTime time = LocalDateTime.now();
+		orderPay4Update.setPayTime(time);
 		EntityWrapper<OrderPay> wrapper = new EntityWrapper<>();
 		wrapper.eq("id", orderPay.getId());
 		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
@@ -61,9 +65,8 @@ public class PayTimeoutFailProcessor implements AbandonRequestProcessor {
 		// 回调超时未支付关闭订单到对应业务中
 		PayNotifyReq payNotifyReq = new PayNotifyReq();
 		payNotifyReq.setEvent(PayNotifyReq.EVENT.CLOSE);
-		payNotifyReq.setSuccess(false);// 返回false避免出现超时回调认为是支付成功回调
-		payNotifyReq.setMessage("超时未支付关闭订单");
 		payNotifyReq.setOrderCode(orderCode);
+		payNotifyReq.setTime(time);
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));

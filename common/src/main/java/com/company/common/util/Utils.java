@@ -4,6 +4,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.HexUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -117,5 +120,41 @@ public class Utils {
 		} catch (Exception e) {
 			return str;
 		}
+	}
+
+	/**
+	 * 将key:value添加到json字符串中
+	 * 
+	 * @param jsonString
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public static String append2Json(String jsonString, String key, String value) {
+		if (StringUtils.isBlank(value)) {
+			return jsonString;
+		}
+		ObjectNode objectNode = JsonUtil.toNotNullObjectNode(jsonString);
+		objectNode.put(key, value);
+		return JsonUtil.toJsonString(objectNode);
+	}
+	
+	/**
+	 * 在json字符串中获取key的value
+	 * 
+	 * @param jsonString
+	 * @param key
+	 * @return
+	 */
+	public static String getByJson(String jsonString, String key) {
+		if (StringUtils.isBlank(jsonString)) {
+			return null;
+		}
+		ObjectNode objectNode = JsonUtil.toNotNullObjectNode(jsonString);
+		JsonNode valueNode = objectNode.get(key);
+		if (valueNode == null) {
+			return null;
+		}
+		return valueNode.asText();
 	}
 }

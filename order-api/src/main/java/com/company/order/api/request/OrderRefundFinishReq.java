@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class OrderPaySuccessReq {
+public class OrderRefundFinishReq {
 	/**
 	 * 订单号
 	 */
@@ -18,14 +18,14 @@ public class OrderPaySuccessReq {
 	private String orderCode;
 	
 	/**
-	 * 支付金额
+	 * 退款完成时间
 	 */
-	@NotNull(message = "支付金额不能为空")
-	private BigDecimal payAmount;
+	@NotNull(message = "退款完成时间不能为空")
+	private LocalDateTime refundFinishTime;
 	
 	/**
-	 * 支付时间
+	 * 总退款金额
 	 */
-	@NotNull(message = "支付时间不能为空")
-	private LocalDateTime payTime;
+	@NotNull(message = "总退款金额不能为空")
+	private BigDecimal totalRefundAmount;
 }

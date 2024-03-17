@@ -189,6 +189,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			// params.put("attach", attach);
 			params.put("thisRefundAmount", aliActivityPay.getTotalAmount());
 			params.put("totalRefundAmount", aliActivityPay.getTotalAmount());
+			params.put("refundAll", true);
 			
 			messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
 		} else {// 用户主动退款

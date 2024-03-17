@@ -3,14 +3,12 @@ package com.company.order.controller;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -158,7 +156,7 @@ public class PayController implements PayFeign {
 		if (timeoutSeconds == null) {
 			timeoutSeconds = 1800;// 默认30分钟,1800秒
 		}
-		Date timeoutTime = DateUtils.addSeconds(new Date(), timeoutSeconds);
+		LocalDateTime timeoutTime = LocalDateTime.now().plusSeconds(timeoutSeconds);
 		innerCallbackService.postRestTemplate(NOTIFY_URL_TIMEOUT, payTimeoutReq, processorBeanName, 2, 10,
 				InnerCallbackEnum.SecondsStrategy.INCREMENT, timeoutTime);
 	}
@@ -202,6 +200,8 @@ public class PayController implements PayFeign {
 		// 修改状态为已关闭
 		OrderPay orderPay4Update = new OrderPay();
 		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
+		LocalDateTime time = LocalDateTime.now();
+		orderPay4Update.setPayTime(time);
 		EntityWrapper<OrderPay> wrapper = new EntityWrapper<>();
 		wrapper.eq("id", orderPay.getId());
 		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
@@ -220,9 +220,8 @@ public class PayController implements PayFeign {
 		// 回调超时未支付关闭订单到对应业务中
 		PayNotifyReq payNotifyReq = new PayNotifyReq();
 		payNotifyReq.setEvent(PayNotifyReq.EVENT.CLOSE);
-		payNotifyReq.setSuccess(false);// 返回false避免出现超时回调认为是支付成功回调
-		payNotifyReq.setMessage("超时未支付关闭订单");
 		payNotifyReq.setOrderCode(orderCode);
+		payNotifyReq.setTime(time);
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
@@ -394,16 +393,16 @@ public class PayController implements PayFeign {
 	 */
 	@PostMapping("/refundWithRetry")
 	public Result<Void> refundWithRetry(@RequestBody RefundReq refundReq) {
-		OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
-		if (refundOrderPay == null) {
+		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
+		if (orderPayRefund == null) {
 			return Result.fail("数据不存在");
 		}
 
-		String outTradeNo = refundOrderPay.getOrderCode();
-		BigDecimal refundAmount = refundOrderPay.getRefundAmount().setScale(2, BigDecimal.ROUND_HALF_UP);// 向上取整，保留2位小数
+		String outTradeNo = orderPayRefund.getOrderCode();
+		BigDecimal refundAmount = orderPayRefund.getRefundAmount().setScale(2, BigDecimal.ROUND_HALF_UP);// 向上取整，保留2位小数
 
-		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(refundOrderPay.getMethod()));
-		PayRefundResp payRefundResp = payClient.refund(outTradeNo, refundOrderPay.getOrderCode(), refundAmount);
+		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPayRefund.getMethod()));
+		PayRefundResp payRefundResp = payClient.refund(outTradeNo, orderPayRefund.getOrderCode(), refundAmount);
 
 		if (!payRefundResp.getSuccess()) {
 			return Result.fail(payRefundResp.getMessage());
