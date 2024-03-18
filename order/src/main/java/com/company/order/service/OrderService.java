@@ -254,4 +254,12 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		return affect;
 	}
 
+	public void deleteOrder(String orderCode) {
+		Order order4Update = new Order();
+		order4Update.setUserDel(2);
+		EntityWrapper<Order> wrapper = new EntityWrapper<>();
+		wrapper.eq("order_code", orderCode);
+		wrapper.eq("user_del", 1);
+		orderMapper.update(order4Update, wrapper);
+	}
 }

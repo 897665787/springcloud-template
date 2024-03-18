@@ -67,6 +67,11 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
+			public Result<Void> deleteOrder(String orderCode) {
+				return Result.onFallbackError();
+			}
+			
+			@Override
 			public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
 				return Result.onFallbackError();
 			}

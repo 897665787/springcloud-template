@@ -215,6 +215,21 @@ public class OrderController implements OrderFeign {
 		}
 		return Result.success();
 	}
+
+	@Override
+	public Result<Void> deleteOrder(String orderCode) {
+		Integer userId = HttpContextUtil.currentUserIdInt();
+		Order order = orderService.selectByOrderCode(orderCode);
+		if (order == null) {
+			return Result.fail("订单不存在");
+		}
+		if (!order.getUserId().equals(userId)) {
+			return Result.fail("订单不匹配");
+		}
+		
+		orderService.deleteOrder(orderCode);
+		return Result.success();
+	}
 	
 	@Override
 	public Result<List<OrderResp>> page(
@@ -549,4 +564,5 @@ public class OrderController implements OrderFeign {
 		dataMap.put("message", remark);
 		return dataMap;
 	}
+
 }

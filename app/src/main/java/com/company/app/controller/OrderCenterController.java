@@ -141,4 +141,15 @@ public class OrderCenterController {
 		
 		return Result.success();
 	}
+	
+	/**
+	 * 删除订单
+	 * 
+	 * @param orderCode
+	 * @return
+	 */
+	@GetMapping("/deleteOrder")
+	public Result<Void> deleteOrder(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+		return orderFeign.deleteOrder(orderCode);
+	}
 }

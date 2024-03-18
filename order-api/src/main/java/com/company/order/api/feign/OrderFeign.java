@@ -79,6 +79,9 @@ public interface OrderFeign {
 
 	@PostMapping("/refundFinish")
 	Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+
+	@GetMapping("/deleteOrder")
+	Result<Void> deleteOrder(@RequestParam("orderCode") String orderCode);
 	
 	/**
 	 * 分页查询订单列表

@@ -8,6 +8,7 @@
 			<if test="statusEnum != null">
 				and status = #{statusEnum.status}
 			</if>
+			and user_del = 1
 		</where>
 		order by id desc
 	</select>
