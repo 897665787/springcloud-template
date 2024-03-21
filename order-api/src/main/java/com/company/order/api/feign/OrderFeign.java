@@ -51,7 +51,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/cancelByTimeout")
-	Result<Void> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
+	Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
 	
 	/**
 	 * 修改订单状态（支付成功）
@@ -60,7 +60,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/paySuccess")
-	Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
+	Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
 	
 	/**
 	 * 修改订单状态（完成订单）
@@ -69,16 +69,16 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/finish")
-	Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq);
+	Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq);
 
 	@PostMapping("/refundApply")
 	Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
 
 	@PostMapping("/refundReject")
-	Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq);
+	Result<Boolean> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq);
 
 	@PostMapping("/refundFinish")
-	Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+	Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
 
 	@GetMapping("/deleteOrder")
 	Result<Void> deleteOrder(@RequestParam("orderCode") String orderCode);

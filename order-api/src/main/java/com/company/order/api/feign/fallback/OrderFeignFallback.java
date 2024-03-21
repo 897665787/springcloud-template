@@ -37,17 +37,17 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 			
 			@Override
-			public Result<Void> cancelByTimeout(OrderCancelReq orderCancelReq) {
+			public Result<Boolean> cancelByTimeout(OrderCancelReq orderCancelReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
+			public Result<Boolean> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> finish(OrderFinishReq orderFinishReq) {
+			public Result<Boolean> finish(OrderFinishReq orderFinishReq) {
 				return Result.onFallbackError();
 			}
 
@@ -57,12 +57,12 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<Void> refundReject(OrderRefundRejectReq orderRefundRejectReq) {
+			public Result<Boolean> refundReject(OrderRefundRejectReq orderRefundRejectReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
+			public Result<Boolean> refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
 				return Result.onFallbackError();
 			}
 

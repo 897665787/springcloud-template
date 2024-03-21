@@ -275,7 +275,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		
 		// 修改‘订单中心’数据
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
-		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount).setPayTime(time));
+		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
+				.setPayTime(time);
+		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq).dataOrThrow();
+		if (!updateSuccess) {
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
+			return Result.success();
+		}
 		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();

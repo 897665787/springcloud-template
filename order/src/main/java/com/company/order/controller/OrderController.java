@@ -116,8 +116,8 @@ public class OrderController implements OrderFeign {
 	public Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
-		Integer affect = orderService.cancel(orderCode, cancelTime);
-		if (affect == 0) {
+		boolean affect = orderService.cancel(orderCode, cancelTime);
+		if (!affect) {
 			return Result.fail("取消订单失败，请刷新订单");
 		}
 
@@ -133,39 +133,30 @@ public class OrderController implements OrderFeign {
 	}
 	
 	@Override
-	public Result<Void> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
+	public Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
-		Integer affect = orderService.cancel(orderCode, cancelTime);
-		if (affect == 0) {
-			return Result.fail("取消订单失败");
-		}
-		return Result.success();
+		boolean affect = orderService.cancel(orderCode, cancelTime);
+		return Result.success(affect);
 	}
 
 	@Override
-	public Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
+	public Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
 		String orderCode = orderPaySuccessReq.getOrderCode();
 		BigDecimal payAmount = orderPaySuccessReq.getPayAmount();
 		LocalDateTime payTime = orderPaySuccessReq.getPayTime();
 
-		int affect = orderService.paySuccess(orderCode, payAmount, payTime);
-		if (affect == 0) {
-			return Result.fail("修改为支付成功失败");
-		}
-		return Result.success();
+		boolean affect = orderService.paySuccess(orderCode, payAmount, payTime);
+		return Result.success(affect);
 	}
 
 	@Override
-	public Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq) {
+	public Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq) {
 		String orderCode = orderFinishReq.getOrderCode();
 		LocalDateTime finishTime = orderFinishReq.getFinishTime();
 
-		int affect = orderService.finish(orderCode, finishTime);
-		if (affect == 0) {
-			return Result.fail("修改为完成失败");
-		}
-		return Result.success();
+		boolean affect = orderService.finish(orderCode, finishTime);
+		return Result.success(affect);
 	}
 
 	@Override
@@ -191,29 +182,23 @@ public class OrderController implements OrderFeign {
 	}
 	
 	@Override
-	public Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
+	public Result<Boolean> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
 		String orderCode = orderRefundRejectReq.getOrderCode();
 		OrderEnum.SubStatusEnum oldSubStatus = orderRefundRejectReq.getOldSubStatus();
 		String rejectReason = orderRefundRejectReq.getRejectReason();
 
-		int affect = orderService.refundReject(orderCode, oldSubStatus, rejectReason);
-		if (affect == 0) {
-			return Result.fail("修改为退款审核拒绝失败");
-		}
-		return Result.success();
+		boolean affect = orderService.refundReject(orderCode, oldSubStatus, rejectReason);
+		return Result.success(affect);
 	}
 	
 	@Override
-	public Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
+	public Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
 		String orderCode = orderRefundFinishReq.getOrderCode();
 		LocalDateTime refundFinishTime = orderRefundFinishReq.getRefundFinishTime();
 		BigDecimal totalRefundAmount = orderRefundFinishReq.getTotalRefundAmount();
 
-		int affect = orderService.refundFinish(orderCode, refundFinishTime, totalRefundAmount);
-		if (affect == 0) {
-			return Result.fail("修改为退款完成失败");
-		}
-		return Result.success();
+		boolean affect = orderService.refundFinish(orderCode, refundFinishTime, totalRefundAmount);
+		return Result.success(affect);
 	}
 
 	@Override

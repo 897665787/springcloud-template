@@ -236,7 +236,12 @@ public class MemberBuyController implements MemberBuyFeign {
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
-			orderFeign.cancelByTimeout(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
+			OrderCancelReq orderCancelReq = new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time);
+			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq).dataOrThrow();
+			if (!cancelByTimeout) {
+				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
+				return Result.success();
+			}
 
 			MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 			Integer userCouponId = memberBuyOrder.getUserCouponId();
@@ -258,7 +263,13 @@ public class MemberBuyController implements MemberBuyFeign {
 		
 		// 修改‘订单中心’数据
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
-		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount).setPayTime(time));
+		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
+				.setPayTime(time);
+		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq).dataOrThrow();
+		if (!updateSuccess) {
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
+			return Result.success();
+		}
 		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();

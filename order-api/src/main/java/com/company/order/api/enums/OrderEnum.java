@@ -38,10 +38,10 @@ public interface OrderEnum {
 	@AllArgsConstructor
 	enum StatusEnum {
 		WAIT_PAY(1, "待付款"), // 待支付
-		CANCELED(2, "已关闭"), // 已取消 END
-		WAIT_SEND(3, "已付款"), // (待发货)
-		WAIT_RECEIVE(4, "待收货"), //
-		COMPLETE(5, "已完成"), //
+		CANCELED(2, "已取消"), // 已取消 END
+		WAIT_SEND(3, "待发货"), // (已付款、待发货、发货中、发货失败)
+		WAIT_RECEIVE(4, "待收货"), // (发货成功)
+		COMPLETE(5, "已完成"), // (待评价、已结束)
 		REFUND(6, "退款"),//
 		;
 
@@ -65,15 +65,18 @@ public interface OrderEnum {
 	@AllArgsConstructor
 	enum SubStatusEnum {
 		WAIT_PAY(11, "待付款"), // 待支付
-		CANCELED(21, "已关闭"), // 已取消 END
+		CANCELED(21, "已取消"), // 已取消 END
+		
 		PAYED(30, "已付款"), //
 		WAIT_SEND(31, "待发货"), //
 		SENDING(32, "发货中"), //
 		SEND_FAIL(33, "发货失败"), //
+		
 		SEND_SUCCESS(41, "已发货"), //
-		WAIT_REVIEW(51, "待评价"), //
+		WAIT_REVIEW(51, "待评价"), // 一段时间内没有评价则自动变为已结束
 		COMPLETE(52, "已结束"), // END
-		CHECK(60, "退款审核中"), // 退款待审核
+		
+		CHECK(60, "退款审核中"), // 待审核
 		REFUNDING(61, "退款中"), //
 		REFUND_SUCCESS(62, "退款成功"), // END
 		REFUND_FAIL(63, "退款失败"),//

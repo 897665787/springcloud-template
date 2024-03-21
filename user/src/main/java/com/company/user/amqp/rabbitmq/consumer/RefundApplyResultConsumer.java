@@ -65,9 +65,9 @@ public class RefundApplyResultConsumer {
 					orderRefundFinishReq.setRefundFinishTime(LocalDateTime.now());
 					BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
 					orderRefundFinishReq.setTotalRefundAmount(totalRefundAmount);
-					Result<Void> reult = orderFeign.refundFinish(orderRefundFinishReq);
-					if (!reult.successCode()) {
-						log.warn("修改‘订单中心’数据失败:{}", reult.getMessage());
+					Boolean updateSuccess = orderFeign.refundFinish(orderRefundFinishReq).dataOrThrow();
+					if (!updateSuccess) {
+						log.warn("修改‘订单中心’数据失败");
 					}
 					
 					Boolean refundAll = MapUtils.getBoolean(params, "refundAll");
@@ -91,9 +91,9 @@ public class RefundApplyResultConsumer {
 					String message = MapUtils.getString(params, "message");
 					orderRefundRejectReq.setRejectReason(message);
 
-					Result<Void> reult = orderFeign.refundReject(orderRefundRejectReq);
-					if (!reult.successCode()) {
-						log.warn("修改‘订单中心’数据失败:{}", reult.getMessage());
+					Boolean updateSuccess = orderFeign.refundReject(orderRefundRejectReq).dataOrThrow();
+					if (!updateSuccess) {
+						log.warn("修改‘订单中心’数据失败");
 					}
 				}
 			}
