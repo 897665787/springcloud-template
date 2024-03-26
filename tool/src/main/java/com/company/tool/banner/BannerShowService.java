@@ -1,0 +1,154 @@
+package com.company.tool.banner;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.company.common.util.MdcUtil;
+import com.company.framework.context.SpringContextUtil;
+import com.company.tool.api.enums.BannerEnum;
+import com.company.tool.banner.dto.BannerCanShow;
+import com.company.tool.entity.Banner;
+import com.company.tool.entity.BannerCondition;
+import com.company.tool.service.market.BannerConditionService;
+import com.company.tool.service.market.BannerService;
+import com.google.common.collect.Lists;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+public class BannerShowService {
+	@Autowired
+	private BannerService bannerService;
+	@Autowired
+	private BannerConditionService bannerConditionService;
+
+	/**
+	 * <pre>
+	 * 轮播图列表
+	 * </pre>
+	 * 
+	 * @param runtimeAttach
+	 * @return
+	 */
+	public List<BannerCanShow> list(Map<String, String> runtimeAttach) {
+		LocalDateTime now = LocalDateTime.now();
+
+		// 查询条件符合的轮播图，排序priority desc,id desc
+		List<Banner> bannerList = bannerService.selectValidOrderby(BannerEnum.Status.ON, now);
+		if (CollectionUtils.isEmpty(bannerList)) {
+			return Collections.emptyList();
+		}
+
+		Set<Integer> bannerIdSet = bannerList.stream().map(Banner::getId).collect(Collectors.toSet());
+		List<BannerCondition> bannerConditionBatchList = bannerConditionService.selectByBannerIds(bannerIdSet);
+		Map<Integer, List<BannerCondition>> bannerIdConditionMap = bannerConditionBatchList.stream()
+				.collect(Collectors.groupingBy(BannerCondition::getBannerId));
+
+		// 可显示列表
+		List<Banner> bannerListCanShow = Lists.newArrayList();
+		for (Banner banner : bannerList) {
+			List<BannerCondition> bannerConditionList = bannerIdConditionMap.get(banner.getId());
+			Boolean canShow = this.canShow(banner, bannerConditionList, runtimeAttach);
+			if (!canShow) {// 不可显示的轮播图直接跳过
+				continue;
+			}
+			bannerListCanShow.add(banner);
+		}
+
+		List<BannerCanShow> bannerCanShowList = Lists.newArrayList();
+		for (Banner banner : bannerListCanShow) {
+			BannerCanShow bannerCanShow = new BannerCanShow();
+
+			bannerCanShow.setTitle(banner.getTitle());
+			bannerCanShow.setImage(banner.getImage());
+			bannerCanShow.setType(BannerEnum.Type.of(banner.getType()));
+			bannerCanShow.setValue(banner.getValue());
+
+			bannerCanShowList.add(bannerCanShow);
+		}
+
+		return bannerCanShowList;
+	}
+
+	private boolean canShow(Banner banner, List<BannerCondition> bannerConditionList,
+			Map<String, String> runtimeAttach) {
+
+		if (CollectionUtils.isEmpty(bannerConditionList)) {
+			log.warn("轮播图{}展示条件未配置", banner.getId());
+			return false;
+		}
+
+		/*
+		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
+		 */
+		String traceId = MdcUtil.get();
+		List<Supplier<Boolean>> supplierList = bannerConditionList.stream().map(v -> {
+			Supplier<Boolean> supplier = () -> {
+				String subTraceId = MdcUtil.get();
+				if (subTraceId == null) {
+					MdcUtil.put(traceId);
+				}
+				String beanName = v.getShowCondition();
+				BannerShowCondition condition = SpringContextUtil.getBean(beanName, BannerShowCondition.class);
+				if (condition == null) {
+					log.warn("展示条件未配置:{}", beanName);
+					return false;
+				}
+
+				ShowParam showParam = ShowParam.builder().bannerId(banner.getId()).runtimeAttach(runtimeAttach)
+						.showConditionValue(v.getShowConditionValue()).build();
+
+				boolean canShow = false;
+				try {
+					canShow = condition.canShow(showParam);
+				} catch (Exception e) {
+					// 异常情况下不显示
+					log.error("canShow error", e);
+				}
+				if (subTraceId == null) {
+					MdcUtil.remove();
+				}
+				return canShow;
+			};
+			return supplier;
+		}).collect(Collectors.toList());
+
+		// 任意1个匹配false则返回false，否则返回true
+		Boolean result = anyMatch(supplierList, false, true);
+		return result;
+	}
+
+	/**
+	 * 任意1个匹配expect则返回,否则返回successResult
+	 * 
+	 * @param supplierList
+	 * @param expect
+	 * @param successResult
+	 * @return
+	 */
+	private static Boolean anyMatch(List<Supplier<Boolean>> supplierList, boolean expect, Boolean successResult) {
+		// 构建CompletableFuture
+		List<CompletableFuture<Boolean>> completableFutureList = supplierList.stream()
+				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
+
+		CompletableFuture<Boolean> result = new CompletableFuture<>();
+
+		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
+			if (expect == v)
+				result.complete(v);
+		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(successResult));
+
+		return result.join();
+	}
+}

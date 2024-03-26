@@ -196,7 +196,13 @@ public class PopService {
 				PopParam popParam = PopParam.builder().popupId(popup.getId()).userId(userId).deviceid(deviceid)
 						.runtimeAttach(runtimeAttach).popConditionValue(v.getPopConditionValue()).build();
 
-				Boolean canPop = condition.canPop(popParam);
+				boolean canPop = false;
+				try {
+					canPop = condition.canPop(popParam);
+				} catch (Exception e) {
+					// 异常情况下不弹窗
+					log.error("canPop error", e);
+				}
 				if (subTraceId == null) {
 					MdcUtil.remove();
 				}
