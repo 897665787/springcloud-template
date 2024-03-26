@@ -1,6 +1,11 @@
 package com.company.common.util;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -156,5 +161,28 @@ public class Utils {
 			return null;
 		}
 		return valueNode.asText();
+	}
+	
+	/**
+	 * 任意1个匹配predicate则返回,否则返回successResult
+	 * 
+	 * @param supplierList
+	 * @param predicate
+	 * @param successResult
+	 * @return
+	 */
+	public static <T> T anyMatch(List<Supplier<T>> supplierList, Predicate<T> predicate, T successResult) {
+		// 构建CompletableFuture
+		List<CompletableFuture<T>> completableFutureList = supplierList.stream()
+				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
+		
+		CompletableFuture<T> result = new CompletableFuture<>();
+		
+		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
+			if (predicate.test(v))
+				result.complete(v);
+		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(successResult));
+		
+		return result.join();
 	}
 }

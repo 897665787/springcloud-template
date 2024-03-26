@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -236,31 +235,8 @@ public class NavShowService {
 		}).collect(Collectors.toList());
 
 		// 任意1个匹配false则返回false，否则返回true
-		Boolean result = anyMatch(supplierList, false, true);
+		Boolean result = Utils.anyMatch(supplierList, v -> v == false, true);
 		return result;
-	}
-
-	/**
-	 * 任意1个匹配expect则返回,否则返回successResult
-	 * 
-	 * @param supplierList
-	 * @param expect
-	 * @param successResult
-	 * @return
-	 */
-	private static Boolean anyMatch(List<Supplier<Boolean>> supplierList, boolean expect, Boolean successResult) {
-		// 构建CompletableFuture
-		List<CompletableFuture<Boolean>> completableFutureList = supplierList.stream()
-				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
-
-		CompletableFuture<Boolean> result = new CompletableFuture<>();
-
-		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
-			if (expect == v)
-				result.complete(v);
-		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(successResult));
-
-		return result.join();
 	}
 
 	/**
