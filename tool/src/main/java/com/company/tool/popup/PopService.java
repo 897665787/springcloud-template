@@ -5,7 +5,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -225,27 +224,27 @@ public class PopService {
 		bestPopupCanPop.setPriority(popup.getPriority());
 		
 		// 其他数据
-		bestPopupCanPop.setTitle(this.replaceConfigParams(popup.getTitle(), configParams));
-		bestPopupCanPop.setText(this.replaceConfigParams(popup.getText(), configParams));
+		bestPopupCanPop.setTitle(Utils.replaceConfigParams(popup.getTitle(), configParams));
+		bestPopupCanPop.setText(Utils.replaceConfigParams(popup.getText(), configParams));
 		
 		PopImage popImage = JsonUtil.toEntity(popup.getBgImg(), PopImage.class);
 		if (popImage != null) {
-			popImage.setImgUrl(this.replaceConfigParams(popImage.getImgUrl(), configParams));
-			popImage.setValue(this.replaceConfigParams(popImage.getValue(), configParams));
+			popImage.setImgUrl(Utils.replaceConfigParams(popImage.getImgUrl(), configParams));
+			popImage.setValue(Utils.replaceConfigParams(popImage.getValue(), configParams));
 			bestPopupCanPop.setBgImg(popImage);
 			
 			PopImage nextPopImage = popImage.getNext();
 			while (nextPopImage != null) {
-				nextPopImage.setImgUrl(this.replaceConfigParams(nextPopImage.getImgUrl(), configParams));
-				nextPopImage.setValue(this.replaceConfigParams(nextPopImage.getValue(), configParams));
+				nextPopImage.setImgUrl(Utils.replaceConfigParams(nextPopImage.getImgUrl(), configParams));
+				nextPopImage.setValue(Utils.replaceConfigParams(nextPopImage.getValue(), configParams));
 				nextPopImage = nextPopImage.getNext();
 			}
 		}
 
 		PopButton closeBtn = JsonUtil.toEntity(popup.getCloseBtn(), PopButton.class);
 		if (closeBtn != null) {
-			closeBtn.setText(this.replaceConfigParams(closeBtn.getText(), configParams));
-			closeBtn.setValue(this.replaceConfigParams(closeBtn.getValue(), configParams));
+			closeBtn.setText(Utils.replaceConfigParams(closeBtn.getText(), configParams));
+			closeBtn.setValue(Utils.replaceConfigParams(closeBtn.getValue(), configParams));
 			bestPopupCanPop.setCloseBtn(closeBtn);
 		}
 		
@@ -264,24 +263,5 @@ public class PopService {
 		bestPopupCanPop.setBgImg(JsonUtil.toEntity(userPopup.getBgImg(), PopImage.class));
 		bestPopupCanPop.setCloseBtn(JsonUtil.toEntity(userPopup.getCloseBtn(), PopButton.class));
 		return bestPopupCanPop;
-	}
-
-	/**
-	 * 替换配置的参数
-	 * 
-	 * @param source
-	 * @param configParams
-	 * @return
-	 */
-	private String replaceConfigParams(String source, Map<String, String> configParams) {
-		if (StringUtils.isBlank(source)) {
-			return null;
-		}
-		Set<Entry<String, String>> entrySet = configParams.entrySet();
-		for (Entry<String, String> entry : entrySet) {
-			String value = entry.getValue();
-			source = source.replace(entry.getKey(), Optional.ofNullable(value).orElse(""));
-		}
-		return source;
 	}
 }

@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -121,12 +120,12 @@ public class NavShowService {
 
 			NavItemCanShow navItemCanShow = new NavItemCanShow();
 
-			navItemCanShow.setTitle(this.replaceConfigParams(navItem.getTitle(), configParams));
-			navItemCanShow.setLogo(this.replaceConfigParams(navItem.getLogo(), configParams));
+			navItemCanShow.setTitle(Utils.replaceConfigParams(navItem.getTitle(), configParams));
+			navItemCanShow.setLogo(Utils.replaceConfigParams(navItem.getLogo(), configParams));
 			
 			navItemCanShow.setType(NavItemEnum.Type.of(navItem.getType()));
-			navItemCanShow.setValue(this.replaceConfigParams(navItem.getValue(), configParams));
-			navItemCanShow.setAttachJson(this.replaceConfigParams(navItem.getAttachJson(), configParams));
+			navItemCanShow.setValue(Utils.replaceConfigParams(navItem.getValue(), configParams));
+			navItemCanShow.setAttachJson(Utils.replaceConfigParams(navItem.getAttachJson(), configParams));
 
 			navItemCanShowList.add(navItemCanShow);
 		}
@@ -237,25 +236,6 @@ public class NavShowService {
 		// 任意1个匹配false则返回false，否则返回true
 		Boolean result = Utils.anyMatch(supplierList, v -> v == false, true);
 		return result;
-	}
-
-	/**
-	 * 替换配置的参数
-	 * 
-	 * @param source
-	 * @param configParams
-	 * @return
-	 */
-	private String replaceConfigParams(String source, Map<String, String> configParams) {
-		if (StringUtils.isBlank(source)) {
-			return null;
-		}
-		Set<Entry<String, String>> entrySet = configParams.entrySet();
-		for (Entry<String, String> entry : entrySet) {
-			String value = entry.getValue();
-			source = source.replace(entry.getKey(), Optional.ofNullable(value).orElse(""));
-		}
-		return source;
 	}
 
 	public static void main(String[] args) {

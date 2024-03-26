@@ -1,7 +1,11 @@
 package com.company.common.util;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -162,7 +166,7 @@ public class Utils {
 		}
 		return valueNode.asText();
 	}
-	
+
 	/**
 	 * 任意1个匹配predicate则返回,否则返回successResult
 	 * 
@@ -175,14 +179,33 @@ public class Utils {
 		// 构建CompletableFuture
 		List<CompletableFuture<T>> completableFutureList = supplierList.stream()
 				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
-		
+
 		CompletableFuture<T> result = new CompletableFuture<>();
-		
+
 		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
 			if (predicate.test(v))
 				result.complete(v);
 		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(successResult));
-		
+
 		return result.join();
+	}
+	
+	/**
+	 * 替换配置的参数
+	 * 
+	 * @param source
+	 * @param configParams
+	 * @return
+	 */
+	public static String replaceConfigParams(String source, Map<String, String> configParams) {
+		if (StringUtils.isBlank(source)) {
+			return null;
+		}
+		Set<Entry<String, String>> entrySet = configParams.entrySet();
+		for (Entry<String, String> entry : entrySet) {
+			String value = entry.getValue();
+			source = source.replace(entry.getKey(), Optional.ofNullable(value).orElse(""));
+		}
+		return source;
 	}
 }
