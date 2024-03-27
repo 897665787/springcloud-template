@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS `mk_popup_pop_condition`;
 CREATE TABLE `mk_popup_pop_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bean_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'bean名称(PopCondition的实现类)',
-  `descrpition` varchar(255) DEFAULT NULL COMMENT '描述',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `has_param` char(1) NOT NULL DEFAULT 'N' COMMENT '有参数（Y是 N否）',
   `sort` int(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
@@ -16,16 +16,16 @@ CREATE TABLE `mk_popup_pop_condition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='弹窗条件';
 
 -- 测试数据
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (1, 'FrequencyCondition', '弹窗频率', '参数：count，frequency (once:只弹1次,times:count天/次,daily:count次/天)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (2, 'SenceCondition', '场景', '参数：sences(mini_home:首页,takeout_index:外卖首页,takeout_meallist:外卖商家详情页,takeout_groupshare:分享链接-进入拼团页)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (3, 'PushAreaCondition', '推送地区', '参数：cityCodes', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (4, 'PushPlatformCondition', '推送平台', '参数：platforms(0:小程序·安卓, 1:小程序·IOS, 2:APP·安卓, 3:APP·IOS)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (5, 'SourceCondition', '来源渠道', '参数：sources', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (6, 'SpecifyUserCondition', '指定用户', '参数：appUserIds', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (7, 'LoginedCondition', '已登录用户', '', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (8, 'PopTimeRangeCondition', '指定时间段', '参数：beginTime，endTime(格式HH-MM-SS)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (10, 'UnuseCouponCondition', '有未使用优惠券的用户', '', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
-INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `descrpition`, `remark`, `create_time`, `update_time`) VALUES (11, 'WeekDayCondition', '指定星期几', '参数：weekDays(1表示周日，2表示周一)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (1, 'FrequencyCondition', '弹窗频率', '参数：count，frequency (once:只弹1次,times:count天/次,daily:count次/天)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (2, 'SenceCondition', '场景', '参数：sences(mini_home:首页,takeout_index:外卖首页,takeout_meallist:外卖商家详情页,takeout_groupshare:分享链接-进入拼团页)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (3, 'PushAreaCondition', '推送地区', '参数：cityCodes', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (4, 'PushPlatformCondition', '推送平台', '参数：platforms(0:小程序·安卓, 1:小程序·IOS, 2:APP·安卓, 3:APP·IOS)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (5, 'SourceCondition', '来源渠道', '参数：sources', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (6, 'SpecifyUserCondition', '指定用户', '参数：appUserIds', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (7, 'LoginedCondition', '已登录用户', '', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (8, 'PopTimeRangeCondition', '指定时间段', '参数：beginTime，endTime(格式HH-MM-SS)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (10, 'UnuseCouponCondition', '有未使用优惠券的用户', '', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
+INSERT INTO `mk_popup_pop_condition`(`id`, `bean_name`, `description`, `remark`, `create_time`, `update_time`) VALUES (11, 'WeekDayCondition', '指定星期几', '参数：weekDays(1表示周日，2表示周一)', '2023-09-21 11:52:34', '2023-09-21 11:52:42');
 
 
 DROP TABLE IF EXISTS `mk_popup`;

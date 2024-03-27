@@ -28,9 +28,9 @@ public interface BannerEnum {
 
 	@AllArgsConstructor
 	enum Type {
-		// 类型(redirect_http:跳转http链接,redirect_mini:跳转小程序链接,redirect_other_mini:跳转其他小程序链接)
+		// 类型(redirect_http:跳转http链接,redirect_mini:跳转小程序(APP)页面,redirect_other_mini:跳转其他小程序链接)
 		redirect_http("redirect_http", "跳转http链接"), //
-		redirect_mini("redirect_mini", "跳转小程序链接"), //
+		redirect_mini("redirect_mini", "跳转小程序(APP)页面"), //
 		redirect_other_mini("redirect_other_mini", "跳转其他小程序链接"),//
 		;
 
