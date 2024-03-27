@@ -18,9 +18,6 @@ import com.company.tool.api.request.NavReq;
 import com.company.tool.api.response.NavResp;
 import com.company.tool.nav.NavShowService;
 import com.company.tool.nav.dto.NavItemCanShow;
-import com.company.user.api.enums.UserOauthEnum;
-import com.company.user.api.feign.UserOauthFeign;
-import com.company.user.api.response.UserOauthResp;
 
 @RestController
 @RequestMapping("/nav")
@@ -28,8 +25,6 @@ public class NavController implements NavFeign {
 
 	@Autowired
 	private NavShowService navShowService;
-	@Autowired
-	private UserOauthFeign userOauthFeign;
 
 	@Override
 	public Result<List<NavResp>> list(@RequestBody NavReq navReq) {
@@ -37,20 +32,6 @@ public class NavController implements NavFeign {
 
 		// 补充一些请求头参数
 		runtimeAttach.putAll(HttpContextUtil.httpContextHeader());
-		
-		// 补充用户id
-		String userId = HttpContextUtil.currentUserId();
-		if (StringUtils.isBlank(userId)) {
-			String deviceid = HttpContextUtil.deviceid();
-			if (StringUtils.isNotBlank(deviceid)) {
-				UserOauthResp userOauthResp = userOauthFeign
-						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid).dataOrThrow();
-				if (userOauthResp != null) {
-					userId = String.valueOf(userOauthResp.getUserId());
-				}
-			}
-		}
-		runtimeAttach.put("{userId}", userId);
 
 		List<NavItemCanShow> navList = navShowService.list(navReq.getMaxSize(), runtimeAttach);
 		List<NavResp> respList = navList.stream().map(v -> {

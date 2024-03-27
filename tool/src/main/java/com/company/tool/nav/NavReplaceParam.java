@@ -11,5 +11,5 @@ public interface NavReplaceParam {
 	 * tips：暂时没想好应该接收哪些参数，后续可按需添加参数
 	 * </pre>
 	 */
-	Map<String, String> replace(String attachJson);
+	Map<String, String> replace(Map<String, String> attachMap);
 }

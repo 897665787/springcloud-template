@@ -7,17 +7,22 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.feign.BannerFeign;
 import com.company.tool.api.feign.NavFeign;
 import com.company.tool.api.request.BannerReq;
 import com.company.tool.api.request.NavReq;
 import com.company.tool.api.response.BannerResp;
 import com.company.tool.api.response.NavResp;
+import com.company.user.api.enums.UserOauthEnum;
+import com.company.user.api.feign.UserOauthFeign;
+import com.company.user.api.response.UserOauthResp;
 
 /**
  * 导航栏API
@@ -32,6 +37,8 @@ public class NavigationController {
 	private NavFeign navFeign;
 	@Autowired
 	private BannerFeign bannerFeign;
+	@Autowired
+	private UserOauthFeign userOauthFeign;
 
 	/**
 	 * 金刚位列表
@@ -49,7 +56,22 @@ public class NavigationController {
 		// String token = HttpContextUtil.head("x-token");
 		// runtimeAttach.put("token", token);
 		// }
+		
 		/* 补充一些展示替换的参数 */
+		
+		// 补充用户id
+		String userId = HttpContextUtil.currentUserId();
+		if (StringUtils.isBlank(userId)) {
+			String deviceid = HttpContextUtil.deviceid();
+			if (StringUtils.isNotBlank(deviceid)) {
+				UserOauthResp userOauthResp = userOauthFeign
+						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid).dataOrThrow();
+				if (userOauthResp != null) {
+					userId = String.valueOf(userOauthResp.getUserId());
+				}
+			}
+		}
+		runtimeAttach.put("userId", userId);
 		
 		navReq.setRuntimeAttach(runtimeAttach);
 		navReq.setMaxSize(4);

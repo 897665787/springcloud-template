@@ -80,6 +80,10 @@ public class NavShowService {
 		// 最终展示列表
 		List<NavItem> finalShowList = finalShow(maxSize, navItemListCanShow);
 
+		// 自定义参数替换（可用于复杂参数的生成）
+		Map<String, NavReplaceParam> replaceParamBeans = SpringContextUtil.getBeansOfType(NavReplaceParam.class);
+		Set<Entry<String, NavReplaceParam>> entrySet = replaceParamBeans.entrySet();
+		
 		List<NavItemCanShow> navItemCanShowList = Lists.newArrayList();
 		for (NavItem navItem : finalShowList) {
 			/* ============定义金刚位配置中的参数============ */
@@ -102,16 +106,21 @@ public class NavShowService {
 			configParams.put("{token}", token);
 			/* ============定义金刚位配置中的参数============ */
 
-			// 自定义参数替换（可用于复杂参数的生成）
-			Map<String, NavReplaceParam> replaceParamBeans = SpringContextUtil.getBeansOfType(NavReplaceParam.class);
-			Set<Entry<String, NavReplaceParam>> entrySet = replaceParamBeans.entrySet();
 			for (Entry<String, NavReplaceParam> entry : entrySet) {
 				String key = entry.getKey();
 				boolean anyContains = Utils.anyContains(key, navItem.getTitle(), navItem.getLogo(), navItem.getValue(),
 						navItem.getAttachJson());
 				if (anyContains) {
 					NavReplaceParam replaceParam = entry.getValue();
-					Map<String, String> replaceMap = replaceParam.replace(navItem.getAttachJson());
+
+					String attachJson = navItem.getAttachJson();
+					if (StringUtils.isBlank(attachJson)) {
+						attachJson = "{}";
+					}
+					
+					@SuppressWarnings("unchecked")
+					Map<String, String> attachMap = JsonUtil.toEntity(attachJson, Map.class);
+					Map<String, String> replaceMap = replaceParam.replace(attachMap);
 					replaceMap.entrySet().stream().forEach(v -> configParams.put(key + v.getKey(), v.getValue()));
 				}
 			}

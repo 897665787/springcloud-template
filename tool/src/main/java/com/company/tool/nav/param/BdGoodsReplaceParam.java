@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
 public class BdGoodsReplaceParam implements NavReplaceParam {
 
 	@Override
-	public Map<String, String> replace(String attachJson) {
+	public Map<String, String> replace(Map<String, String> attachMap) {
 		Map<String, String> configParams = Maps.newHashMap();
 		configParams.put("code}", "P131251651");
 		configParams.put("name}", "小炒肉+青菜");
