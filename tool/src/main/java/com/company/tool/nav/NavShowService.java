@@ -86,8 +86,6 @@ public class NavShowService {
 			Map<String, String> configParams = Maps.newHashMap();
 			String userId = runtimeAttach.get("userId");
 			configParams.put("{userId}", userId);
-			String deviceid = runtimeAttach.get("deviceid");
-			configParams.put("{deviceid}", deviceid);
 
 			String longitude = runtimeAttach.get("longitude");
 			configParams.put("{longitude}", longitude);
@@ -113,8 +111,8 @@ public class NavShowService {
 						navItem.getAttachJson());
 				if (anyContains) {
 					NavReplaceParam replaceParam = entry.getValue();
-					String replace = replaceParam.replace();
-					configParams.put(key, replace);
+					Map<String, String> replaceMap = replaceParam.replace(navItem.getAttachJson());
+					replaceMap.entrySet().stream().forEach(v -> configParams.put(key + v.getKey(), v.getValue()));
 				}
 			}
 
