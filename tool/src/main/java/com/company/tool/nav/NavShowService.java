@@ -76,35 +76,46 @@ public class NavShowService {
 			}
 			navItemListCanShow.add(navItem);
 		}
+		
+		if (CollectionUtils.isEmpty(navItemListCanShow)) {
+			return Collections.emptyList();
+		}
 
 		// 最终展示列表
 		List<NavItem> finalShowList = finalShow(maxSize, navItemListCanShow);
 
+		/* ============定义金刚位配置中的参数============ */
+		Map<String, String> configParams = Maps.newHashMap();
+		String userId = runtimeAttach.get("userId");
+		configParams.put("{userId}", userId);
+
+		String longitude = runtimeAttach.get("longitude");
+		configParams.put("{longitude}", longitude);
+		String latitude = runtimeAttach.get("latitude");
+		configParams.put("{latitude}", latitude);
+
+		String cityCode = runtimeAttach.get("cityCode");
+		if (StringUtils.isBlank(cityCode)) {
+			cityCode = "440300";
+		}
+		configParams.put("{cityCode}", cityCode);
+
+		String token = runtimeAttach.get("token");
+		configParams.put("{token}", token);
+		
 		// 自定义参数替换（可用于复杂参数的生成）
 		Map<String, NavReplaceParam> replaceParamBeans = SpringContextUtil.getBeansOfType(NavReplaceParam.class);
 		Set<Entry<String, NavReplaceParam>> entrySet = replaceParamBeans.entrySet();
+		/* ============定义金刚位配置中的参数============ */
 		
 		List<NavItemCanShow> navItemCanShowList = Lists.newArrayList();
 		for (NavItem navItem : finalShowList) {
-			/* ============定义金刚位配置中的参数============ */
-			Map<String, String> configParams = Maps.newHashMap();
-			String userId = runtimeAttach.get("userId");
-			configParams.put("{userId}", userId);
-
-			String longitude = runtimeAttach.get("longitude");
-			configParams.put("{longitude}", longitude);
-			String latitude = runtimeAttach.get("latitude");
-			configParams.put("{latitude}", latitude);
-
-			String cityCode = runtimeAttach.get("cityCode");
-			if (StringUtils.isBlank(cityCode)) {
-				cityCode = "440300";
+			String attachJson = navItem.getAttachJson();
+			if (StringUtils.isBlank(attachJson)) {
+				attachJson = "{}";
 			}
-			configParams.put("{cityCode}", cityCode);
-
-			String token = runtimeAttach.get("token");
-			configParams.put("{token}", token);
-			/* ============定义金刚位配置中的参数============ */
+			@SuppressWarnings("unchecked")
+			Map<String, String> attachMap = JsonUtil.toEntity(attachJson, Map.class);
 
 			for (Entry<String, NavReplaceParam> entry : entrySet) {
 				String key = entry.getKey();
@@ -112,14 +123,6 @@ public class NavShowService {
 						navItem.getAttachJson());
 				if (anyContains) {
 					NavReplaceParam replaceParam = entry.getValue();
-
-					String attachJson = navItem.getAttachJson();
-					if (StringUtils.isBlank(attachJson)) {
-						attachJson = "{}";
-					}
-					
-					@SuppressWarnings("unchecked")
-					Map<String, String> attachMap = JsonUtil.toEntity(attachJson, Map.class);
 					Map<String, String> replaceMap = replaceParam.replace(attachMap);
 					replaceMap.entrySet().stream().forEach(v -> configParams.put(key + v.getKey(), v.getValue()));
 				}

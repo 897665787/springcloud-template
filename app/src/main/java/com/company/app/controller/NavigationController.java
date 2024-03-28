@@ -88,6 +88,30 @@ public class NavigationController {
 		BannerReq bannerReq = new BannerReq();
 		
 		Map<String, String> runtimeAttach = this.getReqParam(request);
+
+		/* 补充一些系统可自动获取的参数 */
+		// 需要取token的话可能要在最外层取
+		// if (!runtimeAttach.containsKey("token")) {
+		// String token = HttpContextUtil.head("x-token");
+		// runtimeAttach.put("token", token);
+		// }
+		
+		/* 补充一些展示替换的参数 */
+		
+		// 补充用户id
+		String userId = HttpContextUtil.currentUserId();
+		if (StringUtils.isBlank(userId)) {
+			String deviceid = HttpContextUtil.deviceid();
+			if (StringUtils.isNotBlank(deviceid)) {
+				UserOauthResp userOauthResp = userOauthFeign
+						.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, deviceid).dataOrThrow();
+				if (userOauthResp != null) {
+					userId = String.valueOf(userOauthResp.getUserId());
+				}
+			}
+		}
+		runtimeAttach.put("userId", userId);
+		
 		bannerReq.setRuntimeAttach(runtimeAttach);
 		
 		return bannerFeign.list(bannerReq);

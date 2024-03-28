@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import com.company.tool.entity.BannerCondition;
 import com.company.tool.service.market.BannerConditionService;
 import com.company.tool.service.market.BannerService;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +68,30 @@ public class BannerShowService {
 			bannerListCanShow.add(banner);
 		}
 
+		if (CollectionUtils.isEmpty(bannerListCanShow)) {
+			return Collections.emptyList();
+		}
+
+		/* ============定义金刚位配置中的参数============ */
+		Map<String, String> configParams = Maps.newHashMap();
+		String appUserId = runtimeAttach.get("appUserId");
+		configParams.put("{appUserId}", appUserId);
+
+		String longitude = runtimeAttach.get("longitude");
+		configParams.put("{longitude}", longitude);
+		String latitude = runtimeAttach.get("latitude");
+		configParams.put("{latitude}", latitude);
+
+		String cityCode = runtimeAttach.get("cityCode");
+		if (StringUtils.isBlank(cityCode)) {
+			cityCode = "440300";
+		}
+		configParams.put("{cityCode}", cityCode);
+
+		String token = runtimeAttach.get("token");
+		configParams.put("{token}", token);
+		/* ============定义金刚位配置中的参数============ */
+		
 		List<BannerCanShow> bannerCanShowList = Lists.newArrayList();
 		for (Banner banner : bannerListCanShow) {
 			BannerCanShow bannerCanShow = new BannerCanShow();
@@ -73,7 +99,7 @@ public class BannerShowService {
 			bannerCanShow.setTitle(banner.getTitle());
 			bannerCanShow.setImage(banner.getImage());
 			bannerCanShow.setType(BannerEnum.Type.of(banner.getType()));
-			bannerCanShow.setValue(banner.getValue());
+			bannerCanShow.setValue(Utils.replaceConfigParams(banner.getValue(), configParams));
 
 			bannerCanShowList.add(bannerCanShow);
 		}
