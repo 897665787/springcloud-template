@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.company.common.util.MdcUtil;
+import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.user.coupon.dto.MatchResult;
 import com.company.user.coupon.dto.UserCouponCanUse;
@@ -366,7 +365,7 @@ public class UseCouponService {
 			}).collect(Collectors.toList());
 
 			// 任意1个匹配false则返回false，否则返回true
-			boolean result = anyMatch(supplierList, false);
+			Boolean result = Utils.anyMatch(supplierList, v -> v == false, true);
 			if (!result) {
 				return null;
 			}
@@ -439,59 +438,11 @@ public class UseCouponService {
 		}).collect(Collectors.toList());
 
 		// 任意1个匹配false则返回false，否则返回true
-		MatchResult result = anyMatch(supplierList, false, MatchResult.builder().canUse(true).build());
+		MatchResult result = Utils.anyMatch(supplierList, v -> v.getCanUse() == false,
+				MatchResult.builder().canUse(true).build());
 		userCouponCanUse.setCanUse(result.getCanUse());
 		userCouponCanUse.setReason(result.getReason());
 		return userCouponCanUse;
-	}
-
-	/**
-	 * 任意1个匹配expect则返回,否则返回successResult
-	 * 
-	 * @param supplierList
-	 * @param expect
-	 * @param successResult
-	 * @return
-	 */
-	private static MatchResult anyMatch(List<Supplier<MatchResult>> supplierList, boolean expect,
-			MatchResult successResult) {
-		// 构建CompletableFuture
-		List<CompletableFuture<MatchResult>> completableFutureList = supplierList.stream()
-				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
-
-		CompletableFuture<MatchResult> result = new CompletableFuture<>();
-
-		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
-			if (expect == v.getCanUse())
-				result.complete(v);
-		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(successResult));
-
-		return result.join();
-	}
-
-	/**
-	 * 任意1个匹配则返回
-	 * 
-	 * @param supplierList
-	 * @param expect
-	 * @return
-	 */
-	private static boolean anyMatch(List<Supplier<Boolean>> supplierList, boolean expect) {
-		// 构建CompletableFuture
-		List<CompletableFuture<Boolean>> completableFutureList = supplierList.stream()
-				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
-
-		// 构建预期值
-		Predicate<Boolean> predicate = Predicate.isEqual(expect);
-
-		CompletableFuture<Boolean> result = new CompletableFuture<>();
-
-		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
-			if (predicate.test(v))
-				result.complete(v);
-		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(!expect));
-
-		return result.join();
 	}
 
 	/**

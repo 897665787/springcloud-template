@@ -5,9 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -196,7 +194,13 @@ public class PopService {
 				PopParam popParam = PopParam.builder().popupId(popup.getId()).userId(userId).deviceid(deviceid)
 						.runtimeAttach(runtimeAttach).popConditionValue(v.getPopConditionValue()).build();
 
-				Boolean canPop = condition.canPop(popParam);
+				boolean canPop = false;
+				try {
+					canPop = condition.canPop(popParam);
+				} catch (Exception e) {
+					// 异常情况下不弹窗
+					log.error("canPop error", e);
+				}
 				if (subTraceId == null) {
 					MdcUtil.remove();
 				}
@@ -206,31 +210,8 @@ public class PopService {
 		}).collect(Collectors.toList());
 
 		// 任意1个匹配false则返回false，否则返回true
-		Boolean result = anyMatch(supplierList, false, true);
+		Boolean result = Utils.anyMatch(supplierList, v -> v == false, true);
 		return result;
-	}
-
-	/**
-	 * 任意1个匹配expect则返回,否则返回successResult
-	 * 
-	 * @param supplierList
-	 * @param expect
-	 * @param successResult
-	 * @return
-	 */
-	private static Boolean anyMatch(List<Supplier<Boolean>> supplierList, boolean expect, Boolean successResult) {
-		// 构建CompletableFuture
-		List<CompletableFuture<Boolean>> completableFutureList = supplierList.stream()
-				.map(v -> CompletableFuture.supplyAsync(v)).collect(Collectors.toList());
-
-		CompletableFuture<Boolean> result = new CompletableFuture<>();
-
-		CompletableFuture.allOf(completableFutureList.stream().map(f -> f.thenAccept(v -> {
-			if (expect == v)
-				result.complete(v);
-		})).toArray(CompletableFuture<?>[]::new)).whenComplete((ignored, t) -> result.complete(successResult));
-
-		return result.join();
 	}
 
 	private PopupCanPop buildPopupCanPop(Popup popup, Map<String, String> configParams) {
@@ -243,27 +224,27 @@ public class PopService {
 		bestPopupCanPop.setPriority(popup.getPriority());
 		
 		// 其他数据
-		bestPopupCanPop.setTitle(this.replaceConfigParams(popup.getTitle(), configParams));
-		bestPopupCanPop.setText(this.replaceConfigParams(popup.getText(), configParams));
+		bestPopupCanPop.setTitle(Utils.replaceConfigParams(popup.getTitle(), configParams));
+		bestPopupCanPop.setText(Utils.replaceConfigParams(popup.getText(), configParams));
 		
 		PopImage popImage = JsonUtil.toEntity(popup.getBgImg(), PopImage.class);
 		if (popImage != null) {
-			popImage.setImgUrl(this.replaceConfigParams(popImage.getImgUrl(), configParams));
-			popImage.setValue(this.replaceConfigParams(popImage.getValue(), configParams));
+			popImage.setImgUrl(Utils.replaceConfigParams(popImage.getImgUrl(), configParams));
+			popImage.setValue(Utils.replaceConfigParams(popImage.getValue(), configParams));
 			bestPopupCanPop.setBgImg(popImage);
 			
 			PopImage nextPopImage = popImage.getNext();
 			while (nextPopImage != null) {
-				nextPopImage.setImgUrl(this.replaceConfigParams(nextPopImage.getImgUrl(), configParams));
-				nextPopImage.setValue(this.replaceConfigParams(nextPopImage.getValue(), configParams));
+				nextPopImage.setImgUrl(Utils.replaceConfigParams(nextPopImage.getImgUrl(), configParams));
+				nextPopImage.setValue(Utils.replaceConfigParams(nextPopImage.getValue(), configParams));
 				nextPopImage = nextPopImage.getNext();
 			}
 		}
 
 		PopButton closeBtn = JsonUtil.toEntity(popup.getCloseBtn(), PopButton.class);
 		if (closeBtn != null) {
-			closeBtn.setText(this.replaceConfigParams(closeBtn.getText(), configParams));
-			closeBtn.setValue(this.replaceConfigParams(closeBtn.getValue(), configParams));
+			closeBtn.setText(Utils.replaceConfigParams(closeBtn.getText(), configParams));
+			closeBtn.setValue(Utils.replaceConfigParams(closeBtn.getValue(), configParams));
 			bestPopupCanPop.setCloseBtn(closeBtn);
 		}
 		
@@ -282,24 +263,5 @@ public class PopService {
 		bestPopupCanPop.setBgImg(JsonUtil.toEntity(userPopup.getBgImg(), PopImage.class));
 		bestPopupCanPop.setCloseBtn(JsonUtil.toEntity(userPopup.getCloseBtn(), PopButton.class));
 		return bestPopupCanPop;
-	}
-
-	/**
-	 * 替换配置的参数
-	 * 
-	 * @param source
-	 * @param configParams
-	 * @return
-	 */
-	private String replaceConfigParams(String source, Map<String, String> configParams) {
-		if (StringUtils.isBlank(source)) {
-			return null;
-		}
-		Set<Entry<String, String>> entrySet = configParams.entrySet();
-		for (Entry<String, String> entry : entrySet) {
-			String value = entry.getValue();
-			source = source.replace(entry.getKey(), Optional.ofNullable(value).orElse(""));
-		}
-		return source;
 	}
 }
