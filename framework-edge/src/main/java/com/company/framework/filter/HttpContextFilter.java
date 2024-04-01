@@ -14,6 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.constant.CommonConstants;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.UserAgentContext;
+import com.company.framework.context.UserAgentUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 import com.company.framework.util.IpUtil;
 
@@ -35,10 +37,16 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			throws IOException, ServletException {
 		HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);
 		
+		String userAgentString = request.getHeader("User-Agent");
+		UserAgentContext userAgentContext = UserAgentUtil.parse(userAgentString);
+		
 		// 有些请求的公共信息没有放在header，而是跟在url后面
 		String platform = request.getHeader(HttpContextUtil.HEADER_PLATFORM);
 		if (StringUtils.isBlank(platform)) {
 			platform = request.getParameter(HttpContextUtil.HEADER_PLATFORM);
+			if (StringUtils.isBlank(platform)) {
+				platform = userAgentContext.getPlatform();
+			}
 			if (StringUtils.isNotBlank(platform)) {
 				headerRequest.addHeader(HttpContextUtil.HEADER_PLATFORM, platform);
 			}
@@ -47,6 +55,9 @@ public class HttpContextFilter extends OncePerRequestFilter {
 		String operator = request.getHeader(HttpContextUtil.HEADER_OPERATOR);
 		if (StringUtils.isBlank(operator)) {
 			operator = request.getParameter(HttpContextUtil.HEADER_OPERATOR);
+			if (StringUtils.isBlank(operator)) {
+				operator = userAgentContext.getOperator();
+			}
 			if (StringUtils.isNotBlank(operator)) {
 				headerRequest.addHeader(HttpContextUtil.HEADER_OPERATOR, operator);
 			}
@@ -71,6 +82,9 @@ public class HttpContextFilter extends OncePerRequestFilter {
 		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
 		if (StringUtils.isBlank(source)) {
 			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
+			if (StringUtils.isBlank(source)) {
+				source = userAgentContext.getSource();
+			}
 			if (StringUtils.isNotBlank(source)) {
 				headerRequest.addHeader(HttpContextUtil.HEADER_SOURCE, source);
 			}

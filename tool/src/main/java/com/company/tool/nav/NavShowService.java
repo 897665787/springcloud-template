@@ -171,7 +171,7 @@ public class NavShowService {
 				NavItem positionCover = positionCoverQueue.poll();// 使用poll方法，它会移除并返回队列头部的元素，如果没有元素则返回null
 				if (positionCover != null) {
 					finalShowList.add(positionCover);
-					if (i == maxSize) {
+					if (finalShowList.size() == maxSize) {
 						return finalShowList;
 					}
 				} else {
@@ -180,7 +180,7 @@ public class NavShowService {
 			}
 			List<NavItem> list = entry.getValue();
 			finalShowList.add(list.get(0));// 相同位置的金刚位只保留优先级最高的（也就是第一个）
-			if (i == maxSize) {
+			if (finalShowList.size() == maxSize) {
 				return finalShowList;
 			}
 			i = key + 1;
@@ -190,7 +190,7 @@ public class NavShowService {
 			NavItem positionCover = positionCoverQueue.poll();// 使用poll方法，它会移除并返回队列头部的元素，如果没有元素则返回null
 			if (positionCover != null) {
 				finalShowList.add(positionCover);
-				if (i == maxSize) {
+				if (finalShowList.size() == maxSize) {
 					return finalShowList;
 				}
 			} else {
