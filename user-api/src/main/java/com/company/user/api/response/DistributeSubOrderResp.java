@@ -80,9 +80,14 @@ public class DistributeSubOrderResp {
 		private String text;
 		
 		/**
-		 * 点击后重定向页面
+		 * 点击后重定向页面(前端根据该key做路径映射)
 		 */
-		private String url;
+		private String key;
+		
+		/**
+		 * 参数
+		 */
+		private String params;
 		
 		/**
 		 * 排序（从右到左，值小到大）

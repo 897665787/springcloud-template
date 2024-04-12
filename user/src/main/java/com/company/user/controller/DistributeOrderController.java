@@ -357,8 +357,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		List<DistributeSubOrderResp.BottonResp> bottonList = Lists.newArrayList();
 		if (OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum || OrderEnum.StatusEnum.COMPLETE == statusEnum
 				|| OrderEnum.StatusEnum.REFUND == statusEnum) { // 发货成功之后才有物流信息
-			bottonList.add(new DistributeSubOrderResp.BottonResp("查看物流", "/{前端提供页面路径和需要的参数}/delivery?orderCode=" + orderReq.getOrderCode(), 40));
-			bottonList.add(new DistributeSubOrderResp.BottonResp("保险服务", "/{前端提供页面路径和需要的参数}/baoxian?orderCode=" + orderReq.getOrderCode(), 60));
+			bottonList.add(new DistributeSubOrderResp.BottonResp("查看物流", "delivery", "orderCode=" + orderReq.getOrderCode(), 40));
+			bottonList.add(new DistributeSubOrderResp.BottonResp("保险服务", "baoxian", "orderCode=" + orderReq.getOrderCode(), 60));
 		}
 		resp.setBottonList(bottonList);
 		return resp;
