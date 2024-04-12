@@ -39,6 +39,11 @@ public class RefundNotifyReq {
 	private String attach;
 	
 	/**
+	 * 支付金额<success=true时必填>
+	 */
+	private BigDecimal payAmount;
+	
+	/**
 	 * 本次退款金额<success=true时必填>
 	 */
 	private BigDecimal thisRefundAmount;

@@ -236,7 +236,12 @@ public class MemberBuyController implements MemberBuyFeign {
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
-			orderFeign.cancelByTimeout(new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time));
+			OrderCancelReq orderCancelReq = new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time);
+			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq).dataOrThrow();
+			if (!cancelByTimeout) {
+				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
+				return Result.success();
+			}
 
 			MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 			Integer userCouponId = memberBuyOrder.getUserCouponId();
@@ -258,7 +263,13 @@ public class MemberBuyController implements MemberBuyFeign {
 		
 		// 修改‘订单中心’数据
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
-		orderFeign.paySuccess(new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount).setPayTime(time));
+		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
+				.setPayTime(time);
+		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq).dataOrThrow();
+		if (!updateSuccess) {
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
+			return Result.success();
+		}
 		
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
@@ -290,6 +301,8 @@ public class MemberBuyController implements MemberBuyFeign {
 			return Result.success(item(orderReq));
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_DETAIL) {
 			return Result.success(detail(orderReq));
+		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.CALC_CANREFUNDAMOUNT) { // 可不处理
+			return Result.success(calcCanRefundAmount(orderReq));
 		}
 		return Result.success();
 	}
@@ -338,5 +351,16 @@ public class MemberBuyController implements MemberBuyFeign {
 		}
 		
 		return resp;
+	}
+
+	private BigDecimal calcCanRefundAmount(OrderReq orderReq) {
+		BigDecimal payAmount = orderReq.getPayAmount();
+		BigDecimal refundAmount = orderReq.getRefundAmount();
+		// BigDecimal canRefundAmount = payAmount.subtract(refundAmount);// 原逻辑
+		// TODO 可能需要扣除一些手续费
+		BigDecimal serviceAmount = payAmount.multiply(new BigDecimal("0.1"));// 扣除10%作为服务费，如12306，根据时间来计算手续费
+		memberBuyOrderService.updateRefundServiceAmountByOrderCode(serviceAmount, orderReq.getOrderCode());// 这个费用最好记录到子业务
+		BigDecimal canRefundAmount = payAmount.subtract(serviceAmount).subtract(refundAmount);
+		return canRefundAmount;
 	}
 }

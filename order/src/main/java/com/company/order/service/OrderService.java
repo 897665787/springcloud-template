@@ -3,6 +3,7 @@ package com.company.order.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +65,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	 * @param cancelTime
 	 * @return
 	 */
-	public int cancel(String orderCode, LocalDateTime cancelTime) {
+	public boolean cancel(String orderCode, LocalDateTime cancelTime) {
 		Order order4Update = new Order();
-		order4Update.setPayTime(cancelTime);
+		order4Update.setPayTime(Optional.ofNullable(cancelTime).orElse(LocalDateTime.now()));
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.CANCELED;
 		return updateStatus(orderCode, order4Update, subStatusEnum,
 				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY));
@@ -80,13 +81,30 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	 * @param payTime
 	 * @return
 	 */
-	public int paySuccess(String orderCode, BigDecimal payAmount, LocalDateTime payTime) {
+	public boolean paySuccess(String orderCode, BigDecimal payAmount, LocalDateTime payTime) {
 		Order order4Update = new Order();
 		order4Update.setPayAmount(payAmount);
-		order4Update.setPayTime(payTime);
+		order4Update.setPayTime(Optional.ofNullable(payTime).orElse(LocalDateTime.now()));
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.PAYED;
 		return updateStatus(orderCode, order4Update, subStatusEnum,
 				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY, OrderEnum.SubStatusEnum.CANCELED));
+	}
+
+	/**
+	 * 确认收货
+	 * 
+	 * @param orderCode
+	 * @return
+	 */
+	public boolean receive(String orderCode, LocalDateTime finishTime) {
+		Order order4Update = new Order();
+		order4Update.setFinishTime(Optional.ofNullable(finishTime).orElse(LocalDateTime.now()));
+		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.WAIT_REVIEW;
+		return updateStatus(orderCode, order4Update, subStatusEnum,
+				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY, OrderEnum.SubStatusEnum.CANCELED,
+						OrderEnum.SubStatusEnum.PAYED, OrderEnum.SubStatusEnum.WAIT_SEND,
+						OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
+						OrderEnum.SubStatusEnum.SEND_SUCCESS));
 	}
 
 	/**
@@ -96,9 +114,9 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	 * @param finishTime
 	 * @return
 	 */
-	public int finish(String orderCode, LocalDateTime finishTime) {
+	public boolean finish(String orderCode, LocalDateTime finishTime) {
 		Order order4Update = new Order();
-		order4Update.setFinishTime(finishTime);
+		order4Update.setFinishTime(Optional.ofNullable(finishTime).orElse(LocalDateTime.now()));
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;
 		return updateStatus(orderCode, order4Update, subStatusEnum,
 				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY, OrderEnum.SubStatusEnum.CANCELED,
@@ -121,13 +139,13 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 		OrderEnum.SubStatusEnum newSubStatus = OrderEnum.SubStatusEnum.CHECK;
 		List<OrderEnum.SubStatusEnum> conditionSubStatusEnums = Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED,
-				OrderEnum.SubStatusEnum.WAIT_SEND, /*OrderEnum.SubStatusEnum.SENDING, */OrderEnum.SubStatusEnum.SEND_FAIL,
-				/*OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,*/
+				OrderEnum.SubStatusEnum.WAIT_SEND, OrderEnum.SubStatusEnum.SENDING, OrderEnum.SubStatusEnum.SEND_FAIL,
+				OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
 				OrderEnum.SubStatusEnum.COMPLETE);
 
 		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(oldSubStatus)) {// 条件状态集合，满足条件才能更新成功
 			// 只有在条件集合下的状态才能更新
-			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
+			log.warn("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
 			throw new BusinessException("当前不可申请退款，请刷新后重试！");
 		}
 
@@ -144,7 +162,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 			}
 		}
 		Order order4Update = new Order();
-		order4Update.setRefundTime(refundApplyTime);
+		order4Update.setRefundTime(Optional.ofNullable(refundApplyTime).orElse(LocalDateTime.now()));
 		order4Update.setStatus(OrderEnum.SubStatusEnum.toStatusEnum(newSubStatus).getStatus());
 		order4Update.setSubStatus(newSubStatus.getStatus());
 		order4Update.setUpdateTime(LocalDateTime.now());
@@ -170,7 +188,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	 * @param rejectReason
 	 * @return
 	 */
-	public int refundReject(String orderCode, OrderEnum.SubStatusEnum oldSubStatus, String rejectReason) {
+	public boolean refundReject(String orderCode, OrderEnum.SubStatusEnum oldSubStatus, String rejectReason) {
 		Order orderDB = orderMapper.selectByOrderCode(orderCode);
 		String attach = orderDB.getAttach();
 		attach = Utils.append2Json(attach, "rejectReason", rejectReason);
@@ -188,17 +206,16 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	 * @param orderCode
 	 * @param refundFinishTime
 	 * @param totalRefundAmount
+	 * @param refundAll
 	 * @return
 	 */
-	public int refundFinish(String orderCode, LocalDateTime refundFinishTime, BigDecimal totalRefundAmount) {
-		Order orderDB = orderMapper.selectByOrderCode(orderCode);
-		BigDecimal payAmount = orderDB.getPayAmount();
-		
+	public boolean refundFinish(String orderCode, LocalDateTime refundFinishTime, BigDecimal totalRefundAmount,
+			boolean refundAll) {
 		Order order4Update = new Order();
 		order4Update.setRefundAmount(totalRefundAmount);
-		order4Update.setRefundTime(refundFinishTime);
+		order4Update.setRefundTime(Optional.ofNullable(refundFinishTime).orElse(LocalDateTime.now()));
 		OrderEnum.SubStatusEnum subStatusEnum = OrderEnum.SubStatusEnum.REFUND_SUCCESS;// 全额退款
-		if (payAmount.compareTo(totalRefundAmount) > 0) {
+		if (!refundAll) {
 			subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;// 部分退款
 		}
 		return updateStatus(orderCode, order4Update, subStatusEnum, Lists.newArrayList(OrderEnum.SubStatusEnum.PAYED,
@@ -220,7 +237,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	 *            条件状态，为null表示不加条件
 	 * @return
 	 */
-	private int updateStatus(String orderCode, Order order4Update, OrderEnum.SubStatusEnum newSubStatus,
+	private boolean updateStatus(String orderCode, Order order4Update, OrderEnum.SubStatusEnum newSubStatus,
 			List<OrderEnum.SubStatusEnum> conditionSubStatusEnums) {
 		Order orderDB = orderMapper.selectByOrderCode(orderCode);
 
@@ -228,7 +245,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		if (conditionSubStatusEnums != null && !conditionSubStatusEnums.contains(oldSubStatus)) {// 条件状态集合，满足条件才能更新成功
 			// 只有在条件集合下的状态才能更新
 			log.info("{}不是{}状态，当前状态为:{}", orderCode, conditionSubStatusEnums, oldSubStatus);
-			throw new BusinessException(orderCode + "不是" + conditionSubStatusEnums + "状态，当前状态为:" + oldSubStatus);
+			return false;
 		}
 
 		EntityWrapper<Order> wrapper = new EntityWrapper<>();
@@ -251,7 +268,26 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		log.info("状态修改:{}|{} -> {}|{},{}", orderDB.getStatus(), orderDB.getSubStatus(), order4Update.getStatus(),
 				order4Update.getSubStatus(), affect);
 
-		return affect;
+		return affect > 0;
 	}
 
+	public boolean deleteOrder(String orderCode) {
+		Order order4Update = new Order();
+		order4Update.setUserDel(2);
+		EntityWrapper<Order> wrapper = new EntityWrapper<>();
+		wrapper.eq("order_code", orderCode);
+		wrapper.eq("user_del", 1);
+		int affect = orderMapper.update(order4Update, wrapper);
+		return affect > 0;
+	}
+	
+	public List<String> select4OverSendSuccess(Integer limit) {
+		LocalDateTime payTimeBegin = LocalDateTime.now().minusDays(5);// 发货n天后收货的订单
+		return orderMapper.select4OverSendSuccess(payTimeBegin, OrderEnum.SubStatusEnum.SEND_SUCCESS, limit);
+	}
+
+	public List<String> select4OverWaitReview(Integer limit) {
+		LocalDateTime finishTimeBegin = LocalDateTime.now().minusDays(7);// 完成n天后没有评价的订单
+		return orderMapper.select4OverWaitReview(finishTimeBegin, OrderEnum.SubStatusEnum.WAIT_REVIEW, limit);
+	}
 }

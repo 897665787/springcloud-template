@@ -57,6 +57,12 @@ public class MemberBuyOrder {
      */
     @TableField(value = "add_days")
     private Integer addDays;
+    
+    /**
+     * 退款手续费
+     */
+    @TableField(value = "refund_service_amount")
+    private BigDecimal refundServiceAmount;
 
     /**
      * 备注(多个使用/分隔)

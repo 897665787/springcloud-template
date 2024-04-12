@@ -127,7 +127,7 @@ public class RefundApplyController implements RefundApplyFeign {
 					payRefundApply.getId());
 			
 			orderRefundApplyEventMessage(false, "审核驳回", payRefundApply.getOldOrderCode(),
-					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null);
+					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
 			return Result.success(Boolean.TRUE);
 		}
 
@@ -171,7 +171,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_FAIL, remark,
 					payRefundApply.getId());
 			orderRefundApplyEventMessage(false, result.getMessage(), payRefundApply.getOldOrderCode(),
-					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null);
+					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
 			return Result.fail("申请退款失败");
 		}
 		// 申请退款成功
@@ -199,7 +199,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.REFUND_FAIL, remark,
 					payRefundApply.getId());
 			orderRefundApplyEventMessage(false, refundNotifyReq.getMessage(), refundNotifyReq.getOrderCode(),
-					refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getThisRefundAmount(),
+					refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getPayAmount(), refundNotifyReq.getThisRefundAmount(),
 					refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
 			return Result.success();
 		}
@@ -209,7 +209,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.REFUND_SCUESS, remark,
 				payRefundApply.getId());
 		orderRefundApplyEventMessage(true, refundNotifyReq.getMessage(), refundNotifyReq.getOrderCode(),
-				refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getThisRefundAmount(),
+				refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getPayAmount(), refundNotifyReq.getThisRefundAmount(),
 				refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
 		return Result.success();
 	}
@@ -218,13 +218,14 @@ public class RefundApplyController implements RefundApplyFeign {
 	 * 订单退款申请结果事件发布消息
 	 */
 	public void orderRefundApplyEventMessage(Boolean success, String message, String orderCode, String refundOrderCode,
-			String attach, BigDecimal thisRefundAmount, BigDecimal totalRefundAmount, Boolean refundAll) {
+			String attach, BigDecimal payAmount, BigDecimal thisRefundAmount, BigDecimal totalRefundAmount, Boolean refundAll) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("success", success);
 		params.put("message", message);
 		params.put("orderCode", orderCode);
 		params.put("refundOrderCode", refundOrderCode);
 		params.put("attach", attach);
+		params.put("payAmount", payAmount);
 		params.put("thisRefundAmount", thisRefundAmount);
 		params.put("totalRefundAmount", totalRefundAmount);
 		params.put("refundAll", refundAll);

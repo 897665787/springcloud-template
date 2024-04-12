@@ -132,7 +132,7 @@ public class Utils {
 	}
 
 	/**
-	 * 将key:value添加到json字符串中
+	 * 将key:value添加到json字符串中（取使用getByJson）
 	 * 
 	 * @param jsonString
 	 * @param key
@@ -149,7 +149,7 @@ public class Utils {
 	}
 	
 	/**
-	 * 在json字符串中获取key的value
+	 * 在json字符串中获取key的value（存使用append2Json）
 	 * 
 	 * @param jsonString
 	 * @param key

@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -36,6 +37,7 @@ import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
@@ -44,6 +46,7 @@ import com.company.order.api.request.OrderRefundApplyReq;
 import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.OrderReq;
+import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderDetailResp.TextValueResp;
@@ -51,6 +54,8 @@ import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 import com.company.order.entity.Order;
 import com.company.order.entity.OrderProduct;
+import com.company.order.entity.PayRefundApply;
+import com.company.order.mapper.PayRefundApplyMapper;
 import com.company.order.service.OrderProductService;
 import com.company.order.service.OrderService;
 import com.google.common.collect.Lists;
@@ -68,6 +73,8 @@ public class OrderController implements OrderFeign {
 	private OrderService orderService;
 	@Autowired
 	private OrderProductService orderProductService;
+	@Autowired
+	private PayRefundApplyMapper payRefundApplyMapper;
 
 	@Override
 	public Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
@@ -116,56 +123,56 @@ public class OrderController implements OrderFeign {
 	public Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
-		Integer affect = orderService.cancel(orderCode, cancelTime);
-		if (affect == 0) {
+		boolean affect = orderService.cancel(orderCode, cancelTime);
+		if (!affect) {
 			return Result.fail("取消订单失败，请刷新订单");
 		}
 
 		Order order = orderService.selectByOrderCode(orderCode);
 		String subOrderUrl = order.getSubOrderUrl();
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
-		
+
 		OrderDetailResp orderDetailResp = toOrderDetailResp(order);
 		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.USER_CANCEL, subOrderUrl, order, orderProductList);
 		orderDetailResp.setSubOrder(data);
 
 		return Result.success(orderDetailResp);
 	}
-	
+
 	@Override
-	public Result<Void> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
+	public Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
-		Integer affect = orderService.cancel(orderCode, cancelTime);
-		if (affect == 0) {
-			return Result.fail("取消订单失败");
-		}
-		return Result.success();
+		boolean affect = orderService.cancel(orderCode, cancelTime);
+		return Result.success(affect);
 	}
 
 	@Override
-	public Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
+	public Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
 		String orderCode = orderPaySuccessReq.getOrderCode();
 		BigDecimal payAmount = orderPaySuccessReq.getPayAmount();
 		LocalDateTime payTime = orderPaySuccessReq.getPayTime();
 
-		int affect = orderService.paySuccess(orderCode, payAmount, payTime);
-		if (affect == 0) {
-			return Result.fail("修改为支付成功失败");
-		}
-		return Result.success();
+		boolean affect = orderService.paySuccess(orderCode, payAmount, payTime);
+		return Result.success(affect);
+	}
+	
+	@Override
+	public Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq) {
+		String orderCode = orderReceiveReq.getOrderCode();
+		LocalDateTime finishTime = orderReceiveReq.getFinishTime();
+		
+		boolean affect = orderService.finish(orderCode, finishTime);
+		return Result.success(affect);
 	}
 
 	@Override
-	public Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq) {
+	public Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq) {
 		String orderCode = orderFinishReq.getOrderCode();
 		LocalDateTime finishTime = orderFinishReq.getFinishTime();
 
-		int affect = orderService.finish(orderCode, finishTime);
-		if (affect == 0) {
-			return Result.fail("修改为完成失败");
-		}
-		return Result.success();
+		boolean affect = orderService.finish(orderCode, finishTime);
+		return Result.success(affect);
 	}
 
 	@Override
@@ -184,38 +191,59 @@ public class OrderController implements OrderFeign {
 		LocalDateTime refundApplyTime = orderRefundApplyReq.getRefundApplyTime();
 		OrderEnum.SubStatusEnum oldSubStatus = orderService.refundApply(orderCode, refundApplyTime);
 		resp.setOldSubStatus(oldSubStatus);
-		BigDecimal canRefundAmount = payAmount.subtract(refundAmount);
-		resp.setCanRefundAmount(canRefundAmount);
+		// TODO 如果有手续费之类的扣费逻辑，需要提供接口根据子订单逻辑来计算可退款金额
 		
+		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
+		String subOrderUrl = order.getSubOrderUrl();
+		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.USER_CANCEL, subOrderUrl, order, orderProductList);
+		BigDecimal canRefundAmount = payAmount.subtract(refundAmount);
+		if (data != null) {// 这里应该是BigDecimal类型
+			canRefundAmount = new BigDecimal(data.toString());
+			if (canRefundAmount.compareTo(BigDecimal.ZERO) == 0) {
+				return Result.fail("无可退款金额");
+			}
+		}
+		resp.setCanRefundAmount(canRefundAmount);
+
 		return Result.success(resp);
 	}
-	
+
 	@Override
-	public Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
+	public Result<Boolean> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
 		String orderCode = orderRefundRejectReq.getOrderCode();
 		OrderEnum.SubStatusEnum oldSubStatus = orderRefundRejectReq.getOldSubStatus();
 		String rejectReason = orderRefundRejectReq.getRejectReason();
 
-		int affect = orderService.refundReject(orderCode, oldSubStatus, rejectReason);
-		if (affect == 0) {
-			return Result.fail("修改为退款审核拒绝失败");
-		}
-		return Result.success();
+		boolean affect = orderService.refundReject(orderCode, oldSubStatus, rejectReason);
+		return Result.success(affect);
 	}
-	
+
 	@Override
-	public Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
+	public Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
 		String orderCode = orderRefundFinishReq.getOrderCode();
 		LocalDateTime refundFinishTime = orderRefundFinishReq.getRefundFinishTime();
 		BigDecimal totalRefundAmount = orderRefundFinishReq.getTotalRefundAmount();
+		Boolean refundAll = orderRefundFinishReq.getRefundAll();
 
-		int affect = orderService.refundFinish(orderCode, refundFinishTime, totalRefundAmount);
-		if (affect == 0) {
-			return Result.fail("修改为退款完成失败");
+		boolean affect = orderService.refundFinish(orderCode, refundFinishTime, totalRefundAmount, refundAll);
+		return Result.success(affect);
+	}
+
+	@Override
+	public Result<Void> deleteOrder(String orderCode) {
+		Integer userId = HttpContextUtil.currentUserIdInt();
+		Order order = orderService.selectByOrderCode(orderCode);
+		if (order == null) {
+			return Result.fail("订单不存在");
 		}
+		if (!order.getUserId().equals(userId)) {
+			return Result.fail("订单不匹配");
+		}
+
+		orderService.deleteOrder(orderCode);
 		return Result.success();
 	}
-	
+
 	@Override
 	public Result<List<OrderResp>> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
@@ -280,7 +308,7 @@ public class OrderController implements OrderFeign {
 			orderResp.setTime(order.getPayTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
-			
+
 			bottonList.add(new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
 			orderResp.setTimeText("完成时间");
@@ -290,10 +318,25 @@ public class OrderController implements OrderFeign {
 			if (OrderEnum.SubStatusEnum.WAIT_REVIEW == subStatusEnum) {
 				bottonList.add(new OrderResp.BottonResp("评价", "comment", "orderCode=" + order.getOrderCode(), 20));
 			}
-			
+
 			long hours = LocalDateTimeUtil.between(order.getFinishTime(), LocalDateTime.now(), ChronoUnit.HOURS);
 			if (hours < 24) {// 订单完成n小时内可以申请退款
-				bottonList.add(new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
+				PayRefundApply lastPayRefundApply = payRefundApplyMapper.selectLastByOldOrderCode(order.getOrderCode());
+				PayRefundApplyEnum.RefundStatus refundStatus = Optional.ofNullable(lastPayRefundApply)
+						.map(v -> PayRefundApplyEnum.RefundStatus.of(v.getRefundStatus())).orElse(null);
+				if (refundStatus == null || refundStatus == PayRefundApplyEnum.RefundStatus.REJECT
+						|| refundStatus == PayRefundApplyEnum.RefundStatus.REFUND_FAIL) {
+					// 没有退款申请记录或申请被拒或退款失败
+					bottonList.add(
+							new OrderResp.BottonResp("退款申请", "refundApply", "orderCode=" + order.getOrderCode(), 10));
+				}
+			}
+
+			// 有退款（部分退款）
+			if (order.getRefundAmount().compareTo(BigDecimal.ZERO) != 0) {
+				orderResp.setStatusText(statusEnum.getMessage() + "（有退款）");
+				orderResp.setTimeText("退款时间");
+				orderResp.setTime(order.getRefundTime());
 			}
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderResp.setTimeText("退款申请时间");
@@ -311,18 +354,19 @@ public class OrderController implements OrderFeign {
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
 		}
-		
+
 		orderResp.setCancelBtn(false);
 		if (OrderEnum.StatusEnum.WAIT_PAY == statusEnum) {// 待支付情况下需返回支付参数
 			orderResp.setCancelBtn(true);
 			bottonList.add(new OrderResp.BottonResp("去支付", "topay", "orderCode=" + order.getOrderCode(), 10));
 		}
-		
+
 		orderResp.setDeleteBtn(false);
 		if (OrderEnum.SubStatusEnum.CANCELED == subStatusEnum || OrderEnum.SubStatusEnum.COMPLETE == subStatusEnum
 				|| OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {// 终态才可以删除订单、再来一单
 			orderResp.setDeleteBtn(true);
-			String firstProductCode = orderProductList.stream().map(OrderProduct::getProductCode).findFirst().orElse("");
+			String firstProductCode = orderProductList.stream().map(OrderProduct::getProductCode).findFirst()
+					.orElse("");
 			bottonList.add(new OrderResp.BottonResp("再来一单", "onemore", "productCode=" + firstProductCode, 10));
 		}
 
@@ -360,10 +404,10 @@ public class OrderController implements OrderFeign {
 				bottonList.add(new OrderResp.BottonResp(text, pageKey, params, sort));
 			}
 		}
-		
+
 		bottonList.sort((a, b) -> Integer.compare(b.getSort(), a.getSort()));
 		orderResp.setBottonList(bottonList);
-		
+
 		return orderResp;
 	}
 
@@ -433,32 +477,29 @@ public class OrderController implements OrderFeign {
 		}
 
 		List<OrderDetailResp.TextValueResp> textValueList = Lists.newArrayList();
-		textValueList.add(
-				new TextValueResp("下单时间", LocalDateTimeUtil.formatNormal(order.getCreateTime())));
+		textValueList.add(new TextValueResp("下单时间", LocalDateTimeUtil.formatNormal(order.getCreateTime())));
 		if (OrderEnum.StatusEnum.CANCELED == statusEnum) {
-			textValueList.add(
-					new TextValueResp("关闭时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("关闭时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 		} else if (OrderEnum.StatusEnum.WAIT_SEND == statusEnum || OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum) {
-			textValueList.add(
-					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 		} else if (OrderEnum.StatusEnum.COMPLETE == statusEnum) {
-			textValueList.add(
-					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 			textValueList.add(new TextValueResp("完成时间", LocalDateTimeUtil.formatNormal(order.getFinishTime())));
+			// 有退款（部分退款）
+			if (order.getRefundAmount().compareTo(BigDecimal.ZERO) != 0) {
+				textValueList.add(new TextValueResp("退款时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
+				textValueList.add(new TextValueResp("退款金额", order.getRefundAmount().toPlainString() + "元"));
+			}
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
-			textValueList.add(
-					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 			textValueList.add(new TextValueResp("退款申请时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
-			textValueList.add(
-					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 			textValueList.add(new TextValueResp("退款申请时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
-			textValueList.add(
-					new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
+			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 			textValueList.add(new TextValueResp("退款时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
-			textValueList
-					.add(new TextValueResp("退款金额", order.getRefundAmount().toPlainString() + "元"));
+			textValueList.add(new TextValueResp("退款金额", order.getRefundAmount().toPlainString() + "元"));
 		}
 
 		orderDetailResp.setTextValueList(textValueList);
@@ -490,7 +531,8 @@ public class OrderController implements OrderFeign {
 		return orderDetailResp;
 	}
 
-	private Object requestSubOrder(OrderEnum.SubOrderEventEnum subOrderEvent, String subOrderUrl, Order order, List<OrderProduct> orderProductList) {
+	private Object requestSubOrder(OrderEnum.SubOrderEventEnum subOrderEvent, String subOrderUrl, Order order,
+			List<OrderProduct> orderProductList) {
 		Object data = null;
 		if (StringUtils.isNotBlank(subOrderUrl)) {
 			long start = System.currentTimeMillis();
@@ -498,7 +540,7 @@ public class OrderController implements OrderFeign {
 			orderReq.setSubOrderEvent(subOrderEvent);
 			orderReq.setStatus(OrderEnum.StatusEnum.of(order.getStatus()));
 			orderReq.setSubStatus(OrderEnum.SubStatusEnum.of(order.getSubStatus()));
-			
+
 			List<OrderReq.ProductReq> productReqList = PropertyUtils.copyArrayProperties(orderProductList,
 					OrderReq.ProductReq.class);
 			orderReq.setProductList(productReqList);
@@ -517,11 +559,9 @@ public class OrderController implements OrderFeign {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	private Object postRestTemplate(String url, OrderReq orderReq) {
-		Object paramObject = orderReq;
+	private Object postRestTemplate(String url, Object paramObject) {
 		String remark = null;
-		log.info("请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject),
-				JsonUtil.toJsonString(paramObject));
+		log.info("请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject), JsonUtil.toJsonString(paramObject));
 		long start = System.currentTimeMillis();
 		try {
 			HttpHeaders headers = new HttpHeaders();
@@ -549,4 +589,17 @@ public class OrderController implements OrderFeign {
 		dataMap.put("message", remark);
 		return dataMap;
 	}
+	
+	@Override
+	public Result<List<String>> select4OverSendSuccess(Integer limit) {
+		List<String> orderCodeList = orderService.select4OverSendSuccess(limit);
+		return Result.success(orderCodeList);
+	}
+
+	@Override
+	public Result<List<String>> select4OverWaitReview(Integer limit) {
+		List<String> orderCodeList = orderService.select4OverWaitReview(limit);
+		return Result.success(orderCodeList);
+	}
+
 }

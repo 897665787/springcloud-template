@@ -15,10 +15,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.common.util.Utils;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
 import com.company.order.api.enums.OrderEnum;
@@ -59,18 +57,27 @@ public class RefundApplyResultConsumer {
 				// 处理会员订单逻辑
 				Boolean success = MapUtils.getBoolean(params, "success");
 				if (success) {// 退款成功
+//					Boolean refundAll = MapUtils.getBoolean(params, "refundAll");// 如果退款需扣手续费，则需按业务的规则计算是否已全额退款
+					// TODO 可能需要扣除一些手续费
+					BigDecimal payAmount = new BigDecimal(MapUtils.getString(params, "payAmount"));
+					BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
+//					BigDecimal serviceAmount = payAmount.multiply(new BigDecimal("0.1"));// 扣除10%作为服务费
+					BigDecimal serviceAmount = memberBuyOrder.getRefundServiceAmount();
+					BigDecimal canRefundAmount = payAmount.subtract(serviceAmount).subtract(totalRefundAmount);
+					Boolean refundAll = canRefundAmount.compareTo(BigDecimal.ZERO) == 0;
+					
 					// 修改‘订单中心’数据
 					OrderRefundFinishReq orderRefundFinishReq = new OrderRefundFinishReq();
 					orderRefundFinishReq.setOrderCode(orderCode);
 					orderRefundFinishReq.setRefundFinishTime(LocalDateTime.now());
-					BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
+//					BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
 					orderRefundFinishReq.setTotalRefundAmount(totalRefundAmount);
-					Result<Void> reult = orderFeign.refundFinish(orderRefundFinishReq);
-					if (!reult.successCode()) {
-						log.warn("修改‘订单中心’数据失败:{}", reult.getMessage());
+					orderRefundFinishReq.setRefundAll(refundAll);
+					Boolean updateSuccess = orderFeign.refundFinish(orderRefundFinishReq).dataOrThrow();
+					if (!updateSuccess) {
+						log.warn("修改‘订单中心’数据失败");
 					}
 					
-					Boolean refundAll = MapUtils.getBoolean(params, "refundAll");
 					if (refundAll) {
 						// 全额退款，才归还优惠券
 						Integer userCouponId = memberBuyOrder.getUserCouponId();
@@ -84,16 +91,15 @@ public class RefundApplyResultConsumer {
 					orderRefundRejectReq.setOrderCode(orderCode);
 
 					String attach = MapUtils.getString(params, "attach");
-					JSONObject attachJson = JSON.parseObject(attach);
-					OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum
-							.of(attachJson.getInteger("oldSubStatus"));
+					Integer oldSubStatusInt = Integer.valueOf(Utils.getByJson(attach, "oldSubStatus"));
+					OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(oldSubStatusInt);
 					orderRefundRejectReq.setOldSubStatus(oldSubStatus);
 					String message = MapUtils.getString(params, "message");
 					orderRefundRejectReq.setRejectReason(message);
 
-					Result<Void> reult = orderFeign.refundReject(orderRefundRejectReq);
-					if (!reult.successCode()) {
-						log.warn("修改‘订单中心’数据失败:{}", reult.getMessage());
+					Boolean updateSuccess = orderFeign.refundReject(orderRefundRejectReq).dataOrThrow();
+					if (!updateSuccess) {
+						log.warn("修改‘订单中心’数据失败");
 					}
 				}
 			}

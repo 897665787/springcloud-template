@@ -1,5 +1,6 @@
 package com.company.order.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Select;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.enums.OrderEnum.SubStatusEnum;
 import com.company.order.entity.Order;
 
 public interface OrderMapper extends BaseMapper<Order> {
@@ -24,4 +26,12 @@ public interface OrderMapper extends BaseMapper<Order> {
 			+ " ON DUPLICATE KEY UPDATE"
 			+ " status = #{status},sub_status = #{subStatus},product_amount = #{productAmount},order_amount = #{orderAmount},reduce_amount = #{reduceAmount},need_pay_amount = #{needPayAmount},sub_order_url = #{subOrderUrl},attach = #{attach}")
 	Integer saveOrUpdate(Order order);
+	
+	@Select("select order_code from bu_order where pay_time > #{payTimeBegin} and sub_status = #{subStatusEnum.code} order by id asc limit #{limit}")
+	List<String> select4OverSendSuccess(@Param("payTimeBegin") LocalDateTime payTimeBegin,
+			@Param("subStatusEnum") SubStatusEnum subStatusEnum, @Param("limit") Integer limit);
+
+	@Select("select order_code from bu_order where finish_time > #{finishTimeBegin} and sub_status = #{subStatusEnum.code} order by id asc limit #{limit}")
+	List<String> select4OverWaitReview(@Param("finishTimeBegin") LocalDateTime finishTimeBegin,
+			@Param("subStatusEnum") SubStatusEnum subStatusEnum, @Param("limit") Integer limit);
 }

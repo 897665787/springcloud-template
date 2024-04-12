@@ -1,5 +1,7 @@
 package com.company.user.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.service.IService;
@@ -13,5 +15,9 @@ public class MemberBuyOrderService extends ServiceImpl<MemberBuyOrderMapper, Mem
 
 	public MemberBuyOrder selectByOrderCode(String orderCode) {
 		return baseMapper.selectByOrderCode(orderCode);
+	}
+
+	public Integer updateRefundServiceAmountByOrderCode(BigDecimal serviceAmount, String orderCode) {
+		return baseMapper.updateRefundServiceAmountByOrderCode(serviceAmount, orderCode);
 	}
 }

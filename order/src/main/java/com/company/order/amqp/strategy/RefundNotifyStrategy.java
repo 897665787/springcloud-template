@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.company.framework.amqp.BaseStrategy;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
@@ -49,19 +50,30 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		if (success) {
 			// 退款成功
 			OrderPayRefund orderPayRefund4Update = new OrderPayRefund();
-			orderPayRefund4Update.setId(orderPayRefund.getId());
 			orderPayRefund4Update.setStatus(OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
-			orderPayRefundService.updateById(orderPayRefund4Update);
+			EntityWrapper<OrderPayRefund> wrapper = new EntityWrapper<>();
+			wrapper.eq("id", orderPayRefund.getId());
+			wrapper.eq("status", OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
+			boolean affect = orderPayRefundService.update(orderPayRefund4Update, wrapper);
+			if (!affect) {
+				log.warn("修改退款订单状态失败,可能存在重复回调,payNotifyId:{},outRefundNo:{}", payNotifyId, outRefundNo);
+				return;
+			}
 
 			financialFlow(params, outTradeNo, outRefundNo);
-
 
 		} else {
 			// 退款失败
 			OrderPayRefund orderPayRefund4Update = new OrderPayRefund();
-			orderPayRefund4Update.setId(orderPayRefund.getId());
 			orderPayRefund4Update.setStatus(OrderPayRefundEnum.Status.REFUND_FAIL.getCode());
-			orderPayRefundService.updateById(orderPayRefund4Update);
+			EntityWrapper<OrderPayRefund> wrapper = new EntityWrapper<>();
+			wrapper.eq("id", orderPayRefund.getId());
+			wrapper.eq("status", OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
+			boolean affect = orderPayRefundService.update(orderPayRefund4Update, wrapper);
+			if (!affect) {
+				log.warn("修改退款订单状态失败,可能存在重复回调,payNotifyId:{},outRefundNo:{}", payNotifyId, outRefundNo);
+				return;
+			}
 		}
 
 		// 回调退款到对应业务中
@@ -78,6 +90,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		refundNotifyReq.setOrderCode(outTradeNo);
 		refundNotifyReq.setRefundOrderCode(outRefundNo);
 		refundNotifyReq.setAttach(orderPayRefund.getNotifyAttach());
+		refundNotifyReq.setPayAmount(orderPayRefund.getAmount());
 		refundNotifyReq.setThisRefundAmount(orderPayRefund.getRefundAmount());
 
 		List<OrderPayRefund> refundOrderList = orderPayRefundService.listByOrderCode(outTradeNo);

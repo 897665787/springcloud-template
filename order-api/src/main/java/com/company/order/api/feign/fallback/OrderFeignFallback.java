@@ -13,6 +13,7 @@ import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderRefundApplyReq;
 import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.OrderRefundRejectReq;
+import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderRefundApplyResp;
@@ -37,17 +38,22 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 			
 			@Override
-			public Result<Void> cancelByTimeout(OrderCancelReq orderCancelReq) {
+			public Result<Boolean> cancelByTimeout(OrderCancelReq orderCancelReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
+			public Result<Boolean> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
+				return Result.onFallbackError();
+			}
+			
+			@Override
+			public Result<Boolean> receive(OrderReceiveReq orderReceiveReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> finish(OrderFinishReq orderFinishReq) {
+			public Result<Boolean> finish(OrderFinishReq orderFinishReq) {
 				return Result.onFallbackError();
 			}
 
@@ -57,15 +63,20 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<Void> refundReject(OrderRefundRejectReq orderRefundRejectReq) {
+			public Result<Boolean> refundReject(OrderRefundRejectReq orderRefundRejectReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
+			public Result<Boolean> refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
 				return Result.onFallbackError();
 			}
 
+			@Override
+			public Result<Void> deleteOrder(String orderCode) {
+				return Result.onFallbackError();
+			}
+			
 			@Override
 			public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
 				return Result.onFallbackError();
@@ -73,6 +84,16 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 			@Override
 			public Result<OrderDetailResp> detail(String orderCode) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<List<String>> select4OverSendSuccess(Integer limit) {
+				return Result.onFallbackError();
+			}
+			
+			@Override
+			public Result<List<String>> select4OverWaitReview(Integer limit) {
 				return Result.onFallbackError();
 			}
 

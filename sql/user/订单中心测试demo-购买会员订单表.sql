@@ -7,6 +7,7 @@ CREATE TABLE `bu_member_buy_order` (
   `product_code` varchar(32) NOT NULL DEFAULT '' COMMENT '会员续期编码',
   `amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '会员续期费用(元)',
   `add_days` int(11) NOT NULL DEFAULT '0' COMMENT '续期增加天数',
+  `refund_service_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '退款手续费',
   
   `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

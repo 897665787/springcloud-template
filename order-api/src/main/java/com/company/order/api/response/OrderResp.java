@@ -76,7 +76,7 @@ public class OrderResp {
 		/**
 		 * 点击后重定向页面(前端根据该key做路径映射)
 		 */
-		private String pageKey;
+		private String key;
 		
 		/**
 		 * 参数

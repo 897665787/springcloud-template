@@ -15,6 +15,9 @@ public interface PayRefundApplyMapper extends BaseMapper<PayRefundApply> {
 	@Select("select * from bu_pay_refund_apply where order_code = #{orderCode}")
 	PayRefundApply selectByOrderCode(@Param("orderCode") String orderCode);
 	
+	@Select("select * from bu_pay_refund_apply where old_order_code = #{oldOrderCode} order by id desc limit 1")
+	PayRefundApply selectLastByOldOrderCode(@Param("oldOrderCode") String oldOrderCode);
+	
 	@Select("update bu_pay_refund_apply set status = #{status} where id = #{id}")
 	Integer updateVerifyStatusById(@Param("status") Integer status, @Param("id") Integer id);
 	

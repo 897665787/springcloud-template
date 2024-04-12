@@ -28,4 +28,10 @@ public class OrderRefundFinishReq {
 	 */
 	@NotNull(message = "总退款金额不能为空")
 	private BigDecimal totalRefundAmount;
+	
+	/**
+	 * 是否全额退款（由调用方判断，例如退款时扣手续费，不全退也算全额退款）
+	 */
+	@NotNull(message = "是否全额退款不能为空")
+	private Boolean refundAll;
 }

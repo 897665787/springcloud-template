@@ -18,6 +18,7 @@ import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderRefundApplyReq;
 import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.OrderRefundRejectReq;
+import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderRefundApplyResp;
@@ -51,7 +52,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/cancelByTimeout")
-	Result<Void> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
+	Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
 	
 	/**
 	 * 修改订单状态（支付成功）
@@ -60,7 +61,16 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/paySuccess")
-	Result<Void> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
+	Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
+	
+	/**
+	 * 修改订单状态（确认收货）
+	 * 
+	 * @param orderFinishReq
+	 * @return
+	 */
+	@PostMapping("/receive")
+	Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq);
 	
 	/**
 	 * 修改订单状态（完成订单）
@@ -69,16 +79,19 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/finish")
-	Result<Void> finish(@RequestBody OrderFinishReq orderFinishReq);
+	Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq);
 
 	@PostMapping("/refundApply")
 	Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
 
 	@PostMapping("/refundReject")
-	Result<Void> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq);
+	Result<Boolean> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq);
 
 	@PostMapping("/refundFinish")
-	Result<Void> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+	Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+
+	@GetMapping("/deleteOrder")
+	Result<Void> deleteOrder(@RequestParam("orderCode") String orderCode);
 	
 	/**
 	 * 分页查询订单列表
@@ -99,4 +112,21 @@ public interface OrderFeign {
 	@GetMapping("/detail")
 	Result<OrderDetailResp> detail(@RequestParam("orderCode") String orderCode);
 	
+	/**
+	 * 查询超时未收货订单号改为已收货(job)
+	 * 
+	 * @param limit
+	 * @return
+	 */
+	@GetMapping("/select4OverSendSuccess")
+	Result<List<String>> select4OverSendSuccess(@RequestParam("limit") Integer limit);
+
+	/**
+	 * 查询超时未评价订单号改为已完成(job)
+	 * 
+	 * @param limit
+	 * @return
+	 */
+	@GetMapping("/select4OverWaitReview")
+	Result<List<String>> select4OverWaitReview(@RequestParam("limit") Integer limit);
 }
