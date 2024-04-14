@@ -22,10 +22,10 @@ public class RegisterOrderReq {
 	@NotNull(message = "订单号不能为空")
 	private String orderCode;
 	/**
-	 * 订单类型
+	 * 订单类型(每个子业务唯一)
 	 */
 	@NotNull(message = "订单类型不能为空")
-	private OrderEnum.OrderType orderTypeEnum;
+	private String orderType;
 	/**
 	 * 订单子状态
 	 */

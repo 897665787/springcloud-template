@@ -169,7 +169,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
 		registerOrderReq.setUserId(userId);
 		registerOrderReq.setOrderCode(orderCode);
-		registerOrderReq.setOrderTypeEnum(OrderEnum.OrderType.DISTRIBUTE);
+		registerOrderReq.setOrderType("distribute");
 		registerOrderReq.setSubStatusEnum(OrderEnum.SubStatusEnum.WAIT_PAY);
 		registerOrderReq.setProductAmount(productAmount);
 		registerOrderReq.setOrderAmount(orderAmount);

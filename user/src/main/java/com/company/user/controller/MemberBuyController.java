@@ -156,7 +156,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
 		registerOrderReq.setUserId(userId);
 		registerOrderReq.setOrderCode(orderCode);
-		registerOrderReq.setOrderTypeEnum(OrderEnum.OrderType.BUY_MEMBER);
+		registerOrderReq.setOrderType("buy_member");
 		registerOrderReq.setSubStatusEnum(OrderEnum.SubStatusEnum.WAIT_PAY);
 		registerOrderReq.setProductAmount(productAmount);
 		registerOrderReq.setOrderAmount(orderAmount);

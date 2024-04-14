@@ -4,36 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public interface OrderEnum {
-	// 订单类型order_type
-	@AllArgsConstructor
-	enum OrderType {
-		@Deprecated
-		UNKNOWN("unknown", "未知"), // 不能在别的地方用
-		
-		BUY_MEMBER("buy_member", "购买会员"), // 开会员订单
-		DISTRIBUTE("distribute", "配送"), // 含运力配送订单
-		WRITEOFF("writeoff", "核销码"), // 需核销订单
-		MOVIE("movie", "电影票"),// 电影票订单
-		SUBORDERDEMO3("subOrderDemo3", "子订单demo3"),// 子订单demo3
-		;
-		@Getter
-		private String code;
-		@Getter
-		private String desc;
-
-		public static OrderType of(String code) {
-			for (OrderType item : OrderType.values()) {
-				if (item.getCode().equals(code)) {
-					return item;
-				}
-			}
-			// 替换UNKNOWN的code返回，可以在getCode时获取到没有写到枚举中的code(注意：这里会持久化改掉UNKNOWN的code)
-			OrderType unknown = UNKNOWN;
-			unknown.code = code;
-			return unknown;
-		}
-	}
-
 	// 主状态status
 	@AllArgsConstructor
 	enum StatusEnum {

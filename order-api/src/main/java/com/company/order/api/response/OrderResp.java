@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.company.common.jackson.annotation.AutoDesc;
 import com.company.common.jackson.annotation.FormatNumber;
-import com.company.order.api.enums.OrderEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +20,6 @@ public class OrderResp {
 	/**
 	 * 业务类型 关联对应业务表
 	 */
-	@AutoDesc(value = OrderEnum.OrderType.class)
 	private String orderType;
 	/**
 	 * 状态文案

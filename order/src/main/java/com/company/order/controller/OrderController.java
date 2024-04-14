@@ -42,11 +42,11 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
+import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.OrderRefundApplyReq;
 import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.OrderReq;
-import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderDetailResp.TextValueResp;
@@ -80,7 +80,7 @@ public class OrderController implements OrderFeign {
 	public Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
 		Integer userId = registerOrderReq.getUserId();
 		String orderCode = registerOrderReq.getOrderCode();
-		OrderEnum.OrderType orderTypeEnum = registerOrderReq.getOrderTypeEnum();
+		String orderType = registerOrderReq.getOrderType();
 		OrderEnum.SubStatusEnum subStatusEnum = registerOrderReq.getSubStatusEnum();
 		BigDecimal productAmount = registerOrderReq.getProductAmount();
 		BigDecimal orderAmount = registerOrderReq.getOrderAmount();
@@ -92,7 +92,7 @@ public class OrderController implements OrderFeign {
 		String subOrderUrl = registerOrderReq.getSubOrderUrl();
 		String attach = registerOrderReq.getAttach();
 
-		Order order = orderService.saveOrUpdate(userId, orderTypeEnum, orderCode, subStatusEnum, productAmount,
+		Order order = orderService.saveOrUpdate(userId, orderType, orderCode, subStatusEnum, productAmount,
 				orderAmount, reduceAmount, needPayAmount, subOrderUrl, attach);
 
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
@@ -195,7 +195,7 @@ public class OrderController implements OrderFeign {
 		
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
 		String subOrderUrl = order.getSubOrderUrl();
-		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.USER_CANCEL, subOrderUrl, order, orderProductList);
+		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.CALC_CANREFUNDAMOUNT, subOrderUrl, order, orderProductList);
 		BigDecimal canRefundAmount = payAmount.subtract(refundAmount);
 		if (data != null) {// 这里应该是BigDecimal类型
 			canRefundAmount = new BigDecimal(data.toString());
@@ -398,10 +398,10 @@ public class OrderController implements OrderFeign {
 			for (int i = 0; i < dataJSONArray.size(); i++) {
 				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
 				String text = textValueJSON.getString("text");
-				String pageKey = textValueJSON.getString("pageKey");
+				String key = textValueJSON.getString("key");
 				String params = textValueJSON.getString("params");
 				Integer sort = textValueJSON.getInteger("sort");
-				bottonList.add(new OrderResp.BottonResp(text, pageKey, params, sort));
+				bottonList.add(new OrderResp.BottonResp(text, key, params, sort));
 			}
 		}
 
