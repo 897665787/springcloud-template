@@ -20,7 +20,7 @@ import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.redisson.DistributeLockUtils;
+import com.company.framework.lock.LockClient;
 import com.company.order.amqp.rabbitmq.Constants;
 import com.company.order.amqp.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
@@ -72,6 +72,9 @@ public class PayController implements PayFeign {
 	@Autowired
 	private IInnerCallbackService innerCallbackService;
 	
+	@Autowired
+	private LockClient lockClient;
+	
 	private static final String NOTIFY_URL_REFUND = "http://" + com.company.order.api.constant.Constants.FEIGNCLIENT_VALUE + "/pay/refundWithRetry";
 	private static final String NOTIFY_URL_TIMEOUT = "http://" + com.company.order.api.constant.Constants.FEIGNCLIENT_VALUE + "/pay/timeoutWithRetry";
 	
@@ -80,60 +83,59 @@ public class PayController implements PayFeign {
 
 		String orderCode = payReq.getOrderCode();
 		String key = String.format("lock:orderpay:ordercode:%s", orderCode);
-		PayResp payRespR = DistributeLockUtils
-				.doInDistributeLockThrow(key, () -> {
-					OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
-					if (orderPay == null) {
-						orderPay = new OrderPay();
-						orderPay.setUserId(payReq.getUserId());
-						orderPay.setOrderCode(orderCode);
-						orderPay.setBusinessType(payReq.getBusinessType().getCode());
-						orderPay.setMethod(payReq.getMethod().getCode());
-						orderPay.setAmount(payReq.getAmount());
-						orderPay.setBody(payReq.getBody());
-						orderPay.setProductId(payReq.getProductId());
-						orderPay.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
-						orderPay.setNotifyUrl(payReq.getNotifyUrl());
-						orderPay.setNotifyAttach(payReq.getAttach());
-						orderPay.setRemark(payReq.getRemark());
-						
-						orderPayService.insert(orderPay);
-					} else {
-						OrderPay orderPay4Update = new OrderPay();
-						orderPay4Update.setId(orderPay.getId());
-						orderPay4Update.setBusinessType(payReq.getBusinessType().getCode());
-						orderPay4Update.setMethod(payReq.getMethod().getCode());
-						orderPay4Update.setAmount(payReq.getAmount());
-						orderPay4Update.setBody(payReq.getBody());
-						orderPay4Update.setProductId(payReq.getProductId());
-						orderPay4Update.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
-						orderPay4Update.setNotifyUrl(payReq.getNotifyUrl());
-						orderPay4Update.setNotifyAttach(payReq.getAttach());
-						orderPay4Update.setRemark(payReq.getRemark());
-						
-						orderPayService.updateById(orderPay4Update);
-					}
-					
-					payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
-					
-					// 支付参数
-					PayParams payParams = new PayParams();
-					payParams.setAppid(payReq.getAppid());
-					payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
-					payParams.setBody(payReq.getBody());
-					payParams.setOutTradeNo(orderCode);
-					payParams.setSpbillCreateIp(payReq.getSpbillCreateIp());
-					payParams.setProductId(payReq.getProductId());
-					payParams.setOpenid(payReq.getOpenid());
-					
-					PayClient tradeClient = PayFactory.of(payReq.getMethod());
-					PayResp payResp = tradeClient.pay(payParams);
-					if (!payResp.getSuccess()) {
-						throw new BusinessException(payResp.getMessage());
-					}
-					
-					return payResp;
-				});
+		PayResp payRespR = lockClient.doInLock(key, () -> {
+			OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
+			if (orderPay == null) {
+				orderPay = new OrderPay();
+				orderPay.setUserId(payReq.getUserId());
+				orderPay.setOrderCode(orderCode);
+				orderPay.setBusinessType(payReq.getBusinessType().getCode());
+				orderPay.setMethod(payReq.getMethod().getCode());
+				orderPay.setAmount(payReq.getAmount());
+				orderPay.setBody(payReq.getBody());
+				orderPay.setProductId(payReq.getProductId());
+				orderPay.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
+				orderPay.setNotifyUrl(payReq.getNotifyUrl());
+				orderPay.setNotifyAttach(payReq.getAttach());
+				orderPay.setRemark(payReq.getRemark());
+
+				orderPayService.insert(orderPay);
+			} else {
+				OrderPay orderPay4Update = new OrderPay();
+				orderPay4Update.setId(orderPay.getId());
+				orderPay4Update.setBusinessType(payReq.getBusinessType().getCode());
+				orderPay4Update.setMethod(payReq.getMethod().getCode());
+				orderPay4Update.setAmount(payReq.getAmount());
+				orderPay4Update.setBody(payReq.getBody());
+				orderPay4Update.setProductId(payReq.getProductId());
+				orderPay4Update.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
+				orderPay4Update.setNotifyUrl(payReq.getNotifyUrl());
+				orderPay4Update.setNotifyAttach(payReq.getAttach());
+				orderPay4Update.setRemark(payReq.getRemark());
+
+				orderPayService.updateById(orderPay4Update);
+			}
+
+			payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
+
+			// 支付参数
+			PayParams payParams = new PayParams();
+			payParams.setAppid(payReq.getAppid());
+			payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
+			payParams.setBody(payReq.getBody());
+			payParams.setOutTradeNo(orderCode);
+			payParams.setSpbillCreateIp(payReq.getSpbillCreateIp());
+			payParams.setProductId(payReq.getProductId());
+			payParams.setOpenid(payReq.getOpenid());
+
+			PayClient tradeClient = PayFactory.of(payReq.getMethod());
+			PayResp payResp = tradeClient.pay(payParams);
+			if (!payResp.getSuccess()) {
+				throw new BusinessException(payResp.getMessage());
+			}
+
+			return payResp;
+		});
 		return Result.success(payRespR);
 	}
 
@@ -329,45 +331,44 @@ public class PayController implements PayFeign {
 
 		String outRefundNo = payRefundReq.getRefundOrderCode();
 		String key = String.format("lock:orderrefund:ordercode:%s", outRefundNo);
-		String message = DistributeLockUtils
-				.doInDistributeLockThrow(key, () -> {
-					OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(outRefundNo);
-					if (refundOrderPay != null) {
-						return null;
-					}
-					// 已退款金额是否已达到订单总金额
-					BigDecimal sumRefundAmount = orderPayRefundService.sumRefundAmount(outTradeNo);
-					if (orderPay.getAmount().compareTo(sumRefundAmount) <= 0) {
-						return "已全额退款";
-					}
+		String message = lockClient.doInLock(key, () -> {
+			OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(outRefundNo);
+			if (refundOrderPay != null) {
+				return null;
+			}
+			// 已退款金额是否已达到订单总金额
+			BigDecimal sumRefundAmount = orderPayRefundService.sumRefundAmount(outTradeNo);
+			if (orderPay.getAmount().compareTo(sumRefundAmount) <= 0) {
+				return "已全额退款";
+			}
 
-					BigDecimal leftAmount = orderPay.getAmount().subtract(sumRefundAmount);// 剩余金额
-					// 退款金额与剩余金额比较
-					BigDecimal refundAmount = payRefundReq.getRefundAmount();
-					if (refundAmount != null) {
-						if (refundAmount.compareTo(leftAmount) > 0) {
-							return "退款金额超出可退款金额";
-						}
-					} else {
-						refundAmount = leftAmount;
-					}
+			BigDecimal leftAmount = orderPay.getAmount().subtract(sumRefundAmount);// 剩余金额
+			// 退款金额与剩余金额比较
+			BigDecimal refundAmount = payRefundReq.getRefundAmount();
+			if (refundAmount != null) {
+				if (refundAmount.compareTo(leftAmount) > 0) {
+					return "退款金额超出可退款金额";
+				}
+			} else {
+				refundAmount = leftAmount;
+			}
 
-					// 创建退款订单
-					refundOrderPay = new OrderPayRefund();
-					refundOrderPay.setUserId(orderPay.getUserId());
-					refundOrderPay.setBusinessType(payRefundReq.getBusinessType().getCode());
-					refundOrderPay.setMethod(orderPay.getMethod());
-					refundOrderPay.setOrderCode(outTradeNo);
-					refundOrderPay.setRefundOrderCode(outRefundNo);
-					refundOrderPay.setAmount(orderPay.getAmount());
-					refundOrderPay.setRefundAmount(refundAmount);
-					refundOrderPay.setStatus(OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
-					refundOrderPay.setRemark(payRefundReq.getRefundRemark());
-					refundOrderPay.setNotifyUrl(payRefundReq.getNotifyUrl());
-					refundOrderPay.setNotifyAttach(payRefundReq.getAttach());
-					orderPayRefundService.insert(refundOrderPay);
-					return null;
-				});
+			// 创建退款订单
+			refundOrderPay = new OrderPayRefund();
+			refundOrderPay.setUserId(orderPay.getUserId());
+			refundOrderPay.setBusinessType(payRefundReq.getBusinessType().getCode());
+			refundOrderPay.setMethod(orderPay.getMethod());
+			refundOrderPay.setOrderCode(outTradeNo);
+			refundOrderPay.setRefundOrderCode(outRefundNo);
+			refundOrderPay.setAmount(orderPay.getAmount());
+			refundOrderPay.setRefundAmount(refundAmount);
+			refundOrderPay.setStatus(OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
+			refundOrderPay.setRemark(payRefundReq.getRefundRemark());
+			refundOrderPay.setNotifyUrl(payRefundReq.getNotifyUrl());
+			refundOrderPay.setNotifyAttach(payRefundReq.getAttach());
+			orderPayRefundService.insert(refundOrderPay);
+			return null;
+		});
 
 		if (message != null) {
 			return Result.fail(message);

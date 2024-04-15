@@ -13,7 +13,7 @@ import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
-import com.company.framework.redisson.DistributeLockUtils;
+import com.company.framework.lock.LockClient;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.request.UserInfoReq;
@@ -34,6 +34,8 @@ public class UserInfoController implements UserInfoFeign {
 	private UserOauthMapper userOauthMapper;
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private LockClient lockClient;
 
 	/**
 	 * <pre>
@@ -52,7 +54,7 @@ public class UserInfoController implements UserInfoFeign {
 		}
 		
 		String key = String.format("lock:register:%s", mobile);
-		Integer userId0 = DistributeLockUtils.doInDistributeLockThrow(key, () -> {
+		Integer userId0 = lockClient.doInLock(key, () -> {
 			UserOauth userOauth = userOauthMapper.selectByIdentityTypeIdentifier(UserOauthEnum.IdentityType.MOBILE, mobile);
 			if (userOauth != null) {
 				return userOauth.getUserId();

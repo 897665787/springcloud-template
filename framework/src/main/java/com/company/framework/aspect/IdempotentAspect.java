@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import com.company.common.annotation.Idempotent;
 import com.company.common.util.JsonUtil;
 import com.company.framework.cache.ICache;
-import com.company.framework.redisson.DistributeLockUtils;
+import com.company.framework.lock.LockClient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +34,8 @@ public class IdempotentAspect implements InitializingBean {
 
 	@Autowired
 	private ICache cache;
+	@Autowired
+	private LockClient lockClient;
 	
 	/**
 	 * 发起feign请求的服务
@@ -69,7 +71,7 @@ public class IdempotentAspect implements InitializingBean {
 		if (idempotentId == null) {
 			return joinPoint.proceed();
 		}
-		return DistributeLockUtils.doInDistributeLockThrow(IdempotentUtil.lock(), () -> {
+		return lockClient.doInLock(IdempotentUtil.lock(), () -> {
 			Boolean success = cache.del(IdempotentUtil.head(idempotentId));// 删除成功代表首次执行
 			if (success) {
 				Object result = null;

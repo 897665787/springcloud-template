@@ -35,7 +35,7 @@ template:
   domain: http://domain.com
   enable:
     cache: combination # guava:本地缓存,redis:redis缓存,combination:组合缓存
-    redisson: true
+    lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: true
     rabbitmq: true
   sqllimit:
