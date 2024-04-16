@@ -12,3 +12,53 @@ template:
     data-encypt: false
   mock:
     time: false
+
+# concept websocket配置
+concept:
+  websocket:
+    type: auto #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
+    server: #服务配置
+      default-endpoint: #默认端点
+        enabled: true #是否启用默认端点，默认true
+        prefix: concept-websocket #前缀，默认'/concept-websocket/'
+        path-selector: #Path选择器
+          enabled: true #是否启用Path选择器，默认false
+        user-selector: #User选择器
+          enabled: true #是否启用User选择器，默认false
+      message:
+        retry:
+          times: 0 #客户端重试次数，默认不重试
+          period: 0 #客户端重试间隔，单位ms，默认0ms
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    load-balance: #负载均衡（转发）配置
+      subscriber-master: websocket #主订阅器，默认 websocket
+      subscriber-slave: none #从订阅器，默认无
+      message:
+        retry:
+          times: 0 #转发重试次数，默认不重试
+          period: 0 #转发重试间隔，单位ms，默认0ms
+      monitor: #监控配置
+        enabled: true #是否启用监控，默认true
+        period: 30000 #轮训间隔，单位ms，默认30s
+        logger: false #是否启用日志，默认false
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    executor:
+      thread-pool-size: 1 #线程池大小，默认1
+
+# Tio websocket配置
+tio:
+ websocket:
+   server:
+     port: 6789 #默认端口6789
+     heartbeat-timeout: 60000 #心跳超时时间
+   cluster:
+     enabled: false #是否支持集群，集群开启需要redis
+   redis:
+     ip: ${spring.redis.host}
+     port: ${spring.redis.port}

@@ -49,6 +49,27 @@
 		</dependency>
 		<!-- 渲染模板 -->
 		
+		<!-- websocket通信依赖 -->
+		<!-- websocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		
+		<!-- 方案1：支持集群的框架（需依赖spring-boot-starter-websocket，支持客户端相互通信，支持服务端主动发送消息给客户端）：https://github.com/Linyuzai/concept/wiki/Concept-WebSocket-LoadBalance-2 -->
+		<dependency>
+			<groupId>com.github.linyuzai</groupId>
+			<artifactId>concept-websocket-loadbalance-spring-boot-starter</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		
+		<!-- 方案2：t-io依赖（不依赖spring-boot-starter-websocket，支持客户端相互通信，不支持服务端主动发送消息给客户端）-->
+		<dependency>
+			<groupId>org.t-io</groupId>
+			<artifactId>tio-websocket-spring-boot-starter</artifactId>
+			<version>3.6.0.v20200315-RELEASE</version>
+		</dependency>
+		<!-- websocket通信依赖 -->
 	</dependencies>
 	<build>
 		<resources>
