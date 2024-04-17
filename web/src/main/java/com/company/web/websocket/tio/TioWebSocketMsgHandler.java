@@ -13,17 +13,13 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
 import com.company.common.util.JsonUtil;
+import com.company.common.util.MdcUtil;
 import com.company.web.websocket.dto.WsMsg;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * tio网络套接字味精处理程序
- *
- * @author xssq
- * @version 1.0.0
- * @date 2023/09/26
- * @wisdom 你可以不会，但你不能不知道
+ * tio处理程序
  */
 @Slf4j
 @Component
@@ -52,10 +48,8 @@ public class TioWebSocketMsgHandler implements IWsMsgHandler {
 
 		Tio.bindBsId(channelContext, httpRequest.getParam("bsId"));
 		Tio.bindUser(channelContext, httpRequest.getParam("userId"));
+		Tio.bindGroup(channelContext, httpRequest.getParam("group"));
 
-		// Tio.bindGroup(channelContext, "1");
-
-		System.out.println("handshake握手方法");
 		return httpResponse;
 	}
 
@@ -90,7 +84,10 @@ public class TioWebSocketMsgHandler implements IWsMsgHandler {
 	 */
 	@Override
 	public Object onBytes(WsRequest wsRequest, byte[] bytes, ChannelContext channelContext) {
-		System.out.println("onBytes方法");
+		String id = channelContext.getId();
+		String bsId = channelContext.getBsId();
+		String token = channelContext.getToken();
+		log.info("onBytes,id:{},bsId:{},token:{}", id, bsId, token);
 		return null;
 	}
 
@@ -127,28 +124,30 @@ public class TioWebSocketMsgHandler implements IWsMsgHandler {
 	 */
 	@Override
 	public Object onText(WsRequest wsRequest, String message, ChannelContext channelContext) {
+		MdcUtil.put();
 		String id = channelContext.getId();
 		String bsId = channelContext.getBsId();
 		String token = channelContext.getToken();
 		log.info("onText,id:{},bsId:{},token:{},message:{}", id, bsId, token, message);
-		if ("心跳包".equals(message)) {
-			return null;
-		}
+		
 		String userid = channelContext.userid;
 		TioConfig tioConfig = channelContext.getTioConfig();
 
 		WsMsg wsMsg = JsonUtil.toEntity(message, WsMsg.class);
 		String toUserId = wsMsg.getToUserId();
+		Object result = null;
 		if (StringUtils.isBlank(toUserId)) {
 			String msg = String.format("接收到【%s】的信息:%s", userid, wsMsg.getMessage());
 			Packet packet = WsResponse.fromText(msg, "utf-8");
 			Tio.sendToAll(tioConfig, packet);
-			return String.format("群发成功");
+			result = String.format("群发成功");
 		} else {
 			String msg = String.format("接收到【%s】的信息:%s", userid, wsMsg.getMessage());
 			Packet packet = WsResponse.fromText(msg, "utf-8");
 			Tio.sendToUser(tioConfig, toUserId, packet);
-			return String.format("发送给【%s】成功", toUserId);
+			result = String.format("发送给【%s】成功", toUserId);
 		}
+		MdcUtil.remove();
+		return result;
 	}
 }

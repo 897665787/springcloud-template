@@ -14,6 +14,7 @@ template:
     time: false
 
 # concept websocket配置
+# 官方文档：https://github.com/Linyuzai/concept/wiki/Concept-WebSocket-LoadBalance-2
 concept:
   websocket:
     type: auto #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
@@ -43,7 +44,7 @@ concept:
       monitor: #监控配置
         enabled: true #是否启用监控，默认true
         period: 30000 #轮训间隔，单位ms，默认30s
-        logger: false #是否启用日志，默认false
+        logger: true #是否启用日志，默认false
       heartbeat: #心跳配置
         enabled: true #是否启用心跳，默认true
         period: 60000 #心跳间隔，单位ms，默认1分钟
@@ -52,13 +53,26 @@ concept:
       thread-pool-size: 1 #线程池大小，默认1
 
 # Tio websocket配置
+# 参考文档：https://my.oschina.net/panzi1/blog/3062746
+# 官方文档：https://www.t-io.org/doc/tio/318
 tio:
  websocket:
-   server:
-     port: 6789 #默认端口6789
-     heartbeat-timeout: 60000 #心跳超时时间
-   cluster:
-     enabled: false #是否支持集群，集群开启需要redis
-   redis:
+   server: # 详情看TioWebSocketServerProperties、TioProperties
+     port: 6789 # 端口，默认6789
+     heartbeat-timeout: 60000 # 心跳超时时间,默认5000
+   cluster: # 详情看TioClusterProperties
+     enabled: false # 是否支持集群，集群开启需要redis
+     all: true
+     group: false
+     user: true
+     ip: true
+     channel: true
+   redis: # 详情看TioRedisClusterProperties
      ip: ${spring.redis.host}
      port: ${spring.redis.port}
+     password: ${spring.redis.password}
+   ssl: # 详情看TioSslProperties
+     enabled: false
+     key-store: key-store path
+     password: password
+     trust-store: trust-store path

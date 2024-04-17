@@ -29,7 +29,8 @@
 
         var userId = document.getElementById("userId").value;
         console.log("userId-->" + userId);
-        var reqUrl = "ws://localhost:6789?bsId=kefu&userId="+userId;
+        var reqUrl = "ws://localhost:6789?bsId=kefu&userId="+userId+"&group="+(Math.ceil(userId / 10));
+        console.log("reqUrl:",reqUrl);
         socket = new WebSocket(reqUrl.replace("http", "ws"));
         //打开事件
         socket.onopen = function () {

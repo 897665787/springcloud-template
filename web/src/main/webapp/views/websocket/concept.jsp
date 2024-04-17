@@ -31,10 +31,14 @@
         console.log("userId-->" + userId);
         
         // 给指定路径的客户端发送消息
-        //var reqUrl = "ws://localhost:6001/concept-websocket/kefu?userId=" + userId;
+        var reqUrl = "ws://localhost:6001/concept-websocket/kefu?userId=" + userId;
         
         // 给指定用户发送消息
-        var reqUrl = "ws://localhost:6001/concept-websocket/user?userId=" + userId;
+        //var reqUrl = "ws://localhost:6001/concept-websocket/user?userId=" + userId;
+        //var reqUrl = "ws://localhost:6001/concept-websocket/user?userId=" + userId +"&g=ffff";
+        
+     	// 给指定组发送消息(框架未实现)
+        //var reqUrl = "ws://localhost:6001/concept-websocket/group?group=" + (Math.ceil(userId / 10));
         console.log("reqUrl:",reqUrl);
         socket = new WebSocket(reqUrl.replace("http", "ws"));
         //打开事件
