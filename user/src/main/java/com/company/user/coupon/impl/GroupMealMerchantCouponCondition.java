@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.company.common.util.JsonUtil;
 import com.company.user.coupon.SeeParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
 import com.company.user.coupon.dto.MatchResult;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,13 +37,13 @@ public class GroupMealMerchantCouponCondition implements UseCondition {
 
 		boolean canSee = "groupmeal".equals(business);
 		if (!canSee) {
-			log.info("{}条件不满足,当前不是外卖团餐下单:{}", seeParam.getUserCouponId(), JSON.toJSONString(runtimeAttach));
+			log.info("{}条件不满足,当前不是外卖团餐下单:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return false;
 		}
 		
 		canSee = "merchantCoupon".equals(couponType);
 		if (!canSee) {
-			log.info("{}条件不满足,当前不是外卖团餐商家券:{}", seeParam.getUserCouponId(), JSON.toJSONString(runtimeAttach));
+			log.info("{}条件不满足,当前不是外卖团餐商家券:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return false;
 		}
 		return true;
@@ -55,20 +55,20 @@ public class GroupMealMerchantCouponCondition implements UseCondition {
         String business = runtimeAttach.get("business");
         boolean canUse = "groupmeal".equals(business);
         if (!canUse) {
-            log.info("{}条件不满足,当前不是外卖团餐下单:{}", useParam.getUserCouponId(), JSON.toJSONString(runtimeAttach));
+            log.info("{}条件不满足,当前不是外卖团餐下单:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
             return MatchResult.builder().canUse(false).reason("仅限外卖团餐可用").build();
         }
 
         String couponType = runtimeAttach.get("couponType");
         canUse = "merchantCoupon".equals(couponType);
         if (!canUse) {
-            log.info("{}条件不满足,当前不是外卖团餐商家券:{}", useParam.getUserCouponId(), JSON.toJSONString(runtimeAttach));
+            log.info("{}条件不满足,当前不是外卖团餐商家券:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
             return MatchResult.builder().canUse(false).reason("仅限外卖团餐商家券可用").build();
         }
 
         String useConditionValue = useParam.getUseConditionValue();
-        JSONObject useConditionJson = JSON.parseObject(useConditionValue);
-        String conditionShopCodes = useConditionJson.getString("shopCodes");
+        JsonNode useConditionJson = JsonUtil.toJsonNode(useConditionValue);
+        String conditionShopCodes = JsonUtil.getString(useConditionJson, "shopCodes");
         Set<String> shopCodes = Arrays.stream(conditionShopCodes.split(",")).collect(Collectors.toSet());
 
         String shopCode = runtimeAttach.get("shopCode");

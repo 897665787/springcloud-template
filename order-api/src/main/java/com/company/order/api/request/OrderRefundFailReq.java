@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class OrderRefundRejectReq {
+public class OrderRefundFailReq {
 	/**
 	 * 订单号
 	 */
@@ -23,7 +23,7 @@ public class OrderRefundRejectReq {
 	private OrderEnum.SubStatusEnum oldSubStatus;
 	
 	/**
-	 * 拒绝原因
+	 * 失败原因
 	 */
-	private String rejectReason;
+	private String failReason;
 }

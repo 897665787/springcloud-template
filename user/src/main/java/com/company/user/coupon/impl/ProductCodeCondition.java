@@ -7,12 +7,12 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.company.common.util.JsonUtil;
 import com.company.user.coupon.FilterParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
 import com.company.user.coupon.dto.MatchResult;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,8 +29,8 @@ public class ProductCodeCondition implements UseCondition {
 		String productCode = runtimeAttach.get("productCode");
 		String useConditionValue = useParam.getUseConditionValue();
 
-		JSONObject useConditionJson = JSON.parseObject(useConditionValue);
-		String productCodes = useConditionJson.getString("productCodes");
+		JsonNode useConditionJson = JsonUtil.toJsonNode(useConditionValue);
+		String productCodes = JsonUtil.getString(useConditionJson, "productCodes");
 
 		List<String> productCodeList = Arrays.asList(StringUtils.split(productCodes, ","));
 
@@ -45,8 +45,8 @@ public class ProductCodeCondition implements UseCondition {
 	@Override
 	public List<String> filterProduct(FilterParam filterParam) {
 		String useConditionValue = filterParam.getUseConditionValue();
-		JSONObject useConditionJson = JSON.parseObject(useConditionValue);
-		String productCodes = useConditionJson.getString("productCodes");
+		JsonNode useConditionJson = JsonUtil.toJsonNode(useConditionValue);
+		String productCodes = JsonUtil.getString(useConditionJson, "productCodes");
 
 		List<String> productCodeList = Arrays.asList(StringUtils.split(productCodes, ","));
 		return productCodeList;

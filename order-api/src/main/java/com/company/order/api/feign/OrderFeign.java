@@ -17,7 +17,7 @@ import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderRefundApplyReq;
 import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.OrderRefundRejectReq;
+import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -84,8 +84,8 @@ public interface OrderFeign {
 	@PostMapping("/refundApply")
 	Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
 
-	@PostMapping("/refundReject")
-	Result<Boolean> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq);
+	@PostMapping("/refundFail")
+	Result<Boolean> refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq);
 
 	@PostMapping("/refundFinish")
 	Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);

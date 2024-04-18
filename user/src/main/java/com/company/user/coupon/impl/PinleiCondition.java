@@ -9,12 +9,12 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.company.common.util.JsonUtil;
 import com.company.user.coupon.FilterParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
 import com.company.user.coupon.dto.MatchResult;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -54,8 +54,8 @@ public class PinleiCondition implements UseCondition {
 		}
 
 		String useConditionValue = useParam.getUseConditionValue();
-		JSONObject useConditionJson = JSON.parseObject(useConditionValue);
-		String pinleis = useConditionJson.getString("pinleis");
+		JsonNode useConditionJson = JsonUtil.toJsonNode(useConditionValue);
+		String pinleis = JsonUtil.getString(useConditionJson, "pinleis");
 
 		String pinlei = mockProductCodePinleiMap.get(productCode);
 
@@ -72,8 +72,8 @@ public class PinleiCondition implements UseCondition {
 	@Override
 	public List<String> filterProduct(FilterParam filterParam) {
 		String useConditionValue = filterParam.getUseConditionValue();
-		JSONObject useConditionJson = JSON.parseObject(useConditionValue);
-		String pinleis = useConditionJson.getString("pinleis");
+		JsonNode useConditionJson = JsonUtil.toJsonNode(useConditionValue);
+		String pinleis = JsonUtil.getString(useConditionJson, "pinleis");
 
 		List<String> pinleiList = Arrays.asList(StringUtils.split(pinleis, ","));
 

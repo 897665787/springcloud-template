@@ -5,11 +5,11 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.company.common.util.JsonUtil;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
 import com.company.user.coupon.dto.MatchResult;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,9 +24,9 @@ public class TimeRangeCondition implements UseCondition {
 	public MatchResult canUse(UseParam useParam) {
 		String useConditionValue = useParam.getUseConditionValue();
 
-		JSONObject useConditionJson = JSON.parseObject(useConditionValue);
-		String beginTimeStr = useConditionJson.getString("beginTime");
-		String endTimeStr = useConditionJson.getString("endTime");
+		JsonNode useConditionJson = JsonUtil.toJsonNode(useConditionValue);
+		String beginTimeStr = JsonUtil.getString(useConditionJson, "beginTime");
+		String endTimeStr = JsonUtil.getString(useConditionJson, "endTime");
 
 		DateTimeFormatter pattern = DateTimeFormatter.ofPattern("HH:mm:ss");
 		LocalTime beginTime = LocalTime.parse(beginTimeStr, pattern);

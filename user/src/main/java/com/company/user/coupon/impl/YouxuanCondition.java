@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
+import com.company.common.util.JsonUtil;
 import com.company.user.coupon.SeeParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
@@ -31,7 +31,7 @@ public class YouxuanCondition implements UseCondition {
 		
 		boolean canSee = "youxuan".equals(business);
 		if (!canSee) {
-			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", seeParam.getUserCouponId(), JSON.toJSONString(runtimeAttach));
+			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return false;
 		}
 		return true;
@@ -44,7 +44,7 @@ public class YouxuanCondition implements UseCondition {
 		String business = runtimeAttach.get("business");
 		boolean canUse = "youxuan".equals(business);
 		if (!canUse) {
-			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", useParam.getUserCouponId(), JSON.toJSONString(runtimeAttach));
+			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return MatchResult.builder().canUse(false).reason("该商品不符合此优惠券使用的条件").build();
 		}
 		

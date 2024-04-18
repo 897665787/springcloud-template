@@ -22,7 +22,7 @@ import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.OrderRefundRejectReq;
+import com.company.order.api.request.OrderRefundFailReq;
 import com.company.user.entity.MemberBuyOrder;
 import com.company.user.service.MemberBuyOrderService;
 import com.company.user.service.market.UserCouponService;
@@ -87,17 +87,17 @@ public class RefundApplyResultConsumer {
 					}
 				} else {// 退款失败
 					// 修改‘订单中心’数据（还原订单状态）
-					OrderRefundRejectReq orderRefundRejectReq = new OrderRefundRejectReq();
-					orderRefundRejectReq.setOrderCode(orderCode);
+					OrderRefundFailReq orderRefundFailReq = new OrderRefundFailReq();
+					orderRefundFailReq.setOrderCode(orderCode);
 
 					String attach = MapUtils.getString(params, "attach");
 					Integer oldSubStatusInt = Integer.valueOf(Utils.getByJson(attach, "oldSubStatus"));
 					OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(oldSubStatusInt);
-					orderRefundRejectReq.setOldSubStatus(oldSubStatus);
+					orderRefundFailReq.setOldSubStatus(oldSubStatus);
 					String message = MapUtils.getString(params, "message");
-					orderRefundRejectReq.setRejectReason(message);
+					orderRefundFailReq.setFailReason(message);
 
-					Boolean updateSuccess = orderFeign.refundReject(orderRefundRejectReq).dataOrThrow();
+					Boolean updateSuccess = orderFeign.refundFail(orderRefundFailReq).dataOrThrow();
 					if (!updateSuccess) {
 						log.warn("修改‘订单中心’数据失败");
 					}

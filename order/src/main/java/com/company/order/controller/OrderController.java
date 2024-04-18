@@ -27,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
@@ -44,8 +41,8 @@ import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.OrderRefundRejectReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -58,6 +55,7 @@ import com.company.order.entity.PayRefundApply;
 import com.company.order.mapper.PayRefundApplyMapper;
 import com.company.order.service.OrderProductService;
 import com.company.order.service.OrderService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -189,7 +187,12 @@ public class OrderController implements OrderFeign {
 
 		OrderRefundApplyResp resp = new OrderRefundApplyResp();
 		LocalDateTime refundApplyTime = orderRefundApplyReq.getRefundApplyTime();
-		OrderEnum.SubStatusEnum oldSubStatus = orderService.refundApply(orderCode, refundApplyTime);
+		boolean updateSuccess = orderService.refundApply(orderCode, refundApplyTime);
+		if (!updateSuccess) {
+			return Result.fail("当前不可申请退款，请刷新后重试！");
+		}
+		
+		OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(order.getSubStatus());
 		resp.setOldSubStatus(oldSubStatus);
 		// TODO 如果有手续费之类的扣费逻辑，需要提供接口根据子订单逻辑来计算可退款金额
 		
@@ -209,12 +212,12 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<Boolean> refundReject(@RequestBody OrderRefundRejectReq orderRefundRejectReq) {
-		String orderCode = orderRefundRejectReq.getOrderCode();
-		OrderEnum.SubStatusEnum oldSubStatus = orderRefundRejectReq.getOldSubStatus();
-		String rejectReason = orderRefundRejectReq.getRejectReason();
+	public Result<Boolean> refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq) {
+		String orderCode = orderRefundFailReq.getOrderCode();
+		OrderEnum.SubStatusEnum oldSubStatus = orderRefundFailReq.getOldSubStatus();
+		String failReason = orderRefundFailReq.getFailReason();
 
-		boolean affect = orderService.refundReject(orderCode, oldSubStatus, rejectReason);
+		boolean affect = orderService.refundFail(orderCode, oldSubStatus, failReason);
 		return Result.success(affect);
 	}
 
@@ -343,11 +346,6 @@ public class OrderController implements OrderFeign {
 			orderResp.setTime(order.getRefundTime());
 			orderResp.setPayText("实付款");
 			orderResp.setPayAmount(order.getPayAmount());
-		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
-			orderResp.setTimeText("退款申请时间");
-			orderResp.setTime(order.getRefundTime());
-			orderResp.setPayText("实付款");
-			orderResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			orderResp.setTimeText("退款时间");
 			orderResp.setTime(order.getRefundTime());
@@ -376,31 +374,31 @@ public class OrderController implements OrderFeign {
 		orderResp.setSubOrder(data);
 
 		// 如果data里面有同名的字段，则覆盖外层的字段
-		JSONObject dataJSON = JSON.parseObject(JSON.toJSONString(data));
-		if (dataJSON.containsKey("statusText")) {
-			orderResp.setStatusText(dataJSON.getString("statusText"));
+		JsonNode dataJSON = JsonUtil.toJsonNode(data);
+		if (dataJSON.has("statusText")) {
+			orderResp.setStatusText(JsonUtil.getString(dataJSON, "statusText"));
 		}
-		if (dataJSON.containsKey("timeText")) {
-			orderResp.setTimeText(dataJSON.getString("timeText"));
+		if (dataJSON.has("timeText")) {
+			orderResp.setTimeText(JsonUtil.getString(dataJSON, "timeText"));
 		}
-		if (dataJSON.containsKey("time")) {
-			LocalDateTime time = LocalDateTime.parse(dataJSON.getString("time"),
+		if (dataJSON.has("time")) {
+			LocalDateTime time = LocalDateTime.parse(JsonUtil.getString(dataJSON, "time"),
 					DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 			orderResp.setTime(time);
 		}
-		if (dataJSON.containsKey("payText")) {
-			orderResp.setPayText(dataJSON.getString("payText"));
+		if (dataJSON.has("payText")) {
+			orderResp.setPayText(JsonUtil.getString(dataJSON, "payText"));
 		}
 
 		// 如果data里面有bottonList字段，则追加到外层的bottonList
-		if (dataJSON.containsKey("bottonList")) {
-			JSONArray dataJSONArray = dataJSON.getJSONArray("bottonList");
+		if (dataJSON.has("bottonList")) {
+			JsonNode dataJSONArray = dataJSON.get("bottonList");
 			for (int i = 0; i < dataJSONArray.size(); i++) {
-				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
-				String text = textValueJSON.getString("text");
-				String key = textValueJSON.getString("key");
-				String params = textValueJSON.getString("params");
-				Integer sort = textValueJSON.getInteger("sort");
+				JsonNode textValueJSON = dataJSONArray.get(i);
+				String text = JsonUtil.getString(textValueJSON, "text");
+				String key = JsonUtil.getString(textValueJSON, "key");
+				String params = JsonUtil.getString(textValueJSON, "params");
+				Integer sort = JsonUtil.getInteger(textValueJSON, "sort");
 				bottonList.add(new OrderResp.BottonResp(text, key, params, sort));
 			}
 		}
@@ -461,9 +459,6 @@ public class OrderController implements OrderFeign {
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			orderDetailResp.setPayText("实付款");
 			orderDetailResp.setPayAmount(order.getPayAmount());
-		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
-			orderDetailResp.setPayText("实付款");
-			orderDetailResp.setPayAmount(order.getPayAmount());
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			orderDetailResp.setPayText("实付款");
 			orderDetailResp.setPayAmount(order.getPayAmount());
@@ -493,9 +488,6 @@ public class OrderController implements OrderFeign {
 		} else if (OrderEnum.SubStatusEnum.CHECK == subStatusEnum) {
 			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 			textValueList.add(new TextValueResp("退款申请时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
-		} else if (OrderEnum.SubStatusEnum.REFUNDING == subStatusEnum) {
-			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
-			textValueList.add(new TextValueResp("退款申请时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
 		} else if (OrderEnum.SubStatusEnum.REFUND_SUCCESS == subStatusEnum) {
 			textValueList.add(new TextValueResp("付款时间", LocalDateTimeUtil.formatNormal(order.getPayTime())));
 			textValueList.add(new TextValueResp("退款时间", LocalDateTimeUtil.formatNormal(order.getRefundTime())));
@@ -510,20 +502,20 @@ public class OrderController implements OrderFeign {
 		orderDetailResp.setSubOrder(data);
 
 		// 如果data里面有同名的字段，则覆盖外层的字段
-		JSONObject dataJSON = JSON.parseObject(JSON.toJSONString(data));
-		if (dataJSON.containsKey("statusText")) {
-			orderDetailResp.setStatusText(dataJSON.getString("statusText"));
+		JsonNode dataJSON = JsonUtil.toJsonNode(data);
+		if (dataJSON.has("statusText")) {
+			orderDetailResp.setStatusText(JsonUtil.getString(dataJSON, "statusText"));
 		}
-		if (dataJSON.containsKey("payText")) {
-			orderDetailResp.setPayText(dataJSON.getString("payText"));
+		if (dataJSON.has("payText")) {
+			orderDetailResp.setPayText(JsonUtil.getString(dataJSON, "payText"));
 		}
 		// 如果data里面有textValueList字段，则追加到外层的textValueList
-		if (dataJSON.containsKey("textValueList")) {
-			JSONArray dataJSONArray = dataJSON.getJSONArray("textValueList");
+		if (dataJSON.has("textValueList")) {
+			JsonNode dataJSONArray = dataJSON.get("textValueList");
 			for (int i = 0; i < dataJSONArray.size(); i++) {
-				JSONObject textValueJSON = dataJSONArray.getJSONObject(i);
-				String text = textValueJSON.getString("text");
-				String value = textValueJSON.getString("value");
+				JsonNode textValueJSON = dataJSONArray.get(i);
+				String text = JsonUtil.getString(textValueJSON, "text");
+				String value = JsonUtil.getString(textValueJSON, "value");
 				textValueList.add(new TextValueResp(text, value));
 			}
 		}

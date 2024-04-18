@@ -37,7 +37,7 @@ public class Utils {
 	 * @param newRemark
 	 * @return
 	 */
-	public static String appendRemark(String oldRemark, String newRemark) {
+	public static String leftRemark(String oldRemark, String newRemark) {
 		if (StringUtils.isBlank(newRemark)) {
 			return oldRemark;
 		}
@@ -45,7 +45,7 @@ public class Utils {
 		if (StringUtils.isNotBlank(oldRemark)) {
 			remark = StringUtils.join(new String[] { oldRemark, remark }, "/");
 		}
-		remark = StringUtils.substring(remark, 0, 200);
+		remark = StringUtils.left(remark, 200);
 		return remark;
 	}
 	

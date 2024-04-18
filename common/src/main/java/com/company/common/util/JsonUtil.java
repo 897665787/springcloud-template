@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -142,7 +143,31 @@ public class JsonUtil {
 		return (ObjectNode) jsonNode;
 	}
 	
+	public static JsonNode toJsonNode(Object objectValue) {
+		return mapper.valueToTree(objectValue);
+	}
+
 	public static ObjectMapper mapper() {
 		return mapper;
+	}
+
+	public static String getString(JsonNode jsonNode, String fieldName) {
+		return get(jsonNode, fieldName, JsonNode::asText);
+	}
+
+	public static Integer getInteger(JsonNode jsonNode, String fieldName) {
+		return get(jsonNode, fieldName, JsonNode::asInt);
+	}
+
+	public static boolean getBoolean(JsonNode jsonNode, String fieldName) {
+		return get(jsonNode, fieldName, JsonNode::asBoolean);
+	}
+
+	private static <V> V get(JsonNode jsonNode, String fieldName, Function<JsonNode, V> function) {
+		JsonNode fieldNode = jsonNode.get(fieldName);
+		if (fieldNode == null) {
+			return null;
+		}
+		return function.apply(fieldNode);
 	}
 }
