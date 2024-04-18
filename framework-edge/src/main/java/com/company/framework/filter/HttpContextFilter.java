@@ -79,14 +79,14 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			}
 		}
 
-		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
-		if (StringUtils.isBlank(source)) {
-			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
-			if (StringUtils.isBlank(source)) {
-				source = userAgentContext.getSource();
+		String channel = request.getHeader(HttpContextUtil.HEADER_CHANNEL);
+		if (StringUtils.isBlank(channel)) {
+			channel = request.getParameter(HttpContextUtil.HEADER_CHANNEL);
+			if (StringUtils.isBlank(channel)) {
+				channel = userAgentContext.getChannel();
 			}
-			if (StringUtils.isNotBlank(source)) {
-				headerRequest.addHeader(HttpContextUtil.HEADER_SOURCE, source);
+			if (StringUtils.isNotBlank(channel)) {
+				headerRequest.addHeader(HttpContextUtil.HEADER_CHANNEL, channel);
 			}
 		}
 		
@@ -95,6 +95,14 @@ public class HttpContextFilter extends OncePerRequestFilter {
 			requestip = IpUtil.getRequestIp(request);
 			if (StringUtils.isNotBlank(requestip)) {
 				headerRequest.addHeader(HttpContextUtil.HEADER_REQUESTIP, requestip);
+			}
+		}
+		
+		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
+		if (StringUtils.isBlank(source)) {
+			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
+			if (StringUtils.isNotBlank(source)) {
+				headerRequest.addHeader(HttpContextUtil.HEADER_SOURCE, source);
 			}
 		}
 		
