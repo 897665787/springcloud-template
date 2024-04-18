@@ -12,7 +12,7 @@ import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
 import com.company.order.api.request.OrderRefundApplyReq;
 import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.OrderRefundRejectReq;
+import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderReceiveReq;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -63,7 +63,7 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			}
 
 			@Override
-			public Result<Boolean> refundReject(OrderRefundRejectReq orderRefundRejectReq) {
+			public Result<Boolean> refundFail(OrderRefundFailReq orderRefundFailReq) {
 				return Result.onFallbackError();
 			}
 

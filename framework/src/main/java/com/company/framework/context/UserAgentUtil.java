@@ -24,29 +24,29 @@ public class UserAgentUtil {
 				if (platform.isAndroid()) {
 					// context.setPlatform("");
 					context.setOperator("android");
-					// context.setSource("");
+					// context.setChannel("");
 				} else if (platform.isIos()) {
 					// context.setPlatform("");
 					context.setOperator("ios");
-					// context.setSource("");
+					// context.setChannel("");
 				} else {
 					String name = platform.getName();
 					if ("Windows".equalsIgnoreCase(name)) {
 						// context.setPlatform("");
 						context.setOperator("win");
-						// context.setSource("");
+						// context.setChannel("");
 					} else if ("Android".equalsIgnoreCase(name)) {
 						// context.setPlatform("");
 						context.setOperator("android");
-						// context.setSource("");
+						// context.setChannel("");
 					} else if ("Mac".equalsIgnoreCase(name)) {
 						// context.setPlatform("");
 						context.setOperator("ios");
-						// context.setSource("");
+						// context.setChannel("");
 					} else {
 						// context.setPlatform("");
 						context.setOperator(name);
-						// context.setSource("");
+						// context.setChannel("");
 					}
 				}
 			}
@@ -58,63 +58,63 @@ public class UserAgentUtil {
 						|| "miniProgram".equalsIgnoreCase(name)) {
 					context.setPlatform("mini");
 					// context.setOperator("未知");
-					context.setSource(name);
+					context.setChannel(name);
 				} else if ("Alipay".equalsIgnoreCase(name)) {
 					context.setPlatform("alimini");
 					// context.setOperator("未知");
-					context.setSource(name);
+					context.setChannel(name);
 				} else {
 					context.setPlatform(name);
 					// context.setOperator("未知");
-					context.setSource(name);
+					context.setChannel(name);
 				}
 			}
 		}
 		if (userAgentString.contains("wechat") || userAgentString.contains("MicroMessenger")) {
 			context.setPlatform("mini");
 			// context.setOperator("");
-			context.setSource("wx");
+			context.setChannel("wx");
 		}
 
 		if (userAgentString.contains("APP") || userAgentString.contains("app") || userAgentString.contains("App")) {
 			context.setPlatform("app");
 			// context.setOperator("");
-			// context.setSource("");
+			// context.setChannel("");
 		}
 
 		if (userAgentString.contains("iOS") || userAgentString.contains("iPhone") || userAgentString.contains("Mac")) {
 			// context.setPlatform("");
 			context.setOperator("ios");
-			context.setSource("ios");
+			context.setChannel("ios");
 		}
 
 		if (userAgentString.contains("ANDROID") || userAgentString.contains("Android")
 				|| userAgentString.contains("android")) {
 			// context.setPlatform("");
 			context.setOperator("android");
-			// context.setSource("ios");
+			// context.setChannel("ios");
 		}
 
 		if ("iOS".equalsIgnoreCase(userAgentString)) {
 			context.setPlatform("app");
 			context.setOperator("ios");
-			context.setSource("ios");
+			context.setChannel("ios");
 		} else if ("Android".equalsIgnoreCase(userAgentString)) {
 			context.setPlatform("app");
 			context.setOperator("android");
-			// context.setSource("");
+			// context.setChannel("");
 		}
 
 		if (userAgentString.contains("http-client")) {
 			context.setPlatform("mini");
 			context.setOperator("win");
-			context.setSource("http-client");
+			context.setChannel("http-client");
 		}
 
 		if (userAgentString.contains("Postman") || userAgentString.contains("postman")) { // 兜底
 			context.setPlatform("mini");
 			context.setOperator("win");
-			context.setSource("postman");
+			context.setChannel("postman");
 		}
 
 		return context;

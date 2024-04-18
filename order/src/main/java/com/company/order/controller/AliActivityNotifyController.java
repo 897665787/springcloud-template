@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -150,7 +149,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		String buyerId = aliParams.get("buyer_id");
 		
 		String send_activity_info_list = aliParams.get("send_activity_info_list");
-		List<SendActivityInfoList> sendActivityInfoList = JSON.parseArray(send_activity_info_list,
+		List<SendActivityInfoList> sendActivityInfoList = JsonUtil.toList(send_activity_info_list,
 				SendActivityInfoList.class);
 		// 活动应该只有1个元素，如果有多个与响应值对不上
 		SendActivityInfoList sendActivityInfo = sendActivityInfoList.get(0);

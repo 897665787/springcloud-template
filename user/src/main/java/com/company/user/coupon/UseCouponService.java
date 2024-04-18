@@ -13,7 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
+import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
@@ -53,7 +53,7 @@ public class UseCouponService {
 	 */
 	public List<UserCouponMe> listCouponByAppUserId(Integer userId, String status,
 			Map<String, String> seeRuntimeAttach) {
-		log.info("userId:{},status:{},seeRuntimeAttach:{}", userId, status, JSON.toJSONString(seeRuntimeAttach));
+		log.info("userId:{},status:{},seeRuntimeAttach:{}", userId, status, JsonUtil.toJsonString(seeRuntimeAttach));
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
 		Set<Integer> couponTemplateIdSet = userCouponList.stream().map(UserCoupon::getCouponTemplateId)
@@ -95,7 +95,7 @@ public class UseCouponService {
 	 */
 	public List<UserCouponCanUsePay> listCouponCanUseByAppUserId(Integer userId, BigDecimal orderAmount,
 			Map<String, String> runtimeAttach) {
-		log.info("userId:{},runtimeAttach:{}", userId, JSON.toJSONString(runtimeAttach));
+		log.info("userId:{},runtimeAttach:{}", userId, JsonUtil.toJsonString(runtimeAttach));
 		String status = "nouse";
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
@@ -153,7 +153,7 @@ public class UseCouponService {
 	 */
 	public UserCouponCanUse bestCouponCanUse(Integer userId, BigDecimal orderAmount,
 			Map<String, String> runtimeAttach) {
-		log.info("userId:{},runtimeAttach:{}", userId, JSON.toJSONString(runtimeAttach));
+		log.info("userId:{},runtimeAttach:{}", userId, JsonUtil.toJsonString(runtimeAttach));
 		String status = "nouse";
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
@@ -221,7 +221,7 @@ public class UseCouponService {
 	public List<UserCouponCanUseBatch> bestCouponCanUseBatch(Integer userId, Map<String, String> seeRuntimeAttach,
 			List<UserCouponCanUseParam> userCouponCanUseParamList) {
 		log.info("userId:{},seeRuntimeAttach:{},userCouponCanUseParamList:{}", userId,
-				JSON.toJSONString(seeRuntimeAttach), JSON.toJSONString(userCouponCanUseParamList));
+				JsonUtil.toJsonString(seeRuntimeAttach), JsonUtil.toJsonString(userCouponCanUseParamList));
 		String status = "nouse";
 		List<UserCoupon> userCouponList = userCouponService.selectByUserIdStatus(userId, status);
 
