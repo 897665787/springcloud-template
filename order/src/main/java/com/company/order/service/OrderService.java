@@ -215,14 +215,14 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 		if (!refundAll) {
 			subStatusEnum = OrderEnum.SubStatusEnum.COMPLETE;// 部分退款
 		}
-		String remark = String.format("退款:%s,%s", totalRefundAmount.toPlainString(),
+		String appendRemark = String.format("退款:%s,%s", totalRefundAmount.toPlainString(),
 				DateUtil.formatLocalDateTime(refundFinishTime));
 		return updateStatus(orderCode, order4Update, subStatusEnum,
 				Lists.newArrayList(OrderEnum.SubStatusEnum.WAIT_PAY, OrderEnum.SubStatusEnum.CANCELED,
 						OrderEnum.SubStatusEnum.PAYED, OrderEnum.SubStatusEnum.WAIT_SEND,
 						OrderEnum.SubStatusEnum.SEND_SUCCESS, OrderEnum.SubStatusEnum.WAIT_REVIEW,
 						OrderEnum.SubStatusEnum.COMPLETE, OrderEnum.SubStatusEnum.CHECK),
-				remark);
+				appendRemark);
 	}
 
 	/**

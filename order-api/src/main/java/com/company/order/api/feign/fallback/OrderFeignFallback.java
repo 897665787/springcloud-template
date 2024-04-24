@@ -28,7 +28,7 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 	public OrderFeign create(final Throwable e) {
 		return new OrderFeign() {
 			@Override
-			public Result<OrderResp> registerOrder(RegisterOrderReq registerOrderReq) {
+			public Result<Void> registerOrder(RegisterOrderReq registerOrderReq) {
 				return Result.onFallbackError();
 			}
 

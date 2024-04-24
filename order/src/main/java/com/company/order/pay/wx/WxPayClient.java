@@ -73,7 +73,8 @@ public class WxPayClient extends BasePayClient {
     protected Object requestPayInfo(PayParams payParams) {
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(payParams.getOutTradeNo());
 		
-		PayConfig payConfig = wxPayConfiguration.getPayConfig(payParams.getAppid());
+		String appid = payParams.getAppid();
+		PayConfig payConfig = wxPayConfiguration.getPayConfig(appid);
 		
 		String tradeType = payConfig.getTradeType();
 		Integer wxPayId = null;
@@ -90,9 +91,14 @@ public class WxPayClient extends BasePayClient {
 		
 		// 公共参数
 		WxPayConfig wxPayConfig = new WxPayConfig();
-		wxPayConfig.setAppId(payConfig.getAppId());
-		wxPayConfig.setMchId(payConfig.getMchId());
-		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(payConfig.getMchId());
+		wxPayConfig.setAppId(appid);
+		
+		String mchid = payParams.getMchid();
+		if (StringUtils.isBlank(mchid)) {
+			mchid = payConfig.getMchId();
+		}
+		wxPayConfig.setMchId(mchid);
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(mchid);
 		wxPayConfig.setMchKey(mchConfig.getMchKey());
 		
 		// 私有参数
@@ -117,7 +123,7 @@ public class WxPayClient extends BasePayClient {
 			
 			WxPayUnifiedOrderResult unifiedOrderResult = wxPayService.unifiedOrder(request);
 			
-			requestResult2WxPay(wxPayId, payConfig, request, unifiedOrderResult, null);
+			requestResult2WxPay(wxPayId, appid, mchid, request, unifiedOrderResult, null);
 
 			String returnCode = unifiedOrderResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
@@ -151,18 +157,18 @@ public class WxPayClient extends BasePayClient {
 			// 支付异常
 			log.error("WxPay error", e);
 			WxPayUnifiedOrderResult result = BaseWxPayResult.fromXML(e.getXmlString(), WxPayUnifiedOrderResult.class);
-			requestResult2WxPay(wxPayId, payConfig, request, result, "请求异常,logid:" + MdcUtil.get());
+			requestResult2WxPay(wxPayId, appid, mchid, request, result, "请求异常,logid:" + MdcUtil.get());
 			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
-	private void requestResult2WxPay(Integer wxPayId, PayConfig payConfig, WxPayUnifiedOrderRequest request,
+	private void requestResult2WxPay(Integer wxPayId, String appid, String mchid, WxPayUnifiedOrderRequest request,
 			WxPayUnifiedOrderResult result, String remark) {
 		// 保存微信支付数据
 		WxPay wxPay = new WxPay()
 				/* 支付参数 */
-				.setAppid              (payConfig.getAppId())
-				.setMchid              (payConfig.getMchId())
+				.setAppid              (appid)
+				.setMchid              (mchid)
 				.setNonceStr           (request.getNonceStr())
 				.setSign           	(request.getSign())
 				.setBody               (request.getBody())

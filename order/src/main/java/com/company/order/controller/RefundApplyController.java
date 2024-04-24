@@ -159,7 +159,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		PayRefundReq payRefundReq = new PayRefundReq();
 		payRefundReq.setRefundOrderCode(payRefundApply.getOldOrderCode());// 原订单号
 		payRefundReq.setOrderCode(payRefundApply.getOrderCode());// 退款订单号
-		payRefundReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/refundApply/refundNotify");
+		payRefundReq.setNotifyUrl(Constants.feignUrl("/refundApply/refundNotify"));
 		payRefundReq.setRefundRemark(payRefundApply.getReason());
 		payRefundReq.setAttach(payRefundApply.getAttach());
 		payRefundReq.setRefundAmount(amount);

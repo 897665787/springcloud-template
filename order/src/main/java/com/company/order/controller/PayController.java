@@ -75,8 +75,8 @@ public class PayController implements PayFeign {
 	@Autowired
 	private LockClient lockClient;
 	
-	private static final String NOTIFY_URL_REFUND = "http://" + com.company.order.api.constant.Constants.FEIGNCLIENT_VALUE + "/pay/refundWithRetry";
-	private static final String NOTIFY_URL_TIMEOUT = "http://" + com.company.order.api.constant.Constants.FEIGNCLIENT_VALUE + "/pay/timeoutWithRetry";
+	private static final String NOTIFY_URL_REFUND = com.company.order.api.constant.Constants.feignUrl("/pay/refundWithRetry");
+	private static final String NOTIFY_URL_TIMEOUT = com.company.order.api.constant.Constants.feignUrl("/pay/timeoutWithRetry");;
 	
 	@Override
 	public Result<PayResp> unifiedorder(@RequestBody @Valid PayReq payReq) {
@@ -121,6 +121,7 @@ public class PayController implements PayFeign {
 			// 支付参数
 			PayParams payParams = new PayParams();
 			payParams.setAppid(payReq.getAppid());
+			payParams.setMchid(payReq.getMchid());
 			payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
 			payParams.setBody(payReq.getBody());
 			payParams.setOutTradeNo(orderCode);

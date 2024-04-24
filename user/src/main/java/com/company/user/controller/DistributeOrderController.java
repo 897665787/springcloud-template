@@ -37,7 +37,6 @@ import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
-import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.DistributeOrderFeign;
@@ -175,7 +174,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distributeOrder/subOrder");
+		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/distributeOrder/subOrder"));
 
 		List<RegisterOrderReq.OrderProductReq> orderProductReqList = Lists.newArrayList();
 
@@ -206,8 +205,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 		registerOrderReq.setProductList(orderProductReqList);
 
-		OrderResp orderResp = orderFeign.registerOrder(registerOrderReq).dataOrThrow();
-		log.info("orderResp:{}", JsonUtil.toJsonString(orderResp));
+		orderFeign.registerOrder(registerOrderReq).dataOrThrow();
 
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			executor.submit(() -> {
@@ -233,7 +231,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		payReq.setBody("配送下单");
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		payReq.setOpenid(HttpContextUtil.deviceid());
-		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/distributeOrder/buyNotify");
+		payReq.setNotifyUrl(Constants.feignUrl("/distributeOrder/buyNotify"));
 		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
 		if (!payResp.getSuccess()) {
 			return Result.fail("支付失败，请稍后重试");

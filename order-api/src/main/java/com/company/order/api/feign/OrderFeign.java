@@ -34,7 +34,7 @@ public interface OrderFeign {
 	 * @return
 	 */
 	@PostMapping("/registerOrder")
-	Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
+	Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
 
 	/**
 	 * 修改订单状态（用户取消订单）

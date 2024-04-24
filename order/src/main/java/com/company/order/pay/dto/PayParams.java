@@ -20,6 +20,11 @@ public class PayParams {
 	private String appid;
 	
 	/**
+	 * 商户号（非必填，默认取appid关联的商户号）
+	 */
+	private String mchid;
+	
+	/**
 	 * <pre>
 	 * 字段名：商品描述.
 	 * 变量名：body

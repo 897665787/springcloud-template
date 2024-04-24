@@ -75,7 +75,7 @@ public class OrderController implements OrderFeign {
 	private PayRefundApplyMapper payRefundApplyMapper;
 
 	@Override
-	public Result<OrderResp> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
+	public Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
 		Integer userId = registerOrderReq.getUserId();
 		String orderCode = registerOrderReq.getOrderCode();
 		String orderType = registerOrderReq.getOrderType();
@@ -90,8 +90,8 @@ public class OrderController implements OrderFeign {
 		String subOrderUrl = registerOrderReq.getSubOrderUrl();
 		String attach = registerOrderReq.getAttach();
 
-		Order order = orderService.saveOrUpdate(userId, orderType, orderCode, subStatusEnum, productAmount,
-				orderAmount, reduceAmount, needPayAmount, subOrderUrl, attach);
+		orderService.saveOrUpdate(userId, orderType, orderCode, subStatusEnum, productAmount, orderAmount, reduceAmount,
+				needPayAmount, subOrderUrl, attach);
 
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
 		if (orderProductList.isEmpty()) {
@@ -114,7 +114,7 @@ public class OrderController implements OrderFeign {
 			}
 		}
 
-		return Result.success(PropertyUtils.copyProperties(order, OrderResp.class));
+		return Result.success();
 	}
 
 	@Override

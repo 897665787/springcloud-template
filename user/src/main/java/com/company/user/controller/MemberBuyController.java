@@ -32,7 +32,6 @@ import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayReq;
 import com.company.order.api.request.RegisterOrderReq;
-import com.company.order.api.response.OrderResp;
 import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.MemberBuyFeign;
@@ -162,7 +161,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		registerOrderReq.setOrderAmount(orderAmount);
 		registerOrderReq.setReduceAmount(reduceAmount);
 		registerOrderReq.setNeedPayAmount(needPayAmount);
-		registerOrderReq.setSubOrderUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/memberBuy/subOrder");
+		registerOrderReq.setSubOrderUrl(Constants.feignUrl("/memberBuy/subOrder"));
 
 		MemberBuyAttach memberBuyAttach = new MemberBuyAttach().setUserRemark(memberBuyOrderReq.getUserRemark());
 		registerOrderReq.setAttach(JsonUtil.toJsonString(memberBuyAttach));
@@ -183,8 +182,7 @@ public class MemberBuyController implements MemberBuyFeign {
 
 		registerOrderReq.setProductList(orderProductReqList);
 
-		OrderResp orderResp = orderFeign.registerOrder(registerOrderReq).dataOrThrow();
-		log.info("orderResp:{}", JsonUtil.toJsonString(orderResp));
+		orderFeign.registerOrder(registerOrderReq).dataOrThrow();
 
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			executor.submit(() -> {
@@ -211,7 +209,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 //		payReq.setProductId(productId);
 		payReq.setOpenid(HttpContextUtil.deviceid());
-		payReq.setNotifyUrl("http://" + Constants.FEIGNCLIENT_VALUE + "/memberBuy/buyNotify");
+		payReq.setNotifyUrl(Constants.feignUrl("/memberBuy/buyNotify"));
 //		payReq.setAttach(attach);
 //		payReq.setTimeoutSeconds(timeoutSeconds);
 //		payReq.setRemark(remark);

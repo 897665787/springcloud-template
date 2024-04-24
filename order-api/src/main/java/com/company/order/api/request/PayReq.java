@@ -43,6 +43,11 @@ public class PayReq {
 	 */
 	@NotNull(message = "支付应用ID不能为空")
 	private String appid;
+	
+	/**
+	 * 商户号<非必填,默认取appid关联的商户号>
+	 */
+	private String mchid;
 
 	/**
 	 * 金额(元)<必填>
