@@ -3,7 +3,7 @@ package com.company.framework.amqp.springevent;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SpringEventMessageSender implements MessageSender {
 
 	@Autowired
-	private ApplicationContext applicationContext;
+	private ApplicationEventPublisher applicationEventPublisher;
 	@Autowired
 	private DelayQueueComponent delayQueueComponent;
 
@@ -38,14 +38,20 @@ public class SpringEventMessageSender implements MessageSender {
 		messageEvent.setHeader(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
 		String paramsStr = JsonUtil.toJsonString(toJson);
 		messageEvent.setJsonStrMsg(paramsStr);
-		applicationContext.publishEvent(messageEvent);
+		messageEvent.setExchange(exchange);
+		applicationEventPublisher.publishEvent(messageEvent);
 		log.info("publishEvent,strategyName:{},toJson:{},exchange:{},routingKey:{}", strategyName, paramsStr, exchange,
 				routingKey);
 	}
 
 	@Override
 	public void sendFanoutMessage(Object toJson, String exchange) {
-//		throw new UnsupportedOperationException("不支持广播消息");
+		MessageEvent messageEvent = new MessageEvent();
+		messageEvent.setHeader(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
+		String paramsStr = JsonUtil.toJsonString(toJson);
+		messageEvent.setJsonStrMsg(paramsStr);
+		messageEvent.setExchange(exchange);
+		applicationEventPublisher.publishEvent(messageEvent);
 	}
 
 	@Override

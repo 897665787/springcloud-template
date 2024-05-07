@@ -7,13 +7,16 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 /**
  * ApplicationListener异步执行配置
- * 
- * @author JQ棣
- *
  */
 @Configuration
 public class AsyncExecutorConfig {
 
+	/**
+	 * <pre>
+	 * 替换默认的SimpleApplicationEventMulticaster
+	 * 默认SimpleApplicationEventMulticaster没有配置taskExecutor，所以是同步的
+	 * </pre>
+	 */
 	@Bean
 	public SimpleApplicationEventMulticaster applicationEventMulticaster(
 			ThreadPoolTaskExecutor threadPoolTaskExecutor) {

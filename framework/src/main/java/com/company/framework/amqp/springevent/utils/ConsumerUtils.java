@@ -1,15 +1,10 @@
 package com.company.framework.amqp.springevent.utils;
 
-import java.util.Map;
 import java.util.function.Consumer;
-
-import org.apache.commons.collections.MapUtils;
 
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.BaseStrategy;
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
-import com.company.framework.amqp.springevent.event.MessageEvent;
 import com.company.framework.context.SpringContextUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,62 +18,62 @@ public class ConsumerUtils {
 	 * 使用Strategy处理逻辑
 	 * 
 	 * @param jsonStrMsg
-	 * @param event
+	 * @param strategyName
+	 * @param paramsClassName
 	 */
-	public static <E> void handleByStrategy(String jsonStrMsg, MessageEvent event) {
-		handleByStrategy(jsonStrMsg, event, true);
+	public static <E> void handleByStrategy(String jsonStrMsg, String strategyName, String paramsClassName) {
+		handleByStrategy(jsonStrMsg, strategyName, paramsClassName, true);
 	}
 
 	/**
 	 * 使用Strategy处理逻辑
 	 * 
 	 * @param jsonStrMsg
-	 * @param event
+	 * @param strategyName
+	 * @param paramsClassName
 	 * @param unAckIfException
 	 *            如果抛出java.lang.Exception异常则不ack
 	 */
-	public static <E> void handleByStrategy(String jsonStrMsg, MessageEvent event,
+	public static <E> void handleByStrategy(String jsonStrMsg, String strategyName, String paramsClassName,
 			boolean unAckIfException) {
 		@SuppressWarnings("unchecked")
 		Consumer<Object> consumer = entity -> {
-			Map<String, Object> headers = event.getHeaders();
-			String strategyName = MapUtils.getString(headers, HeaderConstants.HEADER_STRATEGY_NAME);
 			BaseStrategy<E> strategy = SpringContextUtil.getBean(strategyName, BaseStrategy.class);
 			strategy.doStrategy((E) entity);
 		};
-		handle(jsonStrMsg, event, consumer, unAckIfException);
+		handle(jsonStrMsg, paramsClassName, consumer, unAckIfException);
 	}
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
 	 * 
 	 * @param jsonStrMsg
-	 * @param event
+	 * @param paramsClassName
 	 * @param consumer
 	 */
-	public static <E> void handleByConsumer(String jsonStrMsg, MessageEvent event, Consumer<E> consumer) {
-		handleByConsumer(jsonStrMsg, event, consumer, false);
+	public static <E> void handleByConsumer(String jsonStrMsg, String paramsClassName, Consumer<E> consumer) {
+		handleByConsumer(jsonStrMsg, paramsClassName, consumer, false);
 	}
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
 	 * 
 	 * @param jsonStrMsg
-	 * @param event
+	 * @param paramsClassName
 	 * @param consumer
 	 * @param unAckIfException
 	 *            如果抛出java.lang.Exception异常则不ack
 	 */
-	public static <E> void handleByConsumer(String jsonStrMsg, MessageEvent event, Consumer<E> consumer,
+	public static <E> void handleByConsumer(String jsonStrMsg, String paramsClassName, Consumer<E> consumer,
 			boolean unAckIfException) {
 		@SuppressWarnings("unchecked")
 		Consumer<Object> consumer2 = entity -> {
 			consumer.accept((E) entity);
 		};
-		handle(jsonStrMsg, event, consumer2, unAckIfException);
+		handle(jsonStrMsg, paramsClassName, consumer2, unAckIfException);
 	}
 
-	private static void handle(String jsonStrMsg, MessageEvent event, Consumer<Object> consumer,
+	private static void handle(String jsonStrMsg, String paramsClassName, Consumer<Object> consumer,
 			boolean unAckIfException) {
 		try {
 			if (jsonStrMsg == null) {
@@ -88,8 +83,6 @@ public class ConsumerUtils {
 			long start = System.currentTimeMillis();
 			try {
 				log.info("jsonStrMsg:{}", jsonStrMsg);
-				Map<String, Object> headers = event.getHeaders();
-				String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
 				Class<?> paramsClass = null;
 				try {
 					paramsClass = Class.forName(paramsClassName);

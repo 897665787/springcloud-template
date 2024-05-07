@@ -12,6 +12,8 @@ public class MessageEvent extends ApplicationEvent {
 	
 	private String jsonStrMsg;
 	
+	private String exchange;
+	
 	public MessageEvent() {
 		super("0");
 	}
@@ -30,6 +32,14 @@ public class MessageEvent extends ApplicationEvent {
 
 	public void setJsonStrMsg(String jsonStrMsg) {
 		this.jsonStrMsg = jsonStrMsg;
+	}
+
+	public String getExchange() {
+		return exchange;
+	}
+
+	public void setExchange(String exchange) {
+		this.exchange = exchange;
 	}
 	
 }
