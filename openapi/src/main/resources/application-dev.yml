@@ -11,3 +11,13 @@ template:
     rabbitmq: false
   sign:
     check: false
+
+sign:
+  reqValidSeconds: 6000 # 请求有效秒数
+  accounts:
+    - appid: 13532515
+      appsecret: b5d89c15161240d5ac17e846ab146721
+    - appid: 33804682
+      appsecret: 036bf98406d94349a3fb321ae72dbd12
+    - appid: 56006206
+      appsecret: 9cb7f98c222e4cf5aee85b63b254c1d9

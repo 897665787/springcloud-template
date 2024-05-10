@@ -1,85 +1,80 @@
-package com.company.openapi.filter;
+package com.company.openapi.interceptor;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
+import com.company.openapi.annotation.NoSign;
+import com.company.openapi.config.SignConfiguration;
 import com.company.openapi.util.SignUtil;
-import com.company.user.api.feign.OpenAccessAccountFeign;
 
-/**
- * 签名过滤器
- */
 @Component
-@Order(20)
-public class SignFilter extends OncePerRequestFilter {
-
+@ConditionalOnProperty(prefix = "template.sign", name = "check", havingValue = "true", matchIfMissing = true)
+public class SignInterceptor extends HandlerInterceptorAdapter {
+	
 	@Autowired
-	private OpenAccessAccountFeign openAccessAccountFeign;
-	
-	@Value("${template.sign.check:true}")
-	private boolean checkSign;
-	
-	@Value("${template.sign.reqValidSeconds:60}")
-	private long reqValidSeconds;
+	private SignConfiguration signConfiguration;
 	
 	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		return false;
-	}
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
 
-	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
-		// 是否检查签名
-		if (!checkSign) {
-			chain.doFilter(request, response);
-			return;
+		if (!(handler instanceof HandlerMethod)) {
+			return true;
+		}
+
+		HandlerMethod handlerMethod = (HandlerMethod) handler;
+
+		Method method = handlerMethod.getMethod();
+		
+		if (method.isAnnotationPresent(NoSign.class) || method.getDeclaringClass().isAnnotationPresent(NoSign.class)) {
+			// 方法或类上打注解NoSign
+			return true;
 		}
 		
 		// 检查时效性
 		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），10分钟内数据有效
 		if (StringUtils.isBlank(timestamp)) {
 			writeError(response, "请求已过期");
-			return;
+			return false;
 		}
 		long timestampLong = Long.parseLong(timestamp);
 		long now = System.currentTimeMillis();
-		if (now - timestampLong > reqValidSeconds * 1000) {
+		if (now - timestampLong > signConfiguration.getReqValidSeconds() * 1000) {
 			writeError(response, "请求已过期");
-			return;
+			return false;
 		}
 
 		// 检查appid是否正确
 		String appid = request.getHeader("appid");// 线下分配appid和appsecret，针对不同的调用方分配不同的appid和appsecret
 		if (StringUtils.isBlank(appid)) {
 			writeError(response, "appid错误");
-			return;
+			return false;
 		}
 		
-		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid).dataOrThrow();
+		String appsecret = signConfiguration.getAppsecret(appid);
+//		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid).dataOrThrow();// appsecret也可以保存到数据库
 		if (StringUtils.isBlank(appsecret)) {
 			writeError(response, "appid错误");
-			return;
+			return false;
 		}
-		
+
 		String noncestr = request.getHeader("noncestr");// 加入流水号noncestr（防止重复提交），至少为10位。针对查询接口，流水号只用于日志落地，便于后期日志核查。
 														// 针对办理类接口需校验流水号在有效期内的唯一性，以避免重复请求。
 		String sign = request.getHeader("sign"); // 签名
@@ -97,10 +92,9 @@ public class SignFilter extends OncePerRequestFilter {
 		String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, reqParam , bodyStr, appsecret);
 		if (!sign4md5.equals(sign)) {
 			writeError(response, "签名错误");
-			return;
+			return false;
 		}
-		
-		chain.doFilter(request, response);
+		return true;
 	}
 
 	private void writeError(HttpServletResponse response, String message) throws IOException {

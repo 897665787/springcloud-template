@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.openapi.annotation.NoSign;
 import com.google.common.collect.Maps;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 
+@NoSign
 @RestController
 @RequestMapping("/account")
 public class AccountController {
