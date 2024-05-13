@@ -35,7 +35,7 @@ public class SignUtil {
 				.filter(v -> StringUtils.isNotBlank(v.getKey()) && v.getValue() != null)
 				.map(v -> v.getKey() + "=" + v.getValue()).collect(Collectors.joining("&"));
 		String md5SourceStr = appid + timestamp + noncestr + sortSourceStr + bodyStr + appsecret;
-		String md5 = SecureUtil.md5(md5SourceStr);
+		String md5 = SecureUtil.md5(md5SourceStr).toUpperCase();
 		log.info("md5SourceStr:{},md5:{}", md5SourceStr, md5);
 		return md5;
 	}
