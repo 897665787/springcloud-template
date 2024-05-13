@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@ConditionalOnProperty(prefix = "template.sign", name = "check", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
 public class SignConfigurer implements WebMvcConfigurer {
 
 	@Autowired

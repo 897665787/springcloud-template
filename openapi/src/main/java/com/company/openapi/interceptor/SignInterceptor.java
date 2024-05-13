@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,17 +20,20 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.framework.cache.ICache;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.openapi.annotation.NoSign;
 import com.company.openapi.config.SignConfiguration;
 import com.company.openapi.util.SignUtil;
 
 @Component
-@ConditionalOnProperty(prefix = "template.sign", name = "check", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
 public class SignInterceptor extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private SignConfiguration signConfiguration;
+	@Autowired
+	private ICache cache;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -77,6 +81,16 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 
 		String noncestr = request.getHeader("noncestr");// 加入流水号noncestr（防止重复提交），至少为10位。针对查询接口，流水号只用于日志落地，便于后期日志核查。
 														// 针对办理类接口需校验流水号在有效期内的唯一性，以避免重复请求。
+		if (signConfiguration.nonceValid()) {
+			String key = String.format("nonce:%s", noncestr);
+			String value = cache.get(key);
+			if (StringUtils.isNotBlank(value)) {
+				writeError(response, "请求重复");
+				return false;
+			}
+			cache.set(key, "1", signConfiguration.getReqValidSeconds(), TimeUnit.SECONDS);
+		}
+		
 		String sign = request.getHeader("sign"); // 签名
 
 		String contentType = request.getContentType();

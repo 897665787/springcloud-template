@@ -10,6 +10,7 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "sign")
 public class SignAccountProperties {
 	private Integer reqValidSeconds;
+	private Boolean nonceValid = true;
 	private List<Account> accounts;
 
 	@Data

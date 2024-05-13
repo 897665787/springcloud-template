@@ -1,6 +1,7 @@
 package com.company.openapi.config;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(SignAccountProperties.class)
-@ConditionalOnProperty(prefix = "template.sign", name = "check", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
 public class SignConfiguration {
 
 	private SignAccountProperties properties;
@@ -31,5 +32,9 @@ public class SignConfiguration {
 
 	public Integer getReqValidSeconds() {
 		return properties.getReqValidSeconds();
+	}
+	
+	public boolean nonceValid() {
+		return Optional.of(properties.getNonceValid()).orElse(true);
 	}
 }

@@ -9,11 +9,11 @@ template:
     lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
     rabbitmq: true
-  sign:
-    check: true
 
 sign:
+  check: true
   reqValidSeconds: 60 # 请求有效秒数
+  nonceValid: true # 校验nonce随机数，打开后重放请求不通过
   accounts:
     - appid: 13532515
       appsecret: b5d89c15161240d5ac17e846ab146721
