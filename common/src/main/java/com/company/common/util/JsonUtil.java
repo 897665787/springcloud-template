@@ -1,6 +1,7 @@
 package com.company.common.util;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -161,6 +162,10 @@ public class JsonUtil {
 
 	public static boolean getBoolean(JsonNode jsonNode, String fieldName) {
 		return get(jsonNode, fieldName, JsonNode::asBoolean);
+	}
+
+	public static BigDecimal getBigDecimal(JsonNode jsonNode, String fieldName) {
+		return get(jsonNode, fieldName, v -> new BigDecimal(v.asText()));
 	}
 
 	private static <V> V get(JsonNode jsonNode, String fieldName, Function<JsonNode, V> function) {

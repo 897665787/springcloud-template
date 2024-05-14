@@ -82,7 +82,7 @@ public interface PayRefundApplyEnum {
 		/* 驳回 */
 		REJECT(21, "退款驳回"),
 		/* 通过 */
-		DEALING(31, "处理中"), APPLY_SCUESS(41, "申请成功"), APPLY_FAIL(42, "申请失败"), REFUND_SCUESS(51,
+		DEALING(31, "处理中"), APPLY_SUCCESS(41, "申请成功"), APPLY_FAIL(42, "申请失败"), REFUND_SUCCESS(51,
 				"退款成功"), REFUND_FAIL(52, "退款失败");
 		private Integer code;
 		private String desc;

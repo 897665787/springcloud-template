@@ -160,7 +160,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			payRefundApply.setAmount(aliActivityPay.getTotalAmount());
 			payRefundApply.setBusinessType(PayRefundApplyEnum.BusinessType.SYS_AUTO.getCode());
 			payRefundApply.setVerifyStatus(PayRefundApplyEnum.VerifyStatus.PASS.getCode());
-			payRefundApply.setRefundStatus(PayRefundApplyEnum.RefundStatus.REFUND_SCUESS.getCode());
+			payRefundApply.setRefundStatus(PayRefundApplyEnum.RefundStatus.REFUND_SUCCESS.getCode());
 			payRefundApply.setReason("支付宝主动退款");
 			payRefundApply.setRemark("支付宝主动退款");
 			payRefundApplyMapper.insert(payRefundApply);

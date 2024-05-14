@@ -9,12 +9,17 @@ public class MemberBuyOrderReq {
 	// 商品参数
 	private String productCode;
 	private Integer number;
-	private BigDecimal payAmount;
 
-	// 支付方式
-	private String payMethod;
-	// 支付应用ID
-	private String appid;
+	// 钱包充值参数
+	private String rechargeCode;
+	private BigDecimal rechargeAmount;
+	private BigDecimal walletPayAmount;
+	
+	// 支付参数
+	private BigDecimal payAmount;
+	private String payMethod; // 支付方式
+	private String appid; // 支付应用ID
+	
 	// 使用的优惠券id
 	private Integer userCouponId;
 

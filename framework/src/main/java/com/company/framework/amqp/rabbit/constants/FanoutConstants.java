@@ -96,6 +96,7 @@ public interface FanoutConstants {
 		// 队列
 		String MEMBER_BUY_QUEUE = PREFIX + "member_buy";
 		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
+		String RECHARGE_REFUND_QUEUE = PREFIX + "recharge";
 	}
 	
 	// 购买会员-支付成功事件
@@ -124,6 +125,16 @@ public interface FanoutConstants {
 		String EXCHANGE = FanoutConstants.PREFIX + "subOrderDemo3_pay_success";
 		
 		String PREFIX = FanoutConstants.PREFIX + "subOrderDemo3_pay_success.";
+		// 队列
+//		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
+	}
+	
+	// 充值-支付成功事件
+	interface RECHARGE_PAY_SUCCESS {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "recharge_pay_success";
+		
+		String PREFIX = FanoutConstants.PREFIX + "recharge_pay_success.";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}

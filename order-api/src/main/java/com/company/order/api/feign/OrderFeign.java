@@ -15,11 +15,12 @@ import com.company.order.api.feign.fallback.OrderFeignFallback;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
-import com.company.order.api.request.OrderRefundApplyReq;
-import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderReceiveReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFailReq;
+import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
@@ -129,4 +130,7 @@ public interface OrderFeign {
 	 */
 	@GetMapping("/select4OverWaitReview")
 	Result<List<String>> select4OverWaitReview(@RequestParam("limit") Integer limit);
+
+	@GetMapping("/selectByOrderCode")
+	Result<Order4Resp> selectByOrderCode(@RequestParam("orderCode") String orderCode);
 }

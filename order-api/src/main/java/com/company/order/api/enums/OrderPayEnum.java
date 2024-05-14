@@ -15,6 +15,7 @@ public interface OrderPayEnum {
 		MEMBER("member", "购买会员"), //
 		DISTRIBUTE("distribute", "配送订单"), //
 		SUBORDERDEMO3("subOrderDemo3", "子订单demo3"), //
+		RECHARGE("recharge", "充值"), //
 		;
 		@Getter
 		private String code;

@@ -45,6 +45,7 @@ import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.OrderReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderDetailResp.TextValueResp;
 import com.company.order.api.response.OrderRefundApplyResp;
@@ -179,9 +180,8 @@ public class OrderController implements OrderFeign {
 		Order order = orderService.selectByOrderCode(orderCode);
 
 		BigDecimal needPayAmount = order.getNeedPayAmount();
-		BigDecimal payAmount = order.getPayAmount();
 		BigDecimal refundAmount = order.getRefundAmount();
-		if (needPayAmount.compareTo(BigDecimal.ZERO) != 0 && payAmount.compareTo(refundAmount) <= 0) {
+		if (needPayAmount.compareTo(refundAmount) <= 0) {
 			return Result.fail("无可退款金额");
 		}
 
@@ -199,14 +199,16 @@ public class OrderController implements OrderFeign {
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
 		String subOrderUrl = order.getSubOrderUrl();
 		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.CALC_CANREFUNDAMOUNT, subOrderUrl, order, orderProductList);
+		JsonNode dataJSON = JsonUtil.toJsonNode(data);
+
+		BigDecimal payAmount = order.getPayAmount();
 		BigDecimal canRefundAmount = payAmount.subtract(refundAmount);
-		if (data != null) {// 这里应该是BigDecimal类型
-			canRefundAmount = new BigDecimal(data.toString());
-			if (canRefundAmount.compareTo(BigDecimal.ZERO) == 0) {
-				return Result.fail("无可退款金额");
-			}
+		if (dataJSON.has("canRefundAmount")) {
+			canRefundAmount = JsonUtil.getBigDecimal(dataJSON, "canRefundAmount");
 		}
 		resp.setCanRefundAmount(canRefundAmount);
+		String attach = JsonUtil.getString(dataJSON, "attach");
+		resp.setAttach(attach);
 
 		return Result.success(resp);
 	}
@@ -592,6 +594,12 @@ public class OrderController implements OrderFeign {
 	public Result<List<String>> select4OverWaitReview(Integer limit) {
 		List<String> orderCodeList = orderService.select4OverWaitReview(limit);
 		return Result.success(orderCodeList);
+	}
+
+	@Override
+	public Result<Order4Resp> selectByOrderCode(String orderCode) {
+		Order order = orderService.selectByOrderCode(orderCode);
+		return Result.success(PropertyUtils.copyProperties(order, Order4Resp.class));
 	}
 
 }

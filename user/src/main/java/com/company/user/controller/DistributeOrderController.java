@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.common.util.Utils;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -47,7 +48,6 @@ import com.company.user.api.response.DistributeSubOrderDetailResp;
 import com.company.user.api.response.DistributeSubOrderResp;
 import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
-import com.company.user.dto.DistributeAttach;
 import com.company.user.service.ShopCartService;
 import com.company.user.service.ShopCartService.ShopCart;
 import com.company.user.service.ShopProductService;
@@ -196,10 +196,15 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			String shopCode = shop.getShopCode();
 			String shopName = shop.getShopName();
 			String shopLogo = shop.getShopLogo();
-			DistributeAttach distributeAttach = new DistributeAttach().setSpecContent(shopCart.getSpecContent())
-					.setUserRemark(productCodeUserRemarkMap.get(productCode)).setShopCode(shopCode)
-					.setShopName(shopName).setShopLogo(shopLogo);
-			orderProductReq.setAttach(JsonUtil.toJsonString(distributeAttach));
+			
+			String payAttach = "{}";
+			payAttach = Utils.append2Json(payAttach, "specContent", shopCart.getSpecContent());
+			payAttach = Utils.append2Json(payAttach, "userRemark", productCodeUserRemarkMap.get(productCode));
+			payAttach = Utils.append2Json(payAttach, "shopCode", shopCode);
+			payAttach = Utils.append2Json(payAttach, "shopName", shopName);
+			payAttach = Utils.append2Json(payAttach, "shopLogo", shopLogo);
+			orderProductReq.setAttach(payAttach);
+			
 			orderProductReqList.add(orderProductReq);
 		}
 
@@ -347,10 +352,14 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setProductImage(productReq.getProductImage());
 
 		String attach = productReq.getAttach();
-		DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
-		resp.setShopCode(distributeAttach.getShopCode());
-		resp.setShopName(distributeAttach.getShopName());
-		resp.setShopLogo(distributeAttach.getShopLogo());
+		
+		String shopCode = Utils.getByJson(attach, "shopCode");
+		String shopName = Utils.getByJson(attach, "shopName");
+		String shopLogo = Utils.getByJson(attach, "shopLogo");
+		
+		resp.setShopCode(shopCode);
+		resp.setShopName(shopName);
+		resp.setShopLogo(shopLogo);
 		
 		List<DistributeSubOrderResp.BottonResp> bottonList = Lists.newArrayList();
 		if (OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum || OrderEnum.StatusEnum.COMPLETE == statusEnum
@@ -377,12 +386,15 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		Map<DistributeSubOrderDetailResp.ShopResp, List<OrderReq.ProductReq>> shopCodeProductListMap = productList
 				.stream().collect(Collectors.groupingBy(v -> {
 					String attach = v.getAttach();
-					DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
+					
+					String shopCode = Utils.getByJson(attach, "shopCode");
+					String shopName = Utils.getByJson(attach, "shopName");
+					String shopLogo = Utils.getByJson(attach, "shopLogo");
 
 					DistributeSubOrderDetailResp.ShopResp shopResp = new DistributeSubOrderDetailResp.ShopResp();
-					shopResp.setShopCode(distributeAttach.getShopCode());
-					shopResp.setShopName(distributeAttach.getShopName());
-					shopResp.setShopLogo(distributeAttach.getShopLogo());
+					shopResp.setShopCode(shopCode);
+					shopResp.setShopName(shopName);
+					shopResp.setShopLogo(shopLogo);
 					return shopResp;
 				}, LinkedHashMap::new, Collectors.toList()));
 
@@ -406,9 +418,11 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 						String attach = v.getAttach();
 						if (StringUtils.isNotBlank(attach)) {
-							DistributeAttach distributeAttach = JsonUtil.toEntity(attach, DistributeAttach.class);
-							productDetailResp.setSpecContent(distributeAttach.getSpecContent());
-							productDetailResp.setUserRemark(distributeAttach.getUserRemark());
+							String specContent = Utils.getByJson(attach, "specContent");
+							String userRemark = Utils.getByJson(attach, "userRemark");
+							
+							productDetailResp.setSpecContent(specContent);
+							productDetailResp.setUserRemark(userRemark);
 						}
 						return productDetailResp;
 					}).collect(Collectors.toList());

@@ -9,10 +9,12 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.company.app.req.RefundApplyReq;
 import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
 import com.company.common.util.Utils;
@@ -95,7 +97,7 @@ public class OrderCenterController {
 	 * @param toPayReq
 	 * @return
 	 */
-	@GetMapping("/toPay")
+	@PostMapping("/toPay")
 	public Result<Object> toPay(@Valid @RequestBody ToPayReq toPayReq) {
 		com.company.order.api.request.ToPayReq toPayReqApi = new com.company.order.api.request.ToPayReq();
 		toPayReqApi.setOrderCode(toPayReq.getOrderCode());
@@ -117,8 +119,11 @@ public class OrderCenterController {
 	 * @param orderCode
 	 * @return
 	 */
-	@GetMapping("/refundApply")
-	public Result<Void> refundApply(@Valid @NotNull(message = "订单号不能为空") String orderCode, String refundReason) {
+	@PostMapping("/refundApply")
+	public Result<Void> refundApply(@Valid @RequestBody RefundApplyReq refundApplyReq) {
+		String orderCode = refundApplyReq.getOrderCode();
+		String refundReason = refundApplyReq.getRefundReason();
+		
 		OrderRefundApplyReq orderRefundApplyReq = new OrderRefundApplyReq();
 		orderRefundApplyReq.setOrderCode(orderCode);
 		orderRefundApplyReq.setRefundApplyTime(LocalDateTime.now());
@@ -135,6 +140,7 @@ public class OrderCenterController {
 		
 		String attach = Utils.append2Json(null, "oldSubStatus",
 				String.valueOf(orderRefundApplyResp.getOldSubStatus().getStatus()));
+		attach = Utils.append2Json(attach, "attach", orderRefundApplyResp.getAttach());
 		payRefundApplyReq.setAttach(attach);
 
 		refundApplyFeign.refundApply(payRefundApplyReq);

@@ -10,11 +10,12 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.request.OrderCancelReq;
 import com.company.order.api.request.OrderFinishReq;
 import com.company.order.api.request.OrderPaySuccessReq;
-import com.company.order.api.request.OrderRefundApplyReq;
-import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.OrderRefundFailReq;
 import com.company.order.api.request.OrderReceiveReq;
+import com.company.order.api.request.OrderRefundApplyReq;
+import com.company.order.api.request.OrderRefundFailReq;
+import com.company.order.api.request.OrderRefundFinishReq;
 import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
@@ -94,6 +95,11 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			
 			@Override
 			public Result<List<String>> select4OverWaitReview(Integer limit) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Order4Resp> selectByOrderCode(String orderCode) {
 				return Result.onFallbackError();
 			}
 

@@ -19,4 +19,9 @@ public class OrderRefundApplyResp {
 	 * 可退款金额
 	 */
 	private BigDecimal canRefundAmount;
+	
+	/**
+	 * 附加信息
+	 */
+	private String attach;
 }

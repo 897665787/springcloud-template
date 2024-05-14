@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.user.mapper.wallet.WalletUseSeqMapper">
+    <select id="selectLeftByUserIdTypeList" resultType="com.company.user.entity.WalletUseSeq">
+        select * from bu_wallet_use_seq
+        where
+        user_id = #{userId}
+        and
+        <choose>
+        	<when test="typeList != null and typeList.size() > 0">
+        		type in
+		        <foreach collection="typeList" open="(" item="item" close=")" separator=",">
+		            #{item.code}
+		        </foreach>
+        	</when>
+        	<otherwise>
+        		1 != 1
+        	</otherwise>
+        </choose>
+        and left_amount > 0 order by id asc
+    </select>
+    <select id="selectUseByUserIdTypeList" resultType="com.company.user.entity.WalletUseSeq">
+        select * from bu_wallet_use_seq
+        where
+        user_id = #{userId}
+        and
+        <choose>
+        	<when test="typeList != null and typeList.size() > 0">
+        		type in
+		        <foreach collection="typeList" open="(" item="item" close=")" separator=",">
+		            #{item.code}
+		        </foreach>
+        	</when>
+        	<otherwise>
+        		1 != 1
+        	</otherwise>
+        </choose>
+        and left_amount &lt; amount order by id desc
+    </select>
+</mapper>
