@@ -98,7 +98,6 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		if (contentType != null && contentType.contains("application/json")) {
 			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
 			bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
-			request = requestWrapper;
 		}
 
 		Map<String, Object> reqParam = getReqParam(request);

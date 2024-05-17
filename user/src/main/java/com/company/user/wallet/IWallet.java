@@ -37,8 +37,8 @@ public interface IWallet<WI, IA, OA, B> {
 	 *            附加信息，透传
 	 * @return 入账记录ID
 	 */
-
 	Integer income(String uniqueCode, WI walletId, IA amount, Map<String, Object> attachMap);
+	
 	/**
 	 * 出账
 	 *

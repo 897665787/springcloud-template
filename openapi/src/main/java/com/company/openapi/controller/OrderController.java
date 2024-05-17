@@ -31,7 +31,20 @@ public class OrderController {
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
-	
+
+	/**
+	 * 测试无参
+	 */
+	@GetMapping("/info")
+	public Result<?> info() {
+		Map<String, String> result = Maps.newHashMap();
+		result.put("name", "获取本appid对应的信息");
+		return Result.success(result);
+	}
+
+	/**
+	 * 测试url参数
+	 */
 	@GetMapping("/get")
 	public Result<?> get(@NotEmpty(message = "订单号不能为空") String orderCode) {
 		Map<String, String> result = Maps.newHashMap();
@@ -40,9 +53,24 @@ public class OrderController {
 		result.put("orderid", "" + sequenceGenerator.nextId());
 		return Result.success(result);
 	}
-
+	
+	/**
+	 * 测试body参数
+	 */
 	@PostMapping("/create")
 	public Result<?> create(@Valid @RequestBody CreateOrderReq createOrderReq) {
+		Map<String, String> result = Maps.newHashMap();
+		result.put("orderCode", createOrderReq.getOrderCode());
+		result.put("productCode", createOrderReq.getProductCode());
+		result.put("orderid", "" + sequenceGenerator.nextId());
+		return Result.success(result);
+	}
+	
+	/**
+	 * 测试form参数
+	 */
+	@PostMapping("/create2")
+	public Result<?> create2(CreateOrderReq createOrderReq) {
 		Map<String, String> result = Maps.newHashMap();
 		result.put("orderCode", createOrderReq.getOrderCode());
 		result.put("productCode", createOrderReq.getProductCode());

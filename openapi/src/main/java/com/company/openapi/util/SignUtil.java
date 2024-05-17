@@ -1,13 +1,11 @@
 package com.company.openapi.util;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.company.common.util.JsonUtil;
-import com.google.common.collect.Maps;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
@@ -26,7 +24,77 @@ public class SignUtil {
 	}
 
 	/**
-	 * 生成签名：md5（appid + timestamp + noncestr + 业务参数（key字典排序） + appsecret）
+	 * 生成签名
+	 * 
+	 * @param appid
+	 *            appid
+	 * @param timestamp
+	 *            时间戳（毫秒）
+	 * @param noncestr
+	 *            随机串（建议至少10位）
+	 * @param appsecret
+	 *            appid对应的密钥
+	 * @return
+	 */
+	public static String generate(String appid, long timestamp, String noncestr, String appsecret) {
+		return generate(appid, timestamp, noncestr, Collections.emptyMap(), "", appsecret);
+	}
+
+	/**
+	 * 生成签名
+	 * 
+	 * @param appid
+	 *            appid
+	 * @param timestamp
+	 *            时间戳（毫秒）
+	 * @param noncestr
+	 *            随机串（建议至少10位）
+	 * @param paramMap
+	 *            url参数与form参数
+	 * @param appsecret
+	 *            appid对应的密钥
+	 * @return
+	 */
+	public static String generate(String appid, long timestamp, String noncestr, Map<String, Object> paramMap,
+			String appsecret) {
+		return generate(appid, timestamp, noncestr, paramMap, "", appsecret);
+	}
+
+	/**
+	 * 生成签名
+	 * 
+	 * @param appid
+	 *            appid
+	 * @param timestamp
+	 *            时间戳（毫秒）
+	 * @param noncestr
+	 *            随机串（建议至少10位）
+	 * @param bodyStr
+	 *            body参数串
+	 * @param appsecret
+	 *            appid对应的密钥
+	 * @return
+	 */
+	public static String generate(String appid, long timestamp, String noncestr, String bodyStr, String appsecret) {
+		return generate(appid, timestamp, noncestr, Collections.emptyMap(), bodyStr, appsecret);
+	}
+
+	/**
+	 * 生成签名
+	 * 
+	 * @param appid
+	 *            appid
+	 * @param timestamp
+	 *            时间戳（毫秒）
+	 * @param noncestr
+	 *            随机串（建议至少10位）
+	 * @param paramMap
+	 *            url参数与form参数
+	 * @param bodyStr
+	 *            body参数串
+	 * @param appsecret
+	 *            appid对应的密钥
+	 * @return
 	 */
 	public static String generate(String appid, long timestamp, String noncestr, Map<String, Object> paramMap,
 			String bodyStr, String appsecret) {
@@ -40,27 +108,4 @@ public class SignUtil {
 		return md5;
 	}
 
-	public static void main(String[] args) {
-		String appid = "13532515";
-		String appsecret = "b5d89c15161240d5ac17e846ab146721";
-		
-//		long timestamp = System.currentTimeMillis();
-		long timestamp = 1690617367581L;
-		System.out.println(timestamp);
-		
-//		String noncestr = RandomUtil.randomString(10);
-		String noncestr = "5dx7lq57jn";
-		System.out.println(noncestr);
-
-		Map<String, Object> paramMap = Maps.newHashMap();
-		paramMap.put("orderCode", "222222222222222");
-
-		Map<String, Object> bodyMap = Maps.newHashMap();
-		bodyMap.put("orderCode", "3213213115116516351");
-		String bodyStr = JsonUtil.toJsonString(bodyMap);
-//		String bodyStr = "";
-
-		String sign = SignUtil.generate(appid, timestamp, noncestr, paramMap, bodyStr, appsecret);
-		System.out.println(sign);
-	}
 }
