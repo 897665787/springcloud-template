@@ -90,14 +90,9 @@ public class WxPayRefund {
 	 */
 	private Integer cashFee;
 	/**
-	 * 回调-退款状态(SUCCESS/CHANGE/REFUNDCLOSE)
+	 * 回调-退款状态(PROCESSING/SUCCESS/CHANGE/REFUNDCLOSE)
 	 */
 	private String refundStatus;
-	
-	/**
-	 * 关联bu_pay_notify ID
-	 */
-	private Integer payNotifyId;
 	
 	/**
 	 * 备注信息

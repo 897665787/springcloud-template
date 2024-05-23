@@ -140,10 +140,9 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 					.setOutBizNo(outBizNo)
 					.setBuyerId(aliActivityPay.getBuyerId())
 //					.setRefundActivityInfoList()// 支付宝主动退款不需要填写
-					.setTradeStatus(AliActivityConstants.TRADE_CLOSED)
+					.setRefundStatus(AliActivityConstants.RefundStatus.REFUND_SUCCESS)
 					.setOrderNo(orderNo)
 					.setRefundType(refundType)
-					.setPayNotifyId(payNotifyId)
 			;
 			try {
 				aliActivityPayRefundMapper.insert(aliActivityPay4Insert);
@@ -195,13 +194,13 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 		} else {// 用户主动退款
 			AliActivityPayRefund aliActivityPay4Update = new AliActivityPayRefund()
 					.setOutBizNo(outBizNo)
-					.setTradeStatus(AliActivityConstants.TRADE_CLOSED)
+					.setRefundStatus(AliActivityConstants.RefundStatus.REFUND_SUCCESS)
 					.setOrderNo(orderNo)
 					.setRefundType(refundType)
-					.setPayNotifyId(payNotifyId);
+					;
 			
 			Wrapper<AliActivityPayRefund> wrapper = new EntityWrapper<AliActivityPayRefund>();
-			wrapper.and("(trade_status is null or trade_status != {0})", AliActivityConstants.TRADE_CLOSED);
+			wrapper.and("(refund_status is null or refund_status != {0})", AliActivityConstants.RefundStatus.REFUND_SUCCESS);
 			int affect = aliActivityPayRefundMapper.update(aliActivityPay4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
@@ -211,7 +210,6 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			
 			// MQ异步处理
 			Map<String, Object> params = Maps.newHashMap();
-			params.put("payNotifyId", payNotifyId);
 			params.put("outTradeNo", outOrderNo);
 			params.put("outRefundNo", outBizNo);
 			params.put("success", true);

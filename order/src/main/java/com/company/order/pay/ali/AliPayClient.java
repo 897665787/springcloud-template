@@ -2,9 +2,8 @@ package com.company.order.pay.ali;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,32 +18,43 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
+import com.alipay.api.domain.AlipayTradeCloseModel;
+import com.alipay.api.domain.AlipayTradeFastpayRefundQueryModel;
+import com.alipay.api.domain.AlipayTradeQueryModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeCloseRequest;
+import com.alipay.api.request.AlipayTradeFastpayRefundQueryRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeCloseResponse;
+import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
-import com.company.order.api.response.PayTradeStateResp;
+import com.company.order.api.response.PayOrderQueryResp;
+import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.AliPay;
 import com.company.order.entity.AliPayRefund;
 import com.company.order.mapper.AliPayMapper;
 import com.company.order.mapper.AliPayRefundMapper;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.ali.config.AliPayConfiguration;
+import com.company.order.pay.ali.config.AliPayProperties;
 import com.company.order.pay.ali.config.AliPayProperties.PayConfig;
 import com.company.order.pay.ali.mock.NotifyMock;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -77,7 +87,7 @@ public class AliPayClient extends BasePayClient {
 	@Value("${timeExpire.seconds:180}")
 	private Integer timeExpireSeconds;
 	
-	@Value("${template.mock.wxnotify:false}")
+	@Value("${template.mock.alinotify:false}")
 	private Boolean mockNotify;
 	
 	@Override
@@ -194,18 +204,42 @@ public class AliPayClient extends BasePayClient {
 	}
 
 	@Override
-	public PayTradeStateResp queryTradeState(String outTradeNo) {
-		PayTradeStateResp payTradeStateResp = new PayTradeStateResp();
+	public PayOrderQueryResp orderQuery(String outTradeNo) {
+		PayOrderQueryResp resp = new PayOrderQueryResp();
 		AliPay aliPay = aliPayMapper.selectByOutTradeNo(outTradeNo);
-		if (aliPay != null && aliPay.getTradeStatus() != null) {
-			// 回调结果
-			payTradeStateResp.setResult(true);
-			payTradeStateResp.setPaySuccess(Objects.equals(aliPay.getTradeStatus(), AliConstants.TRADE_SUCCESS));
-			return payTradeStateResp;
+		if (aliPay == null) {
+			resp.setResult(false);
+			resp.setMessage("订单不存在");
+			return resp;
 		}
+
+		if (AliConstants.TradeStatus.payHasResult(aliPay.getTradeStatus())) {
+			// 回调结果
+			resp.setResult(true);
+			
+			boolean paySuccess = AliConstants.TradeStatus.paySuccess(aliPay.getTradeStatus());
+			resp.setPaySuccess(paySuccess);
+			
+			if (paySuccess) {
+				resp.setPayAmount(aliPay.getTotalAmount());
+				LocalDateTime time = LocalDateTime.now();
+				if (StringUtils.isNotBlank(aliPay.getGmtPayment())) {
+					time = LocalDateTime.parse(aliPay.getGmtPayment(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+				}
+				resp.setPayTime(time);
+				AliPayProperties.PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPay.getAppid());
+				resp.setMerchantNo(payConfig.getSellerId());
+				resp.setTradeNo(aliPay.getTradeNo());
+			}
+			return resp;
+		}
+		
+		/**
+		 * 官方文档：https://opendocs.alipay.com/pre-open/02e5yy?pathHash=58327a89
+		 */
 		AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
-		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
-		model.setOutTradeNo(aliPay.getOutTradeNo());
+		AlipayTradeQueryModel model = new AlipayTradeQueryModel();
+		model.setOutTradeNo(outTradeNo);
 		request.setBizModel(model);
 		
 		try {
@@ -218,39 +252,75 @@ public class AliPayClient extends BasePayClient {
 	                payConfig.getPubKey(),
 	                AliConstants.SIGNTYPE);
 			
-            AlipayTradeQueryResponse response = alipayClient.sdkExecute(request);
+            AlipayTradeQueryResponse response = alipayClient.execute(request);
             
 			if (!response.isSuccess()) {
-				payTradeStateResp.setResult(false);
-				payTradeStateResp.setMessage(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
-				return payTradeStateResp;
+				resp.setResult(false);
+				resp.setMessage(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
+				return resp;
 			}
 			
-			payTradeStateResp.setResult(true);
-			payTradeStateResp.setMessage(StringUtils.defaultIfBlank(response.getSubMsg(), response.getMsg()));
-			payTradeStateResp.setPaySuccess(Objects.equals(response.getTradeStatus(), AliConstants.TRADE_SUCCESS));
-			return payTradeStateResp;
+			if (!AliConstants.TradeStatus.payHasResult(response.getTradeStatus())) {
+				// 未出结果
+				resp.setResult(false);
+				resp.setMessage("未出结果");
+				return resp;
+			}
+			
+			resp.setResult(true);
+			
+			boolean paySuccess = Objects.equals(response.getTradeStatus(), AliConstants.TradeStatus.TRADE_SUCCESS);
+			resp.setPaySuccess(paySuccess);
+			
+			if (paySuccess) {
+				resp.setPayAmount(new BigDecimal(response.getTotalAmount()));
+				LocalDateTime time = LocalDateTimeUtil.of(response.getSendPayDate());
+				resp.setPayTime(time);
+				resp.setMerchantNo(payConfig.getSellerId());
+				resp.setTradeNo(response.getTradeNo());
+			}
+			
+			queryResult2AliPay(outTradeNo, response);
+			
+			return resp;
         } catch (AlipayApiException e) {
         	// 支付异常
-			log.error("AliPay tradeStateSuccess error", e);
+			log.error("AliPay orderQuery error", e);
 			throw new BusinessException(e.getErrMsg());
         }
+	}
+
+	private boolean queryResult2AliPay(String outTradeNo, AlipayTradeQueryResponse response) {
+		// 保存支付宝查询结果数据
+		String gmtPayment = DateUtil.formatDateTime(response.getSendPayDate());
+		AliPay aliPay4Update = new AliPay().setTradeStatus(response.getTradeStatus()).setTradeNo(response.getTradeNo())
+				.setGmtPayment(gmtPayment);
+
+		Wrapper<AliPay> wrapper = new EntityWrapper<AliPay>();
+		wrapper.eq("out_trade_no", outTradeNo);
+		wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.TradeStatus.TRADE_SUCCESS);
+		int affect = aliPayMapper.update(aliPay4Update, wrapper);
+		return affect > 0;
 	}
 	
 	@Override
 	public void requestRefund(String outTradeNo, String outRefundNo, BigDecimal refundAmount) {
 		AliPayRefund aliPayRefund = aliPayRefundMapper.selectByOutRequestNo(outRefundNo);
 		Integer aliPayRefundId = null;
+		String remark = null;
 		if (aliPayRefund != null) {// 已创建过退款记录
-			if (StringUtils.isNotBlank(aliPayRefund.getTradeStatus())) {// 已成功退款
-				// 部分退款：TRADE_SUCCESS，全额退款：TRADE_CLOSED
+			if (AliConstants.RefundStatus.refundSuccess(aliPayRefund.getRefundStatus())) {// 已成功退款
 				return;
 			}
 			aliPayRefundId = aliPayRefund.getId();
+			remark = aliPayRefund.getRemark();
 		}
 		
 		AliPay aliPay = aliPayMapper.selectByOutTradeNo(outTradeNo);
 		
+		/**
+		 * 官方文档：https://opendocs.alipay.com/pre-open/02e7gh?pathHash=79a69eef
+		 */
 		AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
         AlipayTradeRefundModel model = new AlipayTradeRefundModel();
         model.setOutTradeNo(outTradeNo);
@@ -282,28 +352,33 @@ public class AliPayClient extends BasePayClient {
 		} catch (AlipayApiException e) {
 			// 退款异常
 			log.error("AliPayRefund error", e);
-			String remark = Utils.rightRemark(aliPayRefund.getRemark(), "请求异常,logid:" + MdcUtil.get());
+			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
 			refundResult2AliPayRefund(aliPayRefundId, aliPay, outRefundNo, refundAmount, remark);
 			throw new BusinessException(e.getErrMsg());
-		}
+		} catch (Exception e) {
+			// 退款异常
+			log.error("AliPay error", e);
+			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			refundResult2AliPayRefund(aliPayRefundId, aliPay, outRefundNo, refundAmount, remark);
+			throw new BusinessException(e.getMessage());
+        }
 	}
 
 	private void updateRefundResult(String outRefundNo, AlipayTradeRefundResponse response) {
 		AliPayRefund aliPayRefunddb = aliPayRefundMapper.selectByOutRequestNo(outRefundNo);
 		// 保存支付宝支付退款数据
-		AliPayRefund aliPayRefund = new AliPayRefund();
+		AliPayRefund aliPayRefund4Update = new AliPayRefund();
 		if (response != null) {
 			// 支付退款结果
 			if (!response.isSuccess()) {
 				String msg = StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg());
 				String remark = Utils.rightRemark(aliPayRefunddb.getRemark(), msg);
-				aliPayRefund.setRemark(remark);
+				aliPayRefund4Update.setRemark(remark);
 			}
 		}
-		aliPayRefund.setUpdateTime(LocalDateTime.now());
-		aliPayRefund.setId(aliPayRefunddb.getId());
-		aliPayRefundMapper.updateById(aliPayRefund);
-
+		aliPayRefund4Update.setUpdateTime(LocalDateTime.now());
+		aliPayRefund4Update.setId(aliPayRefunddb.getId());
+		aliPayRefundMapper.updateById(aliPayRefund4Update);
 	}
 	
 	private void refundResult2AliPayRefund(Integer aliPayRefundId, AliPay aliPay, String outRefundNo,
@@ -339,9 +414,9 @@ public class AliPayClient extends BasePayClient {
 		 * 官方文档：https://opendocs.alipay.com/pre-open/02e5yz?pathHash=e5f631b6
 		 */
 		AlipayTradeCloseRequest closeRequest = new AlipayTradeCloseRequest();
-		Map<String, String> cancelJsonObject = new HashMap<>();
-		cancelJsonObject.put("out_trade_no", outTradeNo);
-		closeRequest.setBizContent(JsonUtil.toJsonString(cancelJsonObject));
+		AlipayTradeCloseModel model = new AlipayTradeCloseModel();
+		model.setOutTradeNo(outTradeNo);
+		closeRequest.setBizModel(model);
 
 		try {
 			PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPay.getAppid());
@@ -368,5 +443,97 @@ public class AliPayClient extends BasePayClient {
 			log.error("AliPayCloseOrder error", e);
 			throw new BusinessException(e.getErrMsg());
 		}
+	}
+
+	@Override
+	public PayRefundQueryResp refundQuery(String outRefundNo) {
+		PayRefundQueryResp resp = new PayRefundQueryResp();
+		AliPayRefund aliPayRefund = aliPayRefundMapper.selectByOutRequestNo(outRefundNo);
+		if (aliPayRefund == null) {
+			resp.setResult(false);
+			resp.setMessage("订单不存在");
+			return resp;
+		}
+		if (AliConstants.RefundStatus.refundHasResult(aliPayRefund.getRefundStatus())) {
+			// 回调结果
+			resp.setResult(true);
+
+			boolean refundSuccess = AliConstants.RefundStatus.refundSuccess(aliPayRefund.getRefundStatus());
+			resp.setRefundSuccess(refundSuccess);
+
+			if (refundSuccess) {
+				resp.setRefundAmount(aliPayRefund.getRefundAmount());
+				AliPayProperties.PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPayRefund.getAppid());
+				resp.setMerchantNo(payConfig.getSellerId());
+				resp.setTradeNo(aliPayRefund.getTradeNo());
+			}
+			return resp;
+		}
+		
+		/**
+		 * 官方文档：https://opendocs.alipay.com/pre-open/02e5z0?pathHash=ac4dff71
+		 */
+		AlipayTradeFastpayRefundQueryRequest request = new AlipayTradeFastpayRefundQueryRequest();
+		AlipayTradeFastpayRefundQueryModel model = new AlipayTradeFastpayRefundQueryModel();
+		model.setOutTradeNo(aliPayRefund.getOutTradeNo());
+		model.setOutRequestNo(outRefundNo);
+		request.setBizModel(model);
+		
+		try {
+			PayConfig payConfig = aliPayConfiguration.getPayConfig(aliPayRefund.getAppid());
+			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
+					aliPayRefund.getAppid(),
+					payConfig.getPrivateKey(),
+	                AliConstants.FORMAT,
+	                AliConstants.CHARSET,
+	                payConfig.getPubKey(),
+	                AliConstants.SIGNTYPE);
+			
+			AlipayTradeFastpayRefundQueryResponse response = alipayClient.execute(request);
+            
+			if (!response.isSuccess()) {
+				resp.setResult(false);
+				resp.setMessage(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
+				return resp;
+			}
+
+			if (!AliConstants.RefundStatus.refundHasResult(response.getRefundStatus())) {
+				// 未出结果
+				resp.setResult(false);
+				resp.setMessage("未出结果");
+				return resp;
+			}
+			
+			resp.setResult(true);
+			
+			boolean refundSuccess = AliConstants.RefundStatus.refundSuccess(response.getRefundStatus());
+			resp.setRefundSuccess(refundSuccess);
+			
+			if (refundSuccess) {
+				resp.setRefundAmount(new BigDecimal(response.getRefundAmount()));
+				resp.setMerchantNo(payConfig.getSellerId());
+				resp.setTradeNo(response.getTradeNo());
+			}
+			
+			refundQueryResult2AliPay(outRefundNo, response);
+			
+			return resp;
+        } catch (AlipayApiException e) {
+        	// 支付异常
+			log.error("AliPay refundQuery error", e);
+			throw new BusinessException(e.getErrMsg());
+        }
+	}
+
+	private boolean refundQueryResult2AliPay(String outRefundNo, AlipayTradeFastpayRefundQueryResponse response) {
+		// 保存支付宝查询结果数据
+		AliPayRefund aliPayRefund4Update = new AliPayRefund().setRefundStatus(response.getRefundStatus())
+				.setTradeNo(response.getTradeNo());
+
+		Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
+		wrapper.eq("out_request_no", outRefundNo);
+		wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
+		int affect = aliPayRefundMapper.update(aliPayRefund4Update, wrapper);
+		return affect > 0;
 	}
 }

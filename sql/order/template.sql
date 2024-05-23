@@ -11,10 +11,11 @@ CREATE TABLE `bu_ali_pay` (
   `subject` varchar(128) NOT NULL COMMENT '商品标题',
   `total_amount` decimal(12,2) NOT NULL COMMENT '订单金额(元)',
   `pay_body` varchar(2049) DEFAULT NULL COMMENT '支付体（前端使用）',
+  
   `trade_status` varchar(20) DEFAULT NULL COMMENT '交易结果(TRADE_CLOSED:交易关闭,TRADE_FINISHED:交易完结,TRADE_SUCCESS:支付成功,WAIT_BUYER_PAY:交易创建)',
   `trade_no` varchar(64) DEFAULT NULL COMMENT '支付宝交易凭证号',
-  `gmt_payment` varchar(32) DEFAULT NULL COMMENT '交易支付时间',
-  `pay_notify_id` int(11) DEFAULT NULL COMMENT '关联bu_pay_notify ID',
+  `gmt_payment` varchar(32) DEFAULT NULL COMMENT '交易支付时间(yyyy-MM-dd HH:mm:ss)',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -32,9 +33,10 @@ CREATE TABLE `bu_ali_pay_refund` (
   `out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号',
   `out_request_no` varchar(64) NOT NULL COMMENT '商户退款单号',
   `refund_amount` decimal(12,2) NOT NULL COMMENT '退款金额(元)',
-  `trade_status` varchar(20) DEFAULT NULL COMMENT '交易结果(TRADE_CLOSED:交易关闭,TRADE_FINISHED:交易完结,TRADE_SUCCESS:支付成功,WAIT_BUYER_PAY:交易创建)',
-  `out_biz_no` varchar(20) DEFAULT NULL COMMENT '外部业务号(有值认为是退款)',
-  `pay_notify_id` int(11) DEFAULT NULL COMMENT '关联bu_pay_notify ID',
+  
+  `trade_no` varchar(64) DEFAULT NULL COMMENT '支付宝交易凭证号',
+  `refund_status` varchar(20) DEFAULT NULL COMMENT '退款状态(REFUND_SUCCESS:退款成功)',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -55,6 +57,7 @@ CREATE TABLE `bu_financial_flow` (
   `amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '进出账金额(元)',
   `trade_way` varchar(32) NOT NULL COMMENT '交易方式(wx_pay:微信支付,ali_pay:支付宝支付,mch_pay:微信企业打款)',
   `merchant_no` varchar(32) NOT NULL COMMENT '商户号',
+  
   `remarks` varchar(255) NOT NULL COMMENT '备注信息',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -81,6 +84,7 @@ CREATE TABLE `bu_inner_callback` (
   `max_failure` int(11) NOT NULL COMMENT '最大允许失败次数',
   `failure` int(11) NOT NULL DEFAULT '0' COMMENT '当前失败次数',
   `trace_id` varchar(32) DEFAULT NULL COMMENT '追踪ID',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -104,6 +108,7 @@ CREATE TABLE `bu_order_pay` (
   `notify_url` varchar(128) DEFAULT NULL COMMENT '通知地址(关闭/支付订单都会通知)',
   `notify_attach` varchar(256) DEFAULT NULL COMMENT '通知地址的附加数据',
   `pay_time` datetime DEFAULT NULL COMMENT '关闭/支付时间',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -126,6 +131,7 @@ CREATE TABLE `bu_order_pay_refund` (
   `status` varchar(16) NOT NULL COMMENT '状态(wait_apply:待申请,apply_success:申请成功,apply_fail:申请失败,refund_success:退款成功,refund_fail:退款失败)',
   `notify_url` varchar(128) DEFAULT NULL COMMENT '通知地址(关闭/支付订单都会通知)',
   `notify_attach` varchar(256) DEFAULT NULL COMMENT '通知地址的附加数据',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注(多个使用/分隔)',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -142,6 +148,7 @@ CREATE TABLE `bu_pay_notify` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `method` varchar(8) NOT NULL COMMENT '支付方式(ali:支付宝,wx:微信,ios:苹果,quick:云闪付)',
   `notify_data` varchar(2048) DEFAULT NULL COMMENT '通知数据',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -162,6 +169,7 @@ CREATE TABLE `bu_pay_refund_apply` (
   `refund_status` int(11) NOT NULL DEFAULT '0' COMMENT '退款状态(1:未退款,21:退款驳回(END),31:处理中,41:申请成功,42:申请失败(END),51:退款成功(END),52:退款失败(END))',
   `reason` varchar(64) NOT NULL COMMENT '退款原因',
   `attach` varchar(256) NOT NULL COMMENT '通知地址的附加数据',
+  
   `remark` varchar(255) NOT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -188,20 +196,21 @@ CREATE TABLE `bu_wx_pay` (
   `trade_type` varchar(16) NOT NULL COMMENT '小程序:JSAPI,H5:MWEB,APP:APP',
   `product_id` varchar(32) DEFAULT NULL COMMENT '商品ID(trade_type=NATIVE，此参数必传)',
   `openid` varchar(128) DEFAULT NULL COMMENT '用户标识(trade_type=JSAPI,此参数必传)',
+  
   `return_code` varchar(16) DEFAULT NULL COMMENT '返回状态码(SUCCESS/FAIL)',
   `return_msg` varchar(128) DEFAULT NULL COMMENT '返回信息',
   `result_code` varchar(16) DEFAULT NULL COMMENT '业务结果(SUCCESS/FAIL)',
   `err_code` varchar(32) DEFAULT NULL COMMENT '错误代码',
   `err_code_des` varchar(128) DEFAULT NULL COMMENT '错误代码描述',
+  
   `prepay_id` varchar(64) DEFAULT NULL COMMENT '预支付交易会话标识',
   `mweb_url` varchar(255) DEFAULT NULL COMMENT '支付跳转链接',
   `code_url` varchar(255) DEFAULT NULL COMMENT '二维码链接',
-  `notify_result_code` varchar(16) DEFAULT NULL COMMENT '回调-业务结果(SUCCESS/FAIL)',
-  `notify_err_code` varchar(32) DEFAULT NULL COMMENT '回调-错误代码',
-  `notify_err_code_des` varchar(128) DEFAULT NULL COMMENT '回调-错误代码描述',
+  
+  `trade_state` varchar(16) DEFAULT NULL COMMENT '交易状态(SUCCESS:支付成功,REFUND:转入退款,NOTPAY:未支付,CLOSED:已关闭,REVOKED:已撤销(刷卡支付),USERPAYING:用户支付中,PAYERROR:支付失败(其他原因，如银行返回失败),ACCEPT:已接收，等待扣款)',
   `transaction_id` varchar(32) DEFAULT NULL COMMENT '微信支付订单号',
   `time_end` varchar(16) DEFAULT NULL COMMENT '支付完成时间(yyyyMMddHHmmss)',
-  `pay_notify_id` int(11) DEFAULT NULL COMMENT '关联bu_pay_notify ID',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -223,15 +232,18 @@ CREATE TABLE `bu_wx_pay_refund` (
   `out_refund_no` varchar(32) NOT NULL COMMENT '商户退款单号',
   `total_fee` int(11) NOT NULL COMMENT '订单金额(分)',
   `refund_fee` int(11) NOT NULL COMMENT '退款金额(分)',
+  
   `return_code` varchar(16) DEFAULT NULL COMMENT '返回状态码(SUCCESS/FAIL)',
   `return_msg` varchar(128) DEFAULT NULL COMMENT '返回信息',
   `result_code` varchar(16) DEFAULT NULL COMMENT '业务结果(SUCCESS/FAIL)',
   `err_code` varchar(32) DEFAULT NULL COMMENT '错误代码',
   `err_code_des` varchar(128) DEFAULT NULL COMMENT '错误代码描述',
+  
   `refund_id` varchar(32) DEFAULT NULL COMMENT '微信退款单号',
   `cash_fee` int(11) DEFAULT NULL COMMENT '现金支付金额(分)',
-  `refund_status` varchar(16) DEFAULT NULL COMMENT '回调-退款状态(SUCCESS/CHANGE/REFUNDCLOSE)',
-  `pay_notify_id` int(11) DEFAULT NULL COMMENT '关联bu_pay_notify ID',
+  
+  `refund_status` varchar(16) DEFAULT NULL COMMENT '退款状态(PROCESSING/SUCCESS/CHANGE/REFUNDCLOSE)',
+  
   `remark` varchar(255) DEFAULT NULL COMMENT '备注信息',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

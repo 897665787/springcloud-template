@@ -2,6 +2,7 @@ package com.company.order.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,13 +31,16 @@ import com.company.order.api.request.PayCloseReq;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.PayReq;
+import com.company.order.api.request.PayResultReq;
 import com.company.order.api.request.PayTimeoutReq;
 import com.company.order.api.request.RefundReq;
+import com.company.order.api.request.RefundResultReq;
 import com.company.order.api.request.ToPayReq;
 import com.company.order.api.response.PayCloseResp;
+import com.company.order.api.response.PayOrderQueryResp;
+import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.api.response.PayRefundResp;
 import com.company.order.api.response.PayResp;
-import com.company.order.api.response.PayTradeStateResp;
 import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.enums.InnerCallbackEnum;
@@ -48,6 +52,7 @@ import com.company.order.pay.core.PayClient;
 import com.company.order.pay.dto.PayParams;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
+import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +81,9 @@ public class PayController implements PayFeign {
 	private LockClient lockClient;
 	
 	private static final String NOTIFY_URL_REFUND = com.company.order.api.constant.Constants.feignUrl("/pay/refundWithRetry");
-	private static final String NOTIFY_URL_TIMEOUT = com.company.order.api.constant.Constants.feignUrl("/pay/timeoutWithRetry");;
+	private static final String NOTIFY_URL_TIMEOUT = com.company.order.api.constant.Constants.feignUrl("/pay/timeoutWithRetry");
+	private static final String NOTIFY_URL_PAYRESULT = com.company.order.api.constant.Constants.feignUrl("/pay/pollingPayResult");
+	private static final String NOTIFY_URL_REFUNDRESULT = com.company.order.api.constant.Constants.feignUrl("/pay/pollingRefundResult");
 	
 	@Override
 	public Result<PayResp> unifiedorder(@RequestBody @Valid PayReq payReq) {
@@ -134,7 +141,9 @@ public class PayController implements PayFeign {
 			if (!payResp.getSuccess()) {
 				throw new BusinessException(payResp.getMessage());
 			}
-
+			
+			payResult(orderCode);// 主动查询支付结果
+			
 			return payResp;
 		});
 		return Result.success(payRespR);
@@ -185,11 +194,11 @@ public class PayController implements PayFeign {
 		}
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
-		PayTradeStateResp payTradeState = payClient.queryTradeState(orderCode);
-		if (!payTradeState.getResult()) {
-			return Result.fail(payTradeState.getMessage());
+		PayOrderQueryResp payOrderQuery = payClient.orderQuery(orderCode);
+		if (!payOrderQuery.getResult()) {
+			return Result.fail(payOrderQuery.getMessage());
 		}
-		if (payTradeState.getPaySuccess()) {
+		if (payOrderQuery.getPaySuccess()) {
 			// 订单已支付
 			return Result.success();
 		}
@@ -233,6 +242,72 @@ public class PayController implements PayFeign {
 		return Result.success();
 	}
 
+	/**
+	 * 支付结果查询
+	 * 
+	 * @param orderCode
+	 *            订单号
+	 */
+	private void payResult(String orderCode) {
+		// 异步处理 ========> 逻辑上等同于直接调用 pollingPayResult
+		PayResultReq payResultReq = new PayResultReq();
+		payResultReq.setOrderCode(orderCode);
+		innerCallbackService.postRestTemplate(NOTIFY_URL_PAYRESULT, payResultReq, 2, 15/* 预计总时长9小时 */,
+				InnerCallbackEnum.SecondsStrategy.INCREMENT);
+	}
+	
+	/**
+	 * <pre>
+	 * 轮询支付结果(使用restTemplate的方式调用)
+	 * 注：需与第三方回调做好并发/幂等处理
+	 * </pre>
+	 * 
+	 * @param payResultReq
+	 * @return
+	 */
+	@PostMapping("/pollingPayResult")
+	public Result<Boolean> pollingPayResult(@RequestBody @Valid PayResultReq payResultReq) {
+		String orderCode = payResultReq.getOrderCode();
+		
+		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
+		if (orderPay == null) {
+			return Result.fail("数据不存在");
+		}
+		OrderPayEnum.Status status = OrderPayEnum.Status.of(orderPay.getStatus());
+		if (status != OrderPayEnum.Status.WAITPAY) {
+			// 订单不是未支付状态，结束查询
+			return Result.success(null, "订单不是未支付状态，结束查询");
+		}
+
+		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
+		PayOrderQueryResp payOrderQuery = payClient.orderQuery(orderCode);
+		if (!payOrderQuery.getResult()) {
+			return Result.fail(payOrderQuery.getMessage());
+		}
+		if (!payOrderQuery.getPaySuccess()) {
+			// 有结果但不是支付成功，结束查询
+			return Result.success(null, "有结果但不是支付成功，结束查询");
+		}
+		
+		// MQ异步处理
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("outTradeNo", orderCode);
+
+		LocalDateTime payTime = payOrderQuery.getPayTime();
+		params.put("time", payTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+
+		// 财务流水信息
+		params.put("amount", payOrderQuery.getPayAmount().toPlainString());
+		params.put("orderPayMethod", orderPay.getMethod());
+		params.put("merchantNo", payOrderQuery.getMerchantNo());
+		params.put("tradeNo", payOrderQuery.getTradeNo());
+
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+
+		return Result.success(null, "支付成功");
+	}
+	
 	@Override
 	public Result<Void> payClose(@RequestBody @Valid PayCloseReq payCloseReq) {
 		String orderCode = payCloseReq.getOrderCode();
@@ -330,10 +405,10 @@ public class PayController implements PayFeign {
 			return Result.fail("订单不是完成状态，不允许退款");
 		}
 
-		String outRefundNo = payRefundReq.getRefundOrderCode();
-		String key = String.format("lock:orderrefund:ordercode:%s", outRefundNo);
+		String refundOrderCode = payRefundReq.getRefundOrderCode();
+		String key = String.format("lock:orderrefund:ordercode:%s", refundOrderCode);
 		String message = lockClient.doInLock(key, () -> {
-			OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(outRefundNo);
+			OrderPayRefund refundOrderPay = orderPayRefundService.selectByRefundOrderCode(refundOrderCode);
 			if (refundOrderPay != null) {
 				return null;
 			}
@@ -360,7 +435,7 @@ public class PayController implements PayFeign {
 			refundOrderPay.setBusinessType(payRefundReq.getBusinessType().getCode());
 			refundOrderPay.setMethod(orderPay.getMethod());
 			refundOrderPay.setOrderCode(outTradeNo);
-			refundOrderPay.setRefundOrderCode(outRefundNo);
+			refundOrderPay.setRefundOrderCode(refundOrderCode);
 			refundOrderPay.setAmount(orderPay.getAmount());
 			refundOrderPay.setRefundAmount(refundAmount);
 			refundOrderPay.setStatus(OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
@@ -377,7 +452,7 @@ public class PayController implements PayFeign {
 
 		// 异步处理 ========> 逻辑上等同于直接调用 refundWithRetry
 		RefundReq refundReq = new RefundReq();
-		refundReq.setOutRefundNo(outRefundNo);
+		refundReq.setRefundOrderCode(refundOrderCode);
 
 		ProcessorBeanName processorBeanName = new ProcessorBeanName();
 		processorBeanName.setAbandonRequest(InnerCallbackProcessorBeanName.REFUND_FAIL_PROCESSOR);
@@ -395,7 +470,7 @@ public class PayController implements PayFeign {
 	 */
 	@PostMapping("/refundWithRetry")
 	public Result<Void> refundWithRetry(@RequestBody RefundReq refundReq) {
-		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundReq.getOutRefundNo());
+		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundReq.getRefundOrderCode());
 		if (orderPayRefund == null) {
 			return Result.fail("数据不存在");
 		}
@@ -409,8 +484,80 @@ public class PayController implements PayFeign {
 		if (!payRefundResp.getSuccess()) {
 			return Result.fail(payRefundResp.getMessage());
 		}
-
+		
+		refundResult(refundReq.getRefundOrderCode());// 主动查询退款结果
+		
 		return Result.success();
+	}
+
+	/**
+	 * 退款结果查询
+	 * 
+	 * @param refundOrderCode
+	 *            退款订单号
+	 */
+	private void refundResult(String refundOrderCode) {
+		// 异步处理 ========> 逻辑上等同于直接调用 pollingRefundResult
+		RefundResultReq refundResultReq = new RefundResultReq();
+		refundResultReq.setRefundOrderCode(refundOrderCode);
+		innerCallbackService.postRestTemplate(NOTIFY_URL_REFUNDRESULT, refundResultReq, 2, 15/* 预计总时长9小时 */,
+				InnerCallbackEnum.SecondsStrategy.INCREMENT);
+	}
+	
+	/**
+	 * <pre>
+	 * 轮询退款结果(使用restTemplate的方式调用)
+	 * 注：需与第三方回调做好并发/幂等处理
+	 * </pre>
+	 * 
+	 * @param refundResultReq
+	 * @return
+	 */
+	@PostMapping("/pollingRefundResult")
+	public Result<Boolean> pollingRefundResult(@RequestBody @Valid RefundResultReq refundResultReq) {
+		String refundOrderCode = refundResultReq.getRefundOrderCode();
+		
+		OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundOrderCode);
+		if (orderPayRefund == null) {
+			return Result.fail("数据不存在");
+		}
+		OrderPayRefundEnum.Status status = OrderPayRefundEnum.Status.of(orderPayRefund.getStatus());
+		if (status != OrderPayRefundEnum.Status.WAIT_APPLY) {
+			// 订单不是未退款状态，结束查询
+			return Result.success(null, "订单不是未退款状态，结束查询");
+		}
+
+		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPayRefund.getMethod()));
+		PayRefundQueryResp payRefundQuery = payClient.refundQuery(refundOrderCode);
+		if (!payRefundQuery.getResult()) {
+			return Result.fail(payRefundQuery.getMessage());
+		}
+		if (!payRefundQuery.getRefundSuccess()) {
+			// 有结果但不是退款成功，结束查询
+			return Result.success(null, "有结果但不是退款成功，结束查询");
+		}
+		
+		// MQ异步处理
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("outTradeNo", orderPayRefund.getOrderCode());
+		params.put("outRefundNo", refundOrderCode);
+
+		boolean success = payRefundQuery.getRefundSuccess();
+		params.put("success", success);
+		if (!success) {
+			params.put("message", payRefundQuery.getMessage());
+		}
+
+		//财务流水信息
+		params.put("amount", payRefundQuery.getRefundAmount().toPlainString());
+		params.put("orderPayMethod", orderPayRefund.getMethod());
+		params.put("merchantNo", payRefundQuery.getMerchantNo());
+		params.put("tradeNo", payRefundQuery.getTradeNo());
+
+		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+				Constants.QUEUE.COMMON.ROUTING_KEY);
+
+		return Result.success(null, "退款成功");
 	}
 
 }

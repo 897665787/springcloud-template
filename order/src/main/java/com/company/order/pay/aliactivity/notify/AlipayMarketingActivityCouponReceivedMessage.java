@@ -78,7 +78,6 @@ public class AlipayMarketingActivityCouponReceivedMessage implements FromMessage
 		aliActivityCoupon.setVoucherId(bizContentObj.getVoucherId());
 		aliActivityCoupon.setVoucherCode(bizContentObj.getVoucherCode());
 		aliActivityCoupon.setReceiveUserId(bizContentObj.getReceiveUserId());
-		aliActivityCoupon.setPayNotifyId(payNotifyId);
 
 		aliActivityCouponMapper.insert(aliActivityCoupon);
 	}

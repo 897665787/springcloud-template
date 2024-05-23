@@ -143,13 +143,13 @@ public class AliNotifyController implements AliNotifyFeign {
 
 			// 回调数据落库
 			String outRequestNo = aliParams.get("out_biz_no");
-			AliPayRefund aliPay4Update = new AliPayRefund().setTradeStatus(tradeStatus).setOutBizNo(outRequestNo)
-					.setPayNotifyId(payNotify.getId());
+			AliPayRefund aliPayRefund4Update = new AliPayRefund().setRefundStatus(AliConstants.RefundStatus.REFUND_SUCCESS)
+					.setTradeNo(aliParams.get("trade_no"));
 
 			Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
 			wrapper.eq("out_request_no", outRequestNo);
-			wrapper.isNull("out_biz_no");
-			int affect = aliPayRefundMapper.update(aliPay4Update, wrapper);
+			wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
+			int affect = aliPayRefundMapper.update(aliPayRefund4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
@@ -158,7 +158,6 @@ public class AliNotifyController implements AliNotifyFeign {
 
 			// MQ异步处理
 			Map<String, Object> params = Maps.newHashMap();
-			params.put("payNotifyId", payNotify.getId());
 			params.put("outTradeNo", outTradeNo);
 			params.put("outRefundNo", outRequestNo);
 			params.put("success", true);
@@ -208,11 +207,11 @@ public class AliNotifyController implements AliNotifyFeign {
 
 			// 回调数据落库
 			AliPay aliPay4Update = new AliPay().setTradeStatus(tradeStatus).setTradeNo(aliParams.get("trade_no"))
-					.setGmtPayment(aliParams.get("gmt_payment")).setPayNotifyId(payNotify.getId());
+					.setGmtPayment(aliParams.get("gmt_payment"));
 
 			Wrapper<AliPay> wrapper = new EntityWrapper<AliPay>();
 			wrapper.eq("out_trade_no", outTradeNo);
-			wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.TRADE_SUCCESS);
+			wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.TradeStatus.TRADE_SUCCESS);
 			int affect = aliPayMapper.update(aliPay4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
@@ -222,7 +221,6 @@ public class AliNotifyController implements AliNotifyFeign {
 
 			// MQ异步处理
 			Map<String, Object> params = Maps.newHashMap();
-			params.put("payNotifyId", payNotify.getId());
 			params.put("outTradeNo", outTradeNo);
 			
 			params.put("time", aliParams.get("gmt_payment"));

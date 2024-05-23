@@ -22,10 +22,12 @@ public interface OrderPayRefundEnum {
 			return null;
 		}
 	}
+
 	@AllArgsConstructor
 	enum Status {
-		WAIT_APPLY("wait_apply", "待申请"), APPLY_SUCCESS("apply_success", "申请成功"), APPLY_FAIL("apply_fail",
-				"申请失败"), REFUND_SUCCESS("refund_success", "退款成功"), REFUND_FAIL("refund_fail", "退款失败");
+		WAIT_APPLY("wait_apply", "待申请"), //
+		REFUND_SUCCESS("refund_success", "退款成功"), //
+		REFUND_FAIL("refund_fail", "退款失败");
 		@Getter
 		private String code;
 		@Getter

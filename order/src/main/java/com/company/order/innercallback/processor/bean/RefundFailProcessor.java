@@ -33,10 +33,10 @@ public class RefundFailProcessor implements AbandonRequestProcessor {
         log.info("refundFailProcessor afterAbandonRequest, params is {}", jsonParams);
 
         RefundReq refundReq = JsonUtil.toEntity(jsonParams, RefundReq.class);
-        String outRefundNo = refundReq.getOutRefundNo();
+        String refundOrderCode = refundReq.getRefundOrderCode();
 
         // 退款失败
-        OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(outRefundNo);
+        OrderPayRefund orderPayRefund = orderPayRefundService.selectByRefundOrderCode(refundOrderCode);
 
         OrderPayRefund orderPayRefund4Update = new OrderPayRefund();
         orderPayRefund4Update.setId(orderPayRefund.getId());
@@ -55,7 +55,7 @@ public class RefundFailProcessor implements AbandonRequestProcessor {
         refundNotifyReq.setSuccess(Boolean.FALSE);
         refundNotifyReq.setMessage(abandonReason);
         refundNotifyReq.setOrderCode(orderPayRefund.getOrderCode());
-        refundNotifyReq.setRefundOrderCode(outRefundNo);
+        refundNotifyReq.setRefundOrderCode(refundOrderCode);
         refundNotifyReq.setAttach(orderPayRefund.getNotifyAttach());
 
         innerCallbackService.postRestTemplate(notifyUrl, refundNotifyReq);

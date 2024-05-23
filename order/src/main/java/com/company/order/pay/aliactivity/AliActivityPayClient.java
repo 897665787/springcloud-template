@@ -1,6 +1,8 @@
 package com.company.order.pay.aliactivity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +28,8 @@ import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
-import com.company.order.api.response.PayTradeStateResp;
+import com.company.order.api.response.PayOrderQueryResp;
+import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.AliActivityCoupon;
 import com.company.order.entity.AliActivityPay;
 import com.company.order.entity.AliActivityPayRefund;
@@ -35,11 +38,11 @@ import com.company.order.mapper.AliActivityPayMapper;
 import com.company.order.mapper.AliActivityPayRefundMapper;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.aliactivity.config.AliActivityPayConfiguration;
+import com.company.order.pay.aliactivity.config.AliActivityPayProperties;
 import com.company.order.pay.aliactivity.config.AliActivityPayProperties.PayConfig;
 import com.company.order.pay.aliactivity.mock.NotifyMock;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
-import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
@@ -219,20 +222,39 @@ public class AliActivityPayClient extends BasePayClient {
 	}
 
 	@Override
-	public PayTradeStateResp queryTradeState(String outTradeNo) {
-		PayTradeStateResp payTradeStateResp = new PayTradeStateResp();
+	public PayOrderQueryResp orderQuery(String outTradeNo) {
+		PayOrderQueryResp resp = new PayOrderQueryResp();
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outTradeNo);
-		if (aliActivityPay != null && StringUtils.isNotBlank(aliActivityPay.getTradeStatus())) {
-			// 回调结果
-			payTradeStateResp.setResult(true);
-			payTradeStateResp
-					.setPaySuccess(Objects.equal(aliActivityPay.getTradeStatus(), AliActivityConstants.TRADE_SUCCESS));
-			return payTradeStateResp;
+		if (aliActivityPay == null) {
+			resp.setResult(false);
+			resp.setMessage("订单不存在");
+			return resp;
 		}
+		
+		if (AliActivityConstants.TradeStatus.payHasResult(aliActivityPay.getTradeStatus())) {
+			// 回调结果
+			resp.setResult(true);
+			
+			boolean paySuccess = AliActivityConstants.TradeStatus.paySuccess(aliActivityPay.getTradeStatus());
+			resp.setPaySuccess(paySuccess);
 
-		payTradeStateResp.setResult(false);
-		payTradeStateResp.setMessage("未成功支付");
-		return payTradeStateResp;
+			if (paySuccess) {
+				resp.setPayAmount(aliActivityPay.getTotalAmount());
+				LocalDateTime time = LocalDateTime.now();
+				if (StringUtils.isNotBlank(aliActivityPay.getGmtPayment())) {
+					time = LocalDateTime.parse(aliActivityPay.getGmtPayment(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+				}
+				resp.setPayTime(time);
+				AliActivityPayProperties.PayConfig payConfig = aliActivityPayConfiguration.getPayConfig(aliActivityPay.getAppid());
+				resp.setMerchantNo(payConfig.getSellerId());
+				resp.setTradeNo(aliActivityPay.getTradeNo());
+			}
+			return resp;
+		}
+		
+		resp.setResult(false);
+		resp.setMessage("无API接口，等待回调逻辑");
+		return resp;
 	}
 	
 	/**
@@ -245,8 +267,7 @@ public class AliActivityPayClient extends BasePayClient {
 		AliActivityPayRefund aliActivityPayRefund = aliActivityPayRefundMapper.selectByOutBizNo(outRefundNo);
 		Integer aliActivityPayRefundId = null;
 		if (aliActivityPayRefund != null) {// 已创建过退款记录
-			if (StringUtils.isNotBlank(aliActivityPayRefund.getTradeStatus())) {// 已成功退款
-				// 全额退款：TRADE_CLOSED
+			if (AliActivityConstants.RefundStatus.refundSuccess(aliActivityPayRefund.getRefundStatus())) {// 已成功退款
 				return;
 			}
 			aliActivityPayRefundId = aliActivityPayRefund.getId();
@@ -361,5 +382,40 @@ public class AliActivityPayClient extends BasePayClient {
 		if (aliActivityPay != null && StringUtils.isNotBlank(aliActivityPay.getTradeStatus())) {
 			throw new BusinessException("已支付订单不允许关闭");
 		}
+	}
+
+	@Override
+	public PayRefundQueryResp refundQuery(String outRefundNo) {
+		PayRefundQueryResp resp = new PayRefundQueryResp();
+		AliActivityPayRefund aliActivityPayRefund = aliActivityPayRefundMapper.selectByOutBizNo(outRefundNo);
+		if (aliActivityPayRefund == null) {
+			resp.setResult(false);
+			resp.setMessage("订单不存在");
+			return resp;
+		}
+
+		if (AliActivityConstants.RefundStatus.refundHasResult(aliActivityPayRefund.getRefundStatus())) {
+			// 回调结果
+			resp.setResult(true);
+
+			boolean refundSuccess = AliActivityConstants.RefundStatus
+					.refundSuccess(aliActivityPayRefund.getRefundStatus());
+			resp.setRefundSuccess(refundSuccess);
+
+			if (refundSuccess) {
+				AliActivityPay aliActivityPay = aliActivityPayMapper
+						.selectByOutOrderNo(aliActivityPayRefund.getOutOrderNo());
+				resp.setRefundAmount(aliActivityPay.getTotalAmount());
+				AliActivityPayProperties.PayConfig payConfig = aliActivityPayConfiguration
+						.getPayConfig(aliActivityPayRefund.getAppid());
+				resp.setMerchantNo(payConfig.getSellerId());
+				resp.setTradeNo(aliActivityPayRefund.getOrderNo());
+			}
+			return resp;
+		}
+
+		resp.setResult(false);
+		resp.setMessage("无API接口，等待回调逻辑");
+		return resp;
 	}
 }

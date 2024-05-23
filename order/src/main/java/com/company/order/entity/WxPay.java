@@ -110,19 +110,11 @@ public class WxPay {
 	private String codeUrl;
 
 	/**
-	 * 回调-业务结果(SUCCESS/FAIL)
+	 * <pre>
+	 * 交易状态(SUCCESS:支付成功,REFUND:转入退款,NOTPAY:未支付,CLOSED:已关闭,REVOKED:已撤销(刷卡支付),USERPAYING:用户支付中,PAYERROR:支付失败(其他原因，如银行返回失败),ACCEPT:已接收，等待扣款)
+	 * </pre>
 	 */
-	private String notifyResultCode;
-
-	/**
-	 * 回调-错误代码
-	 */
-	private String notifyErrCode;
-
-	/**
-	 * 回调-错误代码描述
-	 */
-	private String notifyErrCodeDes;
+	private String tradeState;
 	
 	/**
 	 * 微信支付订单号
@@ -132,11 +124,6 @@ public class WxPay {
 	 * 支付完成时间(yyyyMMddHHmmss)
 	 */
 	private String timeEnd;
-	
-	/**
-	 * 关联bu_pay_notify ID
-	 */
-	private Integer payNotifyId;
 
 	/**
 	 * 备注信息

@@ -1,7 +1,13 @@
 package com.company.order.pay.wx;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.MdcUtil;
 import com.company.framework.context.SpringContextUtil;
-import com.company.order.api.response.PayTradeStateResp;
+import com.company.order.api.response.PayOrderQueryResp;
+import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.WxPay;
 import com.company.order.entity.WxPayRefund;
 import com.company.order.mapper.WxPayMapper;
@@ -26,11 +35,14 @@ import com.company.order.pay.wx.config.WxPayProperties.PayConfig;
 import com.company.order.pay.wx.mock.NotifyMock;
 import com.github.binarywang.wxpay.bean.request.WxPayOrderCloseRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryRequest;
+import com.github.binarywang.wxpay.bean.request.WxPayRefundQueryRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderCloseResult;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundQueryResult;
+import com.github.binarywang.wxpay.bean.result.WxPayRefundQueryResult.RefundRecord;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
 import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.config.WxPayConfig;
@@ -203,16 +215,35 @@ public class WxPayClient extends BasePayClient {
 	}
 
 	@Override
-	public PayTradeStateResp queryTradeState(String outTradeNo) {
-		PayTradeStateResp payTradeStateResp = new PayTradeStateResp();
+	public PayOrderQueryResp orderQuery(String outTradeNo) {
+		PayOrderQueryResp resp = new PayOrderQueryResp();
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
-		if (wxPay != null && wxPay.getNotifyResultCode() != null) {
-			// 回调结果
-			payTradeStateResp.setResult(true);
-			payTradeStateResp.setMessage(wxPay.getNotifyErrCodeDes());
-			payTradeStateResp
-					.setPaySuccess(Objects.equal(wxPay.getNotifyResultCode(), WxPayConstants.WxpayTradeStatus.SUCCESS));
-			return payTradeStateResp;
+		if (wxPay == null) {
+			resp.setResult(false);
+			resp.setMessage("订单不存在");
+			return resp;
+		}
+		
+		if (WxPayConstants.WxpayTradeStatus.SUCCESS.equals(wxPay.getTradeState())
+				|| WxPayConstants.WxpayTradeStatus.CLOSED.equals(wxPay.getTradeState())) {
+			// 出结果了
+			resp.setResult(true);
+
+			boolean paySuccess = Objects.equal(wxPay.getTradeState(), WxPayConstants.WxpayTradeStatus.SUCCESS);
+			resp.setPaySuccess(paySuccess);
+			
+			if (paySuccess) {
+				resp.setPayAmount(
+						new BigDecimal(wxPay.getTotalFee()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP));
+				LocalDateTime time = LocalDateTime.now();
+				if (StringUtils.isNotBlank(wxPay.getTimeEnd())) {
+					time = LocalDateTime.parse(wxPay.getTimeEnd(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+				}
+				resp.setPayTime(time);
+				resp.setMerchantNo(wxPay.getMchid());
+				resp.setTradeNo(wxPay.getTransactionId());
+			}
+			return resp;
 		}
 		
 		// 公共参数
@@ -235,27 +266,75 @@ public class WxPayClient extends BasePayClient {
 
 			String returnCode = orderQueryResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				payTradeStateResp.setResult(false);
-				payTradeStateResp.setMessage(orderQueryResult.getReturnMsg());
-				return payTradeStateResp;
+				resp.setResult(false);
+				resp.setMessage(orderQueryResult.getReturnMsg());
+				return resp;
 			}
 
 			String resultCode = orderQueryResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				payTradeStateResp.setResult(false);
-				payTradeStateResp.setMessage(orderQueryResult.getErrCodeDes());
-				return payTradeStateResp;
+				resp.setResult(false);
+				resp.setMessage(orderQueryResult.getErrCodeDes());
+				return resp;
 			}
-			payTradeStateResp.setResult(true);
-			payTradeStateResp.setMessage(orderQueryResult.getTradeStateDesc());
-			payTradeStateResp.setPaySuccess(
-					Objects.equal(orderQueryResult.getTradeState(), WxPayConstants.WxpayTradeStatus.SUCCESS));
-			return payTradeStateResp;
+
+			if (!(WxPayConstants.WxpayTradeStatus.SUCCESS.equals(orderQueryResult.getTradeState())
+					|| WxPayConstants.WxpayTradeStatus.CLOSED.equals(orderQueryResult.getTradeState()))) {
+				// 未出结果
+				resp.setResult(false);
+				resp.setMessage("未出结果");
+				return resp;
+			}
+
+			resp.setResult(true);
+			
+			boolean paySuccess = Objects.equal(orderQueryResult.getTradeState(),
+					WxPayConstants.WxpayTradeStatus.SUCCESS);
+			resp.setPaySuccess(paySuccess);
+			
+			if (paySuccess) {
+				resp.setPayAmount(
+						new BigDecimal(wxPay.getTotalFee()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP));
+
+				LocalDateTime time = LocalDateTime.now();
+				if (StringUtils.isNotBlank(orderQueryResult.getTimeEnd())) {
+					time = LocalDateTime.parse(orderQueryResult.getTimeEnd(),
+							DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+				}
+				resp.setPayTime(time);
+				resp.setMerchantNo(wxPay.getMchid());
+				resp.setTradeNo(orderQueryResult.getTransactionId());
+			}
+
+			// 保存查询结果数据
+			queryResult2WxPay(outTradeNo, orderQueryResult);
+
+			return resp;
 		} catch (WxPayException e) {
 			// 查询异常
-			log.error("WxPay queryTradeState error", e);
+			log.error("WxPay orderQuery error", e);
+			if (Objects.equal(e.getErrCode(), WxPayErrorCode.OrderClose.ORDER_NOT_EXIST)) {
+				resp.setResult(true);
+				resp.setMessage(e.getErrCodeDes());
+				resp.setPaySuccess(false);
+				return resp;
+			}
 			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
+	}
+
+	private boolean queryResult2WxPay(String outTradeNo, WxPayOrderQueryResult result) {
+		// 保存微信查询结果数据
+		WxPay wxPay4Update = new WxPay().setTradeState(result.getTradeState())
+				.setTransactionId(result.getTransactionId()).setTimeEnd(result.getTimeEnd());
+
+		wxPay4Update.setTradeState(result.getTradeState());
+
+		Wrapper<WxPay> wrapper = new EntityWrapper<WxPay>();
+		wrapper.eq("out_trade_no", outTradeNo);
+		wrapper.and("(trade_state is null or trade_state != {0})", WxPayConstants.WxpayTradeStatus.SUCCESS);
+		Integer affect = wxPayMapper.update(wxPay4Update, wrapper);
+		return affect > 0;
 	}
 	
 	@Override
@@ -405,5 +484,129 @@ public class WxPayClient extends BasePayClient {
 			log.error("Wx pay close order error.", e);
 			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
+	}
+	
+	@Override
+	public PayRefundQueryResp refundQuery(String outRefundNo) {
+		PayRefundQueryResp resp = new PayRefundQueryResp();
+		WxPayRefund wxPayRefund = wxPayRefundMapper.selectByOutRefundNo(outRefundNo);
+		if (wxPayRefund == null) {
+			resp.setResult(false);
+			resp.setMessage("订单不存在");
+			return resp;
+		}
+		if (WxPayConstants.RefundStatus.SUCCESS.equals(wxPayRefund.getRefundStatus())
+				|| WxPayConstants.RefundStatus.REFUND_CLOSE.equals(wxPayRefund.getRefundStatus())) {
+			// 已有退款结果
+			resp.setResult(true);
+
+			boolean refundSuccess = Objects.equal(wxPayRefund.getRefundStatus(), WxPayConstants.RefundStatus.SUCCESS);
+			resp.setRefundSuccess(refundSuccess);
+
+			if (refundSuccess) {
+				resp.setRefundAmount(new BigDecimal(wxPayRefund.getRefundFee()).divide(new BigDecimal(100), 2,
+						BigDecimal.ROUND_HALF_UP));
+				resp.setMerchantNo(wxPayRefund.getMchid());
+				resp.setTradeNo(wxPayRefund.getRefundId());
+			}
+			return resp;
+		}
+		
+		// 公共参数
+		WxPayConfig wxPayConfig = new WxPayConfig();
+		wxPayConfig.setAppId(wxPayRefund.getAppid());
+		wxPayConfig.setMchId(wxPayRefund.getMchid());
+		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPayRefund.getMchid());
+		wxPayConfig.setMchKey(mchConfig.getMchKey());
+		
+		try {
+			WxPayService wxPayService = new WxPayServiceImpl();
+			wxPayService.setConfig(wxPayConfig);
+
+			// 私有参数
+			WxPayRefundQueryRequest request = WxPayRefundQueryRequest.newBuilder().build();
+			request.setOutRefundNo(outRefundNo);
+			request.setNonceStr(RandomStringUtils.randomAlphanumeric(16));
+			
+			WxPayRefundQueryResult refundQueryResult = wxPayService.refundQuery(request);
+
+			String returnCode = refundQueryResult.getReturnCode();
+			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
+				resp.setResult(false);
+				resp.setMessage(refundQueryResult.getReturnMsg());
+				return resp;
+			}
+
+			String resultCode = refundQueryResult.getResultCode();
+			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
+				resp.setResult(false);
+				resp.setMessage(refundQueryResult.getErrCodeDes());
+				return resp;
+			}
+
+			List<RefundRecord> refundRecords = refundQueryResult.getRefundRecords();
+			if (CollectionUtils.isEmpty(refundRecords)) {
+				resp.setResult(false);
+				resp.setMessage("未查询到退款订单");
+				return resp;
+			}
+
+			Map<String, RefundRecord> outRefundNoRefundRecordMap = refundRecords.stream()
+					.collect(Collectors.toMap(RefundRecord::getOutRefundNo, a -> a));
+
+			RefundRecord refundRecord = outRefundNoRefundRecordMap.get(outRefundNo);
+			if (refundRecord == null) {
+				resp.setResult(false);
+				resp.setMessage("未查询到退款订单");
+				return resp;
+			}
+			
+			String refundStatus = refundRecord.getRefundStatus();
+			if (!(WxPayConstants.RefundStatus.SUCCESS.equals(refundStatus)
+					|| WxPayConstants.RefundStatus.REFUND_CLOSE.equals(refundStatus))) {
+				// 未出结果
+				resp.setResult(false);
+				resp.setMessage("未出结果");
+				return resp;
+			}
+			
+			resp.setResult(true);
+			
+			boolean refundSuccess = Objects.equal(refundRecord.getRefundStatus(), WxPayConstants.RefundStatus.SUCCESS);
+			resp.setRefundSuccess(refundSuccess);
+
+			if (refundSuccess) {
+				resp.setRefundAmount(new BigDecimal(wxPayRefund.getTotalFee()).divide(new BigDecimal(100), 2,
+						BigDecimal.ROUND_HALF_UP));
+				resp.setMerchantNo(wxPayRefund.getMchid());
+				resp.setTradeNo(refundRecord.getRefundId());
+			}
+
+			// 保存查询结果数据
+			refundQueryResult2WxPay(outRefundNo, refundRecord.getRefundStatus());
+
+			return resp;
+		} catch (WxPayException e) {
+			// 查询异常
+			log.error("WxPay refundQuery error", e);
+			if (Objects.equal(e.getErrCode(), WxPayErrorCode.RefundQuery.REFUNDNOTEXIST)) {
+				resp.setResult(true);
+				resp.setMessage(e.getErrCodeDes());
+				resp.setRefundSuccess(false);
+				return resp;
+			}
+			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+		}
+	}
+
+	private boolean refundQueryResult2WxPay(String outRefundNo, String refundStatus) {
+		// 保存微信查询结果数据
+		WxPayRefund wxPay4Update = new WxPayRefund().setRefundStatus(refundStatus);
+
+		Wrapper<WxPayRefund> wrapper = new EntityWrapper<WxPayRefund>();
+		wrapper.eq("out_refund_no", outRefundNo);
+		wrapper.and("(refund_status is null or refund_status != {0})", WxPayConstants.RefundStatus.SUCCESS);
+		int affect = wxPayRefundMapper.update(wxPay4Update, wrapper);
+		return affect > 0;
 	}
 }

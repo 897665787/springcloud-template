@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.innercallback.service.IInnerCallbackService;
-import com.company.order.mapper.PayNotifyMapper;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
 
@@ -31,17 +28,13 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 	@Autowired
 	private OrderPayRefundService orderPayRefundService;
 	@Autowired
-	private PayNotifyMapper payNotifyMapper;
-	@Autowired
 	private IInnerCallbackService innerCallbackService;
 
-	@Resource
+	@Autowired
 	private FinancialFlowService financialFlowService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		Integer payNotifyId = MapUtils.getInteger(params, "payNotifyId");
-
 		String outTradeNo = MapUtils.getString(params, "outTradeNo");
 		String outRefundNo = MapUtils.getString(params, "outRefundNo");
 		Boolean success = MapUtils.getBoolean(params, "success");
@@ -53,10 +46,10 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 			orderPayRefund4Update.setStatus(OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
 			EntityWrapper<OrderPayRefund> wrapper = new EntityWrapper<>();
 			wrapper.eq("id", orderPayRefund.getId());
-			wrapper.eq("status", OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
+			wrapper.eq("status", OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
 			boolean affect = orderPayRefundService.update(orderPayRefund4Update, wrapper);
 			if (!affect) {
-				log.warn("修改退款订单状态失败,可能存在重复回调,payNotifyId:{},outRefundNo:{}", payNotifyId, outRefundNo);
+				log.warn("修改退款订单状态失败,可能存在重复回调,outRefundNo:{}", outRefundNo);
 				return;
 			}
 
@@ -68,10 +61,10 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 			orderPayRefund4Update.setStatus(OrderPayRefundEnum.Status.REFUND_FAIL.getCode());
 			EntityWrapper<OrderPayRefund> wrapper = new EntityWrapper<>();
 			wrapper.eq("id", orderPayRefund.getId());
-			wrapper.eq("status", OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
+			wrapper.eq("status", OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
 			boolean affect = orderPayRefundService.update(orderPayRefund4Update, wrapper);
 			if (!affect) {
-				log.warn("修改退款订单状态失败,可能存在重复回调,payNotifyId:{},outRefundNo:{}", payNotifyId, outRefundNo);
+				log.warn("修改退款订单状态失败,可能存在重复回调,outRefundNo:{}", outRefundNo);
 				return;
 			}
 		}
@@ -79,7 +72,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		// 回调退款到对应业务中
 		String notifyUrl = orderPayRefund.getNotifyUrl();
 		if (StringUtils.isBlank(notifyUrl)) {
-			payNotifyMapper.updateRemarkById("无回调URL", payNotifyId);
+			log.warn("无回调URL,outRefundNo:{}", outRefundNo);
 			return;
 		}
 		

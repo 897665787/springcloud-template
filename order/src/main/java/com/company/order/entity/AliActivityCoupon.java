@@ -48,11 +48,6 @@ public class AliActivityCoupon {
 	 * 领券的支付宝user_id账号
 	 */
 	private String receiveUserId;
-
-	/**
-	 * bu_ali_activity_notify.id
-	 */
-	private Integer payNotifyId;
 	
 	/**
 	 * 备注信息

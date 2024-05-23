@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.order.api.response.PayTradeStateResp;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
@@ -21,12 +20,6 @@ public class IOSPayClient extends BasePayClient {
 
 	@Value("${template.domain}")
 	private String domain;
-
-	@Override
-	public PayTradeStateResp queryTradeState(String outTradeNo) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	protected Object requestPayInfo(PayParams payParams) {

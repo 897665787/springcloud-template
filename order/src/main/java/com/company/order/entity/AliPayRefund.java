@@ -41,19 +41,14 @@ public class AliPayRefund {
 	private BigDecimal refundAmount;
 	
 	/**
-	 * 交易结果(TRADE_CLOSED:交易关闭,TRADE_FINISHED:交易完结,TRADE_SUCCESS:支付成功,WAIT_BUYER_PAY:交易创建)
+	 * 支付宝交易凭证号
 	 */
-	private String tradeStatus;
+	private String tradeNo;
 	
 	/**
-	 * 外部业务号(有值认为是退款)
+	 * 退款状态(REFUND_SUCCESS:退款成功)
 	 */
-	private String outBizNo;
-
-	/**
-	 * 关联bu_pay_notify ID
-	 */
-	private Integer payNotifyId;
+	private String refundStatus;
 	
 	/**
 	 * 备注信息

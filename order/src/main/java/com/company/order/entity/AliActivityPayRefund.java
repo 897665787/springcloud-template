@@ -51,9 +51,9 @@ public class AliActivityPayRefund {
 	private String refundActivityInfoList;
 	
 	/**
-	 * 交易结果(TRADE_CLOSED:交易关闭,TRADE_FINISHED:交易完结,TRADE_SUCCESS:支付成功,WAIT_BUYER_PAY:交易创建)
+	 * 退款状态(REFUND_SUCCESS:退款成功)
 	 */
-	private String tradeStatus;
+	private String refundStatus;
 
 	/**
 	 * 购买商家兑换券的营销订单号
@@ -70,11 +70,6 @@ public class AliActivityPayRefund {
 	 * </pre>
 	 */
 	private String refundType;
-	
-	/**
-	 * 关联bu_pay_notify ID
-	 */
-	private Integer payNotifyId;
 	
 	/**
 	 * 备注信息

@@ -73,11 +73,6 @@ public class AliActivityPay {
 	 * 交易支付时间
 	 */
 	private String gmtPayment;
-
-	/**
-	 * 关联bu_pay_notify ID
-	 */
-	private Integer payNotifyId;
 	
 	/**
 	 * 备注信息

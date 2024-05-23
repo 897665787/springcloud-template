@@ -155,12 +155,12 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		SendActivityInfoList sendActivityInfo = sendActivityInfoList.get(0);
 		String activityId = sendActivityInfo.getActivityId();
 		
-		AliActivityPay aliActivityPay4Update = new AliActivityPay().setTradeStatus(AliActivityConstants.TRADE_SUCCESS).setOrderNo(orderNo)
-				.setGmtPayment(DateUtil.formatDateTime(new Date())).setPayNotifyId(payNotifyId);
+		AliActivityPay aliActivityPay4Update = new AliActivityPay().setTradeStatus(AliActivityConstants.TradeStatus.TRADE_SUCCESS)
+				.setOrderNo(orderNo).setGmtPayment(DateUtil.formatDateTime(new Date()));
 
 		Wrapper<AliActivityPay> wrapper = new EntityWrapper<AliActivityPay>();
 		wrapper.eq("out_order_no", outOrderNo);
-		wrapper.and("(trade_status is null or trade_status != {0})", AliActivityConstants.TRADE_SUCCESS);
+		wrapper.and("(trade_status is null or trade_status != {0})", AliActivityConstants.TradeStatus.TRADE_SUCCESS);
 		int affect = aliActivityPayMapper.update(aliActivityPay4Update, wrapper);
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理，可直接查询券码
@@ -180,7 +180,6 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 
 		// MQ异步处理
 		Map<String, Object> params = Maps.newHashMap();
-		params.put("payNotifyId", payNotifyId);
 		params.put("outOrderNo", outOrderNo);
 
 		LocalDateTime time = LocalDateTime.now();

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +59,14 @@ public class WxNotifyController implements WxNotifyFeign {
 	@Autowired
 	private WxPayConfiguration wxPayConfiguration;
 	
+	/**
+	 * 微信只有支付成功才会回调
+	 */
 	@Override
 	public Result<String> wxPayNotify(@RequestBody String xmlString) {
 		/**
 		 * <pre>
+		 * 官方文档：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7&index=8
 		<xml>
 		  <appid><![CDATA[wx8888888888888888]]></appid>
 		  <bank_type><![CDATA[OTHERS]]></bank_type>
@@ -117,16 +120,29 @@ public class WxNotifyController implements WxNotifyFeign {
 			return Result.success(WxPayNotifyResponse.fail("订单金额不一致"));
 		}
 
+		String returnCode = orderNotifyResult.getReturnCode();
+		if (!Objects.equals(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
+			String message = orderNotifyResult.getReturnMsg();
+			log.warn("returnCode不是SUCCESS:{},{}", returnCode, message);
+			payNotifyMapper.updateRemarkById(message, payNotify.getId());
+			return Result.success(WxPayNotifyResponse.fail("returnCode不是SUCCESS"));
+		}
+		
+		String resultCode = orderNotifyResult.getResultCode();
+		if (!Objects.equals(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
+			String message = orderNotifyResult.getErrCodeDes();
+			log.warn("resultCode不是SUCCESS:{},{}", resultCode, message);
+			payNotifyMapper.updateRemarkById(message, payNotify.getId());
+			return Result.success(WxPayNotifyResponse.fail("resultCode不是SUCCESS"));
+		}
+		
 		// 回调数据落库
-		WxPay wxPay4Update = new WxPay().setNotifyResultCode(orderNotifyResult.getResultCode())
-				.setNotifyErrCode(orderNotifyResult.getErrCode()).setNotifyErrCodeDes(orderNotifyResult.getErrCodeDes())
-				.setTransactionId(orderNotifyResult.getTransactionId()).setTimeEnd(orderNotifyResult.getTimeEnd())
-				.setPayNotifyId(payNotify.getId());
+		WxPay wxPay4Update = new WxPay().setTradeState(WxPayConstants.WxpayTradeStatus.SUCCESS)
+				.setTransactionId(orderNotifyResult.getTransactionId()).setTimeEnd(orderNotifyResult.getTimeEnd());
 
 		Wrapper<WxPay> wrapper = new EntityWrapper<WxPay>();
 		wrapper.eq("out_trade_no", outTradeNo);
-		wrapper.and("(notify_result_code is null or notify_result_code != {0})", WxPayConstants.ResultCode.SUCCESS);
-//		wrapper.and(a -> a.isNull("notify_result_code").or().ne("notify_result_code", WxPayConstants.ResultCode.SUCCESS));
+		wrapper.and("(trade_state is null or trade_state != {0})", WxPayConstants.WxpayTradeStatus.SUCCESS);
 		int affect = wxPayMapper.update(wxPay4Update, wrapper);
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理
@@ -134,19 +150,8 @@ public class WxNotifyController implements WxNotifyFeign {
 			return Result.success(WxPayNotifyResponse.success("OK"));
 		}
 
-		String resultCode = orderNotifyResult.getResultCode();
-
-		boolean success = WxPayConstants.ResultCode.SUCCESS.equals(resultCode);
-		if (!success) {// 不是支付成功
-			String message = Optional.ofNullable(orderNotifyResult.getErrCodeDes())
-					.orElse(orderNotifyResult.getReturnMsg());
-			log.warn("resultCode不是SUCCESS:{},{}", resultCode, message);
-			payNotifyMapper.updateRemarkById(message, payNotify.getId());
-			return Result.success(WxPayNotifyResponse.fail("resultCode不是SUCCESS"));
-		}
 		// MQ异步处理
 		Map<String, Object> params = Maps.newHashMap();
-		params.put("payNotifyId", payNotify.getId());
 		params.put("outTradeNo", outTradeNo);
 
 		LocalDateTime time = LocalDateTime.now();
@@ -208,6 +213,14 @@ public class WxNotifyController implements WxNotifyFeign {
 		// 解析微信支付返回报文
 		WxPayRefundNotifyResult refundNotifyResult = BaseWxPayResult.fromXML(xmlString, WxPayRefundNotifyResult.class);
 
+		String returnCode = refundNotifyResult.getReturnCode();
+		if (!Objects.equals(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
+			String message = refundNotifyResult.getReturnMsg();
+			log.warn("returnCode不是SUCCESS:{},{}", returnCode, message);
+			payNotifyMapper.updateRemarkById(message, payNotify.getId());
+			return Result.success(WxPayNotifyResponse.fail("returnCode不是SUCCESS"));
+		}
+		
 		String mchId = refundNotifyResult.getMchId();
 		if (StringUtils.isBlank(mchId)) {
 			payNotifyMapper.updateRemarkById("缺少mch_id", payNotify.getId());
@@ -230,8 +243,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		String outRefundNo = reqInfo.getOutRefundNo();
 
 		// 回调数据落库
-		WxPayRefund wxPay4Update = new WxPayRefund().setRefundStatus(reqInfo.getRefundStatus())
-				.setPayNotifyId(payNotify.getId());
+		WxPayRefund wxPay4Update = new WxPayRefund().setRefundStatus(reqInfo.getRefundStatus());
 
 		Wrapper<WxPayRefund> wrapper = new EntityWrapper<WxPayRefund>();
 		wrapper.eq("out_refund_no", outRefundNo);
@@ -247,7 +259,6 @@ public class WxNotifyController implements WxNotifyFeign {
 
 		// MQ异步处理
 		Map<String, Object> params = Maps.newHashMap();
-		params.put("payNotifyId", payNotify.getId());
 		params.put("outTradeNo", reqInfo.getOutTradeNo());
 		params.put("outRefundNo", outRefundNo);
 
@@ -262,7 +273,7 @@ public class WxNotifyController implements WxNotifyFeign {
 				.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
 		params.put("merchantNo", refundNotifyResult.getMchId());
 		params.put("orderPayMethod", OrderPayEnum.Method.WX.getCode());
-		params.put("tradeNo", reqInfo.getTransactionId());
+		params.put("tradeNo", reqInfo.getRefundId());
 
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 				Constants.QUEUE.COMMON.ROUTING_KEY);

@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.entity.OrderPay;
 import com.company.order.innercallback.service.IInnerCallbackService;
-import com.company.order.mapper.PayNotifyMapper;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayService;
 import com.google.common.collect.Lists;
@@ -34,17 +31,13 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 	@Autowired
 	private OrderPayService orderPayService;
 	@Autowired
-	private PayNotifyMapper payNotifyMapper;
-	@Autowired
 	private IInnerCallbackService innerCallbackService;
 
-	@Resource
+	@Autowired
 	private FinancialFlowService financialFlowService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		Integer payNotifyId = MapUtils.getInteger(params, "payNotifyId");
-
 		String outTradeNo = MapUtils.getString(params, "outTradeNo");
 		// 支付成功
 		OrderPay orderPay4Update = new OrderPay();
@@ -56,7 +49,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 				Lists.newArrayList(OrderPayEnum.Status.WAITPAY.getCode(), OrderPayEnum.Status.CLOSED.getCode()));
 		boolean affect = orderPayService.update(orderPay4Update, wrapper);
 		if (!affect) {
-			log.warn("修改支付订单状态失败,可能存在重复回调,payNotifyId:{},outTradeNo:{}", payNotifyId, outTradeNo);
+			log.warn("修改支付订单状态失败,可能存在重复回调,outTradeNo:{}", outTradeNo);
 			return;
 		}
 
@@ -66,7 +59,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 
 		String notifyUrl = orderPay.getNotifyUrl();
 		if (StringUtils.isBlank(notifyUrl)) {
-			payNotifyMapper.updateRemarkById("无回调URL", payNotifyId);
+			log.warn("无回调URL,outTradeNo:{}", outTradeNo);
 			return;
 		}
 

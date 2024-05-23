@@ -26,6 +26,10 @@ public class AliPayProperties {
 		 * 公钥
 		 */
 		private String pubKey;
+		/**
+		 * 卖家ID(商户号)
+		 */
+		private String sellerId;
 	}
 
 }
