@@ -58,30 +58,6 @@ public class WxPayRefund {
 	private Integer refundFee;
 
 	/**
-	 * 返回状态码(SUCCESS/FAIL)
-	 */
-	private String returnCode;
-
-	/**
-	 * 返回状态信息
-	 */
-	private String returnMsg;
-
-	/**
-	 * 业务结果(SUCCESS/FAIL)
-	 */
-	private String resultCode;
-
-	/**
-	 * 错误代码
-	 */
-	private String errCode;
-
-	/**
-	 * 错误代码描述
-	 */
-	private String errCodeDes;
-	/**
 	 * 微信退款单号
 	 */
 	private String refundId;

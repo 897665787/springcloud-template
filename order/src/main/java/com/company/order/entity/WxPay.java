@@ -71,31 +71,7 @@ public class WxPay {
 	 * 用户标识(trade_type=JSAPI,此参数必传)
 	 */
 	private String openid;
-
-	/**
-	 * 返回状态码(SUCCESS/FAIL)
-	 */
-	private String returnCode;
-
-	/**
-	 * 返回状态信息
-	 */
-	private String returnMsg;
-
-	/**
-	 * 业务结果(SUCCESS/FAIL)
-	 */
-	private String resultCode;
-
-	/**
-	 * 错误代码
-	 */
-	private String errCode;
-
-	/**
-	 * 错误代码描述
-	 */
-	private String errCodeDes;
+	
 	/**
 	 * 预支付交易会话标识
 	 */

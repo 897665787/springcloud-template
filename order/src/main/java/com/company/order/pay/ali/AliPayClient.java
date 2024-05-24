@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -260,6 +259,9 @@ public class AliPayClient extends BasePayClient {
 				return resp;
 			}
 			
+			String remark = Utils.rightRemark(aliPay.getRemark(), "tradeStatus:" + response.getTradeStatus());
+			queryResult2AliPay(outTradeNo, response, remark);
+			
 			if (!AliConstants.TradeStatus.payHasResult(response.getTradeStatus())) {
 				// 未出结果
 				resp.setResult(false);
@@ -269,7 +271,7 @@ public class AliPayClient extends BasePayClient {
 			
 			resp.setResult(true);
 			
-			boolean paySuccess = Objects.equals(response.getTradeStatus(), AliConstants.TradeStatus.TRADE_SUCCESS);
+			boolean paySuccess = AliConstants.TradeStatus.paySuccess(response.getTradeStatus());
 			resp.setPaySuccess(paySuccess);
 			
 			if (paySuccess) {
@@ -280,8 +282,6 @@ public class AliPayClient extends BasePayClient {
 				resp.setTradeNo(response.getTradeNo());
 			}
 			
-			queryResult2AliPay(outTradeNo, response);
-			
 			return resp;
         } catch (AlipayApiException e) {
         	// 支付异常
@@ -290,11 +290,11 @@ public class AliPayClient extends BasePayClient {
         }
 	}
 
-	private boolean queryResult2AliPay(String outTradeNo, AlipayTradeQueryResponse response) {
+	private boolean queryResult2AliPay(String outTradeNo, AlipayTradeQueryResponse response, String remark) {
 		// 保存支付宝查询结果数据
 		String gmtPayment = DateUtil.formatDateTime(response.getSendPayDate());
 		AliPay aliPay4Update = new AliPay().setTradeStatus(response.getTradeStatus()).setTradeNo(response.getTradeNo())
-				.setGmtPayment(gmtPayment);
+				.setGmtPayment(gmtPayment).setRemark(remark);
 
 		Wrapper<AliPay> wrapper = new EntityWrapper<AliPay>();
 		wrapper.eq("out_trade_no", outTradeNo);
@@ -497,6 +497,9 @@ public class AliPayClient extends BasePayClient {
 				return resp;
 			}
 
+			String remark = Utils.rightRemark(aliPayRefund.getRemark(), "refundStatus:" + response.getRefundStatus());
+			refundQueryResult2AliPay(outRefundNo, response, remark);
+			
 			if (!AliConstants.RefundStatus.refundHasResult(response.getRefundStatus())) {
 				// 未出结果
 				resp.setResult(false);
@@ -515,8 +518,6 @@ public class AliPayClient extends BasePayClient {
 				resp.setTradeNo(response.getTradeNo());
 			}
 			
-			refundQueryResult2AliPay(outRefundNo, response);
-			
 			return resp;
         } catch (AlipayApiException e) {
         	// 支付异常
@@ -525,10 +526,11 @@ public class AliPayClient extends BasePayClient {
         }
 	}
 
-	private boolean refundQueryResult2AliPay(String outRefundNo, AlipayTradeFastpayRefundQueryResponse response) {
+	private boolean refundQueryResult2AliPay(String outRefundNo, AlipayTradeFastpayRefundQueryResponse response,
+			String remark) {
 		// 保存支付宝查询结果数据
 		AliPayRefund aliPayRefund4Update = new AliPayRefund().setRefundStatus(response.getRefundStatus())
-				.setTradeNo(response.getTradeNo());
+				.setTradeNo(response.getTradeNo()).setRemark(remark);
 
 		Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
 		wrapper.eq("out_request_no", outRefundNo);
