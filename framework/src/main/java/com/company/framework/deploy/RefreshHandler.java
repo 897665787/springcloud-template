@@ -3,7 +3,6 @@ package com.company.framework.deploy;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.ribbon.SpringClientFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
@@ -24,41 +23,39 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class RefreshHandler {
 
-	@Autowired(required = false)
-	private MQAutoRefresh mqAutoRefresh;
-
 	/**
-	 * 通知其他服务刷新注册服务列表
+	 * 刷新
 	 */
-	public void notify2Refresh(String msg) {
-		if (mqAutoRefresh == null) {
-			log.info("mqAutoRefresh is null");
-			return;
-		}
-		mqAutoRefresh.send(msg);
+	public void refresh() {
+		this.refreshRegistry();
+		this.refreshRibbon();
 	}
-
+	
 	/**
 	 * 刷新注册列表
 	 */
-	public boolean refreshRegistry() {
+	private void refreshRegistry() {
 		try {
+			// 从Eureka Server获取注册信息，默认true
+			boolean fetchRegistry = SpringContextUtil.getBooleanProperty("eureka.client.fetch-registry", true);
+			if (!fetchRegistry) {
+				// 不获取注册信息，不需要刷新
+				return;
+			}
+
 			Method method = DiscoveryClient.class.getDeclaredMethod("refreshRegistry");
 			method.setAccessible(true);
 			method.invoke(SpringContextUtil.getBean(DiscoveryClient.class));
 			log.info("refresh registry success!!!");
-			refreshRibbon();
-			return true;
 		} catch (Exception e) {
 			log.error("refresh registry fail!!!", e);
-			return false;
 		}
 	}
 
 	/**
 	 * 刷新Ribbon列表
 	 */
-	public void refreshRibbon() {
+	private void refreshRibbon() {
 		try {
 			// 更新ribbon 的缓存
 			SpringClientFactory springClientFactory = SpringContextUtil.getBean("springClientFactory");

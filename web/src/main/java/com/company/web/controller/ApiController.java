@@ -23,10 +23,8 @@ import com.company.framework.annotation.RequireLogin;
 import com.company.framework.cache.ICache;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.deploy.RefreshHandler;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
-import com.company.order.api.request.OrderReq;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
@@ -47,8 +45,6 @@ public class ApiController {
 	private OrderFeign orderFeign;
 	@Autowired
 	private UserFeign userFeign;
-	@Autowired
-	private RefreshHandler refreshHandler;
 	@Autowired(required = false)
 	private ThreadPoolExecutor threadPoolExecutor;
 	@Autowired(required = false)
@@ -204,7 +200,6 @@ public class ApiController {
 
 	@GetMapping(value = "/send")
 	public Result<String> send() {
-		refreshHandler.notify2Refresh("test");
 		return Result.success("{}");
 	}
 

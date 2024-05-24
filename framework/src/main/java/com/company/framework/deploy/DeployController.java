@@ -1,5 +1,6 @@
 package com.company.framework.deploy;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -10,7 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.SpringContextUtil;
+import com.google.common.collect.Maps;
 import com.netflix.discovery.DiscoveryClient;
 
 /**
@@ -24,9 +28,13 @@ public class DeployController {
 
 	@Autowired
 	private RefreshHandler refreshHandler;
+
 	@Autowired(required = false)
 	private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
+	@Autowired
+	private MessageSender messageSender;
+	
 	/**
 	 * 服务下线
 	 * 
@@ -37,8 +45,13 @@ public class DeployController {
 		try {
 			DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
 			client.shutdown();
+			
 			// 通知其他服务刷新服务列表，即时中断请求流量
-			refreshHandler.notify2Refresh("offline");
+			Map<String, Object> params = Maps.newHashMap();
+			params.put("application", SpringContextUtil.getProperty("spring.application.name"));
+			params.put("type", "offline");
+			messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
+			
 			// 下线MQ消费者
 			Optional.ofNullable(rabbitListenerEndpointRegistry).ifPresent(RabbitListenerEndpointRegistry::stop);
 			return Result.success();
@@ -52,8 +65,9 @@ public class DeployController {
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value = "/refreshRegistry", method = RequestMethod.GET)
-	public Result<?> refreshRegistry() {
-		return Result.success(refreshHandler.refreshRegistry());
+	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
+	public Result<?> refresh() {
+		refreshHandler.refresh();
+		return Result.success();
 	}
 }
