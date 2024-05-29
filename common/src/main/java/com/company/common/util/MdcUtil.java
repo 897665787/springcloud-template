@@ -24,8 +24,9 @@ public class MdcUtil {
 	private static Random random = new Random();
 	
 	public static void put() {
-		String uuid = "" + System.currentTimeMillis() + (1000 + random.nextInt(9000));
-		MDC.put(UNIQUE_KEY, uuid);
+		// 可修改traceid生成算法
+		String traceid = "" + System.currentTimeMillis() + (1000 + random.nextInt(9000));
+		MDC.put(UNIQUE_KEY, traceid);
 	}
 	
 	public static void put(String traceId) {

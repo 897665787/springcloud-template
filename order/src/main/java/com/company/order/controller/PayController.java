@@ -195,12 +195,14 @@ public class PayController implements PayFeign {
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
 		PayOrderQueryResp payOrderQuery = payClient.orderQuery(orderCode);
-		if (!payOrderQuery.getResult()) {
-			return Result.fail(payOrderQuery.getMessage());
-		}
-		if (payOrderQuery.getPaySuccess()) {
-			// 订单已支付
-			return Result.success();
+		if (payOrderQuery.getResult()) {
+			if (payOrderQuery.getPaySuccess()) {
+				// 订单已支付
+				return Result.success();
+			}
+			// 出结果是未支付成功，走关闭逻辑
+		} else {
+			// 未出结果则认为是未支付成功，走关闭逻辑
 		}
 		
 		PayCloseResp payCloseResp = payClient.payClose(orderCode);
