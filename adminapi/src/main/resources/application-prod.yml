@@ -1,0 +1,16 @@
+spring:
+  profiles:
+    include: eureka-prod,redis-prod,rabbitmq-prod
+    
+template:
+  domain: http://domain.com
+  enable:
+    cache: combination # guava:本地缓存,redis:redis缓存,combination:组合缓存
+    lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
+    idempotent: false
+    rabbitmq: true
+    data-encypt: false
+    access-control: true
+    permission: true
+  mock:
+    time: true

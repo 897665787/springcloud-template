@@ -1,0 +1,14 @@
+spring:
+  profiles:
+    include: eureka-dev,redis-dev,rabbitmq-dev
+    
+template:
+  domain: http://d-domain.com
+  enable:
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
+    lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
+    idempotent: false
+    rabbitmq: false
+    data-encypt: false
+    access-control: true
+    permission: true

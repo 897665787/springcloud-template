@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -47,7 +48,9 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 
 		Method method = handlerMethod.getMethod();
 		
-		if (method.isAnnotationPresent(NoSign.class) || method.getDeclaringClass().isAnnotationPresent(NoSign.class)) {
+		NoSign methodAnnotation = AnnotationUtils.findAnnotation(method, NoSign.class);
+		NoSign classAnnotation = AnnotationUtils.findAnnotation(method.getDeclaringClass(), NoSign.class);
+		if (methodAnnotation != null || classAnnotation != null) {
 			// 方法或类上打注解NoSign
 			return true;
 		}
