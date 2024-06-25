@@ -148,7 +148,7 @@ public class AliNotifyController implements AliNotifyFeign {
 
 			Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
 			wrapper.eq("out_request_no", outRequestNo);
-			wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
+			wrapper.and("(refund_status is null or refund_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
 			int affect = aliPayRefundMapper.update(aliPayRefund4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理

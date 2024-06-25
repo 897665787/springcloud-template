@@ -534,7 +534,7 @@ public class AliPayClient extends BasePayClient {
 
 		Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
 		wrapper.eq("out_request_no", outRefundNo);
-		wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
+		wrapper.and("(refund_status is null or refund_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
 		int affect = aliPayRefundMapper.update(aliPayRefund4Update, wrapper);
 		return affect > 0;
 	}
