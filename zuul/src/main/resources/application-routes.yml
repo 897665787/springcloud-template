@@ -5,10 +5,6 @@ zuul:
   # 禁用默认路由，执行配置的路由
   ignored-services: "*"
   routes:
-    # 配置4001认证中心微服务
-    auth:
-      serviceId: template-auth
-      path: /auth/**
     # 配置6001接口微服务
     web:
       serviceId: template-web

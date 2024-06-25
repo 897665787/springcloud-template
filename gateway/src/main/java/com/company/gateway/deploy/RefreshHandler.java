@@ -24,26 +24,38 @@ import lombok.extern.slf4j.Slf4j;
 public class RefreshHandler {
 
 	/**
+	 * 刷新
+	 */
+	public void refresh() {
+		this.refreshRegistry();
+		this.refreshRibbon();
+	}
+
+	/**
 	 * 刷新注册列表
 	 */
-	public boolean refreshRegistry() {
+	private void refreshRegistry() {
 		try {
+			// 从Eureka Server获取注册信息，默认true
+			boolean fetchRegistry = SpringContextUtil.getBooleanProperty("eureka.client.fetch-registry", true);
+			if (!fetchRegistry) {
+				// 不获取注册信息，不需要刷新
+				return;
+			}
+
 			Method method = DiscoveryClient.class.getDeclaredMethod("refreshRegistry");
 			method.setAccessible(true);
 			method.invoke(SpringContextUtil.getBean(DiscoveryClient.class));
 			log.info("refresh registry success!!!");
-			refreshRibbon();
-			return true;
 		} catch (Exception e) {
 			log.error("refresh registry fail!!!", e);
-			return false;
 		}
 	}
 
 	/**
 	 * 刷新Ribbon列表
 	 */
-	public void refreshRibbon() {
+	private void refreshRibbon() {
 		try {
 			// 更新ribbon 的缓存
 			SpringClientFactory springClientFactory = SpringContextUtil.getBean("springClientFactory");

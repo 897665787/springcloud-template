@@ -96,5 +96,9 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 	public static int getIntegerProperty(String key, int defaultValue) {
 		return Optional.ofNullable(getProperty(key)).map(Integer::valueOf).orElse(defaultValue);
 	}
+	
+	public static boolean getBooleanProperty(String key, boolean defaultValue) {
+		return Optional.ofNullable(getProperty(key)).map(Boolean::parseBoolean).orElse(defaultValue);
+	}
 
 }
