@@ -20,7 +20,8 @@ public class SubscribeService {
 	private SubscribeFeign subscribeFeign;
 
 	@XxlJob("subscribeHandler")
-	public ReturnT<String> subscribeHandler(String param) {
+	public ReturnT<String> subscribeHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<Integer> idList = null;
 		if (StringUtils.isNotBlank(param)) {

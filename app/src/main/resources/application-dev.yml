@@ -11,6 +11,11 @@ template:
     rabbitmq: false
     data-encypt: false
 
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5
+
 # knife4j文档
 knife4j:
   # 是否开启生产环境屏蔽   true:关闭swagger，false:开启swagger

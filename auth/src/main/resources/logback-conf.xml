@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false">
-	<!--引用公共日志 -->
-	<include resource="logback-conf-base.xml" />
-	<!--引用线程池日志 -->
-	<include resource="logback-conf-threadpool.xml" />
-</configuration>

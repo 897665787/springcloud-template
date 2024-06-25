@@ -62,7 +62,8 @@ public interface FanoutConstants {
 
 		String PREFIX = FanoutConstants.PREFIX + "user_register.";
 		// 队列
-		String NEW_USER_QUEUE = PREFIX + "new_user";
+		String BIND_EMAIL_QUEUE = PREFIX + "bind_email";
+		String BIND_MOBILE_QUEUE = PREFIX + "bind_mobile";
 	}
 
 	// 用户登出事件

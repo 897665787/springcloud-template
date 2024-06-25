@@ -2,17 +2,19 @@ package com.company.tool.controller;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.cache.ICache;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
+import com.company.tool.email.AsyncEmailSender;
+import com.company.tool.entity.VerifyCode;
+import com.company.tool.enums.EmailEnum;
 import com.company.tool.enums.SmsEnum;
+import com.company.tool.enums.VerifyCodeEnum;
 import com.company.tool.service.VerifyCodeService;
 import com.company.tool.sms.AsyncSmsSender;
 import com.google.common.collect.Maps;
@@ -30,17 +32,20 @@ public class VerifyCodeController implements VerifyCodeFeign {
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;
 	@Autowired
-	private ICache cache;
+	private AsyncEmailSender asyncEmailSender;
 	
 	@Override
 	public Result<String> sms(String mobile, String type) {
-		// 限制验证码短信发送频率
-		String key = String.format("verifyCode:sms:%s:%s", mobile, type);
-		String cacheVal = cache.get(key);
-		if (cacheVal != null) {
-			return Result.fail("短信验证码已发送");
+		VerifyCode verifyCode = verifyCodeService.selectLastByCertificateType(mobile, type);
+		if (verifyCode != null) {
+			if (VerifyCodeEnum.Status.UN_USE == VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
+				LocalDateTime validTime = verifyCode.getValidTime();
+				LocalDateTime now = LocalDateTime.now();
+				if (validTime.compareTo(now) >= 0) {// 未使用且未过期
+					return Result.fail("验证码已发送，请勿重复操作！");
+				}
+			}
 		}
-		cache.set(key, "1", 1, TimeUnit.MINUTES);
 		
 		String code = RandomUtil.randomNumbers(6);
 
@@ -57,6 +62,34 @@ public class VerifyCodeController implements VerifyCodeFeign {
 		return Result.success("验证码发送成功");
 	}
 
+	@Override
+	public Result<String> email(String email, String type) {
+		VerifyCode verifyCode = verifyCodeService.selectLastByCertificateType(email, type);
+		if (verifyCode != null) {
+			if (VerifyCodeEnum.Status.UN_USE == VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
+				LocalDateTime validTime = verifyCode.getValidTime();
+				LocalDateTime now = LocalDateTime.now();
+				if (validTime.compareTo(now) >= 0) {// 未使用且未过期
+					return Result.fail("验证码已发送，请勿重复操作！");
+				}
+			}
+		}
+		
+		String code = RandomUtil.randomNumbers(6);
+
+		verifyCodeService.save(type, email, code);
+
+		// 发送邮件
+		Map<String, String> templateParamMap = Maps.newHashMap();
+		templateParamMap.put("code", code);
+		LocalDateTime planSendTime = LocalDateTime.now();
+		LocalDateTime overTime = planSendTime.plusMinutes(5);
+
+		asyncEmailSender.send(email, templateParamMap, EmailEnum.Type.VERIFYCODE, planSendTime, overTime);
+
+		return Result.success("验证码发送成功");
+	}
+	
 	@Override
 	public Result<CaptchaResp> captcha(String type) {
 		LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(200, 90, 4, 100);

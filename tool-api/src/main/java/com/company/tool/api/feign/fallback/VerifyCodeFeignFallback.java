@@ -21,6 +21,11 @@ public class VerifyCodeFeignFallback implements FallbackFactory<VerifyCodeFeign>
 			}
 
 			@Override
+			public Result<String> email(String email, String type) {
+				return Result.onFallbackError();
+			}
+
+			@Override
 			public Result<CaptchaResp> captcha(String type) {
 				return Result.onFallbackError();
 			}

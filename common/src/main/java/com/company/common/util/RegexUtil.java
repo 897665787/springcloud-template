@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
  * 正则表达式工具类
  */
 public class RegexUtil {
+	// 邮箱
+	private static final String PATTERN_EMAIL = "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
 	// 18位身份证正则
 	private static final String PATTERN_IDNUMBER_18_BITS = "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$";
 	// 手机号码
@@ -21,6 +23,21 @@ public class RegexUtil {
 	// HTML标签正则表达式
 	private static final String PATTERN_HTML = "<[^>]+>";
 	private static final String PATTERN_HTML_SPECIAL = "\\&[a-zA-Z]{1,10};";
+	
+	/**
+	 * 正则验证邮箱
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public static boolean checkEmail(String email) {
+		if (StringUtils.isBlank(email)) {
+			return false;
+		}
+		Pattern p = Pattern.compile(PATTERN_EMAIL);
+		Matcher m = p.matcher(email);
+		return m.matches();
+	}
 	
 	/**
 	 * 正则验证身份证号

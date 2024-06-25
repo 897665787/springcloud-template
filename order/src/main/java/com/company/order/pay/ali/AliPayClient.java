@@ -69,7 +69,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AliPayClient extends BasePayClient {
 
 	private static final String PAY_URL = "https://openapi.alipay.com/gateway.do";
-	private static final String PAY_CALLBACK_URL = "/server/callback/ali";
+	private static final String PAY_CALLBACK_URL = "/notify/aliPay";
 	
 	@Autowired
 	private AliPayConfiguration aliPayConfiguration;

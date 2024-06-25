@@ -13,7 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 public class DemoService {
 
 	@XxlJob("demoJobHandler")
-	public ReturnT<String> demoJobHandler(String param) {
+	public ReturnT<String> demoJobHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		log.info("param:{}", param);
 		return ReturnT.SUCCESS;

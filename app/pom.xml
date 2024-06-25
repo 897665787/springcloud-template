@@ -12,8 +12,15 @@
 	<packaging>jar</packaging>
 
 	<description>APP聚合服务</description>
-
+    
 	<dependencies>
+		<!-- 单元测试，因为加了scope=test，所以不能在公共包引用 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework-edge</artifactId>
@@ -34,6 +41,52 @@
 		    <artifactId>template-tool-api</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+		
+		<!-- 授权登录 -->
+		<!-- 源码：https://gitee.com/jq_di/easy-login -->
+		<dependency>
+		    <groupId>com.jqdi</groupId>
+		    <artifactId>easy-login-spring-boot-starter</artifactId>
+		    <version>1.0.0</version>
+		</dependency>
+		<!-- 微信sdk -->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-mp</artifactId>
+			<version>4.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- 授权登录 -->
+		
+		<!-- token -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+		<!-- Sa-Token -->
+		<!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
+		<dependency>
+		    <groupId>cn.dev33</groupId>
+		    <artifactId>sa-token-spring-boot3-starter</artifactId>
+		    <version>1.38.0</version>
+		</dependency>
+		<!-- Sa-Token 整合 jwt -->
+		<dependency>
+			<groupId>cn.dev33</groupId>
+			<artifactId>sa-token-jwt</artifactId>
+			<version>1.38.0</version>
+		</dependency>
+		<!-- Sa-Token 整合 Redis （使用jackson序列化方式） -->
+		<!-- Simple、Mixin模式才有效，demo环境下使用Stateless模式 -->
+		<!-- <dependency>
+		    <groupId>cn.dev33</groupId>
+		     <artifactId>sa-token-redis-jackson</artifactId>
+		    <version>1.38.0</version>
+		</dependency> -->
+		<!-- Sa-Token -->
+		<!-- token -->
 		
 		<!-- knife4j文档：https://doc.xiaominfo.com/knife4j -->
 		<dependency>

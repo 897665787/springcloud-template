@@ -29,7 +29,8 @@ public class OrderService {
 	 * @return
 	 */
 	@XxlJob("sendSuccess2ReceiveHandler")
-	public ReturnT<String> sendSuccess2ReceiveHandler(String param) {
+	public ReturnT<String> sendSuccess2ReceiveHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<String> orderCodeList = null;
 		if (StringUtils.isNotBlank(param)) {
@@ -68,7 +69,8 @@ public class OrderService {
 	 * @return
 	 */
 	@XxlJob("waitReview2completeHandler")
-	public ReturnT<String> waitReview2completeHandler(String param) {
+	public ReturnT<String> waitReview2completeHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<String> orderCodeList = null;
 		if (StringUtils.isNotBlank(param)) {

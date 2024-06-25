@@ -24,7 +24,8 @@ public class InnerCallbackService {
 	private com.company.order.api.feign.InnerCallbackFeign orderInnerCallbackFeign;
 
 	@XxlJob("toolInnerCallbackHandler")
-	public ReturnT<String> toolInnerCallbackHandler(String param) throws Exception {
+	public ReturnT<String> toolInnerCallbackHandler() throws Exception {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<Integer> idList = null;
 		if (StringUtils.isNotBlank(param)) {
@@ -43,7 +44,8 @@ public class InnerCallbackService {
 	}
 	
 	@XxlJob("orderInnerCallbackHandler")
-	public ReturnT<String> orderInnerCallbackHandler(String param) throws Exception {
+	public ReturnT<String> orderInnerCallbackHandler() throws Exception {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<Integer> idList = null;
 		if (StringUtils.isNotBlank(param)) {

@@ -22,7 +22,17 @@ public interface VerifyCodeFeign {
 	 */
 	@PostMapping("/sms")
 	Result<String> sms(@RequestParam("mobile") String mobile, @RequestParam("type") String type);
-
+	
+	/**
+	 * 邮件验证码
+	 * 
+	 * @param email
+	 * @param type
+	 * @return
+	 */
+	@PostMapping("/email")
+	Result<String> email(@RequestParam("email") String email, @RequestParam("type") String type);
+	
 	/**
 	 * 图形验证码
 	 * 

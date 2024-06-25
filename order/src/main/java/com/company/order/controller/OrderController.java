@@ -91,8 +91,8 @@ public class OrderController implements OrderFeign {
 		String subOrderUrl = registerOrderReq.getSubOrderUrl();
 		String attach = registerOrderReq.getAttach();
 
-		orderService.saveOrUpdate(userId, orderType, orderCode, subStatusEnum, productAmount, orderAmount, reduceAmount,
-				needPayAmount, subOrderUrl, attach);
+		Order order = orderService.saveOrUpdate(userId, orderType, orderCode, subStatusEnum, productAmount,
+				orderAmount, reduceAmount, needPayAmount, subOrderUrl, attach);
 
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
 		if (orderProductList.isEmpty()) {

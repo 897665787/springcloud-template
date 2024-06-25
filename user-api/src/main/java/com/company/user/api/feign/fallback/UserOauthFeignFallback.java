@@ -27,9 +27,15 @@ public class UserOauthFeignFallback implements FallbackFactory<UserOauthFeign> {
 			}
 
 			@Override
+			public Result<String> selectCertificate(Integer userId, IdentityType identityType) {
+				return Result.onFallbackError();
+			}
+			
+			@Override
 			public Result<String> selectIdentifier(Integer userId, IdentityType identityType) {
 				return Result.onFallbackError();
 			}
+
 		};
 	}
 }

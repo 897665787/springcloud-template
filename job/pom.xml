@@ -14,6 +14,13 @@
 	<description>定时任务服务</description>
 
 	<dependencies>
+		<!-- 单元测试，因为加了scope=test，所以不能在公共包引用 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework</artifactId>

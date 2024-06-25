@@ -64,8 +64,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component(PayFactory.WX_PAYCLIENT)
 public class WxPayClient extends BasePayClient {
 
-	private static final String PAY_CALLBACK_URL = "/server/callback/wx";
-	private static final String REFUND_CALLBACK_URL = "/server/callback/wxRefund";
+	private static final String PAY_CALLBACK_URL = "/notify/wxPay";
+	private static final String REFUND_CALLBACK_URL = "/notify/wxPayRefund";
     
 	@Autowired
 	private WxPayConfiguration wxPayConfiguration;

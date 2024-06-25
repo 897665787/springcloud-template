@@ -19,6 +19,11 @@ public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
 			public Result<UserInfoResp> findOrCreateUser(UserInfoReq userInfoReq) {
 				return Result.onFallbackError();
 			}
+
+			@Override
+			public Result<UserInfoResp> getById(Integer id) {
+				return Result.onFallbackError();
+			}
 		};
 	}
 }

@@ -42,7 +42,6 @@
 		<module>order-api</module>
 		<module>job</module>
 		<!-- 聚合微服务 -->
-		<module>auth</module>
 		<module>web</module>
 		<module>app</module>
 		<module>openapi</module>

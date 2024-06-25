@@ -12,3 +12,8 @@ template:
     data-encypt: false
   mock:
     time: false
+
+# Token 配置
+token:
+  # 密钥
+  secret: hxqhjvtam5

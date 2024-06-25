@@ -23,6 +23,10 @@ public interface UserOauthFeign {
 	Result<String> selectIdentifier(@RequestParam("userId") Integer userId,
 			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
 
+	@RequestMapping("/selectCertificate")
+	Result<String> selectCertificate(@RequestParam("userId") Integer userId,
+			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
+	
 	@RequestMapping("/bindOauth")
 	Result<Boolean> bindOauth(@RequestBody UserOauthReq userInfoReq);
 

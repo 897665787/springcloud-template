@@ -14,7 +14,7 @@ public class UserInfo {
 	private Integer id;
 	
 	private String nickname;
-	private String avator;
+	private String avatar;
 	
 	private String remark;
 	private LocalDateTime createTime;

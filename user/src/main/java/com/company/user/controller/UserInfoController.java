@@ -1,15 +1,18 @@
 package com.company.user.controller;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.common.util.PropertyUtils;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -37,41 +40,50 @@ public class UserInfoController implements UserInfoFeign {
 	@Autowired
 	private LockClient lockClient;
 
+	@Value("${newuser.default.nickname:}")
+	private String defaultNickname;
+	@Value("${newuser.default.avatar:}")
+	private String defaultAvatar;
+	
 	/**
 	 * <pre>
-	 * 1.如果手机号存在，直接返回已绑定的用户ID
-	 * 2.如果手机号不存在，新增用户并绑定手机号，返回新增用户ID
+	 * 1.如果账号存在，直接返回已绑定的用户ID
+	 * 2.如果账号不存在，新增用户并绑定账号，返回新增用户ID
 	 * </pre>
 	 */
 	@Override
 	public Result<UserInfoResp> findOrCreateUser(@RequestBody @Valid UserInfoReq userInfoReq) {
-		String mobile = userInfoReq.getMobile();
+		UserOauthEnum.IdentityType identityType = userInfoReq.getIdentityType();
+		String identifier = userInfoReq.getIdentifier();
 		
-		UserOauth userOauthDB = userOauthMapper.selectByIdentityTypeIdentifier(UserOauthEnum.IdentityType.MOBILE, mobile);
+		UserOauth userOauthDB = userOauthMapper.selectByIdentityTypeIdentifier(identityType, identifier);
 		if (userOauthDB != null) {
 			UserInfoResp userInfoResp = new UserInfoResp().setId(userOauthDB.getUserId());
 			return Result.success(userInfoResp);
 		}
 		
-		String key = String.format("lock:register:%s", mobile);
+		String key = String.format("lock:register:%s", identifier);
 		Integer userId0 = lockClient.doInLock(key, () -> {
-			UserOauth userOauth = userOauthMapper.selectByIdentityTypeIdentifier(UserOauthEnum.IdentityType.MOBILE, mobile);
+			UserOauth userOauth = userOauthMapper.selectByIdentityTypeIdentifier(identityType, identifier);
 			if (userOauth != null) {
 				return userOauth.getUserId();
 			}
 
-			UserInfo userInfo = new UserInfo().setNickname(userInfoReq.getNickname())
-					.setAvator(userInfoReq.getAvator());
+			String nickname = Optional.ofNullable(userInfoReq.getNickname()).orElse(defaultNickname);
+			String avatar = Optional.ofNullable(userInfoReq.getNickname()).orElse(defaultAvatar);
+			
+			UserInfo userInfo = new UserInfo().setNickname(nickname).setAvatar(avatar);
 			userInfoMapper.insert(userInfo);
 
-			userOauthMapper.bindOauth(userInfo.getId(), UserOauthEnum.IdentityType.MOBILE, mobile, null);
+			userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
 
 			// 发布注册事件
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("userId", userInfo.getId());
-			params.put("mobile", mobile);
+			params.put("identityType", identityType.getCode());
+			params.put("identifier", identifier);
 			params.put("nickname", userInfo.getNickname());
-			params.put("avator", userInfo.getAvator());
+			params.put("avatar", userInfo.getAvatar());
 			params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
 			messageSender.sendFanoutMessage(params, FanoutConstants.USER_REGISTER.EXCHANGE);
 
@@ -81,5 +93,11 @@ public class UserInfoController implements UserInfoFeign {
 		UserInfoResp userInfoResp = new UserInfoResp().setId(userId0);
 
 		return Result.success(userInfoResp);
+	}
+	
+	@Override
+	public Result<UserInfoResp> getById(Integer id) {
+		UserInfo userInfo = userInfoMapper.getById(id);
+		return Result.success(PropertyUtils.copyProperties(userInfo, UserInfoResp.class));
 	}
 }

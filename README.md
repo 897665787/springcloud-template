@@ -9,9 +9,10 @@
 - Feign请求头数据在微服务间传递
 - 基于MDC实现的自定义请求链路追踪
 - 基于redis+注解实现的API幂等
-- 统一认证demo，包括微信、支付宝授权登录等各种登录方式
+- 简单登录demo，支持密码、微信、支付宝授权登录等各种登录方式
 - 文件存储demo，包括阿里云OSS、腾讯云COS等多种云存储方式
 - 短信发送demo，支持阿里云、腾讯云等多个渠道，结合MQ实现短信异步发送，并记录短信发送结果
+- 验证码发送demo，支持短信、邮件、图形验证码，结合MQ实现短信异步发送，并提供验证码校验API
 - ToC优惠券实现demo，能够在不修改表结构的情况增加优惠券使用条件，或者增加复杂度更高的使用条件，具有高扩展性
 - ToC弹窗实现demo，能够在不修改表结构的情况增加弹窗条件，或者增加复杂度更高的弹窗条件，具有高扩展性
 - 微信订阅消息实现demo，提供存储设计表结构，代码通用，易于使用，易于问题排查
@@ -71,8 +72,9 @@ springcloud-template
      └── canal-- canal使用demo
      └── coupon -- 优惠券设计demo（分享：https://www.toutiao.com/article/7228973418354475572）
           └── UseCouponService -- 优惠券核心类
-└── template-auth -- 统一认证接入层(边缘微服务)
-     └── authentication -- 登录（分享：https://www.toutiao.com/article/7144259146018406948）
+├── template-app -- app端接入层(边缘微服务)
+├── template-web -- web端接入层(边缘微服务)
+     └── easylogin -- 登录方式（分享：https://www.toutiao.com/article/7144259146018406948）
           └── 本机号码一键登录
           └── 用户名+密码登录
           └── 手机号+验证码登录
@@ -85,9 +87,6 @@ springcloud-template
      └── token -- token的使用
           └── JWT
           └── sa-token的应用
-     └── wx -- binarywang的应用
-├── template-app -- app端接入层(边缘微服务)
-├── template-web -- web端接入层(边缘微服务)
 ├── template-admin -- 管理后台端
 ├── sql -- 项目中的表结构设计
 ```

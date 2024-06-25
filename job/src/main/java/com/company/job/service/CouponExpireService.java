@@ -30,7 +30,8 @@ public class CouponExpireService {
 	 * @return
 	 */
 	@XxlJob("couponExpireHandler")
-	public ReturnT<String> couponExpireHandler(String param) {
+	public ReturnT<String> couponExpireHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 
 		// 查询3天后过期的优惠券

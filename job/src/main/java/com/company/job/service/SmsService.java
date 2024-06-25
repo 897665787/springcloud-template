@@ -20,7 +20,8 @@ public class SmsService {
 	private SmsFeign smsFeign;
 
 	@XxlJob("smsHandler")
-	public ReturnT<String> smsHandler(String param) {
+	public ReturnT<String> smsHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<Integer> idList = null;
 		if (StringUtils.isNotBlank(param)) {

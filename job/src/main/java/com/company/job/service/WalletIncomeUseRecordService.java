@@ -20,7 +20,8 @@ public class WalletIncomeUseRecordService {
 	private WalletIncomeUseRecordFeign walletIncomeUseRecordFeign;
 
 	@XxlJob("walletIncomeExpireHandler")
-	public ReturnT<String> walletIncomeExpireHandler(String param) {
+	public ReturnT<String> walletIncomeExpireHandler() {
+		String param = XxlJobHelper.getJobParam();
 		XxlJobHelper.log("param:{}", param);
 		List<Integer> idList = null;
 		if (StringUtils.isNotBlank(param)) {
