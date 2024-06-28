@@ -79,6 +79,13 @@
 		</dependency>
 		<!-- 短信SMS -->
 		
+		<!-- 邮件发送 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+        <!-- 邮件发送 -->
+		
 		<!-- 微信小程序订阅消息 -->
 		<dependency>
 			<groupId>com.github.binarywang</groupId>
@@ -124,6 +131,15 @@
 			<version>3.6.1</version>
 		</dependency>
 		
+		<!-- 字段加密 -->
+		<!-- 如需使用，需升级mybatis-plus版本 -->
+		<!--
+		<dependency>
+		    <groupId>io.github.panlicun</groupId>
+		    <artifactId>mybatisplus-database-encrypt-spring-boot-starter</artifactId>
+		    <version>1.0.10</version>
+		</dependency>
+		-->
         <!-- 数据库 -->
         
 	</dependencies>

@@ -34,6 +34,7 @@ import com.company.admin.mapper.security.SecResourceDao;
 import com.company.admin.springsecurity.UpdateAuthorityFilter;
 import com.company.admin.util.ModelValidateUtil;
 import com.company.admin.util.XSTreeUtil;
+import com.company.common.constant.CommonConstants;
 import com.company.common.exception.BusinessException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -263,7 +264,7 @@ public class SecResourceService {
             digester.setValidating(false);
 
             //添加xml解析事件
-            String modelClass = "com.company.admin.entity.security.SecResourceFromXml";
+            String modelClass = CommonConstants.BASE_PACKAGE + ".admin.entity.security.SecResourceFromXml";
             digester.addObjectCreate("resource", modelClass);
             digester.addSetProperties("resource");
 

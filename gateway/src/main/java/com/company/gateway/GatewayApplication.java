@@ -5,10 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
+import com.company.common.constant.CommonConstants;
 import com.company.gateway.context.SpringContextUtil;
 
 @EnableEurekaClient
-@SpringBootApplication(scanBasePackages = "com.company", exclude = { RabbitAutoConfiguration.class })
+@SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { RabbitAutoConfiguration.class })
 public class GatewayApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run(GatewayApplication.class, args);

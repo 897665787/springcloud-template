@@ -6,11 +6,12 @@ import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
+import com.company.common.constant.CommonConstants;
 import com.company.zuul.context.SpringContextUtil;
 
 
 @EnableEurekaClient
-@SpringBootApplication(scanBasePackages = "com.company", exclude = { RabbitAutoConfiguration.class })
+@SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { RabbitAutoConfiguration.class })
 @EnableZuulProxy
 public class ZuulApplication {
 	public static void main(String[] args) {

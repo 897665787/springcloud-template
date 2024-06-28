@@ -3,6 +3,7 @@ package com.company.app.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.company.common.constant.CommonConstants;
 import com.company.framework.context.SpringContextUtil;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 
@@ -34,7 +35,7 @@ public class Knife4jConfig {
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.company.app.controller"))
+				.apis(RequestHandlerSelectors.basePackage(CommonConstants.BASE_PACKAGE + ".app.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

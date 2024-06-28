@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -20,6 +21,7 @@ import com.company.framework.context.HttpContextUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 	
 	@Override

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.company.common.api.Result;
+import com.company.common.constant.CommonConstants;
 import com.company.openapi.annotation.NoSign;
 import com.company.openapi.config.SignConfiguration;
 import com.company.openapi.util.SignUtil;
@@ -30,7 +31,7 @@ import cn.hutool.core.bean.BeanUtil;
  * 对响应的Result.data下面的字段进行加签
  */
 @Order(90)
-@RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
+@RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
 public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 	@Autowired

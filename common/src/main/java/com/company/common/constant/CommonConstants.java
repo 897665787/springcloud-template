@@ -1,7 +1,8 @@
 package com.company.common.constant;
 
 public interface CommonConstants {
-
+	String BASE_PACKAGE = "com.company";
+	
 	/**
 	 * 过滤器优先级
 	 */
@@ -14,6 +15,22 @@ public interface CommonConstants {
 		int REQUEST = 10;
 		int SQLINJECT = 20;
 		int TOKEN = 30;
+	}
+
+	/**
+	 * 拦截器优先级
+	 */
+	public interface InterceptorOrdered {
+		// 值越小，优先级越高
+		
+		// edge
+		int ACCESS_CONTROL = 1;
+		
+		// admin 引用了edge
+		int PERMISSION = 5;
+		
+		// openapi
+		int SIGN = 1;
 	}
 	
 	/**

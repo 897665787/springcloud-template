@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.company.common.api.ResultCode;
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -18,7 +19,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 根据code为响应值添加status字段,code=0:true,code=其他:false
  */
 @Order(100)
-@RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
+@RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
 public class StatusResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override

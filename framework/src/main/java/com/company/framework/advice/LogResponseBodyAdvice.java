@@ -9,6 +9,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Order(99)
-@RestControllerAdvice(basePackages = { "com.company" }) // 注意哦，这里要加上需要扫描的包
+@RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
 public class LogResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override
