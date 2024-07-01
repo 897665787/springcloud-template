@@ -48,47 +48,31 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 	private ThreadPoolTaskExecutor executor;
 	@Autowired
 	private InnercallbackConfig innercallbackConfig;
-
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams) {
-		return postRestTemplate(notifyUrl, jsonParams, null);
-	}
-
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, int maxFailure) {
-		return postRestTemplate(notifyUrl, jsonParams, null, innercallbackConfig.getDefaultIncreaseSeconds(), maxFailure, InnerCallbackEnum.SecondsStrategy.INCREMENT);
-	}
-
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, int increaseSeconds, int maxFailure) {
-		return postRestTemplate(notifyUrl, jsonParams, null, increaseSeconds, maxFailure, InnerCallbackEnum.SecondsStrategy.INCREMENT);
-	}
-
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy) {
-		return postRestTemplate(notifyUrl, jsonParams, null, increaseSeconds, maxFailure, secondsStrategy);
-	}
-
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName) {
-		return postRestTemplate(notifyUrl, jsonParams, processorBeanName, innercallbackConfig.getDefaultIncreaseSeconds(), innercallbackConfig.getDefaultMaxfailure(), InnerCallbackEnum.SecondsStrategy.INCREMENT);
-	}
-
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
-			int maxFailure) {
-		return postRestTemplate(notifyUrl, jsonParams, processorBeanName, innercallbackConfig.getDefaultIncreaseSeconds(), maxFailure, InnerCallbackEnum.SecondsStrategy.INCREMENT);
-	}
 	
 	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
-			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy) {
-		return postRestTemplate(notifyUrl, jsonParams, processorBeanName, increaseSeconds, maxFailure, secondsStrategy, LocalDateTime.now());
-	}
+	public Boolean postRestTemplate(PostParam postParam) {
+		String notifyUrl = postParam.getNotifyUrl();
+		Object jsonParams = postParam.getJsonParams();
+		ProcessorBeanName processorBeanName = postParam.getProcessorBeanName();
+		int increaseSeconds = postParam.getIncreaseSeconds();
+		if (increaseSeconds == 0) {
+			increaseSeconds = innercallbackConfig.getDefaultIncreaseSeconds();
+		}
+		int maxFailure = postParam.getMaxFailure();
+		if (maxFailure == 0) {
+			maxFailure = innercallbackConfig.getDefaultMaxfailure();
+		}
+		InnerCallbackEnum.SecondsStrategy secondsStrategy = postParam.getSecondsStrategy();
+		if (secondsStrategy == null) {
+			secondsStrategy = InnerCallbackEnum.SecondsStrategy.INCREMENT;
+		}
+		
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime nextDisposeTime = postParam.getNextDisposeTime();
+		if (nextDisposeTime == null) {
+			nextDisposeTime = now;
+		}
 
-	@Override
-	public Boolean postRestTemplate(String notifyUrl, Object jsonParams, ProcessorBeanName processorBeanName,
-			int increaseSeconds, int maxFailure, InnerCallbackEnum.SecondsStrategy secondsStrategy, LocalDateTime nextDisposeTime) {
 		InnerCallback innerCallback = new InnerCallback().setUrl(notifyUrl).setJsonParams(JsonUtil.toJsonString(jsonParams))
 				.setProcessorBeanName(processorBeanName == null ? null : JsonUtil.toJsonString(processorBeanName))
 				.setStatus(InnerCallbackEnum.Status.PRE_CALLBACK.getCode())
@@ -98,7 +82,7 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 				.setSecondsStrategy(secondsStrategy.getCode());
 		baseMapper.insert(innerCallback);
 		
-		if (nextDisposeTime.isAfter(LocalDateTime.now())) {
+		if (nextDisposeTime.isAfter(now)) {
 			// 如果传入的nextDisposeTime在当前时间之后，说明需要延迟一段时间才开始执行，把状态修改为CALLBACK_FAIL利用selectId4CallbackFail来跑
 			InnerCallback innerCallback4Update = new InnerCallback().setId(innerCallback.getId())
 					.setStatus(InnerCallbackEnum.Status.CALLBACK_FAIL.getCode());

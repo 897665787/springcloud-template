@@ -43,10 +43,10 @@ import com.company.order.api.response.PayRefundResp;
 import com.company.order.api.response.PayResp;
 import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
-import com.company.order.enums.InnerCallbackEnum;
 import com.company.order.innercallback.processor.bean.InnerCallbackProcessorBeanName;
 import com.company.order.innercallback.processor.bean.ProcessorBeanName;
 import com.company.order.innercallback.service.IInnerCallbackService;
+import com.company.order.innercallback.service.PostParam;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.PayClient;
 import com.company.order.pay.dto.PayParams;
@@ -169,8 +169,9 @@ public class PayController implements PayFeign {
 			timeoutSeconds = 1800;// 默认30分钟,1800秒
 		}
 		LocalDateTime timeoutTime = LocalDateTime.now().plusSeconds(timeoutSeconds);
-		innerCallbackService.postRestTemplate(NOTIFY_URL_TIMEOUT, payTimeoutReq, processorBeanName, 2, 10,
-				InnerCallbackEnum.SecondsStrategy.INCREMENT, timeoutTime);
+		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_TIMEOUT).jsonParams(payTimeoutReq)
+				.processorBeanName(processorBeanName).nextDisposeTime(timeoutTime).build();
+		innerCallbackService.postRestTemplate(postParam);
 	}
 
 	/**
@@ -239,8 +240,9 @@ public class PayController implements PayFeign {
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
-		innerCallbackService.postRestTemplate(notifyUrl, payNotifyReq);
-
+		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(payNotifyReq).build();
+		innerCallbackService.postRestTemplate(postParam);
+		
 		return Result.success();
 	}
 
@@ -254,8 +256,9 @@ public class PayController implements PayFeign {
 		// 异步处理 ========> 逻辑上等同于直接调用 pollingPayResult
 		PayResultReq payResultReq = new PayResultReq();
 		payResultReq.setOrderCode(orderCode);
-		innerCallbackService.postRestTemplate(NOTIFY_URL_PAYRESULT, payResultReq, 2, 15/* 预计总时长9小时 */,
-				InnerCallbackEnum.SecondsStrategy.INCREMENT);
+		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_PAYRESULT).jsonParams(payResultReq)
+				.maxFailure(15/* 预计总时长9小时 */).build();
+		innerCallbackService.postRestTemplate(postParam);
 	}
 	
 	/**
@@ -459,8 +462,10 @@ public class PayController implements PayFeign {
 		ProcessorBeanName processorBeanName = new ProcessorBeanName();
 		processorBeanName.setAbandonRequest(InnerCallbackProcessorBeanName.REFUND_FAIL_PROCESSOR);
 
-		innerCallbackService.postRestTemplate(NOTIFY_URL_REFUND, refundReq, processorBeanName);
-		
+		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_REFUND).jsonParams(refundReq)
+				.processorBeanName(processorBeanName).build();
+		innerCallbackService.postRestTemplate(postParam);
+
 		return Result.success();
 	}
 	
@@ -502,8 +507,9 @@ public class PayController implements PayFeign {
 		// 异步处理 ========> 逻辑上等同于直接调用 pollingRefundResult
 		RefundResultReq refundResultReq = new RefundResultReq();
 		refundResultReq.setRefundOrderCode(refundOrderCode);
-		innerCallbackService.postRestTemplate(NOTIFY_URL_REFUNDRESULT, refundResultReq, 2, 15/* 预计总时长9小时 */,
-				InnerCallbackEnum.SecondsStrategy.INCREMENT);
+		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_REFUNDRESULT).jsonParams(refundResultReq)
+				.maxFailure(15/* 预计总时长9小时 */).build();
+		innerCallbackService.postRestTemplate(postParam);
 	}
 	
 	/**

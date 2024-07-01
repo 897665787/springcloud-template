@@ -18,6 +18,7 @@ import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.entity.OrderPay;
 import com.company.order.innercallback.service.IInnerCallbackService;
+import com.company.order.innercallback.service.PostParam;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayService;
 import com.google.common.collect.Lists;
@@ -78,7 +79,8 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("支付回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
-		innerCallbackService.postRestTemplate(notifyUrl, payNotifyReq);
+		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(payNotifyReq).build();
+		innerCallbackService.postRestTemplate(postParam);
 	}
 
 	private void financialFlow(Map<String, Object> params, String outTradeNo) {
