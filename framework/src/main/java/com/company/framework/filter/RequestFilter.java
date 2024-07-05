@@ -1,9 +1,6 @@
 package com.company.framework.filter;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,6 +19,7 @@ import com.company.common.util.RegexUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.util.IpUtil;
+import com.company.framework.util.WebUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,7 +64,7 @@ public class RequestFilter extends OncePerRequestFilter {
 			request = requestWrapper;
 		}
 		
-		String paramsStr = JsonUtil.toJsonString(getReqParam(request));
+		String paramsStr = JsonUtil.toJsonString(WebUtil.getReqParam(request));
 		String requestIp = IpUtil.getRequestIp(request);
 		String headerStr = JsonUtil.toJsonString(HttpContextUtil.httpContextHeaderThisRequest(request));
 		String method = request.getMethod();
@@ -78,29 +76,6 @@ public class RequestFilter extends OncePerRequestFilter {
 
 		log.info("{} {} {} header:{},param:{},body:{},{}ms", method, requestIp, requestURI, headerStr, paramsStr,
 				bodyStr, System.currentTimeMillis() - start);
-	}
-
-	/**
-	 * 组装request中的参数
-	 * 
-	 * <pre>
-	 * 以下场景都能通过request.getParameterNames获取参数
-	 * 1.参数跟在url后面
-	 * 2.POST form-data
-	 * 3.POST x-www-form-urlencoded
-	 * </pre>
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private Map<String, Object> getReqParam(HttpServletRequest request) {
-		Enumeration<String> parameterNames = request.getParameterNames();
-		Map<String, Object> paramMap = new HashMap<>();
-		while (parameterNames.hasMoreElements()) {
-			String name = parameterNames.nextElement();
-			paramMap.put(name, request.getParameter(name));
-		}
-		return paramMap;
 	}
 
 }
