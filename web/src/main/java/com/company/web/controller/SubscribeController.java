@@ -1,7 +1,5 @@
 package com.company.web.controller;
 
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.web.req.GrantReq;
@@ -54,35 +53,12 @@ public class SubscribeController {
 
 		subscribeGrantReq.setResJson(grantReq.getResJson());
 
-		Map<String, String> runtimeAttach = getReqParam(request);
+		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 		// 移除GrantReq独立处理的参数
 		runtimeAttach.remove("group");
 		runtimeAttach.remove("resJson");
 
 		subscribeGrantReq.setRuntimeAttach(runtimeAttach);
 		return subscribeFeign.grant(subscribeGrantReq);
-	}
-
-	/**
-	 * 组装request中的参数
-	 * 
-	 * <pre>
-	 * 以下场景都能通过request.getParameterNames获取参数
-	 * 1.参数跟在url后面
-	 * 2.POST form-data
-	 * 3.POST x-www-form-urlencoded
-	 * </pre>
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private Map<String, String> getReqParam(HttpServletRequest request) {
-		Enumeration<String> parameterNames = request.getParameterNames();
-		Map<String, String> paramMap = new HashMap<>();
-		while (parameterNames.hasMoreElements()) {
-			String name = parameterNames.nextElement();
-			paramMap.put(name, request.getParameter(name));
-		}
-		return paramMap;
 	}
 }

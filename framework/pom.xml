@@ -76,7 +76,7 @@
 		<dependency>
 		    <groupId>org.redisson</groupId>
 		    <artifactId>redisson</artifactId>
-		    <version>3.12.0</version>
+		    <version>3.12.0</version><!-- 最新版是3.32.0，存在客户端与服务端不兼容问题，高版本会导致redisson初始化很慢 -->
 		</dependency>
 		
 		<!-- elasticsearch-->

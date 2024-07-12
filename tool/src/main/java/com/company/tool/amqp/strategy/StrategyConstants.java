@@ -6,6 +6,7 @@ public interface StrategyConstants {
 	String XDELAYMESSAGE_STRATEGY = "xDelayMessageStrategy";
 	String SENDSMS_STRATEGY = "sendSmsStrategy";
 	String SENDEMAIL_STRATEGY = "sendEmailStrategy";
+	String SENDWEBHOOK_STRATEGY = "sendWebhookStrategy";
 	String SENDSUBSCRIBE_STRATEGY = "sendSubscribeStrategy";
 	
 	String COUPON_RECEIVE_STRATEGY = "couponReceiveStrategy";

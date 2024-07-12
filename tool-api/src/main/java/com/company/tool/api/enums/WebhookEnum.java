@@ -1,14 +1,14 @@
-package com.company.tool.enums;
+package com.company.tool.api.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public interface SmsEnum {
+public interface WebhookEnum {
 
 	@AllArgsConstructor
 	enum Type {
-		// verifycode:验证码,market:营销活动,tips:提示信息
-		VERIFYCODE("verifycode", "验证码"), MARKET("market", "营销活动"), TIPS("tips", "提示信息");
+		// systemerror:系统异常,xx_send_fail:xx发货失败
+		SYSTEM_ERROR("system_error", "系统异常"),XX_SEND_FAIL("xx_send_fail", "xx发货失败");
 
 		@Getter
 		private String code;

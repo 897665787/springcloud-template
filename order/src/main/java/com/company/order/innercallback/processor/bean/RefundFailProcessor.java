@@ -11,6 +11,7 @@ import com.company.order.api.request.RefundReq;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.innercallback.processor.AbandonRequestProcessor;
 import com.company.order.innercallback.service.IInnerCallbackService;
+import com.company.order.innercallback.service.PostParam;
 import com.company.order.service.OrderPayRefundService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +59,7 @@ public class RefundFailProcessor implements AbandonRequestProcessor {
         refundNotifyReq.setRefundOrderCode(refundOrderCode);
         refundNotifyReq.setAttach(orderPayRefund.getNotifyAttach());
 
-        innerCallbackService.postRestTemplate(notifyUrl, refundNotifyReq);
+		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(refundNotifyReq).build();
+		innerCallbackService.postRestTemplate(postParam);
     }
 }

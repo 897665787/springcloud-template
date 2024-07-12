@@ -3,10 +3,9 @@ package com.company.openapi.interceptor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +21,7 @@ import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.cache.ICache;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
+import com.company.framework.util.WebUtil;
 import com.company.openapi.annotation.NoSign;
 import com.company.openapi.config.SignConfiguration;
 import com.company.openapi.util.SignUtil;
@@ -100,9 +100,11 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 			bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
 		}
 
-		Map<String, Object> reqParam = getReqParam(request);
+		Map<String, String> reqParam = WebUtil.getReqParam(request);
+		Map<String, Object> reqParamObject = reqParam.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		
-		String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, reqParam , bodyStr, appsecret);
+		String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, reqParamObject , bodyStr, appsecret);
 		if (!sign4md5.equals(sign)) {
 			writeError(response, "签名错误");
 			return false;
@@ -115,28 +117,5 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		response.setCharacterEncoding("utf-8");
 		PrintWriter writer = response.getWriter();
 		writer.write(JsonUtil.toJsonString(Result.fail(message)));
-	}
-
-	/**
-	 * 组装request中的参数
-	 * 
-	 * <pre>
-	 * 以下场景都能通过request.getParameterNames获取参数
-	 * 1.参数跟在url后面
-	 * 2.POST form-data
-	 * 3.POST x-www-form-urlencoded
-	 * </pre>
-	 * 
-	 * @param request
-	 * @return
-	 */
-	private Map<String, Object> getReqParam(HttpServletRequest request) {
-		Enumeration<String> parameterNames = request.getParameterNames();
-		Map<String, Object> paramMap = new HashMap<>();
-		while (parameterNames.hasMoreElements()) {
-			String name = parameterNames.nextElement();
-			paramMap.put(name, request.getParameter(name));
-		}
-		return paramMap;
 	}
 }

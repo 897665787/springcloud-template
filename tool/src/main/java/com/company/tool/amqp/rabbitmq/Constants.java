@@ -34,10 +34,23 @@ public interface Constants {
 			String ROUTING_KEY = PREFIX + "routingkey.send_sms";
 		}
 		
+		// 发送邮件
+		interface SEND_EMAIL {
+			String NAME = PREFIX + "send_email";
+			String ROUTING_KEY = PREFIX + "routingkey.send_email";
+		}
+		
+		// 发送企微机器人信息
+		interface SEND_WEBHOOK {
+			String NAME = PREFIX + "send_webhook";
+			String ROUTING_KEY = PREFIX + "routingkey.send_webhook";
+		}
+		
 		// 发送订阅消息
 		interface SEND_SUBSCRIBE {
 			String NAME = PREFIX + "send_subscribe";
 			String ROUTING_KEY = PREFIX + "routingkey.send_subscribe";
 		}
+
 	}
 }

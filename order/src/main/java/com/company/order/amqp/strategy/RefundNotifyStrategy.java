@@ -16,6 +16,7 @@ import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.innercallback.service.IInnerCallbackService;
+import com.company.order.innercallback.service.PostParam;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
 
@@ -95,7 +96,8 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 		refundNotifyReq.setRefundAll(totalRefundAmount.compareTo(orderPayRefund.getAmount()) == 0);
 
-		innerCallbackService.postRestTemplate(notifyUrl, refundNotifyReq);
+		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(refundNotifyReq).build();
+		innerCallbackService.postRestTemplate(postParam);
 	}
 
 	private void financialFlow(Map<String, Object> params, String outTradeNo, String outRefundNo) {
