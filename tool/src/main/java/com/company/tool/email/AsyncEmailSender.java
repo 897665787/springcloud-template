@@ -16,10 +16,10 @@ import com.company.framework.context.SpringContextUtil;
 import com.company.tool.amqp.rabbitmq.Constants;
 import com.company.tool.amqp.strategy.StrategyConstants;
 import com.company.tool.amqp.strategy.dto.SendEmailMQDto;
+import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.email.dto.EmailTemplateParam;
 import com.company.tool.entity.EmailTask;
 import com.company.tool.entity.EmailTaskDetail;
-import com.company.tool.enums.EmailEnum;
 import com.company.tool.enums.EmailTaskDetailEnum;
 import com.company.tool.service.EmailTaskDetailService;
 import com.company.tool.service.EmailTaskService;
@@ -129,7 +129,7 @@ public class AsyncEmailSender {
 		params.setEmailTaskDetailId(emailTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDEMAIL_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_SMS.ROUTING_KEY);
+				Constants.QUEUE.SEND_EMAIL.ROUTING_KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		EmailTaskDetail emailTaskDetail = emailTaskDetailService.selectById(emailTaskDetailId);

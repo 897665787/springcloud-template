@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +17,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.company.common.api.Result;
 import com.company.framework.util.ClasspathUtil;
 import com.company.tool.api.enums.PopupEnum;
+import com.company.tool.api.enums.SmsEnum;
+import com.company.tool.api.enums.WebhookEnum;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.CancelUserPopupReq;
 import com.company.tool.api.request.CreateUserPopupReq;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.UploadResp;
-import com.company.tool.enums.SmsEnum;
 import com.company.tool.sms.AsyncSmsSender;
+import com.company.tool.webhook.AsyncWebhookSender;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,11 +45,22 @@ public class TestController {
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;
 	@Autowired
+	private AsyncWebhookSender asyncWebhookSender;
+	@Autowired
 	private PopupFeign popupFeign;
 
 	@GetMapping("/verifyCodeSms")
 	public Result<String> verifyCodeSms(String mobile, String type) {
 		return verifyCodeController.sms(mobile, type);
+	}
+
+	@GetMapping("/webhook")
+	public Result<String> webhook() {
+		Map<String, String> templateParamMap = Maps.newHashMap();
+		templateParamMap.put("time", DateUtil.now());
+		templateParamMap.put("orderCode", "d222222222222");
+		asyncWebhookSender.send(WebhookEnum.Type.SYSTEM_ERROR, templateParamMap);
+		return Result.success();
 	}
 
 	@GetMapping("/batchSendSms")

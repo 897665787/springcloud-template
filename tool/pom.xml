@@ -94,7 +94,36 @@
 		</dependency>
 		<!-- 微信小程序订阅消息 -->
 		
-        <!-- 数据库 -->
+		<!-- 企微机器人：https://gitee.com/felord/wecom-sdk -->
+		<dependency>
+		    <groupId>cn.felord</groupId>
+		    <artifactId>wecom-sdk</artifactId>
+		    <version>1.2.7</version>
+		    <exclusions>
+		        <exclusion>
+		            <groupId>com.squareup.okhttp3</groupId>
+		            <artifactId>okhttp</artifactId>
+		        </exclusion>
+		        <exclusion>
+		            <groupId>com.squareup.okhttp3</groupId>
+		            <artifactId>logging-interceptor</artifactId>
+		        </exclusion>
+		    </exclusions>
+		</dependency>
+		<!-- Okhttp低版本兼容依赖 -->
+		<dependency>
+		    <groupId>com.squareup.okhttp3</groupId>
+		    <artifactId>okhttp</artifactId>
+		    <version>4.12.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.squareup.okhttp3</groupId>
+		    <artifactId>logging-interceptor</artifactId>
+		    <version>4.12.0</version>
+		</dependency>
+		<!-- 企微机器人 -->
+
+		<!-- 数据库 -->
 		<!-- mysql -->
         <dependency>
 			<groupId>mysql</groupId>
