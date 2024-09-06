@@ -118,7 +118,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		rechargeOrder.setOrderCode(orderCode);
 		rechargeOrder.setAmount(rechargeAmount);
 		rechargeOrder.setGiftAmount(giftAmount);
-		rechargeOrderService.insert(rechargeOrder);
+		rechargeOrderService.save(rechargeOrder);
 
 		// 注册到‘订单中心’
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();

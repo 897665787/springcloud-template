@@ -188,7 +188,7 @@ public class SubscribeController implements SubscribeFeign {
 				subscribeTemplate.setExample(subscribeTemplateInfo.getExample());
 				subscribeTemplate.setType(subscribeTemplateInfo.getType());
 
-				subscribeTemplateService.insert(subscribeTemplate);
+				subscribeTemplateService.save(subscribeTemplate);
 			} else {
 				SubscribeTemplate subscribeTemplate4Update = new SubscribeTemplate();
 				subscribeTemplate4Update.setId(subscribeTemplate.getId());

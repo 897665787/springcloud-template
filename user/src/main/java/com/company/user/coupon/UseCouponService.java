@@ -300,7 +300,7 @@ public class UseCouponService {
 	 */
 	public UserCouponCanUse canUse(Integer userCouponId, Integer userId, BigDecimal orderAmount,
 			Map<String, String> runtimeAttach) {
-		UserCoupon userCoupon = userCouponService.selectById(userCouponId);
+		UserCoupon userCoupon = userCouponService.getById(userCouponId);
 		if (userCoupon == null) {
 			UserCouponCanUse userCouponCanUse = new UserCouponCanUse();
 			userCouponCanUse.setUserCouponId(userCouponId);

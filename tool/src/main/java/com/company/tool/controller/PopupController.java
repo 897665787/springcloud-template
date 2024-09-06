@@ -147,7 +147,7 @@ public class PopupController implements PopupFeign {
 	 */
 	@Override
 	public Result<Void> remarkPopupLog(Integer popupLogId, String remark) {
-		PopupLog popupLog = popupLogService.selectById(popupLogId);
+		PopupLog popupLog = popupLogService.getById(popupLogId);
 		PopupLog popupLog4Update = new PopupLog();
 		popupLog4Update.setId(popupLogId);
 		String newRemark = Utils.rightRemark(popupLog.getRemark(), remark);

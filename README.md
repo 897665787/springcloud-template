@@ -51,8 +51,9 @@ springcloud-template
      └── template-order-api -- 被依赖开放api
 └── template-order -- 订单服务(内部微服务)
      └── template-order-api -- 被依赖开放api
+└── template-system -- 系统服务(内部微服务)
+     └── template-system-api -- 被依赖开放api
 └── template-tool -- 工具服务(内部微服务)
-     └── template-tool-api -- 被依赖开放api
      └── template-tool-api -- 被依赖开放api
      └── controller
           └── FileController -- 文件存储使用demo（支持阿里OSS、腾讯云COS、MinIO、本地磁盘等多种方式）
@@ -87,7 +88,8 @@ springcloud-template
      └── token -- token的使用
           └── JWT
           └── sa-token的应用
-├── template-admin -- 管理后台端
+├── template-admin -- 管理后台端(前后端一体)
+├── template-adminapi -- 管理后台端(前后端分离)
 ├── sql -- 项目中的表结构设计
 ```
 

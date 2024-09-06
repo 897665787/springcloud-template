@@ -1,83 +1,86 @@
 package com.company.tool.database.mybatisplus.plugins;
 
-import java.sql.Statement;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.apache.ibatis.executor.statement.StatementHandler;
+import org.apache.ibatis.executor.Executor;
+import org.apache.ibatis.logging.Log;
+import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Plugin;
-import org.apache.ibatis.plugin.Signature;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
+import org.apache.ibatis.session.RowBounds;
 
-import com.baomidou.mybatisplus.toolkit.PluginUtils;
-import com.company.common.util.MdcUtil;
-import com.company.common.util.Utils;
-import com.company.framework.context.SpringContextUtil;
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.DialectFactory;
+import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
+import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * 给没有添加limit的SQL添加limit，防止全量查询导致慢SQL
- **/
+ *
+ * @author JQ棣
+ */
 @Slf4j
-@Order(Ordered.LOWEST_PRECEDENCE) // 此拦截器需要在分页拦截器之后执行，否则可能会导致SQL错误，所以设置最低优先级
-@Intercepts(@Signature(type = StatementHandler.class, method = "query", args = { Statement.class,
-		ResultHandler.class }))
-public class SqlLimitInterceptor implements Interceptor {
+@Data
+@SuppressWarnings({"rawtypes"})
+public class SqlLimitInterceptor implements InnerInterceptor {
+    protected final Log logger = LogFactory.getLog(this.getClass());
 
-	@Override
-	public Object intercept(Invocation invocation) throws Throwable {
-		// 获取sql处理器
-		StatementHandler statementHandler = (StatementHandler) PluginUtils.realTarget(invocation.getTarget());
-		MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
-		MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
-		if (!SqlCommandType.SELECT.equals(mappedStatement.getSqlCommandType())) {
-			// 非查询sql
-			return invocation.proceed();
-		}
-
-		// 获取原始sql
-		BoundSql boundSql = (BoundSql) metaObject.getValue("delegate.boundSql");
-		String originalSql = boundSql.getSql().toLowerCase();
-
-		int limit = SpringContextUtil.getIntegerProperty("template.sqllimit.max", 9999);
-		boolean containsLimit = false;
-		// 判断原始的sql是否包含limit
-		if (!originalSql.contains(" limit ")) {
-			containsLimit = true;
-			metaObject.setValue("delegate.rowBounds.limit", limit);
-			String id = mappedStatement.getId();
-			log.info("==>{},sql has added limit {}", id, limit);
-		}
-		Object result = invocation.proceed();
-		// 判断查询结果是否存在异常
-		if (containsLimit && result instanceof List) {
-			int size = ((List<?>) result).size();
-			String mapperAndId = Utils.mapperAndId(mappedStatement.getId());
-			if (limit == size) {
-				// 最终结果集数量与最大限制数量一致，可能存在大量数据查询风险
-				log.warn("mapper={} may has wrong sql,logId={},sql:{}", mapperAndId, MdcUtil.get(), originalSql);
-			}
-		}
-		return result;
+    /**
+     * 最大条数限制
+     */
+    protected long maxLimit;
+    
+	public SqlLimitInterceptor(long maxLimit) {
+		this.maxLimit = maxLimit;
 	}
 
-	@Override
-	public Object plugin(Object target) {
-		return Plugin.wrap(target, this);
+    @Override
+    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+		if (maxLimit <= 0) {
+			return;
+		}
+		
+        String buildSql = boundSql.getSql();
+		if (buildSql.contains(" limit ") || buildSql.contains(" LIMIT ")) {
+			return;
+		}
+
+        IDialect dialect = findIDialect(executor);
+        
+        final Configuration configuration = ms.getConfiguration();
+        DialectModel model = dialect.buildPaginationSql(buildSql, 0, maxLimit);
+        PluginUtils.MPBoundSql mpBoundSql = PluginUtils.mpBoundSql(boundSql);
+
+        List<ParameterMapping> mappings = mpBoundSql.parameterMappings();
+        Map<String, Object> additionalParameter = mpBoundSql.additionalParameters();
+        model.consumers(mappings, configuration, additionalParameter);
+        mpBoundSql.sql(model.getDialectSql());
+		mpBoundSql.parameterMappings(mappings);
+		log.info("{},sql has added limit {}", ms.getId(), maxLimit);
 	}
 
-	@Override
-	public void setProperties(Properties properties) {
-	}
+    /**
+     * 获取分页方言类的逻辑
+     *
+     * @param executor Executor
+     * @return 分页方言类
+     */
+    protected IDialect findIDialect(Executor executor) {
+        return DialectFactory.getDialect(JdbcUtils.getDbType(executor));
+    }
+
+    @Override
+    public void setProperties(Properties properties) {
+    }
 }

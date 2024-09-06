@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
 import com.company.tool.api.feign.SmsFeign;
+import com.company.tool.api.request.SendSmsReq;
 
 import feign.hystrix.FallbackFactory;
 
@@ -23,6 +24,11 @@ public class SmsFeignFallback implements FallbackFactory<SmsFeign> {
 
 			@Override
 			public Result<Void> exePreTimeSend(Integer id) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Void> send(SendSmsReq sendSmsReq) {
 				return Result.onFallbackError();
 			}
 		};

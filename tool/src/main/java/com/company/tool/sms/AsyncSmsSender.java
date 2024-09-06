@@ -88,7 +88,7 @@ public class AsyncSmsSender {
 		smsTask.setPlanSendTime(planSendTime);
 		smsTask.setOverTime(overTime);
 		smsTask.setRemark("AsyncSmsSender-" + DateUtil.format(new Date(), "yyMMddHHmmss"));
-		smsTaskService.insert(smsTask);
+		smsTaskService.save(smsTask);
 
 		for (MobileTemplateParam mobileTemplateParam : mobileTemplateParamList) {
 			SmsTaskDetail smsTaskDetail = new SmsTaskDetail();
@@ -100,7 +100,7 @@ public class AsyncSmsSender {
 			SmsTaskDetailEnum.Status status = sendNow ? SmsTaskDetailEnum.Status.PRE_SEND
 					: SmsTaskDetailEnum.Status.PRE_TIME_SEND;
 			smsTaskDetail.setStatus(status.getCode());
-			smsTaskDetailService.insert(smsTaskDetail);
+			smsTaskDetailService.save(smsTaskDetail);
 
 			if (sendNow) {
 				asyncExe(smsTaskDetail.getId(), status);
@@ -129,7 +129,7 @@ public class AsyncSmsSender {
 				Constants.QUEUE.SEND_SMS.ROUTING_KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
-		SmsTaskDetail smsTaskDetail = smsTaskDetailService.selectById(smsTaskDetailId);
+		SmsTaskDetail smsTaskDetail = smsTaskDetailService.getById(smsTaskDetailId);
 		String remark = Utils.rightRemark(smsTaskDetail.getRemark(),
 				SmsTaskDetailEnum.Status.SEND_MQ_SUCCESS.getDesc());
 		smsTaskDetailService.updateStatusByStatus(SmsTaskDetailEnum.Status.SEND_MQ_SUCCESS, remark, smsTaskDetailId,

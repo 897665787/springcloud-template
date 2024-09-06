@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.request.PayNotifyReq;
@@ -48,7 +48,7 @@ public class PayTimeoutFailProcessor implements AbandonRequestProcessor {
 		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
 		LocalDateTime time = LocalDateTime.now();
 		orderPay4Update.setPayTime(time);
-		EntityWrapper<OrderPay> wrapper = new EntityWrapper<>();
+		UpdateWrapper<OrderPay> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", orderPay.getId());
 		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
 		boolean affect = orderPayService.update(orderPay4Update, wrapper);

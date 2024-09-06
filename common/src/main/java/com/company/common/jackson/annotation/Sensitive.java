@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 /**
  * 数据脱敏
  *
- * @author Candi
+ * @author JQ棣
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

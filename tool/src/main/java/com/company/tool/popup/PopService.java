@@ -159,7 +159,7 @@ public class PopService {
 			popupLog.setBusinessId(bestPopupCanPop.getBusinessId());
 			popupLog.setUserId(userId);
 			popupLog.setDeviceid(deviceid);
-			popupLogService.insert(popupLog);
+			popupLogService.save(popupLog);
 			
 			bestPopupCanPop.setPopupLogId(popupLog.getId());
 		}

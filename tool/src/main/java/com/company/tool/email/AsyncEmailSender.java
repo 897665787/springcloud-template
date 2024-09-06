@@ -89,7 +89,7 @@ public class AsyncEmailSender {
 		emailTask.setPlanSendTime(planSendTime);
 		emailTask.setOverTime(overTime);
 		emailTask.setRemark("AsyncEmailSender-" + DateUtil.format(new Date(), "yyMMddHHmmss"));
-		emailTaskService.insert(emailTask);
+		emailTaskService.save(emailTask);
 
 		for (EmailTemplateParam emailTemplateParam : emailTemplateParamList) {
 			EmailTaskDetail emailTaskDetail = new EmailTaskDetail();
@@ -103,7 +103,7 @@ public class AsyncEmailSender {
 			EmailTaskDetailEnum.Status status = sendNow ? EmailTaskDetailEnum.Status.PRE_SEND
 					: EmailTaskDetailEnum.Status.PRE_TIME_SEND;
 			emailTaskDetail.setStatus(status.getCode());
-			emailTaskDetailService.insert(emailTaskDetail);
+			emailTaskDetailService.save(emailTaskDetail);
 
 			if (sendNow) {
 				asyncExe(emailTaskDetail.getId(), status);
@@ -132,7 +132,7 @@ public class AsyncEmailSender {
 				Constants.QUEUE.SEND_EMAIL.ROUTING_KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
-		EmailTaskDetail emailTaskDetail = emailTaskDetailService.selectById(emailTaskDetailId);
+		EmailTaskDetail emailTaskDetail = emailTaskDetailService.getById(emailTaskDetailId);
 		String remark = Utils.rightRemark(emailTaskDetail.getRemark(),
 				EmailTaskDetailEnum.Status.SEND_MQ_SUCCESS.getDesc());
 		emailTaskDetailService.updateStatusByStatus(EmailTaskDetailEnum.Status.SEND_MQ_SUCCESS, remark, emailTaskDetailId,

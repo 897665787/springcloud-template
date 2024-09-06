@@ -44,7 +44,7 @@ public class TestController{
 	
 	@GetMapping(value = "/getById")
 	public Result<UserInfo> getById(Integer id) {
-		UserInfo userInfo = userInfoService.selectById(id);
+		UserInfo userInfo = userInfoService.getById(id);
 		return Result.success(userInfo);
 	}
 	
@@ -52,7 +52,7 @@ public class TestController{
 	public Result<Void> save(Integer id) {
 		UserInfo entity = new UserInfo();
 		entity.setNickname("1111");
-		userInfoService.insert(entity);
+		userInfoService.save(entity);
 		return Result.success();
 	}
 	

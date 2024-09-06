@@ -1,0 +1,34 @@
+spring:
+  profiles:
+    include: eureka-pre,redis-pre,rabbitmq-pre
+    
+template:
+  domain: http://p-domain.com
+  enable:
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
+    lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
+    idempotent: false
+    rabbitmq: true
+    data-encypt: false
+    access-control: true
+    permission: true
+  mock:
+    time: true
+
+filestorage:
+  active: minio
+  local:
+    endpoint: D:/home/data/oss
+    bucketName: buket-template-dev
+    domain: http://localhost:4001 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
+  minio:
+    endpoint: http://127.0.0.1:9000
+    accessKey: pRYo5fCm9ZyVNKLA
+    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+    bucketName: buket-template-dev
+    domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
+
+# Token 配置
+token:
+  # 密钥
+  secret: 21mtdfbk

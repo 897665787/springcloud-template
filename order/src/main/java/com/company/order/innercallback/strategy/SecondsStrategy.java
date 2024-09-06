@@ -3,7 +3,7 @@ package com.company.order.innercallback.strategy;
 /**
  * 秒数策略
  * 
- * @author Candi
+ * @author JQ棣
  *
  */
 public interface SecondsStrategy {

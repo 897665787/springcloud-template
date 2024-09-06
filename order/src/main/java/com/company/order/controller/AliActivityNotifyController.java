@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
@@ -158,9 +157,10 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		AliActivityPay aliActivityPay4Update = new AliActivityPay().setTradeStatus(AliActivityConstants.TradeStatus.TRADE_SUCCESS)
 				.setOrderNo(orderNo).setGmtPayment(DateUtil.formatDateTime(new Date()));
 
-		Wrapper<AliActivityPay> wrapper = new EntityWrapper<AliActivityPay>();
+		UpdateWrapper<AliActivityPay> wrapper = new UpdateWrapper<AliActivityPay>();
 		wrapper.eq("out_order_no", outOrderNo);
-		wrapper.and("(trade_status is null or trade_status != {0})", AliActivityConstants.TradeStatus.TRADE_SUCCESS);
+		wrapper.and(i -> i.isNull("trade_status")
+				.or(i2 -> i2.ne("trade_status", AliActivityConstants.TradeStatus.TRADE_SUCCESS)));
 		int affect = aliActivityPayMapper.update(aliActivityPay4Update, wrapper);
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理，可直接查询券码

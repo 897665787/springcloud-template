@@ -3,9 +3,8 @@ package com.company.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.dynamic.datasource.annotation.Slave;
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.user.entity.UserInfo;
 import com.company.user.mapper.user.UserInfoMapper;
 

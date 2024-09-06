@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.entity.PopupLog;
 

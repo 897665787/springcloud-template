@@ -39,7 +39,7 @@ public class CouponTouseStrategy implements BaseStrategy<Map<String, Object>> {
 		Integer userCouponId = MapUtils.getInteger(params, "userCouponId");
 
 		// 读取授权表，获取业务参数
-		SubscribeTemplateGrant subscribeTemplateGrant = subscribeTemplateGrantService.selectById(1);
+		SubscribeTemplateGrant subscribeTemplateGrant = subscribeTemplateGrantService.getById(1);
 		String remark = subscribeTemplateGrant.getRemark();
 		
 		@SuppressWarnings("unchecked")

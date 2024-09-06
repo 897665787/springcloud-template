@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.tool.entity.SubscribeTaskDetail;
 import com.company.tool.enums.SubscribeTaskDetailEnum;
 import com.company.tool.mapper.SubscribeTaskDetailMapper;

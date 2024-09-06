@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 /**
  * 数据脱敏
  * 
- * @author Candi
+ * @author JQ棣
  */
 public class SensitiveSerializer extends JsonSerializer<String> implements ContextualSerializer {
 	private DesensitizedType desensitizedType;

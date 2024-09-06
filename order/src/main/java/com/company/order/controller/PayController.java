@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
@@ -106,7 +106,7 @@ public class PayController implements PayFeign {
 				orderPay.setNotifyAttach(payReq.getAttach());
 				orderPay.setRemark(payReq.getRemark());
 
-				orderPayService.insert(orderPay);
+				orderPayService.save(orderPay);
 			} else {
 				OrderPay orderPay4Update = new OrderPay();
 				orderPay4Update.setId(orderPay.getId());
@@ -217,7 +217,7 @@ public class PayController implements PayFeign {
 		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
 		LocalDateTime time = LocalDateTime.now();
 		orderPay4Update.setPayTime(time);
-		EntityWrapper<OrderPay> wrapper = new EntityWrapper<>();
+		UpdateWrapper<OrderPay> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", orderPay.getId());
 		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
 		boolean affect = orderPayService.update(orderPay4Update, wrapper);
@@ -329,7 +329,7 @@ public class PayController implements PayFeign {
 		// 修改状态为已关闭
 		OrderPay orderPay4Update = new OrderPay();
 		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
-		EntityWrapper<OrderPay> wrapper = new EntityWrapper<>();
+		UpdateWrapper<OrderPay> wrapper = new UpdateWrapper<>();
 		wrapper.eq("id", orderPay.getId());
 		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
 		boolean affect = orderPayService.update(orderPay4Update, wrapper);
@@ -447,7 +447,7 @@ public class PayController implements PayFeign {
 			refundOrderPay.setRemark(payRefundReq.getRefundRemark());
 			refundOrderPay.setNotifyUrl(payRefundReq.getNotifyUrl());
 			refundOrderPay.setNotifyAttach(payRefundReq.getAttach());
-			orderPayRefundService.insert(refundOrderPay);
+			orderPayRefundService.save(refundOrderPay);
 			return null;
 		});
 

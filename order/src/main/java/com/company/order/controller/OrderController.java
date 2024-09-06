@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import com.baomidou.mybatisplus.plugins.Page;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
@@ -111,7 +111,7 @@ public class OrderController implements OrderFeign {
 					orderProduct.setAttach(v.getAttach());
 					return orderProduct;
 				}).collect(Collectors.toList());
-				orderProductService.insertBatch(orderProductList4Insert);
+				orderProductService.saveBatch(orderProductList4Insert);
 			}
 		}
 

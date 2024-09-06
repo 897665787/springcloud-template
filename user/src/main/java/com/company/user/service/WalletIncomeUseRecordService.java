@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.user.api.enums.WalletEnum;
@@ -43,7 +43,7 @@ public class WalletIncomeUseRecordService extends ServiceImpl<WalletIncomeUseRec
 			return;
 		}
 
-		WalletRecord walletRecord = walletRecordService.selectById(walletRecordId);
+		WalletRecord walletRecord = walletRecordService.getById(walletRecordId);
 
 		WalletIncomeUseRecord record = new WalletIncomeUseRecord();
 		record.setWalletId(walletRecord.getWalletId());
@@ -116,7 +116,7 @@ public class WalletIncomeUseRecordService extends ServiceImpl<WalletIncomeUseRec
 		}
 
 		Integer walletId = record.getWalletId();
-		Wallet wallet = walletService.selectById(walletId);
+		Wallet wallet = walletService.getById(walletId);
 
 		Map<String, Object> attachMap = Maps.newHashMap();
 		attachMap.put("walletIncomeUseRecordId", id);

@@ -15,8 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
@@ -332,9 +331,10 @@ public class WxPayClient extends BasePayClient {
 		WxPay wxPay4Update = new WxPay().setTradeState(result.getTradeState())
 				.setTransactionId(result.getTransactionId()).setTimeEnd(result.getTimeEnd()).setRemark(remark);
 
-		Wrapper<WxPay> wrapper = new EntityWrapper<WxPay>();
+		UpdateWrapper<WxPay> wrapper = new UpdateWrapper<WxPay>();
 		wrapper.eq("out_trade_no", outTradeNo);
-		wrapper.and("(trade_state is null or trade_state != {0})", WxPayConstants.WxpayTradeStatus.SUCCESS);
+		wrapper.and(i -> i.isNull("trade_status")
+				.or(i2 -> i2.ne("trade_status", WxPayConstants.WxpayTradeStatus.SUCCESS)));
 		Integer affect = wxPayMapper.update(wxPay4Update, wrapper);
 		return affect > 0;
 	}
@@ -609,9 +609,10 @@ public class WxPayClient extends BasePayClient {
 		// 保存微信查询结果数据
 		WxPayRefund wxPay4Update = new WxPayRefund().setRefundStatus(refundStatus).setRemark(remark);
 
-		Wrapper<WxPayRefund> wrapper = new EntityWrapper<WxPayRefund>();
+		UpdateWrapper<WxPayRefund> wrapper = new UpdateWrapper<WxPayRefund>();
 		wrapper.eq("out_refund_no", outRefundNo);
-		wrapper.and("(refund_status is null or refund_status != {0})", WxPayConstants.RefundStatus.SUCCESS);
+		wrapper.and(i -> i.isNull("refund_status")
+				.or(i2 -> i2.ne("refund_status", WxPayConstants.RefundStatus.SUCCESS)));
 		int affect = wxPayRefundMapper.update(wxPay4Update, wrapper);
 		return affect > 0;
 	}

@@ -139,4 +139,15 @@ public interface FanoutConstants {
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
+	
+	// admin用户登录事件
+	interface SYS_USER_LOGIN {
+		// 交换机
+		String EXCHANGE = FanoutConstants.PREFIX + "sys_user_login";
+
+		String PREFIX = FanoutConstants.PREFIX + "sys_user_login.";
+		// 队列
+		String SYS_LOGIN_RECORD_QUEUE = PREFIX + "sys_login_record";
+		String INCR_EXPIRELOGINTIMES_QUEUE = PREFIX + "incr_expirelogintimes";
+	}
 }

@@ -10,10 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.common.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.entity.Order;
@@ -251,7 +251,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 			return false;
 		}
 
-		EntityWrapper<Order> wrapper = new EntityWrapper<>();
+		UpdateWrapper<Order> wrapper = new UpdateWrapper<>();
 		wrapper.eq("order_code", orderCode);
 
 		if (conditionSubStatusEnums != null) {
@@ -280,7 +280,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 	public boolean deleteOrder(String orderCode) {
 		Order order4Update = new Order();
 		order4Update.setUserDel(2);
-		EntityWrapper<Order> wrapper = new EntityWrapper<>();
+		UpdateWrapper<Order> wrapper = new UpdateWrapper<>();
 		wrapper.eq("order_code", orderCode);
 		wrapper.eq("user_del", 1);
 		int affect = orderMapper.update(order4Update, wrapper);

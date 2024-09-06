@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
 import com.company.tool.api.feign.EmailFeign;
+import com.company.tool.api.request.SendEmailReq;
 
 import feign.hystrix.FallbackFactory;
 
@@ -23,6 +24,11 @@ public class EmailFeignFallback implements FallbackFactory<EmailFeign> {
 
 			@Override
 			public Result<Void> exePreTimeSend(Integer id) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Void> send(SendEmailReq sendEmailReq) {
 				return Result.onFallbackError();
 			}
 		};

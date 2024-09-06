@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.framework.amqp.BaseStrategy;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
@@ -45,7 +45,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 			// 退款成功
 			OrderPayRefund orderPayRefund4Update = new OrderPayRefund();
 			orderPayRefund4Update.setStatus(OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
-			EntityWrapper<OrderPayRefund> wrapper = new EntityWrapper<>();
+			UpdateWrapper<OrderPayRefund> wrapper = new UpdateWrapper<>();
 			wrapper.eq("id", orderPayRefund.getId());
 			wrapper.eq("status", OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
 			boolean affect = orderPayRefundService.update(orderPayRefund4Update, wrapper);
@@ -60,7 +60,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 			// 退款失败
 			OrderPayRefund orderPayRefund4Update = new OrderPayRefund();
 			orderPayRefund4Update.setStatus(OrderPayRefundEnum.Status.REFUND_FAIL.getCode());
-			EntityWrapper<OrderPayRefund> wrapper = new EntityWrapper<>();
+			UpdateWrapper<OrderPayRefund> wrapper = new UpdateWrapper<>();
 			wrapper.eq("id", orderPayRefund.getId());
 			wrapper.eq("status", OrderPayRefundEnum.Status.WAIT_APPLY.getCode());
 			boolean affect = orderPayRefundService.update(orderPayRefund4Update, wrapper);

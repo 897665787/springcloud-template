@@ -36,6 +36,6 @@ public class MysqlSendPostProcessor implements SendPostProcessor {
 			smsRecord.setMessage(sendResponse.getMessage());
 		}
 		smsRecord.setRequestId(sendResponse.getRequestId());
-		smsRecordService.insert(smsRecord);
+		smsRecordService.save(smsRecord);
 	}
 }

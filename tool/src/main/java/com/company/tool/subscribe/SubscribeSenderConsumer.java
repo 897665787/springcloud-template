@@ -56,8 +56,8 @@ public class SubscribeSenderConsumer {
 	private String appid;
 	
 	public void consumer(Integer subscribeTaskDetailId) {
-		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.selectById(subscribeTaskDetailId);
-		SubscribeTask subscribeTask = subscribeTaskService.selectById(subscribeTaskDetail.getTaskId());
+		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.getById(subscribeTaskDetailId);
+		SubscribeTask subscribeTask = subscribeTaskService.getById(subscribeTaskDetail.getTaskId());
 		String remark = subscribeTaskDetail.getRemark();
 
 		Integer status = subscribeTaskDetail.getStatus();

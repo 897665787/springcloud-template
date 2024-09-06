@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.common.exception.BusinessException;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
@@ -32,7 +32,7 @@ public class UserCouponService extends ServiceImpl<UserCouponMapper, UserCoupon>
 	}
 
 	public void sendCoupon(Integer userId, Integer couponTemplateId) {
-		CouponTemplate couponTemplate = couponTemplateService.selectById(couponTemplateId);
+		CouponTemplate couponTemplate = couponTemplateService.getById(couponTemplateId);
 		if (couponTemplate.getEndTime().isBefore(LocalDateTime.now())) {
 			throw new BusinessException("优惠券模板已过期");
 		}

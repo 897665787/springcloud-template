@@ -3,7 +3,7 @@ package com.company.order.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.order.entity.PayNotify;
 
 public interface PayNotifyMapper extends BaseMapper<PayNotify> {

@@ -8,7 +8,7 @@ import com.company.tool.innercallback.strategy.SecondsStrategyBeanFactory;
 /**
  * 增量策略(默认策略)
  * 
- * @author Candi
+ * @author JQ棣
  */
 @Component(SecondsStrategyBeanFactory.INCREMENT_SECONDSSTRATEGY)
 public class IncrementStrategy implements SecondsStrategy {

@@ -45,8 +45,8 @@ public class SmsSenderConsumer {
 	private SmsSender smsSender;
 
 	public void consumer(Integer smsTaskDetailId) {
-		SmsTaskDetail smsTaskDetail = smsTaskDetailService.selectById(smsTaskDetailId);
-		SmsTask smsTask = smsTaskService.selectById(smsTaskDetail.getTaskId());
+		SmsTaskDetail smsTaskDetail = smsTaskDetailService.getById(smsTaskDetailId);
+		SmsTask smsTask = smsTaskService.getById(smsTaskDetail.getTaskId());
 		String remark = smsTaskDetail.getRemark();
 
 		Integer status = smsTaskDetail.getStatus();

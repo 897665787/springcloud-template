@@ -2,8 +2,8 @@ package com.company.tool.entity;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

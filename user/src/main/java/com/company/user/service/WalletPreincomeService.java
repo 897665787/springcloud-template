@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.user.api.enums.WalletEnum;
@@ -75,7 +75,7 @@ public class WalletPreincomeService extends ServiceImpl<WalletPreincomeMapper, W
 		String uniqueCode = record.getUniqueCode();
 
 		Integer walletId = record.getWalletId();
-		Wallet wallet = walletService.selectById(walletId);
+		Wallet wallet = walletService.getById(walletId);
 
 		BigDecimal amount = record.getAmount();
 
