@@ -1,0 +1,21 @@
+#------------------------------------------------------------------------------------------
+## 基本配置信息
+# JDBC URL，根据不同的数据库，使用相应的JDBC连接字符串
+url = jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+# 用户名，此处也可以使用 user 代替
+username = root
+# 密码，此处也可以使用 pass 代替
+password = 12345678
+# JDBC驱动名，可选（Hutool会自动识别）
+driver = com.mysql.jdbc.Driver
+
+## 可选配置
+# 是否在日志中显示执行的SQL
+showSql = true
+# 是否格式化显示的SQL
+formatSql = false
+# 是否显示SQL参数
+showParams = true
+# 打印SQL的日志等级，默认debug
+sqlLevel = debug
+#------------------------------------------------------------------------------------------

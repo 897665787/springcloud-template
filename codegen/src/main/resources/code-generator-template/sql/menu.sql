@@ -1,0 +1,8 @@
+### 菜单
+insert into `sys_menu`(parent_id, menu_name, order_num, path, redirect, component, menu_type, status, visible, perms) values (0/*请替换为需要的父菜单*/, '{module_name}管理', 0, '{modelName}', '', '/{module}/{modelName}/index', 'C', 'ON', 1, '{module}:{modelName}:index');
+### 管理按钮
+insert into `sys_menu`(parent_id, menu_name, order_num, path, menu_type, status, visible, perms) values ((select id from (select id from `sys_menu` where perms = '{module}:{modelName}:index') as t), '{module_name}管理查询', 1, 'query', 'F', 'ON', 1, '{module}:{modelName}:query');
+insert into `sys_menu`(parent_id, menu_name, order_num, path, menu_type, status, visible, perms) values ((select id from (select id from `sys_menu` where perms = '{module}:{modelName}:index') as t), '{module_name}管理添加', 2, 'save', 'F', 'ON', 1, '{module}:{modelName}:save');
+insert into `sys_menu`(parent_id, menu_name, order_num, path, menu_type, status, visible, perms) values ((select id from (select id from `sys_menu` where perms = '{module}:{modelName}:index') as t), '{module_name}管理更新', 3, 'update', 'F', 'ON', 1, '{module}:{modelName}:update');
+insert into `sys_menu`(parent_id, menu_name, order_num, path, menu_type, status, visible, perms) values ((select id from (select id from `sys_menu` where perms = '{module}:{modelName}:index') as t), '{module_name}管理删除', 4, 'remove', 'F', 'ON', 1, '{module}:{modelName}:remove');
+insert into `sys_menu`(parent_id, menu_name, order_num, path, menu_type, status, visible, perms) values ((select id from (select id from `sys_menu` where perms = '{module}:{modelName}:index') as t), '{module_name}管理导出', 5, 'export', 'F', 'ON', 1, '{module}:{modelName}:export');

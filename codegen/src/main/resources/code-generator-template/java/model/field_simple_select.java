@@ -1,0 +1,5 @@
+
+	/**
+	 * {columnComment}
+	 */
+	private {dataType} {columnName};

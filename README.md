@@ -90,6 +90,7 @@ springcloud-template
           └── sa-token的应用
 ├── template-admin -- 管理后台端(前后端一体)
 ├── template-adminapi -- 管理后台端(前后端分离)
+├── template-codegen -- 代码生成
 ├── sql -- 项目中的表结构设计
 ```
 
