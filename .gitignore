@@ -6,6 +6,7 @@ target
 *.iml
 rebel.xml
 */logs/
+logs/
 /apollo-quick-start-master
 /canal.*
 /minio
