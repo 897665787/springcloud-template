@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
-	<!-- 应用名称 -->
-	<springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
-	<!--日志文件的保存路径,首先查找系统属性-Dlog.dir,如果存在就使用其；否则，在当前目录下创建名为logs目录做日志存放的目录 -->
-	<property name="LOG_HOME" value="/logs/${APP_NAME}" />
+	<!-- spring配置变量 -->
+	<springProperty scope="context" name="FILE_PATH" source="logging.file.path"/>
+	<!--日志文件的保存路径 -->
+	<property name="LOG_HOME" value="${FILE_PATH}" />
 	<!-- 日志输出格式 -->
 	<property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n" />
-	<contextName>${APP_NAME}</contextName>
+	<contextName>default</contextName>
 	
 	<!-- 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 -->
 	<contextListener class="com.ofpay.logback.TtlMdcListener"/>

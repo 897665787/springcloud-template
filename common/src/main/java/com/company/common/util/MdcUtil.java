@@ -14,7 +14,7 @@ import com.google.common.collect.Maps;
 
 public class MdcUtil {
 
-	public final static String UNIQUE_KEY = "trace-id";
+	public static final String UNIQUE_KEY = "trace-id";
 
 	/**
 	 * 1.Random是线程安全的<br/>
@@ -22,7 +22,10 @@ public class MdcUtil {
 	 * 3.经粗略测试，并发数少于200情况下性能是单实例优，按需来说项目目前并发量在200内<br/>
 	 */
 	private static Random random = new Random();
-	
+
+	private MdcUtil() {
+	}
+
 	public static void put() {
 		// 可修改traceid生成算法
 		String traceid = "" + System.currentTimeMillis() + (1000 + random.nextInt(9000));

@@ -6,6 +6,8 @@ spring:
       server:
         native:
           # 磁盘绝对路径
-          search-locations: file:D:/software_comp/eclipse-jee-mars-1-win32-x86_64/git/springcloud-template/config-yml
+          #search-locations: file:D:/code/me/springcloud-template/config-yml
+          # 磁盘相对路径
+          search-locations: file:./config-yml
           # classpath相对路径
-          #search-locations: classpath:/yml
+          #search-locations: classpath:/config-yml
