@@ -2,6 +2,7 @@ package com.company.framework.deploy.amqp.strategy;
 
 import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,8 @@ public class RefreshStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
-		refreshHandler.refresh();
+		String application = MapUtils.getString(params, "application");
+		refreshHandler.refresh(application);
 		log.info("#### refresh success");
 	}
 }
