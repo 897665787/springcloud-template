@@ -6,7 +6,6 @@ template:
   domain: http://d-domain.com
   enable:
     rabbitmq: false
-    access-control: false
 
 # Token 配置
 token:

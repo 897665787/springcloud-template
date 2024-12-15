@@ -10,6 +10,7 @@ template:
     idempotent: false
     rabbitmq: true
     data-encypt: false
+    access-control: true
   mock:
     time: false
 

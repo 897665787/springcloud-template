@@ -10,8 +10,7 @@ template:
     idempotent: false
     rabbitmq: true
     data-encypt: false
-  mock:
-    time: true
+    access-control: true
 
 # Token 配置
 token:
