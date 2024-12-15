@@ -1,8 +1,11 @@
 package com.company.framework.deploy;
 
-import java.util.Map;
-import java.util.Optional;
-
+import com.company.common.api.Result;
+import com.company.framework.amqp.MessageSender;
+import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.context.SpringContextUtil;
+import com.google.common.collect.Maps;
+import com.netflix.discovery.DiscoveryClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
-import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
-import com.company.framework.context.SpringContextUtil;
-import com.google.common.collect.Maps;
-import com.netflix.discovery.DiscoveryClient;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 部署相关接口（用于优雅发版）
@@ -25,9 +24,6 @@ import com.netflix.discovery.DiscoveryClient;
  */
 @RestController
 public class DeployController {
-
-	@Autowired
-	private RefreshHandler refreshHandler;
 
 	@Autowired(required = false)
 	private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
@@ -60,14 +56,4 @@ public class DeployController {
 		}
 	}
 
-	/**
-	 * 刷新注册列表
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value = "/refresh", method = RequestMethod.GET)
-	public Result<?> refresh() {
-		refreshHandler.refresh();
-		return Result.success();
-	}
 }

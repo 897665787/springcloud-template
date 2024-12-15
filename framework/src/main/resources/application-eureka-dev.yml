@@ -1,8 +1,8 @@
 eureka:
   instance:
+    hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
     instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: localhost
-    prefer-ip-address: true
+    prefer-ip-address: true # 用于指定在注册到Eureka Server时，是否优先使用IP地址而不是主机名
     lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
   client:
