@@ -10,13 +10,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.frameworkset.elasticsearch.ElasticSearchHelper;
-import org.frameworkset.elasticsearch.boot.BBossESStarter;
 import org.frameworkset.elasticsearch.client.ClientInterface;
 import org.frameworkset.elasticsearch.entity.ESDatas;
 import org.frameworkset.elasticsearch.entity.MapRestResponse;
 import org.frameworkset.elasticsearch.entity.MapSearchHit;
 import org.frameworkset.elasticsearch.entity.MapSearchHits;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

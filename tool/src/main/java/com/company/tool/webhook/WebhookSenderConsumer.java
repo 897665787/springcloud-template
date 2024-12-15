@@ -43,7 +43,7 @@ public class WebhookSenderConsumer {
 	private WebhookTemplateService webhookTemplateService;
 
 	public void consumer(Integer webhookTaskId) {
-		WebhookTask webhookTask = webhookTaskService.selectById(webhookTaskId);
+		WebhookTask webhookTask = webhookTaskService.getById(webhookTaskId);
 		String remark = webhookTask.getRemark();
 
 		Integer status = webhookTask.getStatus();

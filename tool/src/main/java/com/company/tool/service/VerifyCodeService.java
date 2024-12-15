@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.common.exception.BusinessException;
 import com.company.tool.entity.VerifyCode;
 import com.company.tool.enums.VerifyCodeEnum;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class VerifyCodeService extends ServiceImpl<VerifyCodeMapper, VerifyCode> {
 	
-	@Value("${yhkd.enable.closeVerify:false}")
+	@Value("${template.enable.closeVerify:false}")
 	private Boolean closeVerify;// 关闭验证码校验
 	
 	public VerifyCode selectLastByCertificateType(String certificate, String type) {

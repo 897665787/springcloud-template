@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.tool.entity.WebhookTask;
 import com.company.tool.enums.WebhookTaskEnum;
 import com.company.tool.mapper.WebhookTaskMapper;

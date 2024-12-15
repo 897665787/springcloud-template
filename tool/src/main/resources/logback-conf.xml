@@ -7,7 +7,7 @@
 	
     <!-- 自定义日志打印，比如调整orm查询数据库的日志级别 -->
     <!-- com.baomidou.mybatisplus.plugins.PerformanceInterceptor会打印sql，所以这里注释掉
-	<logger name="com.company.user.mapper" level="DEBUG" additivity="false">
+	<logger name="com.company.tool.mapper" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />
@@ -15,10 +15,16 @@
 	 -->
 	
 	<!-- 打印SQL性能分析拦截器日志 -->
-	<logger name="com.baomidou.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
+	<logger name="com.company.tool.database.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />
 	</logger>
 	
+	<!-- 打印动态数据源切换日志 -->
+	<logger name="com.baomidou.dynamic.datasource" level="DEBUG" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+		<appender-ref ref="ERROR_FILE" />
+	</logger>
 </configuration>

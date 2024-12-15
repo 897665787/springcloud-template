@@ -20,13 +20,13 @@ public class CouponController implements CouponFeign {
 
 	@Override
 	public Result<UserCouponResp> getUserCouponById(Integer userCouponId) {
-		UserCoupon userCoupon = userCouponService.selectById(userCouponId);
+		UserCoupon userCoupon = userCouponService.getById(userCouponId);
 		return Result.success(PropertyUtils.copyProperties(userCoupon, UserCouponResp.class));
 	}
 
 	@Override
 	public Result<Boolean> isMatchTemplate(Integer userCouponId, Integer couponTemplateId) {
-		UserCoupon userCoupon = userCouponService.selectById(userCouponId);
+		UserCoupon userCoupon = userCouponService.getById(userCouponId);
 		if (userCoupon == null) {
 			return Result.success(false);
 		}
@@ -38,7 +38,7 @@ public class CouponController implements CouponFeign {
 		// days天后即将过期的优惠券
 //		LocalDateTime time = null;
 //		userCouponService.selectWillExpire(time);
-		UserCoupon userCoupon = userCouponService.selectById(1);
+		UserCoupon userCoupon = userCouponService.getById(1);
 		return Result.success(PropertyUtils.copyProperties(userCoupon, UserCouponResp.class));
 	}
 }

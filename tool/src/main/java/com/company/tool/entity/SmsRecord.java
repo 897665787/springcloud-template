@@ -2,15 +2,17 @@ package com.company.tool.entity;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.github.encrypt.annotation.FieldEncrypt;
+import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @TableName("sms_record")
 @Data
 @Accessors(chain = true)
-public class SmsRecord {
+public class SmsRecord implements Encrypted {
 	/**
 	 * ID
 	 */
@@ -22,6 +24,7 @@ public class SmsRecord {
 	/**
 	 * 手机号码
 	 */
+	@FieldEncrypt
 	private String mobile;
 	/**
 	 * 短信签名(2~12个字符)，如：【XX公司】，【】不用填写

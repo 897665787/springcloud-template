@@ -252,7 +252,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			rechargeOrder.setRechargeCode(rechargeCode);
 			rechargeOrder.setAmount(rechargeAmount);
 			rechargeOrder.setGiftAmount(giftAmount);
-			rechargeOrderService.insert(rechargeOrder);
+			rechargeOrderService.save(rechargeOrder);
 			
 			payBusinessType = OrderPayEnum.BusinessType.RECHARGE;
 			payBody = "充值";
@@ -266,7 +266,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		memberBuyOrder.setProductCode(memberData.getProductCode());
 		memberBuyOrder.setAmount(memberData.getProductAmount());
 		memberBuyOrder.setAddDays(memberData.getAddDays());
-		memberBuyOrderService.insert(memberBuyOrder);
+		memberBuyOrderService.save(memberBuyOrder);
 
 		if (walletPayAmount.compareTo(BigDecimal.ZERO) > 0) {
 			String uniqueCode = orderCode;

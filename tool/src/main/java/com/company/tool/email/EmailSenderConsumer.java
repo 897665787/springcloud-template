@@ -41,12 +41,12 @@ public class EmailSenderConsumer {
 	@Autowired
 	private MailSender mailSender;
 	
-	@Value("${yhkd.enable.closeSendEmail:false}")
+	@Value("${template.enable.closeSendEmail:false}")
 	private Boolean closeSendEmail;// 关闭发送邮件
 	
 	public void consumer(Integer emailTaskDetailId) {
-		EmailTaskDetail emailTaskDetail = emailTaskDetailService.selectById(emailTaskDetailId);
-		EmailTask emailTask = emailTaskService.selectById(emailTaskDetail.getTaskId());
+		EmailTaskDetail emailTaskDetail = emailTaskDetailService.getById(emailTaskDetailId);
+		EmailTask emailTask = emailTaskService.getById(emailTaskDetail.getTaskId());
 		String remark = emailTaskDetail.getRemark();
 
 		Integer status = emailTaskDetail.getStatus();

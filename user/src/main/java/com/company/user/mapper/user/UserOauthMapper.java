@@ -4,9 +4,11 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.entity.UserOauth;
+
+import io.github.encrypt.annotation.FieldEncrypt;
 
 public interface UserOauthMapper extends BaseMapper<UserOauth> {
 
@@ -14,11 +16,11 @@ public interface UserOauthMapper extends BaseMapper<UserOauth> {
 			+ " on duplicate key update"
 			+ " user_id = #{userId},identity_type = #{identityType.code},identifier = #{identifier},certificate = #{certificate}")
 	int bindOauth(@Param("userId") Integer userId, @Param("identityType") UserOauthEnum.IdentityType identityType,
-			@Param("identifier") String identifier, @Param("certificate") String certificate);
+			/* @FieldEncrypt 不生效，拦截器EncryptionSaveInterceptor没有处理这种情况*/ @Param("identifier") String identifier, @Param("certificate") String certificate);
 	
 	@Select("select * from bu_user_oauth where identity_type = #{identityType.code} and identifier = #{identifier}")
 	UserOauth selectByIdentityTypeIdentifier(@Param("identityType") UserOauthEnum.IdentityType identityType,
-			@Param("identifier") String identifier);
+			@FieldEncrypt @Param("identifier") String identifier);
 	
 	@Select("select * from bu_user_oauth where user_id = #{userId} and identity_type = #{identityType.code}")
 	UserOauth selectByUserIdIdentityType(@Param("userId") Integer userId,

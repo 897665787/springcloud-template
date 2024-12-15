@@ -64,7 +64,7 @@
 		<dependency>
         	<groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>2.3</version>
+            <version>3.5.7</version>
         </dependency>
         
         <!-- mybatis-plus动态数据源，可用于（主/从切换、多主库） -->
@@ -74,6 +74,12 @@
 			<version>3.6.1</version>
 		</dependency>
 		
+		<!-- mybatis-plus字段加密（https://github.com/panlicun/mybatisplus-database-encrypt-spring-boot-starter） -->
+		<dependency>
+		    <groupId>io.github.panlicun</groupId>
+		    <artifactId>mybatisplus-database-encrypt-spring-boot-starter</artifactId>
+		    <version>1.0.10</version>
+		</dependency>
         <!-- 数据库 -->
         
         <!-- Canal 依赖 -->

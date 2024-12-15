@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
 import com.company.order.amqp.rabbitmq.Constants;
@@ -140,9 +139,10 @@ public class WxNotifyController implements WxNotifyFeign {
 		WxPay wxPay4Update = new WxPay().setTradeState(WxPayConstants.WxpayTradeStatus.SUCCESS)
 				.setTransactionId(orderNotifyResult.getTransactionId()).setTimeEnd(orderNotifyResult.getTimeEnd());
 
-		Wrapper<WxPay> wrapper = new EntityWrapper<WxPay>();
+		UpdateWrapper<WxPay> wrapper = new UpdateWrapper<WxPay>();
 		wrapper.eq("out_trade_no", outTradeNo);
-		wrapper.and("(trade_state is null or trade_state != {0})", WxPayConstants.WxpayTradeStatus.SUCCESS);
+		wrapper.and(i -> i.isNull("trade_state")
+				.or(i2 -> i2.ne("trade_state", WxPayConstants.WxpayTradeStatus.SUCCESS)));
 		int affect = wxPayMapper.update(wxPay4Update, wrapper);
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理
@@ -245,9 +245,10 @@ public class WxNotifyController implements WxNotifyFeign {
 		// 回调数据落库
 		WxPayRefund wxPay4Update = new WxPayRefund().setRefundStatus(reqInfo.getRefundStatus());
 
-		Wrapper<WxPayRefund> wrapper = new EntityWrapper<WxPayRefund>();
+		UpdateWrapper<WxPayRefund> wrapper = new UpdateWrapper<WxPayRefund>();
 		wrapper.eq("out_refund_no", outRefundNo);
-		wrapper.and("(refund_status is null or refund_status != {0})", WxPayConstants.RefundStatus.SUCCESS);
+		wrapper.and(i -> i.isNull("refund_status")
+				.or(i2 -> i2.ne("refund_status", WxPayConstants.RefundStatus.SUCCESS)));
 		int affect = wxPayRefundMapper.update(wxPay4Update, wrapper);
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理

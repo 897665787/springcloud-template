@@ -8,7 +8,7 @@ import com.company.tool.innercallback.strategy.SecondsStrategyBeanFactory;
 /**
  * 固定策略
  * 
- * @author Candi
+ * @author JQ棣
  */
 @Component(SecondsStrategyBeanFactory.FIX_SECONDSSTRATEGY)
 public class FixStrategy implements SecondsStrategy {

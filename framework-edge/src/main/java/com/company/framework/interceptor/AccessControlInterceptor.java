@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -22,8 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "access-control", havingValue = "true", matchIfMissing = true)
 public class AccessControlInterceptor extends HandlerInterceptorAdapter {
-	
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -35,9 +38,10 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		HandlerMethod handlerMethod = (HandlerMethod) handler;
 
 		Method method = handlerMethod.getMethod();
-		
-		if (!method.isAnnotationPresent(RequireLogin.class)
-				&& !method.getDeclaringClass().isAnnotationPresent(RequireLogin.class)) {
+
+		RequireLogin methodAnnotation = AnnotationUtils.findAnnotation(method, RequireLogin.class);
+		RequireLogin classAnnotation = AnnotationUtils.findAnnotation(method.getDeclaringClass(), RequireLogin.class);
+		if (methodAnnotation == null && classAnnotation == null) {
 			// 方法和类上都没有打注解RequireLogin
 			return true;
 		}
@@ -67,4 +71,5 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		
 		return false;
 	}
+
 }

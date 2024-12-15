@@ -3,7 +3,7 @@ package com.company.tool.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.tool.entity.SmsTemplate;
 
 public interface SmsTemplateMapper extends BaseMapper<SmsTemplate> {

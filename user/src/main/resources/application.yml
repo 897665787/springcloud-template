@@ -72,23 +72,9 @@ mybatis-plus:
     jdbcTypeForNull: NULL # 设置但JDBC类型为空时,某些驱动程序要指定值,default:OTHER，插入空值时不需要指定类型
     logImpl: org.apache.ibatis.logging.log4j2.Log4j2Impl # 打印SQL语句
   global-config:
-    #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
-    id-type: 0
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 1
-    #驼峰下划线转换
-    db-column-underline: true
-    #是否刷新mapper
-    refreshMapper: false
-    #数据库大写下划线转换
-    #is-capital-mode: true
-    #逻辑删除配置
-    #logic-delete-value: 1
-    #logic-not-delete-value: 0
-    #自定义填充策略接口实现
-    #meta-object-handler: com.baomidou.springboot.xxx
-    #自定义SQL注入器
-    #sql-injector: com.baomidou.mybatisplus.extension.injector.LogicSqlInjector
+    db-config:
+      #主键类型 0(AUTO):"数据库ID自增", 1(INPUT):"用户输入ID",2(ID_WORKER):"全局唯一ID (数字类型唯一ID)", 3(UUID):"全局唯一ID UUID";
+      id-type: 0
 
 template:
   sequence:

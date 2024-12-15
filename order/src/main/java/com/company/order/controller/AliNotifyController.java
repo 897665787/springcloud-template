@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
@@ -146,9 +145,10 @@ public class AliNotifyController implements AliNotifyFeign {
 			AliPayRefund aliPayRefund4Update = new AliPayRefund().setRefundStatus(AliConstants.RefundStatus.REFUND_SUCCESS)
 					.setTradeNo(aliParams.get("trade_no"));
 
-			Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
+			UpdateWrapper<AliPayRefund> wrapper = new UpdateWrapper<AliPayRefund>();
 			wrapper.eq("out_request_no", outRequestNo);
-			wrapper.and("(refund_status is null or refund_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
+			wrapper.and(i -> i.isNull("refund_status")
+					.or(i2 -> i2.ne("refund_status", AliConstants.RefundStatus.REFUND_SUCCESS)));
 			int affect = aliPayRefundMapper.update(aliPayRefund4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
@@ -209,9 +209,10 @@ public class AliNotifyController implements AliNotifyFeign {
 			AliPay aliPay4Update = new AliPay().setTradeStatus(tradeStatus).setTradeNo(aliParams.get("trade_no"))
 					.setGmtPayment(aliParams.get("gmt_payment"));
 
-			Wrapper<AliPay> wrapper = new EntityWrapper<AliPay>();
+			UpdateWrapper<AliPay> wrapper = new UpdateWrapper<AliPay>();
 			wrapper.eq("out_trade_no", outTradeNo);
-			wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.TradeStatus.TRADE_SUCCESS);
+			wrapper.and(i -> i.isNull("trade_status")
+					.or(i2 -> i2.ne("trade_status", AliConstants.TradeStatus.TRADE_SUCCESS)));
 			int affect = aliPayMapper.update(aliPay4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理

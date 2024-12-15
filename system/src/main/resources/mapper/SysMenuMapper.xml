@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.system.mapper.SysMenuMapper">
+	<select id="listPermsByMenuIds" resultType="java.lang.String">
+        select perms from sys_menu
+        where
+        <choose>
+        	<when test="menuIds != null and menuIds.size() > 0">
+        		id in
+		        <foreach collection="menuIds" open="(" item="item" close=")" separator=",">
+		            #{item}
+		        </foreach>
+        	</when>
+        	<otherwise>
+        		1 != 1
+        	</otherwise>
+        </choose>
+       
+    </select>
+	<select id="selectByUserId" resultType="com.company.system.entity.SysMenu">
+		select m.*
+		from sys_menu as m
+		join sys_role_menu as rm on rm.menu_id = m.id
+		join sys_user_role as ur on ur.role_id = rm.role_id
+		join sys_role as r on r.id = ur.role_id
+		join sys_user as u on u.id = ur.user_id
+		where m.status = 'ON' and r.status = 'ON' and u.status = 'ON' and u.id = #{userId}
+		order by m.parent_id, m.order_num
+	</select>
+</mapper>

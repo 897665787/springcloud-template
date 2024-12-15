@@ -31,8 +31,7 @@ import com.alipay.api.response.AlipayTradeCloseResponse;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
@@ -296,9 +295,10 @@ public class AliPayClient extends BasePayClient {
 		AliPay aliPay4Update = new AliPay().setTradeStatus(response.getTradeStatus()).setTradeNo(response.getTradeNo())
 				.setGmtPayment(gmtPayment).setRemark(remark);
 
-		Wrapper<AliPay> wrapper = new EntityWrapper<AliPay>();
+		UpdateWrapper<AliPay> wrapper = new UpdateWrapper<AliPay>();
 		wrapper.eq("out_trade_no", outTradeNo);
-		wrapper.and("(trade_status is null or trade_status != {0})", AliConstants.TradeStatus.TRADE_SUCCESS);
+		wrapper.and(i -> i.isNull("trade_status")
+				.or(i2 -> i2.ne("trade_status", AliConstants.TradeStatus.TRADE_SUCCESS)));
 		int affect = aliPayMapper.update(aliPay4Update, wrapper);
 		return affect > 0;
 	}
@@ -532,9 +532,10 @@ public class AliPayClient extends BasePayClient {
 		AliPayRefund aliPayRefund4Update = new AliPayRefund().setRefundStatus(response.getRefundStatus())
 				.setTradeNo(response.getTradeNo()).setRemark(remark);
 
-		Wrapper<AliPayRefund> wrapper = new EntityWrapper<AliPayRefund>();
+		UpdateWrapper<AliPayRefund> wrapper = new UpdateWrapper<AliPayRefund>();
 		wrapper.eq("out_request_no", outRefundNo);
-		wrapper.and("(refund_status is null or refund_status != {0})", AliConstants.RefundStatus.REFUND_SUCCESS);
+		wrapper.and(i -> i.isNull("refund_status")
+				.or(i2 -> i2.ne("refund_status", AliConstants.RefundStatus.REFUND_SUCCESS)));
 		int affect = aliPayRefundMapper.update(aliPayRefund4Update, wrapper);
 		return affect > 0;
 	}

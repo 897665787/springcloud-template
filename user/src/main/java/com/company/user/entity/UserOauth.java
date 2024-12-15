@@ -2,16 +2,18 @@ package com.company.user.entity;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.github.encrypt.annotation.FieldEncrypt;
+import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
 @TableName("bu_user_oauth")
-public class UserOauth {
+public class UserOauth implements Encrypted {
 	private Integer id;
 	
 	@TableField("user_id")
@@ -19,6 +21,7 @@ public class UserOauth {
 	
 	@TableField("identity_type")
 	private String identityType;
+	@FieldEncrypt
 	private String identifier;
 	private String certificate;
 

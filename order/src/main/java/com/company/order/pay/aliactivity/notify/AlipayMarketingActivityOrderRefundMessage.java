@@ -8,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
@@ -176,7 +175,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			refundOrderPay.setRefundAmount(aliActivityPay.getTotalAmount());
 			refundOrderPay.setStatus(OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
 			refundOrderPay.setRemark("支付宝主动退款");
-			orderPayRefundService.insert(refundOrderPay);
+			orderPayRefundService.save(refundOrderPay);
 			
 			financialFlow(orderNo, aliActivityPay.getTotalAmount(), outOrderNo, outBizNo);
 			
@@ -199,8 +198,9 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 					.setRefundType(refundType)
 					;
 			
-			Wrapper<AliActivityPayRefund> wrapper = new EntityWrapper<AliActivityPayRefund>();
-			wrapper.and("(refund_status is null or refund_status != {0})", AliActivityConstants.RefundStatus.REFUND_SUCCESS);
+			UpdateWrapper<AliActivityPayRefund> wrapper = new UpdateWrapper<AliActivityPayRefund>();
+			wrapper.and(i -> i.isNull("refund_status")
+					.or(i2 -> i2.ne("refund_status", AliActivityConstants.RefundStatus.REFUND_SUCCESS)));
 			int affect = aliActivityPayRefundMapper.update(aliActivityPay4Update, wrapper);
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理

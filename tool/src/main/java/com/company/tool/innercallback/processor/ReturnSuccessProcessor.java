@@ -3,7 +3,7 @@ package com.company.tool.innercallback.processor;
 /**
  * 返回成功
  * 
- * @author Candi
+ * @author JQ棣
  *
  */
 public interface ReturnSuccessProcessor {

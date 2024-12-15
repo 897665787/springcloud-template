@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.entity.PopupLog;
 import com.company.tool.mapper.market.PopupLogMapper;

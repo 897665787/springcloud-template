@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.service.IService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.framework.lock.LockClient;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
@@ -61,7 +61,7 @@ public class WalletFreezeService extends ServiceImpl<WalletFreezeMapper, WalletF
 				return walletFreeze_2.getId();
 			}
 
-			Wallet wallet = walletService.selectById(walletId);
+			Wallet wallet = walletService.getById(walletId);
 			
 			// 钱支出扣减balance
 			int affect = walletService.outcome(wallet.getId(), freezeAmount);

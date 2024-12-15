@@ -69,7 +69,7 @@ public class AsyncWebhookSender {
 		WebhookTaskEnum.Status status = sendNow ? WebhookTaskEnum.Status.PRE_SEND
 				: WebhookTaskEnum.Status.PRE_TIME_SEND;
 		webhookTask.setStatus(status.getCode());
-		webhookTaskService.insert(webhookTask);
+		webhookTaskService.save(webhookTask);
 
 		if (sendNow) {
 			asyncExe(webhookTask.getId(), status);
@@ -97,7 +97,7 @@ public class AsyncWebhookSender {
 				Constants.QUEUE.SEND_WEBHOOK.ROUTING_KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
-		WebhookTask webhookTask = webhookTaskService.selectById(webhookTaskId);
+		WebhookTask webhookTask = webhookTaskService.getById(webhookTaskId);
 		String remark = Utils.rightRemark(webhookTask.getRemark(), WebhookTaskEnum.Status.SEND_MQ_SUCCESS.getDesc());
 		webhookTaskService.updateStatusByStatus(WebhookTaskEnum.Status.SEND_MQ_SUCCESS, remark, webhookTaskId, status);
 	}

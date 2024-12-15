@@ -1,13 +1,18 @@
 package com.company.tool.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.feign.EmailFeign;
+import com.company.tool.api.request.SendEmailReq;
 import com.company.tool.email.AsyncEmailSender;
 
 @RestController
@@ -26,6 +31,24 @@ public class EmailController implements EmailFeign {
 	@Override
 	public Result<Void> exePreTimeSend(Integer id) {
 		asyncEmailSender.exePreTimeSend(id);
+		return Result.success();
+	}
+
+	@Override
+	public Result<Void> send(@RequestBody SendEmailReq sendEmailReq) {
+		String email = sendEmailReq.getEmail();
+		Map<String, String> templateParamMap = sendEmailReq.getTemplateParamMap();
+		LocalDateTime planSendTime = sendEmailReq.getPlanSendTime();
+		EmailEnum.Type type = sendEmailReq.getType();
+		if (planSendTime == null) {
+			planSendTime = LocalDateTime.now();
+		}
+		LocalDateTime overTime = sendEmailReq.getOverTime();
+		if (overTime == null) {
+			overTime = planSendTime.plusDays(1);
+		}
+
+		asyncEmailSender.send(email, templateParamMap, type, planSendTime, overTime);
 		return Result.success();
 	}
 }

@@ -42,7 +42,7 @@ public class JsonWebTokenService implements TokenService {
 	}
 
 	
-	@Value("${yhkd.enable.access-control:true}")
+	@Value("${template.enable.access-control:true}")
 	private Boolean enableAccessControl;
 
 	@Override

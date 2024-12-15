@@ -3,7 +3,7 @@ package com.company.order.innercallback.processor;
 /**
  * 请求之前
  * 
- * @author Candi
+ * @author JQ棣
  *
  */
 public interface BeforeRequestProcessor {

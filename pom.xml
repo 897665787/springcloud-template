@@ -38,6 +38,8 @@
 		<module>tool-api</module>
 		<module>user</module>
 		<module>user-api</module>
+		<module>system</module>
+		<module>system-api</module>
 		<module>order</module>
 		<module>order-api</module>
 		<module>job</module>
@@ -45,7 +47,8 @@
 		<module>web</module>
 		<module>app</module>
 		<module>openapi</module>
-		<module>admin</module>
+		<module>admin</module><!-- 管理后台，前后端一体，与adminapi二选一 -->
+		<module>adminapi</module><!-- 管理后台，前后端分离，与admin二选一 -->
 	</modules>
 
 	<dependencyManagement>

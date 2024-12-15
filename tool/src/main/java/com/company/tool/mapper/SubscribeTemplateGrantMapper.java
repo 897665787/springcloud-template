@@ -4,7 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.tool.entity.SubscribeTemplateGrant;
 
 public interface SubscribeTemplateGrantMapper extends BaseMapper<SubscribeTemplateGrant> {

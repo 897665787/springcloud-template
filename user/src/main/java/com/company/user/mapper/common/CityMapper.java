@@ -1,7 +1,7 @@
 package com.company.user.mapper.common;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.user.entity.City;
 
 @DS("common")

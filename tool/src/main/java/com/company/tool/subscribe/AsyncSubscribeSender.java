@@ -65,7 +65,7 @@ public class AsyncSubscribeSender {
 		subscribeTask.setPlanSendTime(planSendTime);
 		subscribeTask.setOverTime(overTime);
 		subscribeTask.setRemark("AsyncSubscribeSender-" + DateUtil.format(new Date(), "yyMMddHHmmss"));
-		subscribeTaskService.insert(subscribeTask);
+		subscribeTaskService.save(subscribeTask);
 
 		for (OpenidTemplateParam openidTemplateParam : openidTemplateParamList) {
 			SubscribeTaskDetail subscribeTaskDetail = new SubscribeTaskDetail();
@@ -78,7 +78,7 @@ public class AsyncSubscribeSender {
 			SubscribeTaskDetailEnum.Status status = sendNow ? SubscribeTaskDetailEnum.Status.PRE_SEND
 					: SubscribeTaskDetailEnum.Status.PRE_TIME_SEND;
 			subscribeTaskDetail.setStatus(status.getCode());
-			subscribeTaskDetailService.insert(subscribeTaskDetail);
+			subscribeTaskDetailService.save(subscribeTaskDetail);
 
 			if (sendNow) {
 				asyncExe(subscribeTaskDetail.getId(), status);
@@ -107,7 +107,7 @@ public class AsyncSubscribeSender {
 				Constants.QUEUE.SEND_SUBSCRIBE.ROUTING_KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
-		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.selectById(subscribeTaskDetailId);
+		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.getById(subscribeTaskDetailId);
 		String remark = Utils.rightRemark(subscribeTaskDetail.getRemark(),
 				SubscribeTaskDetailEnum.Status.SEND_MQ_SUCCESS.getDesc());
 		subscribeTaskDetailService.updateStatusByStatus(SubscribeTaskDetailEnum.Status.SEND_MQ_SUCCESS, remark, subscribeTaskDetailId,

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.tool.api.enums.SubscribeEnum;
 import com.company.tool.entity.SubscribeGroupType;
 import com.company.tool.mapper.SubscribeGroupTypeMapper;

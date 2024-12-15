@@ -3,7 +3,7 @@ package com.company.order.innercallback.processor;
 /**
  * 放弃请求处理器
  * 
- * @author Candi
+ * @author JQ棣
  *
  */
 public interface AbandonRequestProcessor {

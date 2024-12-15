@@ -10,8 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.BaseStrategy;
 import com.company.order.api.enums.OrderPayEnum;
@@ -43,7 +42,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		// 支付成功
 		OrderPay orderPay4Update = new OrderPay();
 		orderPay4Update.setStatus(OrderPayEnum.Status.PAYED.getCode());
-		Wrapper<OrderPay> wrapper = new EntityWrapper<OrderPay>();
+		UpdateWrapper<OrderPay> wrapper = new UpdateWrapper<OrderPay>();
 		wrapper.eq("order_code", outTradeNo);
 		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘待支付、已关闭’变为‘已支付’
 		wrapper.in("status",
