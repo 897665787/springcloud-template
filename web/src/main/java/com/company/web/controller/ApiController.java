@@ -9,6 +9,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@RefreshScope
 public class ApiController {
 
 	@Autowired
@@ -106,6 +109,9 @@ public class ApiController {
 	
 	@Autowired
 	private ICache cache;
+
+	@Value("${candi:1}")
+	private String candi;
 	
 	@GetMapping(value = "/timestr")
 	public Result<String> timestr() {
@@ -126,7 +132,8 @@ public class ApiController {
 	
 	@GetMapping(value = "/info")
 	public Result<String> info() {
-		return Result.success("{}");
+		System.out.println("candi:" + candi);
+		return Result.success("{"+candi+"}");
 	}
 	
 	@RequireLogin

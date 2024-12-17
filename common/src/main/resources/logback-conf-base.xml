@@ -6,7 +6,7 @@
 	<property name="LOG_HOME" value="${FILE_PATH}" />
 	<!-- 日志输出格式 -->
 	<property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n" />
-	<contextName>default</contextName>
+	<contextName>nacos</contextName>
 	
 	<!-- 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 -->
 	<contextListener class="com.ofpay.logback.TtlMdcListener"/>
