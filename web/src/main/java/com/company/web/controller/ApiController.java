@@ -1,27 +1,11 @@
 package com.company.web.controller;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.annotation.RequireLogin;
+import com.company.framework.autoconfigure.ThreadPoolProperties;
 import com.company.framework.cache.ICache;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
@@ -35,13 +19,25 @@ import com.company.web.amqp.strategy.StrategyConstants;
 import com.company.web.amqp.strategy.dto.UserMQDto;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
-@RefreshScope
 public class ApiController {
 
 	@Autowired
@@ -110,9 +106,6 @@ public class ApiController {
 	@Autowired
 	private ICache cache;
 
-	@Value("${candi:1}")
-	private String candi;
-	
 	@GetMapping(value = "/timestr")
 	public Result<String> timestr() {
 		String string1 = cache.get("aaaaaaa", () -> {
@@ -129,13 +122,20 @@ public class ApiController {
 //		System.out.println(string2);
 		return Result.success(timeService.getTime());
 	}
-	
-	@GetMapping(value = "/info")
-	public Result<String> info() {
-		System.out.println("candi:" + candi);
-		return Result.success("{"+candi+"}");
-	}
-	
+
+	@Autowired
+	private ThreadPoolProperties threadPoolProperties;
+	@Value("${template.threadpool.maxPoolSize}")
+	private Integer maxPoolSize;
+
+    @GetMapping(value = "/info")
+    public Result<Map<String, Object>> info() {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("threadPoolProperties", threadPoolProperties);
+        map.put("maxPoolSize", maxPoolSize);
+        return Result.success(map);
+    }
+
 	@RequireLogin
 	@GetMapping(value = "/getOrderById")
 	public Result<OrderResp> getOrderById(Long id) {
