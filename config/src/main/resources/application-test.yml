@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    include: eureka-test
   cloud:
     config:
       server:

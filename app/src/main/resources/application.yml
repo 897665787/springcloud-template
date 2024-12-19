@@ -5,10 +5,8 @@ server:
     max-threads: 100
 
 spring:
-  application:
-    name: template-app
   profiles:
-    active: dev
+    include: redis,rabbitmq
   main:
     allow-bean-definition-overriding: true
 

@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    include: eureka-pre,redis-pre,rabbitmq-pre
   datasource:
     dynamic: # 使用动态数据源
       primary: master # 设置默认的数据源或者数据源组,默认master

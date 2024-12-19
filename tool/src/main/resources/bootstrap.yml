@@ -1,0 +1,9 @@
+# bootstrap是系统级配置文件，优先级高于application.yml，建议不可变的配置放在bootstrap.yml中
+spring:
+  application:
+    name: template-tool
+  profiles:
+    active: dev # dev,test,pre,prod，不同环境jar启动命令后面加上 --spring.profiles.active=prod
+    #include: eureka,config # 引入配置文件：bootstrap-eureka.yml,bootstrap-config.yml
+    #include: eureka,apollo # 引入配置文件：bootstrap-eureka.yml,bootstrap-apollo.yml
+    include: eureka,nacos # 引入配置文件：bootstrap-eureka.yml,bootstrap-nacos.yml

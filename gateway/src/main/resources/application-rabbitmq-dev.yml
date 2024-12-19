@@ -1,8 +1,0 @@
-spring:
-  rabbitmq:
-    addresses: localhost:5672
-    username: guest
-    password: guest
-    virtual-host: /
-    publisherConfirms: true # 回调ConfirmCallback实现类
-    publisherReturns: true # 回调ReturnCallback实现类

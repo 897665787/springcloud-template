@@ -2,10 +2,8 @@ server:
   port: 4001
 
 spring:
-  application:
-    name: template-tool
   profiles:
-    active: dev
+    include: redis,rabbitmq,elasticsearch
   main:
     allow-bean-definition-overriding: true
   mail:

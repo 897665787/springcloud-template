@@ -1,0 +1,68 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  profiles: dev
+eureka:
+  instance:
+    hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    prefer-ip-address: true # 用于指定在注册到Eureka Server时，是否优先使用IP地址而不是主机名
+    lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
+    lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
+  client:
+    register-with-eureka: false # 注册到Eureka Server，默认true
+    fetch-registry: false # 从Eureka Server获取注册信息，默认true
+    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
+      defaultZone: http://127.0.0.1:7001/eureka/
+
+---
+# test环境配置
+spring:
+  profiles: test
+eureka:
+  instance:
+    hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
+    lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
+  client:
+    register-with-eureka: true # 注册到Eureka Server，默认true
+    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
+      defaultZone: http://127.0.0.1:7001/eureka/
+
+---
+# pre环境配置
+spring:
+  profiles: pre
+eureka:
+  instance:
+    hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 90 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
+    lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
+  client:
+    register-with-eureka: true # 注册到Eureka Server，默认true
+    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
+      defaultZone: http://127.0.0.1:7001/eureka/
+
+---
+# prod环境配置
+spring:
+  profiles: prod
+eureka:
+  instance:
+    hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 90 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
+    lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
+  client:
+    register-with-eureka: true # 注册到Eureka Server，默认true
+    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
+      defaultZone: http://127.0.0.1:7001/eureka/,http://127.0.0.1:7002/eureka/

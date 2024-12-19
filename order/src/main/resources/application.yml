@@ -2,10 +2,8 @@ server:
   port: 8001
 
 spring:
-  application:
-    name: template-order
   profiles:
-    active: dev
+    include: redis,rabbitmq,elasticsearch
   main:
     allow-bean-definition-overriding: true
 

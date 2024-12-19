@@ -2,10 +2,8 @@ server:
   port: 7002
 
 spring:
-  application:
-    name: template-job
   profiles:
-    active: dev
+    include: redis,rabbitmq
   main:
     allow-bean-definition-overriding: true
 

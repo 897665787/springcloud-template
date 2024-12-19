@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    include: eureka-prod,redis-prod,rabbitmq-prod
-    
 template:
   domain: http://domain.com
   enable:
