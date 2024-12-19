@@ -24,8 +24,8 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-		
-		<!-- 配置中心，config和apollo选其中一个就行 -->
+
+		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 		<!-- config客户端 -->
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -37,7 +37,14 @@
 			<artifactId>apollo-client</artifactId>
 			<version>1.9.2</version>
 		</dependency>
-		<!-- 配置中心，config和apollo选其中一个就行 -->
+		<!--nacos客户端 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+			<version>2021.1</version>
+		</dependency>
+
+		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
         
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
