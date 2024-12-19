@@ -4,6 +4,7 @@
 
 # 下面是环境区分，多个配置以 ‘---’ 分开
 ---
+# dev环境配置
 spring:
   profiles: dev
   cloud:
@@ -15,6 +16,7 @@ spring:
       label: master # 拉取的分支
 
 ---
+# test环境配置
 spring:
   profiles: test
   cloud:
@@ -26,6 +28,7 @@ spring:
       label: master # 拉取的分支
 
 ---
+# pre环境配置
 spring:
   profiles: pre
   cloud:
@@ -37,6 +40,7 @@ spring:
       label: master # 拉取的分支
 
 ---
+# prod环境配置
 spring:
   profiles: prod
   cloud:
