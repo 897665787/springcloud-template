@@ -1,0 +1,9 @@
+# bootstrap是系统级配置文件，优先级高于application.yml，建议不可变的配置放在bootstrap.yml中
+spring:
+  application:
+    name: template-web
+  profiles:
+    active: dev
+    #include: config # 引入config配置中心，配置文件：bootstrap-config.yml
+    #include: nacos # 引入apollo配置中心，apollo无需配置
+    include: nacos # 引入nacos配置中心，配置文件：bootstrap-nacos.yml

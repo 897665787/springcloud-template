@@ -1,0 +1,55 @@
+# bootstrap是系统级配置文件，优先级高于application.yml
+# 本配置用于配置中心的配置加载
+
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+spring:
+  profiles: dev
+  cloud:
+    nacos:
+      config:
+        enabled: true # nacos配置中心开关
+        server-addr: 127.0.0.1:8848 # config-server的请求路径
+        namespace: dev # 如果没有默认值，会从spring.profiles.active里面获取
+        group: springcloud-template
+        name: ${spring.application.name}.yaml # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
+        file-extension: yaml
+
+---
+spring:
+  profiles: test
+  cloud:
+    nacos:
+      config:
+        enabled: true # nacos配置中心开关
+        server-addr: 127.0.0.1:8848 # config-server的请求路径
+        namespace: test # 如果没有默认值，会从spring.profiles.active里面获取
+        group: springcloud-template
+        name: ${spring.application.name}.yaml # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
+        file-extension: yaml
+
+---
+spring:
+  profiles: pre
+  cloud:
+    nacos:
+      config:
+        enabled: true # nacos配置中心开关
+        server-addr: 127.0.0.1:8848 # config-server的请求路径
+        namespace: pre # 如果没有默认值，会从spring.profiles.active里面获取
+        group: springcloud-template
+        name: ${spring.application.name}.yaml # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
+        file-extension: yaml
+
+---
+spring:
+  profiles: prod
+  cloud:
+    nacos:
+      config:
+        enabled: true # nacos配置中心开关
+        server-addr: 127.0.0.1:8848 # config-server的请求路径
+        namespace: prod # 如果没有默认值，会从spring.profiles.active里面获取
+        group: springcloud-template
+        name: ${spring.application.name}.yaml # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
+        file-extension: yaml

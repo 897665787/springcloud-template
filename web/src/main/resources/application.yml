@@ -5,10 +5,6 @@ server:
     max-threads: 100
 
 spring:
-  application:
-    name: template-web
-  profiles:
-    active: dev
   main:
     allow-bean-definition-overriding: true
   servlet:
