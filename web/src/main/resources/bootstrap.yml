@@ -5,5 +5,5 @@ spring:
   profiles:
     active: dev
     #include: config # 引入config配置中心，配置文件：bootstrap-config.yml
-    #include: nacos # 引入apollo配置中心，apollo无需配置
+    #include: apollo # 引入apollo配置中心，配置文件：bootstrap-apollo.yml
     include: nacos # 引入nacos配置中心，配置文件：bootstrap-nacos.yml
