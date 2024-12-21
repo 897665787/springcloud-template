@@ -1,9 +1,3 @@
-server:
-  port: 5001
-  tomcat:
-    min-spare-threads: 5
-    max-threads: 100
-
 spring:
   profiles:
     include: routes,rabbitmq
