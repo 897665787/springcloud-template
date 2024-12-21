@@ -6,20 +6,13 @@ import com.alibaba.nacos.api.config.ConfigChangeEvent;
 import com.alibaba.nacos.api.config.ConfigChangeItem;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.client.config.listener.impl.AbstractConfigChangeListener;
-import com.company.common.util.JsonUtil;
-import com.ctrip.framework.apollo.spring.property.SpringValue;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.TypeConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Set;
 
 @Slf4j
 @Component
