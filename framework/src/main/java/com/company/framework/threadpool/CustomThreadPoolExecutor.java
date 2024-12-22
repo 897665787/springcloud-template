@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import com.company.common.util.MdcUtil;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.skywalking.apm.toolkit.trace.RunnableWrapper;
 
 @Slf4j(topic = "LOG_THREADPOOL")
 public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
@@ -61,7 +62,8 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 
 	@Override
 	public void execute(Runnable command) {
-		super.execute(new WrappedRunnable(command));
+		super.execute(RunnableWrapper.of(command));
+//		super.execute(new WrappedRunnable(command));
 	}
 
 	@Override

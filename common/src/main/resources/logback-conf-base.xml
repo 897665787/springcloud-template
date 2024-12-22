@@ -5,15 +5,17 @@
 	<!--日志文件的保存路径 -->
 	<property name="LOG_HOME" value="${FILE_PATH}" />
 	<!-- 日志输出格式 -->
-	<property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n" />
+	<property name="ENCODER_PATTERN" value="%d{HH:mm:ss.SSS} [%tid] [%X{trace-id}] [%t] %5p %logger{0}.%M[%L] - %m%n" />
 
 	<!-- 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 -->
 	<contextListener class="com.ofpay.logback.TtlMdcListener"/>
 
 	<!-- 控制台日志：输出全部日志到控制台 -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>${ENCODER_PATTERN}</Pattern>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${ENCODER_PATTERN}</pattern>
+			</layout>
 		</encoder>
 	</appender>
 
@@ -29,8 +31,10 @@
                 <maxFileSize>1GB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 		</rollingPolicy>
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>${ENCODER_PATTERN}</pattern>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${ENCODER_PATTERN}</pattern>
+			</layout>
 		</encoder>
 	</appender>
 
@@ -44,8 +48,10 @@
 			<!--日志文件保留天数-->
 			<maxHistory>7</maxHistory>
 		</rollingPolicy>
-		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<pattern>${ENCODER_PATTERN}</pattern>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${ENCODER_PATTERN}</pattern>
+			</layout>
 		</encoder>
 		<!--日志文件最大的大小-->
 		<!-- 
