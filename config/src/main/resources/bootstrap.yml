@@ -1,0 +1,14 @@
+# bootstrap是系统级配置文件，优先级高于application.yml，建议不可变的配置放在bootstrap.yml中
+server:
+  port: 4001
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
+
+spring:
+  application:
+    name: template-config
+  profiles:
+    active: dev,native # dev,test,pre,prod，不同环境jar启动命令后面加上 --spring.profiles.active=prod
+    #active: test,git
+    include: eureka # 引入配置文件：bootstrap-eureka.yml

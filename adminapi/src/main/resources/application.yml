@@ -1,14 +1,6 @@
-server:
-  port: 5001
-  tomcat:
-    min-spare-threads: 5
-    max-threads: 100
-
 spring:
-  application:
-    name: template-adminapi
   profiles:
-    active: dev
+    include: redis,rabbitmq
   main:
     allow-bean-definition-overriding: true
 

@@ -1,11 +1,15 @@
-# bootstrap是系统级配置文件，优先级高于application.yml
-# 本配置用于配置中心的配置加载
-# springcloud-config客户端配置动态实时刷新不太好用，建议还是使用apollo或者nacos做配置中心
+# bootstrap是系统级配置文件，优先级高于application.yml，建议不可变的配置放在bootstrap.yml中
+server:
+  port: 5001
+  tomcat:
+    min-spare-threads: 5
+    max-threads: 100
+
 spring:
-  cloud:
-    config:
-      enabled: false # config配置中心开关
-      uri: http://localhost:4001 # config-server的请求路径
-      name: ${spring.application.name} # 指定拉取配置文件的 application，默认使用 spring.application.name 的值
-      profile: ${spring.profiles.active} # 如果没有默认值，会从spring.profiles.active里面获取
-      label: master # 拉取的分支
+  application:
+    name: template-zuul
+  profiles:
+    active: dev # dev,test,pre,prod，不同环境jar启动命令后面加上 --spring.profiles.active=prod
+    #include: eureka,config # 引入配置文件：bootstrap-eureka.yml,bootstrap-config.yml
+    #include: eureka,apollo # 引入配置文件：bootstrap-eureka.yml,bootstrap-apollo.yml
+    include: eureka,nacos # 引入配置文件：bootstrap-eureka.yml,bootstrap-nacos.yml

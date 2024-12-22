@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    include: routes,eureka-test,rabbitmq-test,apollo-test
-    
 template:
   domain: http://t-domain.com
   enable:

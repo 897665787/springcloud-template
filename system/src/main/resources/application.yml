@@ -1,11 +1,6 @@
-server:
-  port: 8003
-
 spring:
-  application:
-    name: template-system
   profiles:
-    active: dev
+    include: redis,rabbitmq
   main:
     allow-bean-definition-overriding: true
 

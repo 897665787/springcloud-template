@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    include: eureka-dev,redis-dev,rabbitmq-dev
-    
 template:
   domain: http://d-domain.com
   enable:

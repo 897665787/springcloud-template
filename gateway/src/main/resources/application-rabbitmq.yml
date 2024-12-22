@@ -1,0 +1,48 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  profiles: dev
+  rabbitmq:
+    addresses: localhost:5672
+    username: guest
+    password: guest
+    virtual-host: /
+    publisherConfirms: true # 回调ConfirmCallback实现类
+    publisherReturns: true # 回调ReturnCallback实现类
+
+---
+# test环境配置
+spring:
+  profiles: test
+  rabbitmq:
+    addresses: localhost:5672
+    username: guest
+    password: guest
+    virtual-host: /
+    publisherConfirms: true # 回调ConfirmCallback实现类
+    publisherReturns: true # 回调ReturnCallback实现类
+
+---
+# pre环境配置
+spring:
+  profiles: pre
+  rabbitmq:
+    addresses: localhost:5672
+    username: guest
+    password: guest
+    virtual-host: /
+    publisherConfirms: true # 回调ConfirmCallback实现类
+    publisherReturns: true # 回调ReturnCallback实现类
+
+---
+# prod环境配置
+spring:
+  profiles: prod
+  rabbitmq:
+    addresses: localhost:5672
+    username: guest
+    password: guest
+    virtual-host: /
+    publisherConfirms: true # 回调ConfirmCallback实现类
+    publisherReturns: true # 回调ReturnCallback实现类

@@ -1,14 +1,6 @@
-server:
-  port: 5001
-  tomcat:
-    min-spare-threads: 5
-    max-threads: 100
-
 spring:
-  application:
-    name: template-gateway
   profiles:
-    active: dev
+    include: routes,rabbitmq
   cloud:
     gateway:
       # 处理跨域

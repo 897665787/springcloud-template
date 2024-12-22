@@ -11,3 +11,4 @@ logs/
 /canal.*
 /minio
 jrebel-classpath-*.jar
+/nacos-server-*

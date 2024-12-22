@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    include: routes,eureka-prod,rabbitmq-prod,apollo-prod
-
 template:
   domain: http://domain.com
   enable:

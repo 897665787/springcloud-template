@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    include: routes,eureka-dev,rabbitmq-dev,apollo-dev
-    
 template:
   domain: http://d-domain.com
   enable:

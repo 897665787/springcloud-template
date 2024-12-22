@@ -1,14 +1,6 @@
-server:
-  port: 6201
-  tomcat:
-    min-spare-threads: 5
-    max-threads: 100
-
 spring:
-  application:
-    name: template-openapi
   profiles:
-    active: dev
+    include: redis,rabbitmq
   main:
     allow-bean-definition-overriding: true
 
