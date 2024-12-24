@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <!-- 独立输出的同步日志 -->
+    <appender name="SUMMARY_API_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/summary-api.log</File>
+        <append>true</append>
+        <!--过滤器,只打INFO级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/summary-api.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%m%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="LOG_SUMMARY_API" level="INFO" additivity="false">
+        <appender-ref ref="SUMMARY_API_FILE" />
+    </logger>
+
+    <!-- 独立输出的同步日志 -->
+    <appender name="SUMMARY_SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_HOME}/summary-sql.log</File>
+        <append>true</append>
+        <!--过滤器,只打INFO级别的日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/summary-sql.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%m%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="LOG_SUMMARY_SQL" level="INFO" additivity="false">
+        <appender-ref ref="SUMMARY_SQL_FILE" />
+    </logger>
+</included>
