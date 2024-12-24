@@ -34,7 +34,7 @@ public class SummarySQLInterceptor implements Interceptor {
         long start = SystemClock.now();
         Object result = invocation.proceed();
         long timing = SystemClock.now() - start;
-        log.info("[{}] {}", sql, timing);
+        log.info("|{}|{}", sql, timing);
         return result;
     }
 

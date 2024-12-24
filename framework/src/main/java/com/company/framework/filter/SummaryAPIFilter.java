@@ -54,7 +54,7 @@ public class SummaryAPIFilter extends OncePerRequestFilter {
 		String requestURI = request.getRequestURI();
 		chain.doFilter(request, response);
 
-		log.info("[{}] [{}] {}", method, transformUrl(requestURI), System.currentTimeMillis() - start);
+		log.info("{}|{}|{}", method, transformUrl(requestURI), System.currentTimeMillis() - start);
 	}
 
 	/**
