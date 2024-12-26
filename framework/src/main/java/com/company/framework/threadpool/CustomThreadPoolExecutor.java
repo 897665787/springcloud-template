@@ -62,8 +62,7 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 
 	@Override
 	public void execute(Runnable command) {
-		super.execute(RunnableWrapper.of(command));
-//		super.execute(new WrappedRunnable(command));
+		super.execute(new WrappedRunnable(command));
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 		private final String traceId;
 
 		public WrappedRunnable(Runnable target) {
-			this.target = target;
+			this.target = RunnableWrapper.of(target);
 			this.traceId = MdcUtil.get();
 		}
 
