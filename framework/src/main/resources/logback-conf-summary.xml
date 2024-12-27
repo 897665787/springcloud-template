@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
+    <!--
+    日志分析命令：
+    cat summary-api.log | awk -F'|' '{ counts[$1_$2]++ ;nums[$1_$2]+=$3} END { for (i in nums) print i, nums[i], counts[i], nums[i]/counts[i] }' | sort -k4,4nr
+    解释：
+    1.cat summary-api.log
+    cat 命令用于显示 summary-api.log 文件的内容，并将其传递给管道。
+    2. awk -F'|' '{ counts[$1_$2]++ ;nums[$1_$2]+=$3} END { for (i in nums) print i, nums[i], counts[i], nums[i]/counts[i] }'
+    awk 命令用于处理文本数据。-F'|' 指定字段分隔符为竖线 |。
+    以下是 awk 命令的详细解释：
+    counts[$1_$2]++：使用日期和水果名称的组合（$1_$2）作为键，统计每个组合出现的次数。
+    nums[$1_$2]+=$3：使用日期和水果名称的组合（$1_$2）作为键，累加每个组合的数值（$3）。
+    END { for (i in nums) print i, nums[i], counts[i], nums[i]/counts[i] }：在文件读取完毕后，遍历 nums 数组，输出每个键、总和、计数和平均值。
+    3. sort -k4,4nr
+    sort 命令用于对 awk 输出的结果进行排序。-k4,4 表示按第四列（即平均值）进行排序，n 表示按数值排序，r 表示降序排序。
+     -->
+
     <!-- 独立输出的同步日志 -->
     <appender name="SUMMARY_API_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${LOG_HOME}/summary-api.log</File>
@@ -19,7 +35,7 @@
         </encoder>
     </appender>
     <logger name="LOG_SUMMARY_API" level="INFO" additivity="false">
-        <appender-ref ref="SUMMARY_API_FILE" />
+        <appender-ref ref="SUMMARY_API_FILE"/>
     </logger>
 
     <!-- 独立输出的同步日志 -->
@@ -41,6 +57,6 @@
         </encoder>
     </appender>
     <logger name="LOG_SUMMARY_SQL" level="INFO" additivity="false">
-        <appender-ref ref="SUMMARY_SQL_FILE" />
+        <appender-ref ref="SUMMARY_SQL_FILE"/>
     </logger>
 </included>
