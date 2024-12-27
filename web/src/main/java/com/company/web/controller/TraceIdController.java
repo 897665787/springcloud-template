@@ -1,23 +1,18 @@
 package com.company.web.controller;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
-
-import org.apache.skywalking.apm.toolkit.trace.ConsumerWrapper;
-import org.apache.skywalking.apm.toolkit.trace.FunctionWrapper;
-import org.apache.skywalking.apm.toolkit.trace.SupplierWrapper;
+import com.company.common.api.Result;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/traceid")

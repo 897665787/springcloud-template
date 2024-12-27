@@ -28,3 +28,5 @@ Plugin of JDK ForkJoinPool. Agent is compatible with JDK 1.8+
 
 如果需要解决ForkJoinPool（parallelStream、CompletableFuture）线程池日志ID传递
 将/skywalking-agent/bootstrap-plugins/apm-jdk-forkjoinpool-plugin-9.1.0.jar复制到/plugins
+
+测试用例：TraceIdController
