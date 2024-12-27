@@ -1,17 +1,9 @@
 package com.company.framework.threadpool;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import com.company.common.util.MdcUtil;
-
 import lombok.extern.slf4j.Slf4j;
-import org.apache.skywalking.apm.toolkit.trace.RunnableWrapper;
+
+import java.util.concurrent.*;
 
 @Slf4j(topic = "LOG_THREADPOOL")
 public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
@@ -85,7 +77,7 @@ public class CustomThreadPoolExecutor extends ThreadPoolExecutor {
 		private final String traceId;
 
 		public WrappedRunnable(Runnable target) {
-			this.target = RunnableWrapper.of(target);
+			this.target = target;
 			this.traceId = MdcUtil.get();
 		}
 

@@ -1,9 +1,13 @@
 package com.company.web.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Collectors;
 
+import org.apache.skywalking.apm.toolkit.trace.ConsumerWrapper;
+import org.apache.skywalking.apm.toolkit.trace.FunctionWrapper;
+import org.apache.skywalking.apm.toolkit.trace.SupplierWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +29,19 @@ public class TraceIdController {
 
 	@Autowired(required = false)
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+
+	@GetMapping(value = "/thread")
+	public Result<Integer> thread() {
+		log.info("log begin");
+		for (int i = 0; i < 5; i++) {
+			int n = i;
+			new Thread(() -> {
+				log.info("log in thread:{}", n);
+			}).start();
+		}
+		log.info("log end");
+		return Result.success(1);
+	}
 
 	@GetMapping(value = "/threadpool")
 	public Result<Integer> threadpool() {
@@ -57,13 +74,32 @@ public class TraceIdController {
 		List<Integer> list = Lists.newArrayList(1, 2, 3, 4, 5);
 		log.info("list:{}", list);
 
-		List<String> strList = list.parallelStream().map(v -> {
+		List<String> strList = list.parallelStream()
+				.map(v -> {
 			log.info("log in forkjoin:{}", v);
 			return v.toString();
 		}).collect(Collectors.toList());
 
 		log.info("strList:{}", strList);
 
+		return Result.success(1);
+	}
+
+	@GetMapping(value = "/completablefuture")
+	public Result<Integer> completablefuture() {
+		List<Integer> list = Lists.newArrayList(1, 2, 3, 4, 5);
+		log.info("list:{}", list);
+
+		List<CompletableFuture<String>> list2 = Lists.newArrayList();
+		for (int i = 0; i < list.size(); i++) {
+			final Integer v = list.get(i);
+			CompletableFuture<String> item = CompletableFuture.supplyAsync(() -> {
+				log.info("log in completablefuture:{}", v);
+				return v.toString();
+			});
+			list2.add(item);
+		}
+		CompletableFuture.allOf(list2.toArray(new CompletableFuture[0])).join();
 		return Result.success(1);
 	}
 }
