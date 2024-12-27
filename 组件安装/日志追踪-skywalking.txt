@@ -8,7 +8,7 @@ java-agent下载地址：https://archive.apache.org/dist/skywalking/java-agent/
 部署应用：
 启动参数加上：-javaagent:-javaagent:/path/to/skywalking-agent/skywalking-agent.jar -Dskywalking.agent.service_name=springcloud-template::{服务名} -Dskywalking.collector.backend_service=127.0.0.1:11800
 
-例：-javaagent:-javaagent:/Users/anker/software/skywalking-agent/skywalking-agent.jar -Dskywalking.agent.service_name=springcloud-template::template-web -Dskywalking.collector.backend_service=127.0.0.1:11800
+例：-javaagent:-javaagent:/Users/software/skywalking-agent/skywalking-agent.jar -Dskywalking.agent.service_name=springcloud-template::template-web -Dskywalking.collector.backend_service=127.0.0.1:11800
 
 
 
