@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
-	<!--引用公共日志 -->
-	<include resource="logback-conf-base.xml" />
-	<!--引用线程池日志 -->
-	<include resource="logback-conf-threadpool.xml" />
-    
-    <!-- 自定义日志打印，比如调整orm查询数据库的日志级别 -->
+	<!--引用框架日志 -->
+	<include resource="logback-conf-framework.xml" />
+
+	<!-- 自定义日志打印，比如调整orm查询数据库的日志级别 -->
     <!-- com.baomidou.mybatisplus.plugins.PerformanceInterceptor会打印sql，所以这里注释掉
 	<logger name="com.company.user.mapper" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />

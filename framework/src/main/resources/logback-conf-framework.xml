@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+	<!--引用公共日志（普通版，2选1） -->
+	<!--<include resource="logback-conf-base.xml" /> -->
+	<!--引用公共日志（skywalking版，2选1） -->
+	<include resource="logback-conf-base-skywalking.xml" />
+
+	<!--引用线程池日志 -->
+	<include resource="logback-conf-threadpool.xml" />
+</included>
