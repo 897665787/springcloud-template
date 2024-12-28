@@ -1,5 +1,6 @@
 package com.company.tool.database.mybatisplus;
 
+import com.company.tool.database.mybatisplus.plugins.SummarySQLInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -40,5 +41,19 @@ public class PluginsAutoConfiguration {
 		PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
 		performanceInterceptor.setWriteInLog(true);
 		return performanceInterceptor;
+	}
+
+	/**
+	 * <pre>
+	 * 打印SQL耗时
+	 *
+	 * 结合logback-conf-summary.xml
+	 * LOG_SUMMARY_SQL
+	 * 输出日志
+	 * </pre>
+	 */
+	@Bean
+	public SummarySQLInterceptor summarySQLInterceptor() {
+		return new SummarySQLInterceptor();
 	}
 }

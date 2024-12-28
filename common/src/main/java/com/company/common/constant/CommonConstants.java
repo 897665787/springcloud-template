@@ -9,6 +9,7 @@ public interface CommonConstants {
 	public interface FilterOrdered {
 		// 值越小，优先级越高
 		int MDC = -10;
+		int SUMMARY_API = -5;
 		int RESPONSE = -1;// 这个过滤器值必须小于0，否则不起作用
 		int HTTPCONTEXT = 5;
 		int SOURCE = 7;
