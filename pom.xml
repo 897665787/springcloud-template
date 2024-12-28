@@ -29,6 +29,7 @@
 		<module>zuul</module>
 		<module>gateway</module>
 		<module>config</module>
+		<module>monitor</module>
 		<!-- 公共代码 -->
 		<module>common</module>
 		<module>framework</module>

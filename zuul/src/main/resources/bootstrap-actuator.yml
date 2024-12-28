@@ -1,0 +1,17 @@
+# 本配置用于actuator端点
+# actuator默认情况下只暴露了/health、/info两个端点（为了安全考虑）
+management:
+  #server:
+    #port: ${server.port} # 访问端点的端口，默认与应用端口保持一致
+  endpoint:
+    health:
+      show-details: always #显示详细信息
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /actuator # 默认/actuator
+      exposure:
+        include: "*" # 暴露了所有的端点
+  health:
+    redis:
+      enabled: false # 默认true，禁用redis健康检查，否则应用一启动就会有redis报错
