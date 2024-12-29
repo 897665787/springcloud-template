@@ -22,6 +22,29 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+
+		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
+		<!-- actuator端点，已有依赖不用再声明 -->
+		<!--
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		-->
+		<!-- SpringBootAdmin监控，核心作用就是导入spring-boot-starter-actuator，所以无需导入 -->
+		<!--
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+		-->
+		<!-- Prometheus监控，增加/prometheus端点 -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 	</dependencies>
 	<build>
 		<plugins>

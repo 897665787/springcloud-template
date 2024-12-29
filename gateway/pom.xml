@@ -58,12 +58,13 @@
 		</dependency>
 		<!-- 配置中心，config和apollo选其中一个就行 -->
 
-		<!-- 监控 -->
+		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
+		<!-- actuator端点 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
-		<!-- spring-boot-admin-client，核心作用就是导入spring-boot-starter-actuator，所以无需导入 -->
+		<!-- SpringBootAdmin监控，核心作用就是导入spring-boot-starter-actuator，所以无需导入 -->
 		<!--
 		<dependency>
 			<groupId>de.codecentric</groupId>
@@ -71,7 +72,12 @@
 			<version>2.2.4</version>
 		</dependency>
 		-->
-		<!-- 监控 -->
+		<!-- Prometheus监控，增加/prometheus端点 -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 		
         <!-- rabbitMQ -->
 		<dependency>
