@@ -38,6 +38,20 @@ Plugin of JDK ForkJoinPool. Agent is compatible with JDK 1.8+
 
 测试用例：TraceIdController
 
+如果需要解决xxl-job日志ID传递
+/plugins 已有apm-xxl-job-2.x-plugin-9.1.0.jar
+
+如果需要解决rabbitmq日志ID传递
+/plugins 已有apm-rabbitmq-plugin-9.1.0.jar
+
+如果需要解决rocketMQ日志ID传递
+/plugins 已有apm-rocketMQ-5.x-plugin-9.1.0.jar（没起效果）
+RabbitMQ插件问题：
+skywalking官方提供的RabbitMQ插件存在缺陷，其只针对RabbitMQ官方原生Client实现扩展，但我们在项目中一般不直接使用原生Client，而是使用Spring RabitMQ Client，因Spring RabitMQ Consumer中存在跨线程操作，导致跟踪ID断链
+解决方案：
+skywalking-apm-sniffer：https://github.com/Aas-ee/skywalking-apm-sniffer，构建插件apm-custom-rabbitmq-5.x-plugin-8.14.0.jar复制到/plugins
+
+
 如果需要解决gateway网关日志ID打印
 将/skywalking-agent/optional-plugins
 apm-spring-webflux-5.x-plugin-8.10.0.jar
