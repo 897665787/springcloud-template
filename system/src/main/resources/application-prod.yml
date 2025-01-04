@@ -1,31 +1,3 @@
-spring:
-  datasource:
-    dynamic: # 使用动态数据源
-      primary: master # 设置默认的数据源或者数据源组,默认master
-      strict: false # 是否启用严格模式,默认不启动. 严格模式下未匹配到数据源直接报错, 非严格模式下则使用默认数据源primary所设置的数据源
-      lazy: true # 是否懒加载数据源
-      datasource:
-        master:
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
-          username: root
-          password: 12345678
-        slave_1: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/template_slave1?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
-          username: root
-          password: 12345678
-        slave_2: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/template_slave2?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
-          username: root
-          password: 12345678
-        common: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
-          driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://127.0.0.1:3306/shuttle_common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
-          username: root
-          password: 12345678
-  
 template:
   domain: http://domain.com
   enable:
