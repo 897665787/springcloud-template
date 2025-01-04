@@ -14,3 +14,67 @@ template:
 token:
   # 密钥
   secret: hxqhjvtam5
+
+# concept websocket配置
+# 官方文档：https://github.com/Linyuzai/concept/wiki/Concept-WebSocket-LoadBalance-2
+concept:
+  websocket:
+    type: auto #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
+    server: #服务配置
+      default-endpoint: #默认端点
+        enabled: true #是否启用默认端点，默认true
+        prefix: concept-websocket #前缀，默认'/concept-websocket/'
+        path-selector: #Path选择器
+          enabled: true #是否启用Path选择器，默认false
+        user-selector: #User选择器
+          enabled: true #是否启用User选择器，默认false
+      message:
+        retry:
+          times: 0 #客户端重试次数，默认不重试
+          period: 0 #客户端重试间隔，单位ms，默认0ms
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    load-balance: #负载均衡（转发）配置
+      subscriber-master: websocket #主订阅器，默认 websocket
+      subscriber-slave: none #从订阅器，默认无
+      message:
+        retry:
+          times: 0 #转发重试次数，默认不重试
+          period: 0 #转发重试间隔，单位ms，默认0ms
+      monitor: #监控配置
+        enabled: true #是否启用监控，默认true
+        period: 30000 #轮训间隔，单位ms，默认30s
+        logger: true #是否启用日志，默认false
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    executor:
+      thread-pool-size: 1 #线程池大小，默认1
+
+# Tio websocket配置
+# 参考文档：https://my.oschina.net/panzi1/blog/3062746
+# 官方文档：https://www.t-io.org/doc/tio/318
+tio:
+ websocket:
+   server: # 详情看TioWebSocketServerProperties、TioProperties
+     port: 6789 # 端口，默认6789
+     heartbeat-timeout: 60000 # 心跳超时时间,默认5000
+   cluster: # 详情看TioClusterProperties
+     enabled: false # 是否支持集群，集群开启需要redis
+     all: true
+     group: false
+     user: true
+     ip: true
+     channel: true
+   redis: # 详情看TioRedisClusterProperties
+     ip: ${spring.redis.host}
+     port: ${spring.redis.port}
+     password: ${spring.redis.password}
+   ssl: # 详情看TioSslProperties
+     enabled: false
+     key-store: key-store path
+     password: password
+     trust-store: trust-store path
