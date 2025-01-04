@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: redis,rabbitmq,elasticsearch
+    include: redis,rabbitmq,elasticsearch,datasource
   main:
     allow-bean-definition-overriding: true
   mail:
