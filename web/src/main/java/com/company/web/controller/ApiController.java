@@ -2,8 +2,10 @@ package com.company.web.controller;
 
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
+import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.autoconfigure.ThreadPoolProperties;
 import com.company.framework.cache.ICache;
@@ -20,15 +22,22 @@ import com.company.web.amqp.strategy.dto.UserMQDto;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
@@ -53,7 +62,51 @@ public class ApiController {
 	@Autowired
 	private MessageSender messageSender;
 //	private RabbitMessageSender messageSender;
-	
+
+	@Autowired
+	private RocketMQTemplate rocketMQTemplate;
+
+	@GetMapping(value = "/sendMessage2")
+	public Result<String> sendMessage2(String message) {
+		Map<String, Object> params = Maps.newHashMap();
+		params.put("open", message);
+		params.put("open2", message);
+
+		String paramsStr = JsonUtil.toJsonString(params);
+
+//		Message<String> message2 = MessageBuilder.withPayload(paramsStr).build();
+//		MessageHeaders headers = message2.getHeaders();
+
+		Map<String, Object> headers = Maps.newHashMap();
+		headers.put(HeaderConstants.HEADER_STRATEGY_NAME, "aaaa");
+		headers.put(HeaderConstants.HEADER_PARAMS_CLASS, params.getClass().getName());
+		headers.put("message_id", MdcUtil.get());
+
+		MessageHeaders messageHeaders = new MessageHeaders(headers);
+		Message<String> message2 = MessageBuilder.createMessage(paramsStr, messageHeaders);
+
+		SendCallback sendCallback = new SendCallback() {
+			@Override
+			public void onSuccess(SendResult sendResult) {
+				//改为处理中状态
+				log.info("[LarkArchiveService][taskId:{}]归档任务提交成功");
+			}
+
+			@Override
+			public void onException(Throwable e) {
+				// 改为失败状态
+				log.error("[LarkArchiveService][taskId:{}]归档任务提交失败");
+			}
+		};
+		rocketMQTemplate.asyncSend("topic-test", message2, sendCallback);
+
+//		SendResult sendResult = rocketMQTemplate.sendAndReceive("topic-test",
+//				JsonUtil.toJsonString(params), SendResult.class);
+//		System.out.println("sendResult:"+sendResult);
+
+		return Result.success("success");
+	}
+
 	@GetMapping(value = "/sendMessage")
 	public Result<String> sendMessage(String message) {
 		Map<String, Object> params = Maps.newHashMap();

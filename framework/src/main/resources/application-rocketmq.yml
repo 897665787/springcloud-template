@@ -1,0 +1,44 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  profiles: dev
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: producer-group
+  consumer:
+    group: consumer-group
+
+---
+# test环境配置
+spring:
+  profiles: test
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: producer-group
+  consumer:
+    group: consumer-group
+
+---
+# pre环境配置
+spring:
+  profiles: pre
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: producer-group
+  consumer:
+    group: consumer-group
+
+---
+# prod环境配置
+spring:
+  profiles: prod
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: producer-group
+  consumer:
+    group: consumer-group
