@@ -16,14 +16,14 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-        topic = Constants.EXCHANGE.DIRECT,
-        consumerGroup = "${rocketmq.consumer.group}" + Constants.QUEUE.COMMON.NAME,
+        topic = Constants.EXCHANGE.XDELAYED,
+        consumerGroup = "${rocketmq.consumer.group}" + Constants.QUEUE.XDELAYED.NAME,
         selectorType = SelectorType.TAG,
-        selectorExpression = Constants.QUEUE.COMMON.ROUTING_KEY
+        selectorExpression = Constants.QUEUE.XDELAYED.ROUTING_KEY
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
-public class CommonConsumer implements RocketMQListener<MessageExt> {
+public class DelayConsumer implements RocketMQListener<MessageExt> {
     @Override
     public void onMessage(MessageExt messageExt) {
         Map<String, String> properties = messageExt.getProperties();

@@ -3,6 +3,7 @@ package com.company.web.amqp.springevent;
 import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import com.company.framework.amqp.springevent.utils.ConsumerUtils;
 import com.company.web.amqp.strategy.StrategyConstants;
 
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "message-queue", havingValue = "springevent")
 public class OrderCreateListener {
 
 	@EventListener

@@ -1,24 +1,20 @@
 package com.company.framework.amqp.rabbit;
 
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.connection.CorrelationData;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Conditional;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
-
+import cn.hutool.core.util.RandomUtil;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
-
-import cn.hutool.core.util.RandomUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.stereotype.Component;
 
 @Slf4j
-@Primary
 @Component
 @Conditional(RabbitCondition.class)
 public class RabbitMessageSender implements MessageSender {

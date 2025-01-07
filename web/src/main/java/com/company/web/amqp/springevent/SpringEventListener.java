@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import com.company.framework.amqp.springevent.event.MessageEvent;
 import com.company.framework.amqp.springevent.utils.ConsumerUtils;
 
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "message-queue", havingValue = "springevent")
 public class SpringEventListener implements ApplicationListener<MessageEvent> {
 
 	@Override

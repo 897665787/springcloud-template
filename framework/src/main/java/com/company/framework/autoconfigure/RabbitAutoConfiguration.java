@@ -84,7 +84,7 @@ public class RabbitAutoConfiguration extends org.springframework.boot.autoconfig
 			super(ConfigurationPhase.PARSE_CONFIGURATION);
 		}
 
-		@ConditionalOnProperty(prefix = "template.enable", name = "rabbitmq", havingValue = "true")
+		@ConditionalOnProperty(prefix = "template.enable", name = "message-queue", havingValue = "rabbitmq")
 		static class EnableProperty {
 		}
 

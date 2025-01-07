@@ -2,8 +2,11 @@ package com.company.framework.amqp.springevent;
 
 import java.util.function.Consumer;
 
+import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
@@ -22,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "message-queue", havingValue = "springevent")
 public class SpringEventMessageSender implements MessageSender {
 
 	@Autowired

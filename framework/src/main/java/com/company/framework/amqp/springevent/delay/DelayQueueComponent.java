@@ -4,6 +4,7 @@ import java.util.concurrent.DelayQueue;
 import java.util.function.Consumer;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.MdcUtil;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "message-queue", havingValue = "springevent")
 public class DelayQueueComponent implements CommandLineRunner {
 
 	private DelayQueue<DelayedConsumer> delayQueue = new DelayQueue<>();

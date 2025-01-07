@@ -5,7 +5,7 @@ package com.company.framework.amqp.rabbit.constants;
  */
 public interface FanoutConstants {
 
-	String PREFIX = "fanout.";
+	String PREFIX = "fanout-";
 
 	// 部署事件
 	interface DEPLOY {
@@ -18,7 +18,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "canal";
 
-		String PREFIX = FanoutConstants.PREFIX + "canal.";
+		String PREFIX = FanoutConstants.PREFIX + "canal-";
 		// 队列
 		String USER_QUEUE = PREFIX + "user";
 		String ORDER_QUEUE = PREFIX + "order";
@@ -29,7 +29,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "order_create";
 
-		String PREFIX = FanoutConstants.PREFIX + "order_create.";
+		String PREFIX = FanoutConstants.PREFIX + "order_create-";
 		// 队列
 		String SMS_QUEUE = PREFIX + "sms";
 		String COUNTMONEY_QUEUE = PREFIX + "countmoney";
@@ -40,7 +40,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "user_source";
 
-		String PREFIX = FanoutConstants.PREFIX + "user_source.";
+		String PREFIX = FanoutConstants.PREFIX + "user_source-";
 		// 队列
 		String SOURCE_RECORD_QUEUE = PREFIX + "source_record";
 	}
@@ -50,7 +50,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "user_login";
 
-		String PREFIX = FanoutConstants.PREFIX + "user_login.";
+		String PREFIX = FanoutConstants.PREFIX + "user_login-";
 		// 队列
 		String LOGIN_RECORD_QUEUE = PREFIX + "login_record";
 	}
@@ -60,7 +60,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "user_register";
 
-		String PREFIX = FanoutConstants.PREFIX + "user_register.";
+		String PREFIX = FanoutConstants.PREFIX + "user_register-";
 		// 队列
 		String BIND_EMAIL_QUEUE = PREFIX + "bind_email";
 		String BIND_MOBILE_QUEUE = PREFIX + "bind_mobile";
@@ -71,7 +71,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "user_logout";
 
-		String PREFIX = FanoutConstants.PREFIX + "user_logout.";
+		String PREFIX = FanoutConstants.PREFIX + "user_logout-";
 		// 队列
 		String LOGOUT_RECORD_QUEUE = PREFIX + "logout_record";
 	}
@@ -81,7 +81,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "send_coupon";
 		
-		String PREFIX = FanoutConstants.PREFIX + "send_coupon.";
+		String PREFIX = FanoutConstants.PREFIX + "send_coupon-";
 		// 队列
 		String SUBSCRIBE_RECEIVE_QUEUE = PREFIX + "subscribe_receive";
 		String SUBSCRIBE_TOUSE_QUEUE = PREFIX + "subscribe_touse";
@@ -93,7 +93,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "refund_apply_result";
 		
-		String PREFIX = FanoutConstants.PREFIX + "refund_apply_result.";
+		String PREFIX = FanoutConstants.PREFIX + "refund_apply_result-";
 		// 队列
 		String MEMBER_BUY_QUEUE = PREFIX + "member_buy";
 		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
@@ -105,7 +105,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "member_buy_pay_success";
 		
-		String PREFIX = FanoutConstants.PREFIX + "member_buy_pay_success.";
+		String PREFIX = FanoutConstants.PREFIX + "member_buy_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
@@ -115,7 +115,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "distribute_pay_success";
 		
-		String PREFIX = FanoutConstants.PREFIX + "distribute_pay_success.";
+		String PREFIX = FanoutConstants.PREFIX + "distribute_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
@@ -125,7 +125,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "subOrderDemo3_pay_success";
 		
-		String PREFIX = FanoutConstants.PREFIX + "subOrderDemo3_pay_success.";
+		String PREFIX = FanoutConstants.PREFIX + "subOrderDemo3_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
@@ -135,7 +135,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "recharge_pay_success";
 		
-		String PREFIX = FanoutConstants.PREFIX + "recharge_pay_success.";
+		String PREFIX = FanoutConstants.PREFIX + "recharge_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
@@ -145,7 +145,7 @@ public interface FanoutConstants {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "sys_user_login";
 
-		String PREFIX = FanoutConstants.PREFIX + "sys_user_login.";
+		String PREFIX = FanoutConstants.PREFIX + "sys_user_login-";
 		// 队列
 		String SYS_LOGIN_RECORD_QUEUE = PREFIX + "sys_login_record";
 		String INCR_EXPIRELOGINTIMES_QUEUE = PREFIX + "incr_expirelogintimes";
