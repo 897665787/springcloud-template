@@ -1,6 +1,5 @@
 package com.company.web.amqp.rocketmq.consumer;
 
-import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.rabbit.constants.FanoutConstants;
 import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.amqp.rocketmq.utils.ConsumerUtils;
@@ -23,7 +22,7 @@ import java.util.Map;
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
-public class OrderCreate1Consumer implements RocketMQListener<MessageExt> {
+public class OrderCreateSmsConsumer implements RocketMQListener<MessageExt> {
     @Override
     public void onMessage(MessageExt messageExt) {
         Map<String, String> properties = messageExt.getProperties();

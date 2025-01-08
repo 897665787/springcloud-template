@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.web.amqp.rabbitmq.Constants;
+import com.company.web.amqp.Constants;
 
 /**
  * 延时队列(用2个队列实现)

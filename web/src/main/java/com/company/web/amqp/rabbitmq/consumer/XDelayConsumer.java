@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
-import com.company.web.amqp.rabbitmq.Constants;
+import com.company.web.amqp.Constants;
 import com.rabbitmq.client.Channel;
 
 /**

@@ -22,7 +22,7 @@ import java.util.Map;
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
-public class OrderCreate2Consumer implements RocketMQListener<MessageExt> {
+public class OrderCreateCountmoneyConsumer implements RocketMQListener<MessageExt> {
     @Override
     public void onMessage(MessageExt messageExt) {
         Map<String, String> properties = messageExt.getProperties();

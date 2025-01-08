@@ -2,7 +2,7 @@ package com.company.web.amqp.rocketmq.consumer;
 
 import com.company.framework.amqp.rocketmq.utils.ConsumerUtils;
 import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
-import com.company.web.amqp.rabbitmq.Constants;
+import com.company.web.amqp.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
