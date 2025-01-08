@@ -140,6 +140,6 @@ public class RocketmqMessageSender implements MessageSender {
         if (delaySeconds <= 7200) {
             return 18;
         }
-        return 19;
+        return 18;// 最多18个级别
     }
 }
