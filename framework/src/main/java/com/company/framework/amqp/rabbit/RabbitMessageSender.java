@@ -4,7 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
+import com.company.framework.amqp.constants.HeaderConstants;
 import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;

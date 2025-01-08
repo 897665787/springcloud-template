@@ -1,11 +1,11 @@
-package com.company.framework.amqp.rabbit.constants;
+package com.company.framework.amqp.constants;
 
 /**
- * Fanout广播事件一般基于交换机来做
+ * 广播事件常量
  */
 public interface FanoutConstants {
 
-	String PREFIX = "fanout-";
+	String PREFIX = "broadcast-";
 
 	// 部署事件
 	interface DEPLOY {
@@ -150,4 +150,5 @@ public interface FanoutConstants {
 		String SYS_LOGIN_RECORD_QUEUE = PREFIX + "sys_login_record";
 		String INCR_EXPIRELOGINTIMES_QUEUE = PREFIX + "incr_expirelogintimes";
 	}
+
 }

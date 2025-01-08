@@ -1,5 +1,6 @@
 package com.company.web.amqp.rabbitmq.consumer;
 
+import com.company.framework.amqp.constants.HeaderConstants;
 import com.company.framework.autoconfigure.RabbitAutoConfiguration;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
@@ -10,8 +11,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
 import com.company.web.amqp.strategy.StrategyConstants;
 import com.rabbitmq.client.Channel;

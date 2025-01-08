@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;

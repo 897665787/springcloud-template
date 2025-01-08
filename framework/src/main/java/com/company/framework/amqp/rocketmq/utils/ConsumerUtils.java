@@ -4,7 +4,7 @@ import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.BaseStrategy;
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
+import com.company.framework.amqp.constants.HeaderConstants;
 import com.company.framework.context.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;

@@ -18,7 +18,7 @@ import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;

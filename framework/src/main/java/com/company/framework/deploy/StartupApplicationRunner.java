@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.context.SpringContextUtil;
 import com.google.common.collect.Maps;
 

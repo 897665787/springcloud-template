@@ -1,7 +1,7 @@
 package com.company.web.amqp.rocketmq.consumer;
 
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
+import com.company.framework.amqp.constants.HeaderConstants;
 import com.company.framework.amqp.rocketmq.utils.ConsumerUtils;
 import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
 import com.company.web.amqp.strategy.StrategyConstants;

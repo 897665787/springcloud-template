@@ -26,7 +26,7 @@ import com.company.app.util.TokenValueUtil;
 import com.company.common.api.Result;
 import com.company.common.util.RegexUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.feign.VerifyCodeFeign;

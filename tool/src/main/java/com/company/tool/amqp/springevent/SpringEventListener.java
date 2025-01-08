@@ -2,12 +2,12 @@ package com.company.tool.amqp.springevent;
 
 import java.util.Map;
 
+import com.company.framework.amqp.constants.HeaderConstants;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.amqp.springevent.event.MessageEvent;
 import com.company.framework.amqp.springevent.utils.ConsumerUtils;
 

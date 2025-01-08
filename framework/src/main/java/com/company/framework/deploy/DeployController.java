@@ -2,7 +2,7 @@ package com.company.framework.deploy;
 
 import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.context.SpringContextUtil;
 import com.google.common.collect.Maps;
 import com.netflix.discovery.DiscoveryClient;

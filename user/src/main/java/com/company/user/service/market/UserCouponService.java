@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.common.exception.BusinessException;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.user.entity.CouponTemplate;
 import com.company.user.entity.UserCoupon;
 import com.company.user.mapper.market.UserCouponMapper;

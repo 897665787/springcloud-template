@@ -2,16 +2,14 @@ package com.company.framework.amqp.springevent;
 
 import java.util.function.Consumer;
 
-import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
+import com.company.framework.amqp.constants.HeaderConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.HeaderConstants;
 import com.company.framework.amqp.springevent.delay.DelayQueueComponent;
 import com.company.framework.amqp.springevent.delay.DelayedConsumer;
 import com.company.framework.amqp.springevent.event.MessageEvent;

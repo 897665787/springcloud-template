@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.company.common.util.HostUtil;
 import com.company.common.util.JsonUtil;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
 
 import lombok.extern.slf4j.Slf4j;

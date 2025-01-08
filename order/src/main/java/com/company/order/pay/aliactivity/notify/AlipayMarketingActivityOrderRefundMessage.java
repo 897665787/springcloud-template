@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.amqp.rabbitmq.Constants;
 import com.company.order.amqp.strategy.StrategyConstants;

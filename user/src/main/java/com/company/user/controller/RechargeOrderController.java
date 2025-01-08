@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.enums.OrderEnum;

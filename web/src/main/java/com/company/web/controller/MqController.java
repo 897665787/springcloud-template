@@ -3,7 +3,7 @@ package com.company.web.controller;
 import cn.hutool.core.date.DateUtil;
 import com.company.common.api.Result;
 import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.amqp.constants.FanoutConstants;
 import com.company.web.amqp.Constants;
 import com.company.web.amqp.strategy.StrategyConstants;
 import com.google.common.collect.Maps;
