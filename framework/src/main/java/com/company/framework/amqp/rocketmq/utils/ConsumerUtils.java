@@ -78,14 +78,13 @@ public class ConsumerUtils {
 	private static void handle(String jsonStrMsg, Map<String, String> properties, Consumer<Object> consumer,
 							   boolean unAckIfException) {
 		try {
-			log.info("properties:{}", JsonUtil.toJsonString(properties));
+			MdcUtil.put(properties.get(HeaderConstants.HEADER_MESSAGE_ID));
 			if (jsonStrMsg == null) {
-				log.info("jsonStrMsg is null,properties:{}", properties);
+				log.info("jsonStrMsg is null,properties:{}", JsonUtil.toJsonString(properties));
 				return;
 			}
 			long start = System.currentTimeMillis();
 			try {
-				MdcUtil.put(properties.get("message_id"));
 				log.info("jsonStrMsg:{},properties:{}", jsonStrMsg, JsonUtil.toJsonString(properties));
 				String paramsClassName = MapUtils.getString(properties, HeaderConstants.HEADER_PARAMS_CLASS);
 				Class<?> paramsClass = null;

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Conditional(RabbitCondition.class)
 public class RabbitMessageSender implements MessageSender {
 
-	@Autowired(required = false)
+	@Autowired
 	private RabbitTemplate rabbitTemplate;
 
 	@Override
@@ -49,11 +49,6 @@ public class RabbitMessageSender implements MessageSender {
 	 */
 	private void sendMessage(String strategyName, Object toJson, String exchange, String routingKey,
 			Integer delaySeconds) {
-		if (rabbitTemplate == null) {
-			log.warn("rabbitTemplate not init");
-			return;
-		}
-
 		String correlationId = RandomUtil.randomString(32);
 		String paramsStr = JsonUtil.toJsonString(toJson);
 		rabbitTemplate.convertAndSend(exchange, routingKey, paramsStr, messageToSend -> {

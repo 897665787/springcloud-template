@@ -17,7 +17,7 @@ import java.util.Map;
 @Component
 @RocketMQMessageListener(
         topic = Constants.EXCHANGE.DIRECT,
-        consumerGroup = "${rocketmq.consumer.group}" + Constants.QUEUE.COMMON.NAME,
+        consumerGroup = "${rocketmq.consumer.group}-" + Constants.QUEUE.COMMON.NAME,
         selectorType = SelectorType.TAG,
         selectorExpression = Constants.QUEUE.COMMON.KEY
 )

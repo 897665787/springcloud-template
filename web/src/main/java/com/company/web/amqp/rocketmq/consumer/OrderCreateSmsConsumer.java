@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 @RocketMQMessageListener(
         topic = FanoutConstants.ORDER_CREATE.EXCHANGE,
-        consumerGroup = "${rocketmq.consumer.group}" + FanoutConstants.ORDER_CREATE.SMS_QUEUE
+        consumerGroup = "${rocketmq.consumer.group}-" + FanoutConstants.ORDER_CREATE.SMS_QUEUE
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
