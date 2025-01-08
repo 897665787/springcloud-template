@@ -19,7 +19,7 @@ import java.util.Map;
         topic = Constants.EXCHANGE.DIRECT,
         consumerGroup = "${rocketmq.consumer.group}" + Constants.QUEUE.COMMON.NAME,
         selectorType = SelectorType.TAG,
-        selectorExpression = Constants.QUEUE.COMMON.ROUTING_KEY
+        selectorExpression = Constants.QUEUE.COMMON.KEY
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)

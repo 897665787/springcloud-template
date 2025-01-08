@@ -31,7 +31,7 @@ public class XDelayConsumer {
 			bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.XDELAYED.NAME), 
 			exchange = @Exchange(value = Constants.EXCHANGE.XDELAYED, type = "x-delayed-message", 
 								arguments = { @Argument(name = "x-delayed-type", value = "direct", type = "java.lang.String") }), 
-			key = Constants.QUEUE.XDELAYED.ROUTING_KEY))
+			key = Constants.QUEUE.XDELAYED.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

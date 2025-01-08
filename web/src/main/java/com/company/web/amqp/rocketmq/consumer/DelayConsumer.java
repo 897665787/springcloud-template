@@ -19,7 +19,7 @@ import java.util.Map;
         topic = Constants.EXCHANGE.XDELAYED,
         consumerGroup = "${rocketmq.consumer.group}" + Constants.QUEUE.XDELAYED.NAME,
         selectorType = SelectorType.TAG,
-        selectorExpression = Constants.QUEUE.XDELAYED.ROUTING_KEY
+        selectorExpression = Constants.QUEUE.XDELAYED.KEY
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)

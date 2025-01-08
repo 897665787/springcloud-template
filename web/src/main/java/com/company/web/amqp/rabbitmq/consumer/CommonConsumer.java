@@ -17,7 +17,7 @@ import com.rabbitmq.client.Channel;
 @Conditional(RabbitAutoConfiguration.RabbitCondition.class)
 public class CommonConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.COMMON.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.COMMON.ROUTING_KEY))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.COMMON.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.COMMON.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

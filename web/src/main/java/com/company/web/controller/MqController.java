@@ -28,7 +28,7 @@ public class MqController {
 		params.put("open", message);
 		params.put("open2", message);
 		params.put("time", DateUtil.now());
-		messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY,params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.ROUTING_KEY);
+		messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY,params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
 
 //		UserMQDto param = new UserMQDto();
 //		param.setP1("p1");
@@ -59,7 +59,7 @@ public class MqController {
 		params.put("delaySeconds", delaySeconds);
 
 		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.DEAD_LETTER.ROUTING_KEY, delaySeconds);
+				Constants.QUEUE.DEAD_LETTER.KEY, delaySeconds);
 		return Result.success("success");
 	}
 	
@@ -71,7 +71,7 @@ public class MqController {
 		params.put("delaySeconds", delaySeconds);
 
 		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
-				Constants.QUEUE.XDELAYED.ROUTING_KEY, delaySeconds);
+				Constants.QUEUE.XDELAYED.KEY, delaySeconds);
 		return Result.success("success");
 	}
 }
