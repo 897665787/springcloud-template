@@ -104,7 +104,7 @@ public class AsyncSubscribeSender {
 		params.setSubscribeTaskDetailId(subscribeTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDSUBSCRIBE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_SUBSCRIBE.ROUTING_KEY);
+				Constants.QUEUE.SEND_SUBSCRIBE.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.getById(subscribeTaskDetailId);

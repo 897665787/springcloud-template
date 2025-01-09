@@ -126,7 +126,7 @@ public class AsyncSmsSender {
 		params.setSmsTaskDetailId(smsTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDSMS_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_SMS.ROUTING_KEY);
+				Constants.QUEUE.SEND_SMS.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		SmsTaskDetail smsTaskDetail = smsTaskDetailService.getById(smsTaskDetailId);

@@ -168,7 +168,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("tradeNo", orderNotifyResult.getTransactionId());
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
 	
@@ -277,7 +277,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("tradeNo", reqInfo.getRefundId());
 
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.ROUTING_KEY);
+				Constants.QUEUE.COMMON.KEY);
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
 }

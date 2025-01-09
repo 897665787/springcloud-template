@@ -308,7 +308,7 @@ public class PayController implements PayFeign {
 		params.put("tradeNo", payOrderQuery.getTradeNo());
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+				Constants.QUEUE.PAY_NOTIFY.KEY);
 
 		return Result.success(null, "支付成功");
 	}
@@ -351,7 +351,7 @@ public class PayController implements PayFeign {
 		}
 		
 		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
-				Constants.QUEUE.XDELAYED.ROUTING_KEY, delay);
+				Constants.QUEUE.XDELAYED.KEY, delay);
 		
 		return Result.success();
 	}
@@ -563,7 +563,7 @@ public class PayController implements PayFeign {
 		params.put("tradeNo", payRefundQuery.getTradeNo());
 
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.ROUTING_KEY);
+				Constants.QUEUE.COMMON.KEY);
 
 		return Result.success(null, "退款成功");
 	}

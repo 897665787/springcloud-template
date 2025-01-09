@@ -14,7 +14,7 @@ import com.rabbitmq.client.Channel;
 @Component
 public class SendWebhookConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.SEND_WEBHOOK.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.SEND_WEBHOOK.ROUTING_KEY))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.SEND_WEBHOOK.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.SEND_WEBHOOK.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

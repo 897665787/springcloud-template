@@ -4,7 +4,7 @@ template:
     cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
     lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
-    rabbitmq: true
+    message-queue: rocketmq # 选项：springevent,rabbitmq,rocketmq
     elasticsearch: true
   sqllimit:
     max: 9999

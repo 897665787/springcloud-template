@@ -42,7 +42,7 @@ public class DelayConfig {
 				// 配置到期后转发的交换
 				.withArgument("x-dead-letter-exchange", Constants.EXCHANGE.DIRECT)
 				// 配置到期后转发的路由键
-				.withArgument("x-dead-letter-routing-key", Constants.QUEUE.COMMON.ROUTING_KEY)// ttl到期后转发到普通公共队列
+				.withArgument("x-dead-letter-routing-key", Constants.QUEUE.COMMON.KEY)// ttl到期后转发到普通公共队列
 				.build();
 	}
 
@@ -53,6 +53,6 @@ public class DelayConfig {
 	 */
 	@Bean
 	public Binding delayBinding(@Qualifier("delayQueue") Queue delayQueue, @Qualifier("directExchange") DirectExchange directExchange) {
-		return BindingBuilder.bind(delayQueue).to(directExchange).with(Constants.QUEUE.DEAD_LETTER.ROUTING_KEY);
+		return BindingBuilder.bind(delayQueue).to(directExchange).with(Constants.QUEUE.DEAD_LETTER.KEY);
 	}
 }

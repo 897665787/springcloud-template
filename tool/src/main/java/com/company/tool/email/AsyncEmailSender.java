@@ -129,7 +129,7 @@ public class AsyncEmailSender {
 		params.setEmailTaskDetailId(emailTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDEMAIL_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_EMAIL.ROUTING_KEY);
+				Constants.QUEUE.SEND_EMAIL.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		EmailTaskDetail emailTaskDetail = emailTaskDetailService.getById(emailTaskDetailId);

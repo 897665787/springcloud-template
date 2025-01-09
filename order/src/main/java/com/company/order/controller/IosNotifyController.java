@@ -164,7 +164,7 @@ public class IosNotifyController implements IosNotifyFeign {
 		params.put("tradeNo", iosParams.get("trade_no"));
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success("success");
 	}
 	
