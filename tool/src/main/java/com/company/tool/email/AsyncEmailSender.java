@@ -13,7 +13,7 @@ import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.context.SpringContextUtil;
-import com.company.tool.amqp.rabbitmq.Constants;
+import com.company.tool.amqp.Constants;
 import com.company.tool.amqp.strategy.StrategyConstants;
 import com.company.tool.amqp.strategy.dto.SendEmailMQDto;
 import com.company.tool.api.enums.EmailEnum;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.rabbitmq.client.Channel;
 import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
-import com.company.system.amqp.rabbitmq.Constants;
+import com.company.system.amqp.Constants;
 
 /**
  * 延时队列消费者(用x-delayed-message插件实现)

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
 import com.company.framework.amqp.MessageSender;
-import com.company.tool.amqp.rabbitmq.Constants;
+import com.company.tool.amqp.Constants;
 import com.company.tool.amqp.strategy.StrategyConstants;
 import com.company.tool.amqp.strategy.dto.SendSubscribeMQDto;
 import com.company.tool.api.enums.SubscribeEnum;

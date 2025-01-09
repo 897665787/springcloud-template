@@ -9,7 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.amqp.rabbit.utils.ConsumerUtils;
-import com.company.order.amqp.rabbitmq.Constants;
+import com.company.order.amqp.Constants;
 import com.rabbitmq.client.Channel;
 
 /**

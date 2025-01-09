@@ -8,7 +8,7 @@ import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.adminapi.amqp.rabbitmq.Constants;
+import com.company.adminapi.amqp.Constants;
 
 /**
  * 延时队列(用2个队列实现)

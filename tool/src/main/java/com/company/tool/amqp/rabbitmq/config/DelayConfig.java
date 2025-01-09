@@ -6,11 +6,9 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
-import com.company.tool.amqp.rabbitmq.Constants;
+import com.company.tool.amqp.Constants;
 
 /**
  * 延时队列(用2个队列实现)

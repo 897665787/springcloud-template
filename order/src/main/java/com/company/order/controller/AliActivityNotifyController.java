@@ -23,7 +23,7 @@ import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.common.util.RetryUtils;
 import com.company.framework.amqp.MessageSender;
-import com.company.order.amqp.rabbitmq.Constants;
+import com.company.order.amqp.Constants;
 import com.company.order.amqp.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliActivityNotifyFeign;

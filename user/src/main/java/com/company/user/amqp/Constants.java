@@ -1,8 +1,8 @@
-package com.company.order.amqp.rabbitmq;
+package com.company.user.amqp;
 
 public interface Constants {
 
-	String PREFIX = "order.";
+	String PREFIX = "user.";
 
 	interface EXCHANGE {
 		String DIRECT = PREFIX + "direct";
@@ -26,18 +26,6 @@ public interface Constants {
 		interface COMMON {
 			String NAME = PREFIX + "common";
 			String ROUTING_KEY = PREFIX + "routingkey.common";
-		}
-
-		// 秒杀队列
-		interface FLASH_KILL {
-			String NAME = PREFIX + "flash_kill";
-			String ROUTING_KEY = PREFIX + "routingkey.flash_kill";
-		}
-		
-		// 支付回调队列
-		interface PAY_NOTIFY {
-			String NAME = PREFIX + "pay_notify";
-			String ROUTING_KEY = PREFIX + "routingkey.pay_notify";
 		}
 	}
 }

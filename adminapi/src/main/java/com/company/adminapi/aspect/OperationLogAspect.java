@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
-import com.company.adminapi.amqp.rabbitmq.Constants;
+import com.company.adminapi.amqp.Constants;
 import com.company.adminapi.amqp.strategy.StrategyConstants;
 import com.company.adminapi.amqp.strategy.dto.SysOperLogDto;
 import com.company.adminapi.annotation.OperationLog;

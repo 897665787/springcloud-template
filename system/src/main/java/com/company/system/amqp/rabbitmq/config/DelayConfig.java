@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.system.amqp.rabbitmq.Constants;
+import com.company.system.amqp.Constants;
 
 
 /**

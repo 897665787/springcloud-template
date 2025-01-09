@@ -1,4 +1,4 @@
-package com.company.system.amqp.rabbitmq;
+package com.company.system.amqp;
 
 public interface Constants {
 
