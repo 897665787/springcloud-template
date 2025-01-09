@@ -6,8 +6,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.company.zuul.amqp.rabbit.constants.FanoutConstants;
-import com.company.zuul.amqp.rabbit.constants.HeaderConstants;
+import com.company.zuul.amqp.constants.FanoutConstants;
+import com.company.zuul.amqp.constants.HeaderConstants;
 import com.company.zuul.amqp.springevent.event.MessageEvent;
 import com.company.zuul.amqp.springevent.utils.ConsumerUtils;
 import com.company.zuul.deploy.amqp.strategy.StrategyConstants;

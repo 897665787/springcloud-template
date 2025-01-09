@@ -1,12 +1,14 @@
 package com.company.framework.deploy.amqp.rabbitmq.consumer;
 
 import com.company.framework.amqp.constants.HeaderConstants;
+import com.company.framework.autoconfigure.RabbitAutoConfiguration;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.amqp.constants.FanoutConstants;
@@ -15,6 +17,7 @@ import com.company.framework.deploy.amqp.strategy.StrategyConstants;
 import com.rabbitmq.client.Channel;
 
 @Component
+@Conditional(RabbitAutoConfiguration.RabbitCondition.class)
 public class RefreshConsumer {
 
 	/**

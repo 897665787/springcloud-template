@@ -1,7 +1,6 @@
 template:
   domain: http://domain.com
-  enable:
-    rabbitmq: true
+  message-queue: rocketmq # 选项：springevent,rabbitmq,rocketmq
 
 # Token 配置
 token:

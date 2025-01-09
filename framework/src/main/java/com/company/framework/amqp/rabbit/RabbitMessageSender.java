@@ -5,7 +5,7 @@ import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.framework.amqp.MessageSender;
 import com.company.framework.amqp.constants.HeaderConstants;
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
+import com.company.framework.autoconfigure.RabbitAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Conditional(RabbitCondition.class)
+@Conditional(RabbitAutoConfiguration.RabbitCondition.class)
 public class RabbitMessageSender implements MessageSender {
 
 	@Autowired

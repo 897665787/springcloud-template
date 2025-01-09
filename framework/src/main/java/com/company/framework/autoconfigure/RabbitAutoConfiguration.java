@@ -1,5 +1,9 @@
 package com.company.framework.autoconfigure;
 
+import com.company.common.util.HostUtil;
+import com.company.common.util.JsonUtil;
+import com.company.framework.amqp.constants.FanoutConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
@@ -19,16 +23,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.common.util.HostUtil;
-import com.company.common.util.JsonUtil;
-import com.company.framework.amqp.constants.FanoutConstants;
-import com.company.framework.autoconfigure.RabbitAutoConfiguration.RabbitCondition;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @Configuration
-@Conditional(RabbitCondition.class)
+@Conditional(RabbitAutoConfiguration.RabbitCondition.class)
 public class RabbitAutoConfiguration extends org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration {
 
 	// 设置消息转换器

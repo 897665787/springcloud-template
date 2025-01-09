@@ -1,7 +1,6 @@
 template:
   domain: http://d-domain.com
-  enable:
-    rabbitmq: false
+  message-queue: springevent # 选项：springevent,rabbitmq,rocketmq
 
 # Token 配置
 token:

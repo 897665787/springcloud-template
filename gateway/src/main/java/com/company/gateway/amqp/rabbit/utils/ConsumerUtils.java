@@ -12,7 +12,7 @@ import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
 import com.company.gateway.amqp.BaseStrategy;
-import com.company.gateway.amqp.rabbit.constants.HeaderConstants;
+import com.company.gateway.amqp.constants.HeaderConstants;
 import com.company.gateway.context.SpringContextUtil;
 import com.rabbitmq.client.Channel;
 

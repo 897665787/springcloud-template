@@ -1,20 +1,22 @@
 package com.company.zuul.deploy.amqp.rabbitmq.consumer;
 
+import com.company.zuul.amqp.constants.FanoutConstants;
+import com.company.zuul.amqp.constants.HeaderConstants;
+import com.company.zuul.amqp.rabbit.utils.ConsumerUtils;
+import com.company.zuul.autoconfigure.RabbitAutoConfiguration;
+import com.company.zuul.deploy.amqp.strategy.StrategyConstants;
+import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.rabbitmq.client.Channel;
-import com.company.zuul.amqp.rabbit.constants.FanoutConstants;
-import com.company.zuul.amqp.rabbit.constants.HeaderConstants;
-import com.company.zuul.amqp.rabbit.utils.ConsumerUtils;
-import com.company.zuul.deploy.amqp.strategy.StrategyConstants;
-
 @Component
+@Conditional(RabbitAutoConfiguration.RabbitCondition.class)
 public class RefreshConsumer {
 
 	/**

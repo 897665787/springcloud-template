@@ -5,7 +5,7 @@ package com.company.framework.amqp.constants;
  */
 public interface FanoutConstants {
 
-	String PREFIX = "broadcast-";
+	String PREFIX = "fanout-";
 
 	// 部署事件
 	interface DEPLOY {
