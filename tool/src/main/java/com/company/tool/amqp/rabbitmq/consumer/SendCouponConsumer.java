@@ -1,12 +1,14 @@
 package com.company.tool.amqp.rabbitmq.consumer;
 
 import com.company.framework.amqp.constants.HeaderConstants;
+import com.company.framework.autoconfigure.RabbitAutoConfiguration;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.amqp.constants.FanoutConstants;
@@ -18,6 +20,7 @@ import com.rabbitmq.client.Channel;
  * 发放优惠券消费者（订阅消息mq触发demo）
  */
 @Component
+@Conditional(RabbitAutoConfiguration.RabbitCondition.class)
 public class SendCouponConsumer {
 
 	// 优惠券到账提醒、优惠券发放通知
