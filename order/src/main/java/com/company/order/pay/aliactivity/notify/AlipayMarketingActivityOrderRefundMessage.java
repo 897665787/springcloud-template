@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.util.JsonUtil;
-import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.sequence.SequenceGenerator;
-import com.company.order.amqp.rabbitmq.Constants;
-import com.company.order.amqp.strategy.StrategyConstants;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
@@ -221,7 +221,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			params.put("tradeNo", aliActivityPay.getTradeNo());
 			
 			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.ROUTING_KEY);
+					Constants.QUEUE.COMMON.KEY);
 		}
 	}
 	

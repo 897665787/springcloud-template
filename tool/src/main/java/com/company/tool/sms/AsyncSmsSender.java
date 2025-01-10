@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
-import com.company.framework.amqp.MessageSender;
-import com.company.tool.amqp.rabbitmq.Constants;
-import com.company.tool.amqp.strategy.StrategyConstants;
-import com.company.tool.amqp.strategy.dto.SendSmsMQDto;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.tool.messagedriven.Constants;
+import com.company.tool.messagedriven.strategy.StrategyConstants;
+import com.company.tool.messagedriven.strategy.dto.SendSmsMQDto;
 import com.company.tool.api.enums.SmsEnum;
 import com.company.tool.entity.SmsTask;
 import com.company.tool.entity.SmsTaskDetail;
@@ -126,7 +126,7 @@ public class AsyncSmsSender {
 		params.setSmsTaskDetailId(smsTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDSMS_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_SMS.ROUTING_KEY);
+				Constants.QUEUE.SEND_SMS.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		SmsTaskDetail smsTaskDetail = smsTaskDetailService.getById(smsTaskDetailId);

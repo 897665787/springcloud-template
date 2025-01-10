@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: routes,rabbitmq
+    include: routes,rabbitmq,rocketmq
   cloud:
     gateway:
       # 处理跨域

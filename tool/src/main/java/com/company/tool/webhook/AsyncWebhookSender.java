@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
-import com.company.framework.amqp.MessageSender;
-import com.company.tool.amqp.rabbitmq.Constants;
-import com.company.tool.amqp.strategy.StrategyConstants;
-import com.company.tool.amqp.strategy.dto.SendWebhookMQDto;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.tool.messagedriven.Constants;
+import com.company.tool.messagedriven.strategy.StrategyConstants;
+import com.company.tool.messagedriven.strategy.dto.SendWebhookMQDto;
 import com.company.tool.api.enums.WebhookEnum;
 import com.company.tool.entity.WebhookTask;
 import com.company.tool.enums.WebhookTaskEnum;
@@ -94,7 +94,7 @@ public class AsyncWebhookSender {
 		params.setWebhookTaskId(webhookTaskId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDWEBHOOK_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_WEBHOOK.ROUTING_KEY);
+				Constants.QUEUE.SEND_WEBHOOK.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		WebhookTask webhookTask = webhookTaskService.getById(webhookTaskId);

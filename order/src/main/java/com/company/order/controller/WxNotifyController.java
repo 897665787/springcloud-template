@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
-import com.company.framework.amqp.MessageSender;
-import com.company.order.amqp.rabbitmq.Constants;
-import com.company.order.amqp.strategy.StrategyConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.WxNotifyFeign;
 import com.company.order.entity.PayNotify;
@@ -168,7 +168,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("tradeNo", orderNotifyResult.getTransactionId());
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
 	
@@ -277,7 +277,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("tradeNo", reqInfo.getRefundId());
 
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.ROUTING_KEY);
+				Constants.QUEUE.COMMON.KEY);
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
 }

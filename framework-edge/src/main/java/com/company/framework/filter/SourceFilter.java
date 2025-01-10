@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.common.constant.CommonConstants;
-import com.company.framework.amqp.MessageSender;
-import com.company.framework.amqp.rabbit.constants.FanoutConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.google.common.collect.Maps;
 

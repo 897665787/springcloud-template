@@ -22,9 +22,9 @@ import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.common.util.RetryUtils;
-import com.company.framework.amqp.MessageSender;
-import com.company.order.amqp.rabbitmq.Constants;
-import com.company.order.amqp.strategy.StrategyConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliActivityNotifyFeign;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
@@ -194,7 +194,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		params.put("tradeNo", aliActivityPay.getTradeNo());
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+				Constants.QUEUE.PAY_NOTIFY.KEY);
 
 		// 支付成功后回调，开始异步发码，最终保存到券码表，在下面的代码需要轮询券码表获取券码响应给支付宝（需要重试机制）
 		SpiOrderSendNotifyResp resp = new SpiOrderSendNotifyResp();

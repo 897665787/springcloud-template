@@ -13,9 +13,9 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
-import com.company.framework.amqp.MessageSender;
-import com.company.order.amqp.rabbitmq.Constants;
-import com.company.order.amqp.strategy.StrategyConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliNotifyFeign;
 import com.company.order.entity.AliPay;
@@ -169,7 +169,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("tradeNo", aliParams.get("trade_no"));
 
 			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.ROUTING_KEY);
+					Constants.QUEUE.COMMON.KEY);
 		} else if ("TRADE_SUCCESS".equals(tradeStatus)) {
 			// trade_status=TRADE_SUCCESS，则认为是支付成功回调
 			/**
@@ -233,7 +233,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("tradeNo", aliParams.get("trade_no"));
 
 			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+					Constants.QUEUE.PAY_NOTIFY.KEY);
 		}
 		return Result.success("success");
 	}

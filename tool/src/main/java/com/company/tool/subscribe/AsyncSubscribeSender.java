@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
-import com.company.framework.amqp.MessageSender;
-import com.company.tool.amqp.rabbitmq.Constants;
-import com.company.tool.amqp.strategy.StrategyConstants;
-import com.company.tool.amqp.strategy.dto.SendSubscribeMQDto;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.tool.messagedriven.Constants;
+import com.company.tool.messagedriven.strategy.StrategyConstants;
+import com.company.tool.messagedriven.strategy.dto.SendSubscribeMQDto;
 import com.company.tool.api.enums.SubscribeEnum;
 import com.company.tool.entity.SubscribeTask;
 import com.company.tool.entity.SubscribeTaskDetail;
@@ -104,7 +104,7 @@ public class AsyncSubscribeSender {
 		params.setSubscribeTaskDetailId(subscribeTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDSUBSCRIBE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_SUBSCRIBE.ROUTING_KEY);
+				Constants.QUEUE.SEND_SUBSCRIBE.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.getById(subscribeTaskDetailId);

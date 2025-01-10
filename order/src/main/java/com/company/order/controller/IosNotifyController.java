@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
-import com.company.framework.amqp.MessageSender;
-import com.company.order.amqp.rabbitmq.Constants;
-import com.company.order.amqp.strategy.StrategyConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.IosNotifyFeign;
 import com.company.order.entity.PayNotify;
@@ -164,7 +164,7 @@ public class IosNotifyController implements IosNotifyFeign {
 		params.put("tradeNo", iosParams.get("trade_no"));
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.PAY_NOTIFY.ROUTING_KEY);
+				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success("success");
 	}
 	

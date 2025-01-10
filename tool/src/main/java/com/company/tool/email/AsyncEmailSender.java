@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
-import com.company.framework.amqp.MessageSender;
+import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.context.SpringContextUtil;
-import com.company.tool.amqp.rabbitmq.Constants;
-import com.company.tool.amqp.strategy.StrategyConstants;
-import com.company.tool.amqp.strategy.dto.SendEmailMQDto;
+import com.company.tool.messagedriven.Constants;
+import com.company.tool.messagedriven.strategy.StrategyConstants;
+import com.company.tool.messagedriven.strategy.dto.SendEmailMQDto;
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.email.dto.EmailTemplateParam;
 import com.company.tool.entity.EmailTask;
@@ -129,7 +129,7 @@ public class AsyncEmailSender {
 		params.setEmailTaskDetailId(emailTaskDetailId);
 
 		messageSender.sendNormalMessage(StrategyConstants.SENDEMAIL_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_EMAIL.ROUTING_KEY);
+				Constants.QUEUE.SEND_EMAIL.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		EmailTaskDetail emailTaskDetail = emailTaskDetailService.getById(emailTaskDetailId);

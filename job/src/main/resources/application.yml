@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: redis,rabbitmq
+    include: redis
   main:
     allow-bean-definition-overriding: true
 

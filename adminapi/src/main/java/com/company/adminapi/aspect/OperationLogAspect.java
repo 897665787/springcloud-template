@@ -24,12 +24,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
-import com.company.adminapi.amqp.rabbitmq.Constants;
-import com.company.adminapi.amqp.strategy.StrategyConstants;
-import com.company.adminapi.amqp.strategy.dto.SysOperLogDto;
+import com.company.adminapi.messagedriven.Constants;
+import com.company.adminapi.messagedriven.strategy.StrategyConstants;
+import com.company.adminapi.messagedriven.strategy.dto.SysOperLogDto;
 import com.company.adminapi.annotation.OperationLog;
 import com.company.adminapi.enums.OperationLogEnum;
-import com.company.framework.amqp.MessageSender;
+import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.WebUtil;
 
@@ -125,7 +125,7 @@ public class OperationLogAspect {
 		try {
 			// MQ 异步保存
 			messageSender.sendNormalMessage(StrategyConstants.SAVE_OPERLOG_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.ROUTING_KEY);
+					Constants.QUEUE.COMMON.KEY);
 		} catch (Exception e) {
 			log.error("异常信息", e);
 		} finally {
