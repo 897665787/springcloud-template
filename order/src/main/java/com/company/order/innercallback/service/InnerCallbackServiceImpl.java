@@ -53,7 +53,7 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 	public Boolean postRestTemplate(PostParam postParam) {
 		String notifyUrl = postParam.getNotifyUrl();
 		Object jsonParams = postParam.getJsonParams();
-		ProcessorBeanName processorBeanName = postParam.getProcessorBeanName();
+//		ProcessorBeanName processorBeanName = postParam.getProcessorBeanName();
 		int increaseSeconds = postParam.getIncreaseSeconds();
 		if (increaseSeconds == 0) {
 			increaseSeconds = innercallbackConfig.getDefaultIncreaseSeconds();
@@ -74,7 +74,8 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 		}
 
 		InnerCallback innerCallback = new InnerCallback().setUrl(notifyUrl).setJsonParams(JsonUtil.toJsonString(jsonParams))
-				.setProcessorBeanName(processorBeanName == null ? null : JsonUtil.toJsonString(processorBeanName))
+//				.setProcessorBeanName(processorBeanName == null ? null : JsonUtil.toJsonString(processorBeanName))
+				.setFallbackUrl(postParam.getFallbackUrl())
 				.setStatus(InnerCallbackEnum.Status.PRE_CALLBACK.getCode())
 				.setIncreaseSeconds(increaseSeconds)
 				.setNextDisposeTime(nextDisposeTime).setMaxFailure(maxFailure)
@@ -121,16 +122,16 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 	
 	private Boolean postRestTemplate(InnerCallback innerCallback) {
 		String jsonParams = innerCallback.getJsonParams();
-		ProcessorBeanName processorBeanName = Optional.ofNullable(innerCallback.getProcessorBeanName())
-				.map(v -> JsonUtil.toEntity(v, ProcessorBeanName.class)).orElse(new ProcessorBeanName());
-		String beforeRequest = processorBeanName.getBeforeRequest();
+//		ProcessorBeanName processorBeanName = Optional.ofNullable(innerCallback.getProcessorBeanName())
+//				.map(v -> JsonUtil.toEntity(v, ProcessorBeanName.class)).orElse(new ProcessorBeanName());
+//		String beforeRequest = processorBeanName.getBeforeRequest();
 		Object paramObject = null;
-		if (beforeRequest != null) {
-			paramObject = SpringContextUtil.getBean(beforeRequest, BeforeRequestProcessor.class)
-					.beforeRequest(jsonParams);
-		} else {
+//		if (beforeRequest != null) {
+//			paramObject = SpringContextUtil.getBean(beforeRequest, BeforeRequestProcessor.class)
+//					.beforeRequest(jsonParams);
+//		} else {
 			paramObject = JsonUtil.toJsonNode(jsonParams);
-		}
+//		}
 		String remark = null;
 		boolean abandonCallback = false;
 		log.info("回调,请求地址:{},原参数:{},参数:{}", innerCallback.getUrl(), jsonParams, JsonUtil.toJsonString(paramObject));
@@ -154,9 +155,9 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 					
 					baseMapper.callbackSuccess(InnerCallbackEnum.Status.CALLBACK_SUCCESS, JsonUtil.toJsonString(result),
 							remark, innerCallback.getId());
-					Optional.ofNullable(processorBeanName.getReturnSuccess())
-							.map(v -> SpringContextUtil.getBean(v, ReturnSuccessProcessor.class))
-							.ifPresent(v -> v.afterReturnSuccess(jsonParams));
+//					Optional.ofNullable(processorBeanName.getReturnSuccess())
+//							.map(v -> SpringContextUtil.getBean(v, ReturnSuccessProcessor.class))
+//							.ifPresent(v -> v.afterReturnSuccess(jsonParams));
 					return true;
 				} else {
 					Boolean retry = result.getData();
@@ -180,9 +181,12 @@ public class InnerCallbackServiceImpl extends ServiceImpl<InnerCallbackMapper, I
 				remark, innerCallback.getId());
 		if (abandonCallback || innerCallback.getFailure() + 1 >= innerCallback.getMaxFailure()) {
 			baseMapper.abandonCallback(InnerCallbackEnum.Status.ABANDON_CALLBACK, innerCallback.getId());
-			Optional.ofNullable(processorBeanName.getAbandonRequest())
-					.map(v -> SpringContextUtil.getBean(v, AbandonRequestProcessor.class))
-					.ifPresent(v -> v.afterAbandonRequest(jsonParams, abandonReason));
+
+			String fallbackUrl = innerCallback.getFallbackUrl();
+
+//			Optional.ofNullable(processorBeanName.getAbandonRequest())
+//					.map(v -> SpringContextUtil.getBean(v, AbandonRequestProcessor.class))
+//					.ifPresent(v -> v.afterAbandonRequest(jsonParams, abandonReason));
 		}
 		return false;
 	}

@@ -1,36 +1,39 @@
 package com.company.order.innercallback.service;
 
-import java.time.LocalDateTime;
-
 import com.company.order.enums.InnerCallbackEnum;
-import com.company.order.innercallback.processor.bean.ProcessorBeanName;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PostParam {
 	/**
-	 * 回调地址
+	 * 执行地址
 	 */
 	@NonNull
 	String notifyUrl;
-	
+
 	/**
 	 * 可转化为JSON的参数对象
 	 */
 	@NonNull
 	Object jsonParams;
-	
+
 	/**
-	 * 处理器bean名称
+	 * fallback地址（重试失败后调用）
 	 */
-	ProcessorBeanName processorBeanName;
+	String fallbackUrl;
+
+//	/**
+//	 * 处理器bean名称
+//	 */
+//	ProcessorBeanName processorBeanName;
 	
 	/**
 	 * 递增秒数

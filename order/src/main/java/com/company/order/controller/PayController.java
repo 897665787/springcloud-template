@@ -170,20 +170,22 @@ public class PayController implements PayFeign {
 		}
 		LocalDateTime timeoutTime = LocalDateTime.now().plusSeconds(timeoutSeconds);
 		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_TIMEOUT).jsonParams(payTimeoutReq)
-				.processorBeanName(processorBeanName).nextDisposeTime(timeoutTime).build();
+//				.processorBeanName(processorBeanName)
+				.fallbackUrl(com.company.order.api.constant.Constants.feignUrl("/pay/payTimeoutFail"))
+				.nextDisposeTime(timeoutTime).build();
 		innerCallbackService.postRestTemplate(postParam);
 	}
 
 	/**
 	 * 订单超时处理(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param payTimeoutReq
 	 * @return
 	 */
 	@PostMapping("/timeoutWithRetry")
 	public Result<Boolean> timeoutWithRetry(@RequestBody @Valid PayTimeoutReq payTimeoutReq) {
 		String orderCode = payTimeoutReq.getOrderCode();
-		
+
 		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
 		if (orderPay == null) {
 			return Result.fail("数据不存在");
@@ -205,13 +207,13 @@ public class PayController implements PayFeign {
 		} else {
 			// 未出结果则认为是未支付成功，走关闭逻辑
 		}
-		
+
 		PayCloseResp payCloseResp = payClient.payClose(orderCode);
 		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
 		if (!payCloseResp.getSuccess()) {
 			return Result.fail(payCloseResp.getMessage());
 		}
-		
+
 		// 修改状态为已关闭
 		OrderPay orderPay4Update = new OrderPay();
 		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
@@ -242,7 +244,56 @@ public class PayController implements PayFeign {
 		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
 		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(payNotifyReq).build();
 		innerCallbackService.postRestTemplate(postParam);
-		
+
+		return Result.success();
+	}
+
+	/**
+	 * 订单超时处理(使用restTemplate的方式调用)
+	 *
+	 * @param payTimeoutReq
+	 * @return
+	 */
+	@PostMapping("/payTimeoutFail")
+	public Result<Boolean> payTimeoutFail(@RequestBody @Valid PayTimeoutReq payTimeoutReq) {
+		String orderCode = payTimeoutReq.getOrderCode();
+
+		OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
+		if (orderPay == null) {
+			return Result.success();
+		}
+
+		// 修改状态为已关闭
+		OrderPay orderPay4Update = new OrderPay();
+		orderPay4Update.setStatus(OrderPayEnum.Status.CLOSED.getCode());
+		LocalDateTime time = LocalDateTime.now();
+		orderPay4Update.setPayTime(time);
+		UpdateWrapper<OrderPay> wrapper = new UpdateWrapper<>();
+		wrapper.eq("id", orderPay.getId());
+		wrapper.eq("status", OrderPayEnum.Status.WAITPAY.getCode());
+		boolean affect = orderPayService.update(orderPay4Update, wrapper);
+		if (!affect) {// 更新不成功，说明订单不是处理中状态
+			log.info("update订单不是处理中状态，不操作关闭:{}", orderCode);
+			return Result.success();
+		}
+
+		String notifyUrl = orderPay.getNotifyUrl();
+		if (StringUtils.isBlank(notifyUrl)) {
+			log.info("无回调URL");
+			return Result.success();
+		}
+
+		// 回调超时未支付关闭订单到对应业务中
+		PayNotifyReq payNotifyReq = new PayNotifyReq();
+		payNotifyReq.setEvent(PayNotifyReq.EVENT.CLOSE);
+		payNotifyReq.setOrderCode(orderCode);
+		payNotifyReq.setTime(time);
+		payNotifyReq.setAttach(orderPay.getNotifyAttach());
+
+		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
+		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(payNotifyReq).build();
+		innerCallbackService.postRestTemplate(postParam);
+
 		return Result.success();
 	}
 

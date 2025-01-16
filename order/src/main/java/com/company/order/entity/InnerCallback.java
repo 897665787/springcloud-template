@@ -32,9 +32,13 @@ public class InnerCallback {
 	 */
 	private String jsonResult;
 	/**
-	 * 处理器bean名称
+	 * fallback地址(重试失败后调用)
 	 */
-	private String processorBeanName;
+	private String fallbackUrl;
+//	/**
+//	 * 处理器bean名称
+//	 */
+//	private String processorBeanName;
 	/**
 	 * 状态(1:待回调,2:回调成功(END),21.回调失败,22.放弃回调(END))
 	 */
