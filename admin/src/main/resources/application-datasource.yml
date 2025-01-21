@@ -7,7 +7,7 @@ spring:
       datasource:
         master:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://${custom.ip_port}/template?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+          url: jdbc:mysql://${custom.ip_port}/shuttle_common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
           username: ${custom.username}
           password: ${custom.password}
         slave_1: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
