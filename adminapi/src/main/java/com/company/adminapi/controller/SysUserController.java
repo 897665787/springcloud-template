@@ -1,15 +1,13 @@
 package com.company.adminapi.controller;
 
+import com.company.common.api.Result;
+import com.company.framework.annotation.RequireLogin;
+import com.company.system.api.response.SysUserInfoResp;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.adminapi.annotation.OperationLog;
-import com.company.adminapi.annotation.RequirePermissions;
-import com.company.adminapi.enums.OperationLogEnum.BusinessType;
-import com.company.common.api.Result;
-import com.company.user.api.response.UserResp;
-
+@RequireLogin
 @RestController
 @RequestMapping("/sysUser")
 public class SysUserController {
@@ -22,21 +20,8 @@ public class SysUserController {
      * 
      * @return 用户信息
      */
-	@OperationLog(title = "新增用户", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:config:add")
 	@GetMapping(value = "/getInfo")
-	public Result<UserResp> getInfo() {
-		return Result.success();
-	}
-
-	@RequirePermissions("system:config:routers")
-	@GetMapping(value = "/getRouters")
-	public Result<UserResp> getRouters() {
-		return Result.success();
-	}
-	
-	@GetMapping(value = "/no")
-	public Result<UserResp> no() {
+	public Result<SysUserInfoResp> getInfo() {
 		return Result.success();
 	}
 }

@@ -5,6 +5,10 @@ import lombok.experimental.Accessors;
 
 import java.util.Set;
 
+/**
+ * @author jake
+ * @since 2024/7/5 14:44
+ */
 @Data
 @Accessors(chain = true)
 public class SysUserInfoResp {
