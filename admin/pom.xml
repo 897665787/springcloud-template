@@ -14,25 +14,17 @@
 	<description>管理后台</description>
 
 	<dependencies>
+		<!-- 单元测试，因为加了scope=test，所以不能在公共包引用 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework</artifactId>
 		    <version>1.0.0</version>
-		    <exclusions>
-		    	<exclusion>
-		    		<groupId>org.springframework.cloud</groupId>
-					<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-		    	</exclusion>
-		    	<!-- 剔除边缘服务一定不会用到的功能 -->
-		    	<exclusion>
-		    		<groupId>com.bbossgroups.plugins</groupId>
-            		<artifactId>bboss-elasticsearch-rest-jdbc</artifactId>
-		    	</exclusion>
-		    	<exclusion>
-		    		<groupId>com.bbossgroups.plugins</groupId>
-            		<artifactId>bboss-elasticsearch-spring-boot-starter</artifactId>
-		    	</exclusion>
-		    </exclusions>
 		</dependency>
 
 		<!-- 渲染模板 -->
@@ -76,7 +68,7 @@
 		<dependency>
         	<groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>2.3</version>
+			<version>3.5.7</version>
         </dependency>
         
         <!-- mybatis-plus动态数据源，可用于（主/从切换、多主库） -->

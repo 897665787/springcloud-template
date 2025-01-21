@@ -2,10 +2,10 @@ package com.company.admin.entity.marketing;
 
 import javax.validation.constraints.Pattern;
 
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import org.hibernate.validator.constraints.Length;
 
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableName;
 import com.company.admin.entity.base.BaseModel;
 
 import lombok.Getter;

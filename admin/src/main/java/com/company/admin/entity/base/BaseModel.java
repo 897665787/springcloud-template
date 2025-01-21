@@ -1,6 +1,6 @@
 package com.company.admin.entity.base;
 
-import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.company.admin.entity.user.User;
 
 /**
