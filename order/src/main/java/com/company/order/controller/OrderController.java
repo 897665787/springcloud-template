@@ -413,6 +413,11 @@ public class OrderController implements OrderFeign {
 
 	@Override
 	public Result<OrderDetailResp> detail(String orderCode) {
+		if (true) {
+			OrderDetailResp orderDetailResp = new OrderDetailResp();
+			orderDetailResp.setOrderCode(orderCode);
+			return Result.success(orderDetailResp);
+		}
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {

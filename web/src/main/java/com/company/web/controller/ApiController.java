@@ -9,6 +9,7 @@ import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.feign.OrderFeign;
+import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
@@ -88,15 +89,10 @@ public class ApiController {
         return Result.success(map);
     }
 
-	@RequireLogin
+//	@RequireLogin
 	@GetMapping(value = "/getOrderById")
-	public Result<OrderResp> getOrderById(Long id) {
-//		if (true)
-//			throw new BusinessException(1, "aaaaaaaaaaa");
-//		Result<OrderResp> byId = orderFeign.getById(id);
-		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
-//		return byId;
-		return Result.success();
+	public Result<OrderDetailResp> getOrderById(String orderCode) {
+		return orderFeign.detail(orderCode);
 	}
 	
 	@GetMapping(value = "/getUserById")
