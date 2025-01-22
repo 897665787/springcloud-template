@@ -13,10 +13,9 @@ CREATE TABLE `bu_pay_refund_apply` (
   `reason` varchar(64) NOT NULL DEFAULT '' COMMENT '退款原因',
   `attach` varchar(256) NOT NULL DEFAULT '' COMMENT '通知地址的附加数据',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   -- 自动生成的代码会自动去掉<...>的内容
-  `del_flag` char(1) DEFAULT '0' COMMENT '删除标记<必须要有这个字段,废弃>',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uniq_ordercode` (`order_code`),
   KEY `idx_rs_vs` (`refund_status`,`verify_status`)

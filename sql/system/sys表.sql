@@ -230,7 +230,6 @@ CREATE TABLE `sys_user`  (
   `create_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建人',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `update_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新人',
-  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '标记删除(0:正常,1:删除)',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_account`(`account`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '用户信息表';

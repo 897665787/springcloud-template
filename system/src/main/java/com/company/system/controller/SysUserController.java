@@ -81,7 +81,7 @@ public class SysUserController implements SysUserFeign {
         if (StringUtils.isNotBlank(updateTimeEnd)) {
             queryWrapper.le("update_time", updateTimeEnd + " 23:59:59");
         }
-		return queryWrapper.eq("del_flag", "0");
+		return queryWrapper;
 	}
 	
 	@Override
@@ -134,7 +134,7 @@ public class SysUserController implements SysUserFeign {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
 			return Result.success(true);
 		}
-		boolean success = sysUserService.logicRemoveBatchByIds(req.getIdList());
+		boolean success = sysUserService.removeByIds(req.getIdList());
 		return Result.success(success);
 	}
 
