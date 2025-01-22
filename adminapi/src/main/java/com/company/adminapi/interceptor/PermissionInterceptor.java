@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Enumeration;
 
 @Order(InterceptorOrdered.PERMISSION)
-@Slf4j	
+@Slf4j
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "permission", havingValue = "true", matchIfMissing = true)
 public class PermissionInterceptor implements AsyncHandlerInterceptor {
