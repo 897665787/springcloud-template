@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class SelectResp<T> {
-	private String code;// 总量
-	private String name;// 数据
+    private T code;// 编码
+    private String name;// 名称
 }
