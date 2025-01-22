@@ -6,15 +6,21 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.excel.SysMenuExcel;
 import com.company.common.api.Result;
 import com.company.common.request.RemoveReq;
+import com.company.common.response.PageResp;
+import com.company.common.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
+import com.company.system.api.feign.SysMenuFeign;
 import com.company.system.api.request.SysMenuReq;
 import com.company.system.api.response.RouterResp;
 import com.company.system.api.response.SysMenuResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -57,7 +63,7 @@ public class SysMenuController {
 				childrenId.add(menu.getId());
 			}
 		});
-		List<SysMenuResp> rootList = sysMenuResps.stream().filter(m -> !childrenId.contains(m.getId())).toList();
+		List<SysMenuResp> rootList = sysMenuResps.stream().filter(m -> !childrenId.contains(m.getId())).collect(Collectors.toList());
 		return Result.success(rootList);
 	}
 

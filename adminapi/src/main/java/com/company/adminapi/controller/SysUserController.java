@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 
 @RequireLogin
 @RestController

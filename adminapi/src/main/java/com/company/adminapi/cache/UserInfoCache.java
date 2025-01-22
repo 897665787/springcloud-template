@@ -1,5 +1,6 @@
 package com.company.adminapi.cache;
 
+import com.company.common.util.JsonUtil;
 import com.company.framework.cache.ICache;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.response.UserInfoResp;
@@ -19,9 +20,9 @@ public class UserInfoCache {
 		return cache.get(key, () -> {
 			UserInfoResp userInfoResp = userInfoFeign.getById(id).dataOrThrow();
 			if (userInfoResp == null) {
-				return new UserInfoResp();
+				userInfoResp = new UserInfoResp();
 			}
-			return userInfoResp;
+			return JsonUtil.toJsonString(userInfoResp);
 		}, UserInfoResp.class);
 	}
 

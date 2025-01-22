@@ -21,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -76,7 +77,7 @@ public class SysDictDataController {
 	public Result<List<SelectResp<String>>> queryByType(String type) {
 		List<SysDictDataResp> dataList = sysDictDataFeign.getByType(type).dataOrThrow();
 		List<SelectResp<String>> respList = dataList.stream().map(v ->
-				new SelectResp<String>().setCode(v.getDictCode()).setName(v.getDictValue())).toList();
+				new SelectResp<String>().setCode(v.getDictCode()).setName(v.getDictValue())).collect(Collectors.toList());
 		return Result.success(respList);
 	}
 
