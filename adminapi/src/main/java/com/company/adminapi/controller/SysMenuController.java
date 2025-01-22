@@ -3,6 +3,7 @@ package com.company.adminapi.controller;
 import com.company.adminapi.annotation.OperationLog;
 import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.easyexcel.ExcelUtil;
+import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysMenuExcel;
 import com.company.common.api.Result;
 import com.company.common.request.RemoveReq;
@@ -16,7 +17,6 @@ import com.company.system.api.response.SysMenuResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;

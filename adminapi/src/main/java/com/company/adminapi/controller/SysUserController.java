@@ -5,6 +5,7 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.controller.converter.SysUserIdNicknameConverter;
 import com.company.adminapi.converter.annotation.RespConverter;
 import com.company.adminapi.easyexcel.ExcelUtil;
+import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserExcel;
 import com.company.common.api.Result;
 import com.company.common.request.RemoveReq;
@@ -24,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 
 @RequireLogin
 @RestController

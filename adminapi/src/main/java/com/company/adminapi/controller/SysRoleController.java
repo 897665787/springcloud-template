@@ -13,13 +13,13 @@ import com.company.system.api.feign.SysRoleFeign;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.system.api.response.SysRoleResp;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated

@@ -12,13 +12,13 @@ import com.company.common.util.PropertyUtils;
 import com.company.system.api.feign.SysDictTypeFeign;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated

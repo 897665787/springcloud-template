@@ -3,6 +3,7 @@ package com.company.adminapi.controller;
 import com.company.adminapi.annotation.OperationLog;
 import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.controller.converter.SysUserIdNicknameConverter;
+import com.company.adminapi.converter.annotation.RespConverter;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysLogininfoExcel;
@@ -10,17 +11,16 @@ import com.company.common.api.Result;
 import com.company.common.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.common.util.PropertyUtils;
-import com.company.adminapi.converter.annotation.RespConverter;
 import com.company.system.api.feign.SysLogininfoFeign;
 import com.company.system.api.request.SysLogininfoReq;
 import com.company.system.api.response.SysLogininfoResp;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Validated
