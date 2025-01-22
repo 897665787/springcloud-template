@@ -10,7 +10,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 支付宝Service
- * Created by xuxiaowei on 2018/11/21.
+ * Created by JQ棣 on 2018/11/21.
  */
 @Service
 public class AliAccountService {

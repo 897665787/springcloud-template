@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 定位Dao
- * Created by wjc on 2018/11/20.
+ * Created by JQ棣 on 2018/11/20.
  */
 public interface UserMapPositionDao {
 

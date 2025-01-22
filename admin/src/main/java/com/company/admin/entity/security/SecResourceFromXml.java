@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 
 /**
  * 从xml文件读取的系统资源
- * Created by xuxiaowei on 2018/6/6.
+ * Created by JQ棣 on 2018/6/6.
  */
 public class SecResourceFromXml {
 

@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 提现
- * Created by xuxiaowei on 2018/11/23.
+ * Created by JQ棣 on 2018/11/23.
  */
 @Accessors(chain = true)
 @Getter

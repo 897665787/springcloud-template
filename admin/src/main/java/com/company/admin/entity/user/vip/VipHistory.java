@@ -15,7 +15,7 @@ import java.util.Date;
 
 /**
  * 会员历史
- * Created by xuxiaowei on 2018/11/15.
+ * Created by JQ棣 on 2018/11/15.
  */
 @Accessors(chain = true)
 @Getter

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 文章管理
- * Created by gustinlau on 10/30/17.
+ * Created by JQ棣 on 10/30/17.
  */
 @Controller
 @RequestMapping("/admin/content/article/article")

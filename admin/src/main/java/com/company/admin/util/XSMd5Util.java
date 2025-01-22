@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
  * Md5加解密工具
- * Created by xuxiaowei on 2017/10/20.
+ * Created by JQ棣 on 2017/10/20.
  */
 public class XSMd5Util {
 

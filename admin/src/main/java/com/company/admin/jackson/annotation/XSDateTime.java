@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * 时间序列化注解
- * Created by xuxiaowei on 2017/11/14.
+ * Created by JQ棣 on 2017/11/14.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 系统用户日志
- * Created by xuxiaowei on 2017/11/2.
+ * Created by JQ棣 on 2017/11/2.
  */
 public class SecStaffLog extends BaseModel {
 

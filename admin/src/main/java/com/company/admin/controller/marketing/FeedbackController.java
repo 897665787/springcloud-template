@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Created by gustinlau on 11/1/17.
+ * Created by JQ棣 on 11/1/17.
  */
 @Controller
 public class FeedbackController {

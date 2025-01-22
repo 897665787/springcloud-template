@@ -11,7 +11,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 城市
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 public class City extends BaseModel {
 

@@ -6,7 +6,7 @@ import com.company.admin.jackson.annotation.AutoDesc;
 
 /**
  * 联系人
- * Created by wjc on 2018/11/19.
+ * Created by JQ棣 on 2018/11/19.
  */
 public class UserContact extends UserContactBook {
 

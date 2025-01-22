@@ -10,7 +10,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 /**
  * 获取指定资源所需的权限
- * Created by xuxiaowei on 2017/11/8.
+ * Created by JQ棣 on 2017/11/8.
  */
 public class PermissionTag extends SimpleTagSupport {
 

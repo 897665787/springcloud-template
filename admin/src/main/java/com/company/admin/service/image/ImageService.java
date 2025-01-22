@@ -22,7 +22,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 图片ServiceImpl
- * Created by xuxiaowei on 2017/10/26.
+ * Created by JQ棣 on 2017/10/26.
  */
 @Service
 public class ImageService {

@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 
 /**
  * 会员套餐
- * Created by xuxiaowei on 2018/11/14.
+ * Created by JQ棣 on 2018/11/14.
  */
 @Accessors(chain = true)
 @Getter

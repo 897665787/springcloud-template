@@ -3,7 +3,7 @@ package com.company.admin.entity.stats;
 import com.company.admin.entity.base.BaseModel;
 
 /**
- * @Author: kunye
+ * @Author: JQ棣
  * @Date: 2018/9/21 10:43
  */
 public class UserSexStatsDetail extends BaseModel {

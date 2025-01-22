@@ -12,7 +12,7 @@ import lombok.Setter;
 
 /**
  * 字典分类
- * @author xxw
+ * @author JQ棣
  * @date 2018/9/22
  */
 @Getter

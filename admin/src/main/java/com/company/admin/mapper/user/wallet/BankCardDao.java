@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 银行卡Dao
- * Created by xuxiaowei on 2018/11/21.
+ * Created by JQ棣 on 2018/11/21.
  */
 public interface BankCardDao {
 

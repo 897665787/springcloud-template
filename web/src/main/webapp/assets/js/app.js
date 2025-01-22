@@ -1,5 +1,5 @@
 /**
- * Created by GustinLau on 2017-04-05.
+ * Created by JQ棣 on 2017-04-05.
  */
 $(function () {
     //Nav

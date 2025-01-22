@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 系统组织Controller
- * Created by xuxiaowei on 2017/11/5.
+ * Created by JQ棣 on 2017/11/5.
  */
 @Controller
 public class SecOrganizationController {

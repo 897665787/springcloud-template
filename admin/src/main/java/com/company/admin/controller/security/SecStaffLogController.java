@@ -13,7 +13,7 @@ import com.company.admin.service.security.SecStaffLogService;
 
 /**
  * 系统用户日志Controller
- * Created by xuxiaowei on 2017/11/9.
+ * Created by JQ棣 on 2017/11/9.
  */
 @Controller
 public class SecStaffLogController {

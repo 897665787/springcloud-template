@@ -24,7 +24,7 @@ import com.company.framework.context.HttpContextUtil;
 
 /**
  * 用户ServiceImpl
- * Created by kunye on 2018/05/28.
+ * Created by JQ棣 on 2018/05/28.
  */
 @Service
 public class UserService {

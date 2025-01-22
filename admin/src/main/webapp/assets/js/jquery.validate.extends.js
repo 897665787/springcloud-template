@@ -1,5 +1,5 @@
 /**
- * Created by GustinLau on 2017-05-03.
+ * Created by JQ棣 on 2017-05-03.
  */
 
 jQuery.validator.addMethod("notEmpty", function (value, element) {

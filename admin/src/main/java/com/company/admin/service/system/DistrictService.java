@@ -12,7 +12,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 区县ServiceImpl
- * Created by wjc on 2018/05/30.
+ * Created by JQ棣 on 2018/05/30.
  */
 @Service
 public class DistrictService {

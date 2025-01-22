@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 定位Controller
- * Created by wjc on 2018/11/20.
+ * Created by JQ棣 on 2018/11/20.
  */
 @Controller
 public class UserMapPositionController {

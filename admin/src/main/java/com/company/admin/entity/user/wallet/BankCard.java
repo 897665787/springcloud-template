@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 银行卡
- * Created by xuxiaowei on 2018/11/21.
+ * Created by JQ棣 on 2018/11/21.
  */
 @Accessors(chain = true)
 @Getter

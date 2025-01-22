@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 支付宝
- * Created by xuxiaowei on 2018/11/21.
+ * Created by JQ棣 on 2018/11/21.
  */
 @Accessors(chain = true)
 @Getter

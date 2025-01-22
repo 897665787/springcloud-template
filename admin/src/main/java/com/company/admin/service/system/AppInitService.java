@@ -13,7 +13,7 @@ import com.company.admin.util.XSUuidUtil;
 
 /**
  * App初始化ServiceImpl
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 @Service
 public class AppInitService {

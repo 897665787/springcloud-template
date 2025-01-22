@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * 系统资源Dao
- * Created by xuxiaowei on 2017/10/27.
+ * Created by JQ棣 on 2017/10/27.
  */
 public interface SecResourceDao {
 

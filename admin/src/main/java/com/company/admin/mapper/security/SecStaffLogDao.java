@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 系统用户日志Dao
- * Created by xuxiaowei on 2017/11/2.
+ * Created by JQ棣 on 2017/11/2.
  */
 public interface SecStaffLogDao {
 

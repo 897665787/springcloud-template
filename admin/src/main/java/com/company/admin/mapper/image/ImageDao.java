@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 图片Dao
- * Created by xuxiaowei on 2017/10/25.
+ * Created by JQ棣 on 2017/10/25.
  */
 public interface ImageDao {
 

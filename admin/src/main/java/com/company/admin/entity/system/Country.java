@@ -8,7 +8,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 国家
- * Created by xuxiaowei on 2018/5/3.
+ * Created by JQ棣 on 2018/5/3.
  */
 public class Country extends BaseModel {
 

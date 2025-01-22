@@ -15,7 +15,7 @@ import com.company.common.api.Result;
 
 /**
  * 提现Controller
- * Created by xuxiaowei on 2018/11/23.
+ * Created by JQ棣 on 2018/11/23.
  */
 @Controller
 public class WithdrawalController {

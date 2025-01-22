@@ -6,7 +6,7 @@ import com.company.admin.entity.system.Version;
 import java.util.List;
 
 /**
- * Created by gustinlau on 11/1/17.
+ * Created by JQ棣 on 11/1/17.
  */
 public interface VersionDao {
     

@@ -10,7 +10,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 等级称号
- * Created by wjc on 2018/06/21.
+ * Created by JQ棣 on 2018/06/21.
  */
 public class Level extends BaseModel {
 

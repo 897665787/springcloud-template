@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 通讯录Controller
- * Created by wjc on 2018/11/19.
+ * Created by JQ棣 on 2018/11/19.
  */
 @Controller
 public class UserContactBookController {

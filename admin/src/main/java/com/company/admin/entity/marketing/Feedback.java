@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
- * Created by gustinlau on 11/1/17.
+ * Created by JQ棣 on 11/1/17.
  */
 @Accessors(chain = true)
 @Getter

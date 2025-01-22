@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 热搜词Controller
- * Created by wjc on 2018/11/07.
+ * Created by JQ棣 on 2018/11/07.
  */
 @Controller
 public class HotWordController {

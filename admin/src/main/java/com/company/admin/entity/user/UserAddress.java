@@ -14,7 +14,7 @@ import com.company.common.jackson.annotation.FormatNumber;
 
 /**
  * 用户收货地址
- * Created by wjc on 2018/05/31.
+ * Created by JQ棣 on 2018/05/31.
  */
 public class UserAddress extends BaseModel {
 
