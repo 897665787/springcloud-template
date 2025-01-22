@@ -153,7 +153,7 @@ public class SysUserController implements SysUserFeign {
 	@Override
 	public Result<SysUserInfoResp> getInfo(Integer userId) {
 		SysUser user = sysUserService.getById(userId);
-		if (user == null || "1".equals(user.getDelFlag())) {
+		if (user == null) {
 			return Result.fail("用户不存在");
 		}
 		Set<String> permissions = new HashSet<>();
