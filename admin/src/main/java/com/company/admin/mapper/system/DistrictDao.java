@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 区县Dao
- * Created by wjc on 2018/05/30.
+ * Created by JQ棣 on 2018/05/30.
  */
 public interface DistrictDao {
 

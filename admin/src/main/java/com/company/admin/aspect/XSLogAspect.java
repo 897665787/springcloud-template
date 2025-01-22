@@ -27,7 +27,7 @@ import com.company.framework.util.IpUtil;
 
 /**
  * 日志切面
- * Created by xuxiaowei on 2017/10/20.
+ * Created by JQ棣 on 2017/10/20.
  */
 @Service
 @Aspect

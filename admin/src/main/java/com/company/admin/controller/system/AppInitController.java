@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * App初始化Controller
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 @Controller
 public class AppInitController {

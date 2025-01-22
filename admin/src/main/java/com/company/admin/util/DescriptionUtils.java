@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.company.admin.jackson.annotation.AutoDesc;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/8/27
  */
 public class DescriptionUtils {

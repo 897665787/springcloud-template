@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * 模型验证工具
- * Created by xuxiaowei on 2018/6/6.
+ * Created by JQ棣 on 2018/6/6.
  */
 public class ModelValidateUtil {
 

@@ -11,7 +11,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 文章
- * Created by xuxiaowei on 2017/10/28.
+ * Created by JQ棣 on 2017/10/28.
  */
 public class Article extends BaseModel {
 

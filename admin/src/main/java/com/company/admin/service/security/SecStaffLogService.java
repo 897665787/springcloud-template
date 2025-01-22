@@ -22,7 +22,7 @@ import com.company.common.util.JsonUtil;
 
 /**
  * 系统用户日志ServiceImpl
- * Created by xuxiaowei on 2017/11/2.
+ * Created by JQ棣 on 2017/11/2.
  */
 @Service
 public class SecStaffLogService implements XSLogHandler {

@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.URL;
 
 /**
  * 产品提示
- * Created by wjc on 2018/11/20.
+ * Created by JQ棣 on 2018/11/20.
  */
 @Accessors(chain = true)
 @Getter

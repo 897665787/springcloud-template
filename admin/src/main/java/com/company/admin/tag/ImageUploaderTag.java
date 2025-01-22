@@ -7,7 +7,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
 /**
- * Created by gustinlau on 11/2/17.
+ * Created by JQ棣 on 11/2/17.
  */
 public class ImageUploaderTag extends TagSupport {
 	private static final long serialVersionUID = 1L;

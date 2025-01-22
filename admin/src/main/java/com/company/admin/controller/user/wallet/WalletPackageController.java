@@ -16,7 +16,7 @@ import com.company.common.api.Result;
 
 /**
  * 钱包套餐Controller
- * Created by xuxiaowei on 2018/11/13.
+ * Created by JQ棣 on 2018/11/13.
  */
 @Controller
 public class WalletPackageController {

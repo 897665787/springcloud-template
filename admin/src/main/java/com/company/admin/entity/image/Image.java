@@ -14,7 +14,7 @@ import com.company.admin.entity.system.Dictionary;
 
 /**
  * 图片
- * Created by xuxiaowei on 2017/10/25.
+ * Created by JQ棣 on 2017/10/25.
  */
 public class Image extends BaseModel {
 

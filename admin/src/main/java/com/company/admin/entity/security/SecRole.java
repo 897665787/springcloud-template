@@ -10,7 +10,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 系统角色
- * Created by xuxiaowei on 2017/10/23.
+ * Created by JQ棣 on 2017/10/23.
  */
 public class SecRole extends BaseModel {
 

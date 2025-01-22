@@ -21,7 +21,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 系统角色ServiceImpl
- * Created by xuxiaowei on 2017/10/27.
+ * Created by JQ棣 on 2017/10/27.
  */
 @Service
 public class SecRoleService {

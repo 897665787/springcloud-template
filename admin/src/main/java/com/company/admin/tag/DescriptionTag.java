@@ -11,7 +11,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/10/8
  */
 public class DescriptionTag extends SimpleTagSupport {

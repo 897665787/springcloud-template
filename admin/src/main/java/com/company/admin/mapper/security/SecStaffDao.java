@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 系统用户Dao
- * Created by xuxiaowei on 2017/10/27.
+ * Created by JQ棣 on 2017/10/27.
  */
 public interface SecStaffDao {
 

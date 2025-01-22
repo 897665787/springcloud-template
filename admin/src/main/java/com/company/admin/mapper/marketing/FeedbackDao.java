@@ -3,13 +3,13 @@ package com.company.admin.mapper.marketing;
 
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 
-import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.company.admin.entity.marketing.Feedback;
 
 /**
- * Created by gustinlau on 11/1/17.
+ * Created by JQ棣 on 11/1/17.
  */
 public interface FeedbackDao extends BaseMapper<Feedback> {
 

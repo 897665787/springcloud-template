@@ -33,7 +33,7 @@ import com.company.common.api.Result;
 import com.company.admin.entity.user.CreditLog;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/10/27
  */
 @Controller

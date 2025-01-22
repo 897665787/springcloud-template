@@ -1,10 +1,10 @@
 template:
   domain: http://domain.com
   enable:
-    cache: combination # guava:本地缓存,redis:redis缓存,combination:组合缓存
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
     lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
-    rabbitmq: false
+    message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
   sqllimit:
     enable: true
     max: 9999
@@ -16,4 +16,4 @@ filestorage:
     accessKey: pRYo5fCm9ZyVNKLA
     secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
     bucketName: buket-template
-    domain: http://127.0.0.1:9000/buket-template # 访问域名，例如：“https://image.d-domain.com”
+    domain: http://127.0.0.1:9000/buket-template # 访问域名，例如：“https://image.domain.com”

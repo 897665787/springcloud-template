@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * 区县Controller
- * Created by wjc on 2018/05/30.
+ * Created by JQ棣 on 2018/05/30.
  */
 @Controller
 public class DistrictController {

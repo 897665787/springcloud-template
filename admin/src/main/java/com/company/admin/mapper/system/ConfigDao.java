@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/9/22
  */
 public interface ConfigDao {

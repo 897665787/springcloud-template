@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 交易
- * Created by xuxiaowei on 2018/06/28.
+ * Created by JQ棣 on 2018/06/28.
  */
 @Accessors(chain = true)
 @Getter

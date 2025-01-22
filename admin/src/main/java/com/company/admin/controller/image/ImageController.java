@@ -17,7 +17,7 @@ import com.company.common.util.JsonUtil;
 
 /**
  * 图片Controller
- * Created by xuxiaowei on 2017/10/26.
+ * Created by JQ棣 on 2017/10/26.
  */
 @Controller
 public class ImageController {

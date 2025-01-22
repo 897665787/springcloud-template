@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 
 /**
  * 时间序列化工具
- * Created by xuxiaowei on 2017/11/14.
+ * Created by JQ棣 on 2017/11/14.
  */
 public class XSDateTimeSerializer extends JsonSerializer<Date> implements ContextualSerializer {
 

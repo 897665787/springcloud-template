@@ -18,7 +18,7 @@ import com.company.admin.util.XSUuidUtil;
 
 /**
  * 文章分类ServiceImpl
- * Created by xuxiaowei on 2017/10/28.
+ * Created by JQ棣 on 2017/10/28.
  */
 @Service
 public class ArticleCategoryService {

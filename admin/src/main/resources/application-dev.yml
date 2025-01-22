@@ -1,15 +1,10 @@
-mybatis-plus:
-  global-config:
-    #是否刷新mapper
-    refreshMapper: true
-
 template:
   domain: http://d-domain.com
   enable:
     cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
     lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
-    rabbitmq: false
+    message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
   sqllimit:
     enable: true
     max: 9999

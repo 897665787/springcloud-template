@@ -12,7 +12,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 省份ServiceImpl
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 @Service
 public class ProvinceService {

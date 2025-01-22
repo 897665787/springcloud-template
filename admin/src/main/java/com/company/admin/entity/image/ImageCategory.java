@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 图片分类
- * Created by xuxiaowei on 2017/10/23.
+ * Created by JQ棣 on 2017/10/23.
  */
 public class ImageCategory extends BaseModel implements XSTreeable<String, ImageCategory> {
 

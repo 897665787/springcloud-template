@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 支持树状结构
- * Created by xuxiaowei on 2017/10/24.
+ * Created by JQ棣 on 2017/10/24.
  */
 public interface XSTreeable<T, V extends XSTreeable<T, V>> {
 

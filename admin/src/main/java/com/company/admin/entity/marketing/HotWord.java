@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * 热搜词
- * Created by wjc on 2018/11/07.
+ * Created by JQ棣 on 2018/11/07.
  */
 public class HotWord extends BaseModel {
 

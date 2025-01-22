@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 提现Dao
- * Created by xuxiaowei on 2018/11/23.
+ * Created by JQ棣 on 2018/11/23.
  */
 public interface WithdrawalDao {
 

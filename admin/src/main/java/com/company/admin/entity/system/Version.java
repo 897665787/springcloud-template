@@ -9,7 +9,7 @@ import com.company.admin.entity.base.XSGenericModel;
 import javax.validation.constraints.NotBlank;
 
 /**
- * Created by gustinlau on 11/1/17.
+ * Created by JQ棣 on 11/1/17.
  */
 public class Version extends XSGenericModel {
 

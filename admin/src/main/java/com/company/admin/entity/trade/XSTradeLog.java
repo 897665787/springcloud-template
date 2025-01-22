@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 交易日志
- * Created by xuxiaowei on 2018/06/29.
+ * Created by JQ棣 on 2018/06/29.
  */
 @Accessors(chain = true)
 @Getter

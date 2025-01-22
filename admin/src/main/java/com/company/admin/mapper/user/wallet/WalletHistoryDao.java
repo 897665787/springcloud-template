@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * 钱包历史Dao
- * Created by xuxiaowei on 2018/11/12.
+ * Created by JQ棣 on 2018/11/12.
  */
 public interface WalletHistoryDao {
 

@@ -14,7 +14,7 @@ import com.google.common.collect.Sets;
 
 /**
  * 根据字典数组输出<option></option>标签
- * Created by gustinlau on 11/2/17.
+ * Created by JQ棣 on 11/2/17.
  */
 public class DictOptionsTag extends SimpleTagSupport {
 

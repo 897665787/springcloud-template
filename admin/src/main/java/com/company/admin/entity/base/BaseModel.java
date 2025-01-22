@@ -1,11 +1,11 @@
 package com.company.admin.entity.base;
 
-import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.company.admin.entity.user.User;
 
 /**
  * 基本模型
- * Created by xuxiaowei on 2017/10/23.
+ * Created by JQ棣 on 2017/10/23.
  */
 public class BaseModel extends XSGenericModel {
 

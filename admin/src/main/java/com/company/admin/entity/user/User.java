@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 用户
- * Created by xuxiaowei on 2017/10/26.
+ * Created by JQ棣 on 2017/10/26.
  */
 @Accessors(chain = true)
 @Getter

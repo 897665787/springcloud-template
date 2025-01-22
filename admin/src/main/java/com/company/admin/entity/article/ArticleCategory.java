@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 文章分类
- * Created by xuxiaowei on 2017/10/28.
+ * Created by JQ棣 on 2017/10/28.
  */
 public class ArticleCategory extends BaseModel implements XSTreeable<String, ArticleCategory> {
 

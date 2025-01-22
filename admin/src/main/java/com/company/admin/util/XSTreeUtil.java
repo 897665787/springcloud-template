@@ -6,7 +6,7 @@ import com.company.admin.tree.XSTreeable;
 
 /**
  * 树操作工具
- * Created by xuxiaowei on 2017/10/25.
+ * Created by JQ棣 on 2017/10/25.
  */
 public class XSTreeUtil {
 

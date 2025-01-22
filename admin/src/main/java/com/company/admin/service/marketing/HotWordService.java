@@ -10,7 +10,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 热搜词Service
- * Created by wjc on 2018/11/07.
+ * Created by JQ棣 on 2018/11/07.
  */
 @Service
 public class HotWordService {

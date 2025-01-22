@@ -14,7 +14,7 @@ import com.company.admin.service.system.ProvinceService;
 
 /**
  * 省份Controller
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 @Controller
 public class ProvinceController {

@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 热搜词Dao
- * Created by wjc on 2018/11/07.
+ * Created by JQ棣 on 2018/11/07.
  */
 public interface HotWordDao {
 

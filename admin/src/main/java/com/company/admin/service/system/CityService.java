@@ -15,7 +15,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 城市ServiceImpl
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 @Service
 public class CityService {
