@@ -217,7 +217,6 @@ DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
   `account` varchar(32) NOT NULL DEFAULT '' COMMENT '账号',
-  `password` varchar(128) NOT NULL DEFAULT '' COMMENT '密码',
   `nickname` varchar(32) NOT NULL DEFAULT '' COMMENT '昵称',
   `email` varchar(64) NOT NULL DEFAULT '' COMMENT '用户邮箱',
   `phonenumber` varchar(32) NOT NULL DEFAULT '' COMMENT '手机号码',
