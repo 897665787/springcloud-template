@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.system.mapper.SysUserMapper">
-
-	<update id="logicRemoveBatchByIds">
-		update sys_user
-		set del_flag = '1'
-		where
-		    <choose>
-				<when test="idList != null and idList.size() > 0">
-					id in
-					<foreach collection="idList" item="item" open="(" separator="," close=")">
-						#{item}
-					</foreach>
-				</when>
-				<otherwise>
-					false
-				</otherwise>
-			</choose>
-	</update>
     <select id="selectByIds" resultType="com.company.system.entity.SysUser">
         select * from sys_user
         where

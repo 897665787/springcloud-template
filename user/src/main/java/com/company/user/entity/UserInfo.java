@@ -12,7 +12,9 @@ import lombok.experimental.Accessors;
 @TableName("bu_user_info")
 public class UserInfo {
 	private Integer id;
-	
+
+	private String uid;
+
 	private String nickname;
 	private String avatar;
 	

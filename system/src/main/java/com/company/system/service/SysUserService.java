@@ -19,10 +19,6 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> implemen
 		return baseMapper.selectByAccount(account);
 	}
 
-	public boolean logicRemoveBatchByIds(List<Integer> idList) {
-		return baseMapper.logicRemoveBatchByIds(idList);
-	}
-
 	public List<SysUser> selectByIds(Collection<Integer> ids) {
 		if (CollectionUtils.isEmpty(ids)) {
 			return Collections.emptyList();

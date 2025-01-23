@@ -1,36 +1,37 @@
 package com.company.adminapi.interceptor;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.adminapi.annotation.RequirePermissions;
+import com.company.common.api.Result;
+import com.company.common.constant.CommonConstants.InterceptorOrdered;
+import com.company.common.util.JsonUtil;
+import com.company.framework.context.HttpContextUtil;
+import com.company.system.api.feign.SysUserRoleFeign;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
-import com.company.adminapi.annotation.RequirePermissions;
-import com.company.common.api.Result;
-import com.company.common.constant.CommonConstants.InterceptorOrdered;
-import com.company.common.util.JsonUtil;
-import com.company.framework.context.HttpContextUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
 
 @Order(InterceptorOrdered.PERMISSION)
-@Slf4j	
+@Slf4j
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "permission", havingValue = "true", matchIfMissing = true)
 public class PermissionInterceptor implements AsyncHandlerInterceptor {
 	
-//	@Lazy // 与feign扫描有冲突，构成循环依赖，所以加@Lazy
-//	@Autowired
-//	private SysUserRoleFeign sysUserRoleFeign;
+	@Lazy // 与feign扫描有冲突，构成循环依赖，所以加@Lazy
+	@Autowired
+	private SysUserRoleFeign sysUserRoleFeign;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -59,14 +60,13 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			lastCurrentUserId = headerCurrentUserIdEnum.nextElement();
 		}
 		
-		String userId = lastCurrentUserId;
+		String userId = StringUtils.defaultIfBlank(lastCurrentUserId, "0");
 
 		// 判断是否有访问权限？
 		RequirePermissions requirePermissions = method.getAnnotation(RequirePermissions.class);
-		
-//		Boolean hasPermission = sysUserRoleFeign.hasPermission(Integer.valueOf(userId), requirePermissions.value())
-//				.dataOrThrow();
-		Boolean hasPermission = true;
+
+		Boolean hasPermission = sysUserRoleFeign.hasPermission(Integer.valueOf(userId), requirePermissions.value())
+				.dataOrThrow();
 		if (hasPermission) {
 			return true;
 		}

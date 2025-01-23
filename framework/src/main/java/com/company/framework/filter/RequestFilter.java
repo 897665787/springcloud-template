@@ -33,6 +33,8 @@ public class RequestFilter extends OncePerRequestFilter {
 
 	@Value("${template.requestFilter.ignoreLogPatterns:}")
 	private String ignoreLogPatterns;
+	@Value("${template.requestFilter.arrMaxLength:1000}")
+	private int arrMaxLength;
 	
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -60,13 +62,13 @@ public class RequestFilter extends OncePerRequestFilter {
 		String bodyStr = "{}";
 		if (contentType != null && contentType.contains("application/json")) {
 			BodyReaderHttpServletRequestWrapper requestWrapper = new BodyReaderHttpServletRequestWrapper(request);
-			bodyStr = JsonUtil.toJsonString(JsonUtil.toJsonNode(requestWrapper.getBodyStr()));// 用json去掉有换行和空格
+			bodyStr = JsonUtil.toJsonStringReplaceProperties(JsonUtil.toJsonNode(requestWrapper.getBodyStr()), arrMaxLength);// 用json去掉有换行和空格
 			request = requestWrapper;
 		}
 		
-		String paramsStr = JsonUtil.toJsonString(WebUtil.getReqParam(request));
+		String paramsStr = JsonUtil.toJsonStringReplaceProperties(WebUtil.getReqParam(request), arrMaxLength);
 		String requestIp = IpUtil.getRequestIp(request);
-		String headerStr = JsonUtil.toJsonString(HttpContextUtil.httpContextHeaderThisRequest(request));
+		String headerStr = JsonUtil.toJsonStringReplaceProperties(HttpContextUtil.httpContextHeaderThisRequest(request), arrMaxLength);
 		String method = request.getMethod();
 		String requestURI = request.getRequestURI();
 

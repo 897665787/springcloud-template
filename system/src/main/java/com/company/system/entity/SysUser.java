@@ -99,10 +99,4 @@ public class SysUser implements Encrypted {
 	 */
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	private Integer updateBy;
-
-	/**
-	 * 标记删除
-	 */
-	private String delFlag;
-
 }

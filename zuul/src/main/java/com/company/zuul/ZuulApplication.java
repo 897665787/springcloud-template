@@ -1,5 +1,6 @@
 package com.company.zuul;
 
+import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
@@ -11,7 +12,7 @@ import com.company.zuul.context.SpringContextUtil;
 
 
 @EnableEurekaClient
-@SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { RabbitAutoConfiguration.class })
+@SpringBootApplication(scanBasePackages = CommonConstants.BASE_PACKAGE, exclude = { RabbitAutoConfiguration.class, RocketMQAutoConfiguration.class })
 @EnableZuulProxy
 public class ZuulApplication {
 	public static void main(String[] args) {

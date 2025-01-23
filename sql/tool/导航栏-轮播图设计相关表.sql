@@ -58,13 +58,14 @@ CREATE TABLE `mk_banner_condition` (
   `show_condition` varchar(32) NOT NULL DEFAULT '' COMMENT '展示条件(bean名称,mk_banner_show_condition.bean_name)',
   `show_condition_value` varchar(255) NOT NULL DEFAULT '' COMMENT '展示条件值',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
-  `create_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标记',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` varchar(64) DEFAULT '' COMMENT '创建者',
+  `update_by` varchar(64) DEFAULT '' COMMENT '更新者',
   PRIMARY KEY (`id`),
   KEY `idx_navitemid` (`banner_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='轮播图-条件';
 
 
 -- 测试数据
-INSERT INTO `mk_banner_condition`(`id`, `banner_id`, `show_condition`, `show_condition_value`, `remark`, `create_date`, `update_date`, `del_flag`) VALUES (1, 1, 'banner-SenceCondition', '{\"sences\":\"a,b\"}', '', '2024-03-26 16:32:21', '2024-03-26 16:32:57', '0');
+INSERT INTO `mk_banner_condition`(`id`, `banner_id`, `show_condition`, `show_condition_value`, `remark`) VALUES (1, 1, 'banner-SenceCondition', '{\"sences\":\"a,b\"}', '');
