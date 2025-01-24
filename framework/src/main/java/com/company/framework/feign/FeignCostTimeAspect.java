@@ -1,4 +1,4 @@
-package com.company.framework.aspect;
+package com.company.framework.feign;
 
 import com.company.common.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,8 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Aspect
-@Component
+//@Component
+@Deprecated // FeignLoggerClient已经可以打印所需的所有日志信息
 public class FeignCostTimeAspect {
 
 	@Value("${template.requestFilter.arrMaxLength:1000}")
@@ -30,7 +31,7 @@ public class FeignCostTimeAspect {
 			long end = System.currentTimeMillis();
 			Signature signature = joinPoint.getSignature();
 			log.info("request feign:{},mills:{},args:{},result:{}", signature.toShortString().replace("(..)", ""), end - start,
-					JsonUtil.toJsonStringReplaceProperties(joinPoint.getArgs(), arrMaxLength), JsonUtil.toJsonStringReplaceProperties(result), arrMaxLength);
+					JsonUtil.toJsonStringReplaceProperties(joinPoint.getArgs(), arrMaxLength), JsonUtil.toJsonStringReplaceProperties(result, arrMaxLength));
 		} catch (Exception e) {
 			log.error("request feign error", e);
 		}

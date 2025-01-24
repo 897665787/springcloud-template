@@ -120,6 +120,18 @@ public class JsonUtil {
 		return true;
 	}
 
+	public static JsonNode toJsonNode(byte[] content) {
+		if (content == null) {
+			return null;
+		}
+		try {
+			return mapper.readTree(content);
+		} catch (IOException e) {
+			logger.error("io exception error", e);
+		}
+		return null;
+	}
+
 	public static JsonNode toJsonNode(String jsonString) {
 		if (jsonString == null) {
 			return null;
