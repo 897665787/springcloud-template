@@ -15,6 +15,8 @@ import java.io.IOException;
 
 /**
  * 打印feign请求(耗时、请求方法、目标机器、请求头、请求体、响应体)信息
+ * <p>
+ * 备注：feign.Logger+feign.Logger.Level也可以打印feign请求信息，但是无法打印在同一行，可尝试借助ThreadLocal实现
  */
 @Slf4j
 public class FeignLoggerClient extends Client.Default {
