@@ -14,10 +14,12 @@ import java.util.Map;
 @Slf4j
 public class JvmErrorController {
 
-    Map<String, Object> map = Maps.newHashMap();
+    //    Map<String, Object> map = Maps.newHashMap();// 触发oom不可被回收
+    
     // 触发OOM
     @GetMapping(value = "/dump")
     public Result<Map<String, Object>> dump() {
+        Map<String, Object> map = Maps.newHashMap();// 触发oom可被回收
         for (int i = 0; i < 10000000; i++) {
             byte[] bytes = new byte[1024 * 1024];
             map.put("" + i, bytes);

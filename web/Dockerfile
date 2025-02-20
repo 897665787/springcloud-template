@@ -48,9 +48,11 @@ ENTRYPOINT ["java"\
 # 输出详细GC日志
 ,"-XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -Xloggc:./logs/gc-%p.log"\
 # 发生OOM时生成Dump文件
-,"-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./logs/heapdump-%p.hprof"\
+,"-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./logs/oom-heapdump-%p.hprof"\
 # 发生致命错误时，记录错误信息
 ,"-XX:ErrorFile=./logs/hs_err_pid-%p.log"\
+# 发生致命错误时，记录栈信息、堆信息
+,"-XX:OnError=\"jstack %p > ./logs/error-jstack-%p.log;jmap -dump:format=b,file=./logs/error-heapdump-%p.hprof %p\""
 
 ,"-jar","/app.jar"\
 ,"--spring.profiles.active=dev"\
