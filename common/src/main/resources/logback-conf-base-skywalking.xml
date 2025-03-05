@@ -88,9 +88,10 @@
 		</root>
 	</springProfile>
 	
-	<springProfile name="test,pre,prod">
+	<springProfile name="test,pre,prod,prod-cn,prod-us">
 		<root>
 			<level value="INFO" />
+			<appender-ref ref="STDOUT" />
 			<appender-ref ref="FILE" />
 			<appender-ref ref="ERROR_FILE" />
 			<!-- <appender-ref ref="ASYNC_FILE" /> -->

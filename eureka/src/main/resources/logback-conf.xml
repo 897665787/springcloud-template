@@ -77,9 +77,10 @@
 		</root>
 	</springProfile>
 	
-	<springProfile name="test,pre,prod-7001,prod-7002">
+	<springProfile name="test,pre,prod-7001,prod-7002,prod-cn,prod-eu,prod-us">
 		<root>
 			<level value="INFO" />
+			<appender-ref ref="STDOUT" />
 			<appender-ref ref="FILE" />
 			<appender-ref ref="ERROR_FILE" />
 			<!-- <appender-ref ref="ASYNC_FILE" /> -->

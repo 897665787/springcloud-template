@@ -29,7 +29,7 @@ rocketmq:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  profiles: prod,prod-cn,prod-us
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:

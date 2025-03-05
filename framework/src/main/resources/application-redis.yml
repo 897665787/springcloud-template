@@ -59,7 +59,7 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  profiles: prod,prod-cn,prod-us
   redis:
     host: 127.0.0.1 # 服务端地址
     port: 6379 # 服务端连接端口

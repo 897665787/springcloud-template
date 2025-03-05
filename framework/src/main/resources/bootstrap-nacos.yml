@@ -59,11 +59,11 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  profiles: prod,prod-cn,prod-us
   cloud:
     nacos:
       config:
-        enabled: true # nacos配置中心开关
+        enabled: false # nacos配置中心开关
         server-addr: 127.0.0.1:8848 # config-server的请求路径
         file-extension: yaml # 配置文件格式
         # 命名空间，默认public，一般做环境隔离（如开发、测试、生产），如果nacos-server分环境部署，可以下沉到项目名

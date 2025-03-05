@@ -59,7 +59,7 @@ apollo:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  profiles: prod,prod-cn,prod-us
 app:
   # apollo的AppId，创建的时候建议使用spring.application.name一一对应创建，方便统一配置
   id: ${spring.application.name}

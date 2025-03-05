@@ -7,17 +7,17 @@ eureka:
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
   server:
     use-read-only-response-cache: false #禁用readOnlyCacheMap（用于优雅发版即时下线服务）
-    enable-self-preservation: false # 默认情况下，eureka间隔60s将服务清单中没有续约的服务剔除（默认90s内没有续约），本地测试，关闭保护机制，直接让它实时剔除
-    eviction-interval-timer-in-ms: 3000 # 扫描失效服务的间隔时间（单位毫秒，默认是60*1000）
+    enable-self-preservation: true # 默认情况下，eureka间隔60s将服务清单中没有续约的服务剔除（默认90s内没有续约），本地测试，关闭保护机制，直接让它实时剔除
+    eviction-interval-timer-in-ms: 60000 # 扫描失效服务的间隔时间（单位毫秒，默认是60*1000）
   client:
-    register-with-eureka: false # 否将自己注册到Eureka Server，默认为true（注册中心集群环境下需开启此配置）
-    fetch-registry: false # 是否从Eureka Server获取注册信息，默认为true
+    register-with-eureka: true # 否将自己注册到Eureka Server，默认为true（注册中心集群环境下需开启此配置）
+    fetch-registry: true # 是否从Eureka Server获取注册信息，默认为true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
-      default-zone: http://${spring.cloud.client.ip-address}:${server.port}/eureka/
+      defaultZone: http://127.0.0.1:7101/eureka/
 
 logging:
   #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html
   config: classpath:logback-conf.xml
   file:
     #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
-    path: ./logs/${spring.application.name}
+    path: ./logs/${spring.application.name}-${server.port}

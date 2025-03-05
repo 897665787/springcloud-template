@@ -38,7 +38,7 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  profiles: prod,prod-cn,prod-us
   rabbitmq:
     addresses: localhost:5672
     username: guest

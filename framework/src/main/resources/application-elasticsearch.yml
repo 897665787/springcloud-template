@@ -104,7 +104,7 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  profiles: prod,prod-cn,prod-us
   elasticsearch:
     bboss:
       #elasticUser:
