@@ -20,14 +20,14 @@ import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.response.SysUserPasswordResp;
 import com.company.system.entity.SysUser;
 import com.company.system.entity.SysUserPassword;
-import com.company.system.innercallback.service.IInnerCallbackService;
-import com.company.system.innercallback.service.PostParam;
 import com.company.system.service.SysUserPasswordService;
 import com.company.system.service.SysUserService;
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
 import com.company.tool.api.feign.EmailFeign;
+import com.company.tool.api.feign.RetryerFeign;
 import com.company.tool.api.feign.SmsFeign;
+import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.request.SendEmailReq;
 import com.company.tool.api.request.SendSmsReq;
 import com.google.common.collect.Maps;
@@ -45,7 +45,7 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 	@Autowired
 	private SysUserService sysUserService;
 	@Autowired
-	private IInnerCallbackService innerCallbackService;
+	private RetryerFeign retryerFeign;
 	@Autowired
 	private EmailFeign emailFeign;
 	@Autowired
@@ -117,9 +117,12 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 		remindPasswordExpireReq.setSysUserId(saveNewPasswordReq.getSysUserId());
 		remindPasswordExpireReq.setSysUserPasswordId(sysUserPassword.getId());
 
-		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_REMINDPASSWORDEXPIRE)
-				.jsonParams(remindPasswordExpireReq).nextDisposeTime(expireTime).build();
-		innerCallbackService.postRestTemplate(postParam);
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder()
+				.feignUrl(NOTIFY_URL_REMINDPASSWORDEXPIRE)
+				.jsonParams(remindPasswordExpireReq)
+				.nextDisposeTime(expireTime)
+				.build();
+		retryerFeign.call(retryerInfoReq);
 
 		return Result.success();
 	}

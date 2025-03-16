@@ -20,10 +20,8 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.lock.LockClient;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
+import com.company.framework.messagedriven.MessageSender;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.feign.PayFeign;
@@ -43,15 +41,15 @@ import com.company.order.api.response.PayRefundResp;
 import com.company.order.api.response.PayResp;
 import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
-import com.company.order.innercallback.processor.bean.InnerCallbackProcessorBeanName;
-import com.company.order.innercallback.processor.bean.ProcessorBeanName;
-import com.company.order.innercallback.service.IInnerCallbackService;
-import com.company.order.innercallback.service.PostParam;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.PayClient;
 import com.company.order.pay.dto.PayParams;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
+import com.company.tool.api.feign.RetryerFeign;
+import com.company.tool.api.request.RetryerInfoReq;
 import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
@@ -75,7 +73,7 @@ public class PayController implements PayFeign {
 	private OrderPayRefundService orderPayRefundService;
 
 	@Autowired
-	private IInnerCallbackService innerCallbackService;
+	private RetryerFeign retryerFeign;
 	
 	@Autowired
 	private LockClient lockClient;
@@ -162,16 +160,16 @@ public class PayController implements PayFeign {
 		PayTimeoutReq payTimeoutReq = new PayTimeoutReq();
 		payTimeoutReq.setOrderCode(orderCode);
 
-		ProcessorBeanName processorBeanName = new ProcessorBeanName();
-		processorBeanName.setAbandonRequest(InnerCallbackProcessorBeanName.PAYTIMEOUT_FAIL_PROCESSOR);
-
 		if (timeoutSeconds == null) {
 			timeoutSeconds = 1800;// 默认30分钟,1800秒
 		}
 		LocalDateTime timeoutTime = LocalDateTime.now().plusSeconds(timeoutSeconds);
-		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_TIMEOUT).jsonParams(payTimeoutReq)
-				.processorBeanName(processorBeanName).nextDisposeTime(timeoutTime).build();
-		innerCallbackService.postRestTemplate(postParam);
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder()
+				.feignUrl(NOTIFY_URL_TIMEOUT)
+				.jsonParams(payTimeoutReq)
+				.nextDisposeTime(timeoutTime)
+				.build();
+		retryerFeign.call(retryerInfoReq);
 	}
 
 	/**
@@ -240,8 +238,8 @@ public class PayController implements PayFeign {
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
-		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(payNotifyReq).build();
-		innerCallbackService.postRestTemplate(postParam);
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(payNotifyReq).build();
+		retryerFeign.call(retryerInfoReq);
 		
 		return Result.success();
 	}
@@ -256,9 +254,9 @@ public class PayController implements PayFeign {
 		// 异步处理 ========> 逻辑上等同于直接调用 pollingPayResult
 		PayResultReq payResultReq = new PayResultReq();
 		payResultReq.setOrderCode(orderCode);
-		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_PAYRESULT).jsonParams(payResultReq)
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(NOTIFY_URL_PAYRESULT).jsonParams(payResultReq)
 				.maxFailure(15/* 预计总时长9小时 */).build();
-		innerCallbackService.postRestTemplate(postParam);
+		retryerFeign.call(retryerInfoReq);
 	}
 	
 	/**
@@ -459,12 +457,9 @@ public class PayController implements PayFeign {
 		RefundReq refundReq = new RefundReq();
 		refundReq.setRefundOrderCode(refundOrderCode);
 
-		ProcessorBeanName processorBeanName = new ProcessorBeanName();
-		processorBeanName.setAbandonRequest(InnerCallbackProcessorBeanName.REFUND_FAIL_PROCESSOR);
-
-		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_REFUND).jsonParams(refundReq)
-				.processorBeanName(processorBeanName).build();
-		innerCallbackService.postRestTemplate(postParam);
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(NOTIFY_URL_REFUND).jsonParams(refundReq)
+				.build();
+		retryerFeign.call(retryerInfoReq);
 
 		return Result.success();
 	}
@@ -507,9 +502,9 @@ public class PayController implements PayFeign {
 		// 异步处理 ========> 逻辑上等同于直接调用 pollingRefundResult
 		RefundResultReq refundResultReq = new RefundResultReq();
 		refundResultReq.setRefundOrderCode(refundOrderCode);
-		PostParam postParam = PostParam.builder().notifyUrl(NOTIFY_URL_REFUNDRESULT).jsonParams(refundResultReq)
-				.maxFailure(15/* 预计总时长9小时 */).build();
-		innerCallbackService.postRestTemplate(postParam);
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(NOTIFY_URL_REFUNDRESULT)
+				.jsonParams(refundResultReq).maxFailure(15/* 预计总时长9小时 */).build();
+		retryerFeign.call(retryerInfoReq);
 	}
 	
 	/**
