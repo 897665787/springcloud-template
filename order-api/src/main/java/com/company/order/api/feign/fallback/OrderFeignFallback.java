@@ -20,7 +20,7 @@ import com.company.order.api.response.OrderDetailResp;
 import com.company.order.api.response.OrderRefundApplyResp;
 import com.company.order.api.response.OrderResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class OrderFeignFallback implements FallbackFactory<OrderFeign> {

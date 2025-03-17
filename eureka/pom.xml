@@ -42,6 +42,12 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
+
+		<!-- 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml文件不再被自动加载 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

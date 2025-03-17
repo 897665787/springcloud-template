@@ -2,7 +2,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   rabbitmq:
     addresses: localhost:5672
     username: guest
@@ -14,7 +16,9 @@ spring:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   rabbitmq:
     addresses: localhost:5672
     username: guest
@@ -26,7 +30,9 @@ spring:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
   rabbitmq:
     addresses: localhost:5672
     username: guest
@@ -38,7 +44,9 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   rabbitmq:
     addresses: localhost:5672
     username: guest

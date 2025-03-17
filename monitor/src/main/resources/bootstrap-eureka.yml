@@ -2,7 +2,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
 eureka:
   instance:
     hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
@@ -19,7 +21,9 @@ eureka:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
 eureka:
   instance:
     hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
@@ -36,7 +40,9 @@ eureka:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
 eureka:
   instance:
     hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host
@@ -53,7 +59,9 @@ eureka:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
 eureka:
   instance:
     hostname: ${spring.cloud.client.ip-address} # 默认为主机名，eureka可视化界面点击服务列表后跳转的host

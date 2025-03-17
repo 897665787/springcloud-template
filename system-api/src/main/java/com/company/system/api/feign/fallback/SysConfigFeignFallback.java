@@ -11,7 +11,7 @@ import com.company.system.api.feign.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysConfigFeignFallback implements FallbackFactory<SysConfigFeign> {

@@ -4,7 +4,7 @@ import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;

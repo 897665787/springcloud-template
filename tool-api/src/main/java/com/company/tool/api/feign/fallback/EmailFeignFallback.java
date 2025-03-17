@@ -8,7 +8,7 @@ import com.company.common.api.Result;
 import com.company.tool.api.feign.EmailFeign;
 import com.company.tool.api.request.SendEmailReq;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class EmailFeignFallback implements FallbackFactory<EmailFeign> {

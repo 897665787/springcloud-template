@@ -13,7 +13,7 @@ import com.company.order.api.request.PayReq;
 import com.company.order.api.request.ToPayReq;
 import com.company.order.api.response.PayResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/pay", fallbackFactory = PayFeign.PayFeignFactory.class)
 public interface PayFeign {

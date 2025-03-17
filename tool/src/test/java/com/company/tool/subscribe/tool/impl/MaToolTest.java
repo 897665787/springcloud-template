@@ -2,7 +2,7 @@ package com.company.tool.subscribe.tool.impl;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.company.common.util.JsonUtil;
 import com.company.tool.subscribe.dto.SubscribeTemplateInfo;

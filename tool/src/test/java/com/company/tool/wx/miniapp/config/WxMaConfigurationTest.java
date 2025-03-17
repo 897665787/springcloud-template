@@ -1,6 +1,6 @@
 package com.company.tool.wx.miniapp.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.company.common.util.JsonUtil;
 

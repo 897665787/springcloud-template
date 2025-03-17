@@ -11,7 +11,7 @@ import com.company.common.api.Result;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.response.WalletRecordResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/walletRecord", fallbackFactory = WalletRecordFeign.WalletRecordFeignFactory.class)
 public interface WalletRecordFeign {

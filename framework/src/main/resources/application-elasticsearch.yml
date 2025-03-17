@@ -2,7 +2,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   elasticsearch:
     bboss:
       #elasticUser:
@@ -36,7 +38,9 @@ spring:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   elasticsearch:
     bboss:
       #elasticUser:
@@ -70,7 +74,9 @@ spring:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
   elasticsearch:
     bboss:
       #elasticUser:
@@ -104,7 +110,9 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   elasticsearch:
     bboss:
       #elasticUser:

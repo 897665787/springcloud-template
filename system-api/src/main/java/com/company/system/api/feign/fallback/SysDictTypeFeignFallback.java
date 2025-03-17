@@ -11,7 +11,7 @@ import com.company.system.api.feign.SysDictTypeFeign;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysDictTypeFeignFallback implements FallbackFactory<SysDictTypeFeign> {

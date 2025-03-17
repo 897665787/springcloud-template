@@ -42,8 +42,8 @@ public class FeignLoggerClient extends Client.Default {
 
             String body = "{}";
             // 参考feign.Logger.logRequest逻辑
-            if (request.requestBody().asBytes() != null) {
-                JsonNode byteJsonNode = JsonUtil.toJsonNode(request.requestBody().asBytes());
+            if (request.body() != null) {
+                JsonNode byteJsonNode = JsonUtil.toJsonNode(request.body());
                 body = JsonUtil.toJsonStringReplaceProperties(byteJsonNode, arrMaxLength);
             }
 

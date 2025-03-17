@@ -2,7 +2,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:
@@ -11,7 +13,9 @@ rocketmq:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:
@@ -20,7 +24,9 @@ rocketmq:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:
@@ -29,7 +35,9 @@ rocketmq:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:

@@ -7,7 +7,7 @@ import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.response.SysUserPasswordResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysUserPasswordFeignFallback implements FallbackFactory<SysUserPasswordFeign> {

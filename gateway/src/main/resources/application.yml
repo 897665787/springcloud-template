@@ -7,7 +7,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allow-credentials: true
+            allow-credentials: false
             allowed-headers:
             - '*'
             allowed-methods:

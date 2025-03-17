@@ -7,7 +7,7 @@ import com.company.user.api.feign.MemberBuyFeign;
 import com.company.user.api.request.MemberBuyOrderReq;
 import com.company.user.api.response.MemberBuyOrderResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class MemberBuyFeignFallback implements FallbackFactory<MemberBuyFeign> {

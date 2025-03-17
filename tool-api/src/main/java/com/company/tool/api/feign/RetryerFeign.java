@@ -14,7 +14,7 @@ import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.RetryerFeign.RetryerFeignFactory;
 import com.company.tool.api.request.RetryerInfoReq;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/retryer", fallbackFactory = RetryerFeignFactory.class)
 public interface RetryerFeign {
