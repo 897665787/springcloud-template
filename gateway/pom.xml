@@ -104,7 +104,15 @@
 			<version>2.2.3</version>
 		</dependency>
 		<!-- MQ -->
-		
+
+		<!-- knife4j文档：https://doc.xiaominfo.com/docs/action/springcloud-gateway -->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+			<version>4.5.0</version>
+		</dependency>
+		<!-- knife4j文档：https://doc.xiaominfo.com/docs/action/springcloud-gateway -->
+
 	</dependencies>
 	<build>
 		<plugins>

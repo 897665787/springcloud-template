@@ -1,4 +1,4 @@
-package com.company.app.config;
+package com.company.openapi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,7 +35,7 @@ public class Knife4jConfig {
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage(CommonConstants.BASE_PACKAGE + ".app.controller"))
+				.apis(RequestHandlerSelectors.basePackage(CommonConstants.BASE_PACKAGE + ".openapi.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

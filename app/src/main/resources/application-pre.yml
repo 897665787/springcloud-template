@@ -13,14 +13,11 @@ token:
   # 密钥
   secret: hxqhjvtam5
 
-# knife4j文档
+# knife4j文档，访问地址：http://localhost:xxxx/doc.html
 knife4j:
-  # 是否开启生产环境屏蔽   true:关闭swagger，false:开启swagger
-  production: true
+  enable: true # 增强模式开关
+  production: false # 是否开启生产环境屏蔽   true:关闭swagger，false:开启swagger
   basic:
-    # 是否开启认证
-    enable: false
-    # Basic认证用户名
-    username: admin
-    # Basic认证密码
-    password: 123456
+    enable: true  # 是否开启认证
+    username: admin # Basic认证用户名
+    password: 123456 # Basic认证密码
