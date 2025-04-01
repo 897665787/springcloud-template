@@ -25,22 +25,7 @@ logging:
   file:
     #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
     path: ./logs/${spring.application.name}
-    
-#网关转发也是使用ribbon来做负载的，网关超时时间>=内部服务超时时间（ReadTimeout）
-ribbon:
-  eager-load: #饥饿加载，默认false(用于防止第一次请求初始化耗时长而报错)
-    enabled: true
-    clients: template-web,template-app #@FeignClient value值，多个逗号分隔
-  #Ribbon重试次数(包含首次) = 1 + ribbon.MaxAutoRetries + ribbon.MaxAutoRetriesNextServer + (ribbon.MaxAutoRetries * ribbon.MaxAutoRetriesNextServer)
-  MaxAutoRetries: 0 #同一实例最大重试次数，不包括首次调用。默认0
-  MaxAutoRetriesNextServer: 1 #同一个微服务其他实例的最大重试次数，不包括第一次调用的实例。默认1
-  OkToRetryOnAllOperations: false #是否所有操作（GET、POST等）都允许重试。默认false
-  ServerListRefreshInterval: 2000 #从注册中心刷新服务器列表信息的时间间隔，默认2000ms
-  #ConnectTimeout = feign.client.config.default.connectTimeout
-  ConnectTimeout: 1000 #连接超时时间，默认无
-  #ReadTimeout >= Ribbon重试次数(包含首次) * feign.client.config.default.connectTimeout
-  ReadTimeout: 10000 #读取超时时间，默认无
-  
+
 template:
   sqlInjectFilter:
     # SQL注入过滤关键词（多个英文逗号分隔）
