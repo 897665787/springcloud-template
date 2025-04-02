@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 会员套餐Dao
- * Created by xuxiaowei on 2018/11/14.
+ * Created by JQ棣 on 2018/11/14.
  */
 public interface VipPackageDao {
 

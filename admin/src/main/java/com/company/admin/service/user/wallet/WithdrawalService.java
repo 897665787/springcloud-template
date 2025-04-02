@@ -18,7 +18,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 提现Service
- * Created by xuxiaowei on 2018/11/23.
+ * Created by JQ棣 on 2018/11/23.
  */
 @Service
 public class WithdrawalService {

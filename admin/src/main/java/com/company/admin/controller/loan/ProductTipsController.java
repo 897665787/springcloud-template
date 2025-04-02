@@ -15,7 +15,7 @@ import com.company.admin.service.loan.ProductTipsService;
 
 /**
  * 产品提示Controller
- * Created by wjc on 2018/11/20.
+ * Created by JQ棣 on 2018/11/20.
  */
 @Controller
 public class ProductTipsController {

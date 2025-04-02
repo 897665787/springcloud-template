@@ -25,8 +25,8 @@
 
 | 依赖                   | 版本       |
 | ---------------------- |------------|
-| Spring Boot            | 2.2.13     |
-| Spring Cloud Netflix   | 2.2.0      |
+| Spring Boot            | 2.7.18     |
+| Spring Cloud Netflix   | 2021.0.9   |
 
 ### 模块说明
 

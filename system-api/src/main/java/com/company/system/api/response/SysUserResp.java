@@ -93,9 +93,4 @@ public class SysUserResp {
 	 */
 	private Integer updateBy;
 
-	/**
-	 * 标记删除
-	 */
-	private String delFlag;
-
 }

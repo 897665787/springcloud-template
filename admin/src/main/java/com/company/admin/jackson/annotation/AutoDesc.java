@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/8/27
  */
 @Target({ElementType.FIELD})

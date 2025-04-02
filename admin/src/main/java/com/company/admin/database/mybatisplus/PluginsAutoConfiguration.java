@@ -1,22 +1,29 @@
 package com.company.admin.database.mybatisplus;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.company.framework.context.SpringContextUtil;
+import com.company.admin.database.mybatisplus.plugins.PerformanceInterceptor;
+import com.company.admin.database.mybatisplus.plugins.SqlLimitInterceptor;
+import com.company.admin.database.mybatisplus.plugins.SummarySQLInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
-import com.baomidou.mybatisplus.plugins.PerformanceInterceptor;
-import com.company.admin.database.mybatisplus.plugins.SqlLimitInterceptor;
-
 @Configuration
 public class PluginsAutoConfiguration {
-
-	/**
-	 * 分页拦截器
-	 */
-	@Bean
-	public PaginationInterceptor paginationInterceptor() {
-		return new PaginationInterceptor();
+	
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+		MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+		// 分页拦截器
+		mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
+		
+		// 给没有添加limit的SQL添加limit，防止全量查询导致慢SQL
+		int limit = SpringContextUtil.getIntegerProperty("template.sqllimit.max", 0);
+		if (limit > 0) {
+			mybatisPlusInterceptor.addInnerInterceptor(new SqlLimitInterceptor(limit));
+		}
+		return mybatisPlusInterceptor;
 	}
 
 	/**
@@ -24,7 +31,7 @@ public class PluginsAutoConfiguration {
 	 * 性能分析拦截器，用于输出每条 SQL 语句及其执行时间
 	 * 
 	 * 结合logback-conf.xml 
-	 * <logger name="com.baomidou.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
+	 * <logger name="com.company.order.database.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
 	 * 输出日志
 	 * </pre>
 	 */
@@ -36,11 +43,16 @@ public class PluginsAutoConfiguration {
 	}
 
 	/**
-	 * 给没有添加limit的SQL添加limit，防止全量查询导致慢SQL
-	 **/
+	 * <pre>
+	 * 打印SQL耗时
+	 *
+	 * 结合logback-conf-summary.xml
+	 * LOG_SUMMARY_SQL
+	 * 输出日志
+	 * </pre>
+	 */
 	@Bean
-	@ConditionalOnProperty(prefix = "template.sqllimit", name = "enable", havingValue = "true")
-	public SqlLimitInterceptor sqlLimitInterceptor() {
-		return new SqlLimitInterceptor();
+	public SummarySQLInterceptor summarySQLInterceptor() {
+		return new SummarySQLInterceptor();
 	}
 }

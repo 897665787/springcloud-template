@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/wxnotify", fallbackFactory = WxNotifyFeign.WxNotifyFeignFactory.class)
 public interface WxNotifyFeign {

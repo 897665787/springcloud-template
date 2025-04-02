@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 钱包套餐Dao
- * Created by xuxiaowei on 2018/11/13.
+ * Created by JQ棣 on 2018/11/13.
  */
 public interface WalletPackageDao {
 

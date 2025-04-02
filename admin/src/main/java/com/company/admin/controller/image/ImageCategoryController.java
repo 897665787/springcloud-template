@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 图片分类Controller
- * Created by xuxiaowei on 2017/10/23.
+ * Created by JQ棣 on 2017/10/23.
  */
 @Controller
 public class ImageCategoryController {

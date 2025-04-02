@@ -30,7 +30,7 @@ import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/9/28
  */
 @Component

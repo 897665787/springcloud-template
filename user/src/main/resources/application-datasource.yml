@@ -22,7 +22,7 @@ spring:
           password: ${custom.password}
         common: # 下划线具有分组功能，@Slave注解对应slave数据源或slave分组
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://${custom.ip_port}/shuttle_common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
+          url: jdbc:mysql://${custom.ip_port}/template_common?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&tinyInt1isBit=false
           username: ${custom.username}
           password: ${custom.password}
 
@@ -30,7 +30,9 @@ spring:
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
 custom:
   ip_port: 127.0.0.1:3306
   username: root
@@ -40,7 +42,9 @@ custom:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
 custom:
   ip_port: 127.0.0.1:3306
   username: root
@@ -50,7 +54,9 @@ custom:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
 custom:
   ip_port: 127.0.0.1:3306
   username: root
@@ -60,7 +66,9 @@ custom:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
 custom:
   ip_port: 127.0.0.1:3306
   username: root

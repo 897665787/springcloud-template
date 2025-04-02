@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * 日志
- * Created by xuxiaowei on 2017/10/20.
+ * Created by JQ棣 on 2017/10/20.
  */
 public class XSLogger {
 

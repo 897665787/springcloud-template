@@ -11,7 +11,7 @@ import com.company.system.api.feign.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 import com.company.system.api.response.SysOperLogResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysOperLogFeignFallback implements FallbackFactory<SysOperLogFeign> {

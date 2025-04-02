@@ -21,7 +21,7 @@ import com.company.admin.util.XSUuidUtil;
 
 /**
  * 系统用户ServiceImpl
- * Created by xuxiaowei on 2017/10/27.
+ * Created by JQ棣 on 2017/10/27.
  */
 @Service
 public class SecStaffService {

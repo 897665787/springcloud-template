@@ -2,7 +2,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   redis:
     host: 127.0.0.1 # 服务端地址
     port: 6379 # 服务端连接端口
@@ -21,7 +23,9 @@ spring:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   redis:
     host: 127.0.0.1 # 服务端地址
     port: 6379 # 服务端连接端口
@@ -40,7 +44,9 @@ spring:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
   redis:
     host: 127.0.0.1 # 服务端地址
     port: 6379 # 服务端连接端口
@@ -59,7 +65,9 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   redis:
     host: 127.0.0.1 # 服务端地址
     port: 6379 # 服务端连接端口

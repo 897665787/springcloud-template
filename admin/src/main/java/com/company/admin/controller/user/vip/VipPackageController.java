@@ -16,7 +16,7 @@ import com.company.common.api.Result;
 
 /**
  * 会员套餐Controller
- * Created by xuxiaowei on 2018/11/14.
+ * Created by JQ棣 on 2018/11/14.
  */
 @Controller
 public class VipPackageController {

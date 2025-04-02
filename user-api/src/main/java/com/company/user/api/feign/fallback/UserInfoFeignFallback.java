@@ -7,7 +7,10 @@ import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.request.UserInfoReq;
 import com.company.user.api.response.UserInfoResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
+
+import java.util.Collection;
+import java.util.Map;
 
 @Component
 public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
@@ -22,6 +25,11 @@ public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
 
 			@Override
 			public Result<UserInfoResp> getById(Integer id) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Result<Map<Integer, String>> mapUidById(Collection<Integer> idList) {
 				return Result.onFallbackError();
 			}
 		};

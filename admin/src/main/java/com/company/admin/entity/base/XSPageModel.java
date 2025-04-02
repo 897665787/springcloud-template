@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 分页模型
- * Created by xuxiaowei on 2017/10/20.
+ * Created by JQ棣 on 2017/10/20.
  */
 public class XSPageModel<T> {
 

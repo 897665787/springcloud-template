@@ -19,14 +19,17 @@
 		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
 		<spring-boot.version>2.0.3.RELEASE</spring-boot.version>
 		 -->
+		<!--
 		<spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
-		<spring-boot.version>2.2.13.RELEASE</spring-boot.version><!-- 可用jrebel进行热部署的最高版本 -->
+		<spring-boot.version>2.2.13.RELEASE</spring-boot.version>
+		-->
+		<spring-cloud.version>2021.0.9</spring-cloud.version>
+		<spring-boot.version>2.7.18</spring-boot.version>
 	</properties>
 
 	<modules>
 		<!-- 基础组件 -->
 		<module>eureka</module>
-		<module>zuul</module>
 		<module>gateway</module>
 		<module>config</module>
 		<module>monitor</module>

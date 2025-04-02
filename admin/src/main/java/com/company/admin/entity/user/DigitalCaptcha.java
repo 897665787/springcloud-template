@@ -8,7 +8,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 数字验证码
- * Created by xuxiaowei on 2017/8/1.
+ * Created by JQ棣 on 2017/8/1.
  */
 public class DigitalCaptcha extends BaseModel {
 

@@ -15,7 +15,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 文章ServiceImpl
- * Created by xuxiaowei on 2017/10/28.
+ * Created by JQ棣 on 2017/10/28.
  */
 @Service
 public class ArticleService {

@@ -36,6 +36,11 @@
 			<artifactId>template-user-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.company</groupId>
+			<artifactId>template-tool-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
         
 		<!--微信支付sdk-->
 		<dependency>
@@ -54,8 +59,8 @@
         <!-- 数据库 -->
 		<!-- mysql -->
         <dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<!-- druid -->

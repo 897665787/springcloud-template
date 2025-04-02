@@ -127,5 +127,13 @@
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
         </dependency>
+
+		<!-- 对象属性差异比较工具 -->
+		<dependency>
+			<groupId>org.javers</groupId>
+			<artifactId>javers-core</artifactId>
+			<version>6.12.0</version>
+		</dependency>
+
 	</dependencies>
 </project>

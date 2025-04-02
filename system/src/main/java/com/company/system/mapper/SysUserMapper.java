@@ -10,10 +10,8 @@ import java.util.List;
 
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
-	@Select("select * from sys_user where account = #{account} and del_flag = '0'")
+	@Select("select * from sys_user where account = #{account}")
 	SysUser selectByAccount(@Param("account") String account);
-
-	boolean logicRemoveBatchByIds(@Param("idList") List<Integer> idList);
 
 	List<SysUser> selectByIds(@Param("ids") Collection<Integer> ids);
 }

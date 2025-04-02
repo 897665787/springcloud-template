@@ -37,6 +37,13 @@
 		    <groupId>com.company</groupId>
 		    <artifactId>template-common</artifactId>
 		    <version>1.0.0</version>
+			<exclusions>
+				<!-- 一定要排除掉 javafaker 依赖，否则启动报错 -->
+				<exclusion>
+		            <groupId>com.github.javafaker</groupId>
+		            <artifactId>javafaker</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- eureka客户端 -->
 		<dependency>
@@ -44,7 +51,12 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 		
-		<!-- 配置中心，config和apollo选其中一个就行 -->
+		<!-- 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml文件不再被自动加载 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
+		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 		<!-- config客户端 -->
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -56,7 +68,7 @@
 			<artifactId>apollo-client</artifactId>
 			<version>1.9.2</version>
 		</dependency>
-		<!-- 配置中心，config和apollo选其中一个就行 -->
+		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 		<!-- actuator端点 -->
@@ -92,7 +104,15 @@
 			<version>2.2.3</version>
 		</dependency>
 		<!-- MQ -->
-		
+
+		<!-- knife4j文档：https://doc.xiaominfo.com/docs/action/springcloud-gateway -->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+			<version>4.5.0</version>
+		</dependency>
+		<!-- knife4j文档：https://doc.xiaominfo.com/docs/action/springcloud-gateway -->
+
 	</dependencies>
 	<build>
 		<plugins>

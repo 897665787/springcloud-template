@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * 城市Controller
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 @Controller
 public class CityController {

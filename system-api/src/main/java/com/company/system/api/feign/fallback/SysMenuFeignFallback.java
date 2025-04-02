@@ -12,7 +12,7 @@ import com.company.system.api.request.SysMenuReq;
 import com.company.system.api.response.RouterResp;
 import com.company.system.api.response.SysMenuResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysMenuFeignFallback implements FallbackFactory<SysMenuFeign> {

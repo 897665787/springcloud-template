@@ -11,7 +11,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 省份
- * Created by xuxiaowei on 2017/11/1.
+ * Created by JQ棣 on 2017/11/1.
  */
 public class Province extends BaseModel {
 

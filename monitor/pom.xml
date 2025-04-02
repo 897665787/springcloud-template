@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>de.codecentric</groupId>
 			<artifactId>spring-boot-admin-starter-server</artifactId>
-			<version>2.2.4</version>
+			<version>2.7.16</version>
 		</dependency>
 		
 		<dependency>
@@ -32,6 +32,11 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 		
+		<!-- 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载 -->
+		<dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

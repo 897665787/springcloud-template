@@ -26,7 +26,7 @@ import com.company.admin.mapper.stats.UserStatsDao;
 
 /**
  * 商品Service
- * Created by kunye on 2018/06/09.
+ * Created by JQ棣 on 2018/06/09.
  */
 @Service
 public class UserStatsService {

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import com.company.common.api.Result;
 import com.company.user.api.feign.OpenAccessAccountFeign;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -21,7 +21,7 @@ import com.company.admin.util.XSUuidUtil;
 import com.company.common.exception.BusinessException;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/11/15
  */
 @Service

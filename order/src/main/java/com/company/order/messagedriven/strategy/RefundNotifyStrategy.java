@@ -15,10 +15,10 @@ import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.OrderPayRefund;
-import com.company.order.innercallback.service.IInnerCallbackService;
-import com.company.order.innercallback.service.PostParam;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
+import com.company.tool.api.feign.RetryerFeign;
+import com.company.tool.api.request.RetryerInfoReq;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +29,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 	@Autowired
 	private OrderPayRefundService orderPayRefundService;
 	@Autowired
-	private IInnerCallbackService innerCallbackService;
+	private RetryerFeign retryerFeign;
 
 	@Autowired
 	private FinancialFlowService financialFlowService;
@@ -96,8 +96,8 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 		refundNotifyReq.setRefundAll(totalRefundAmount.compareTo(orderPayRefund.getAmount()) == 0);
 
-		PostParam postParam = PostParam.builder().notifyUrl(notifyUrl).jsonParams(refundNotifyReq).build();
-		innerCallbackService.postRestTemplate(postParam);
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(refundNotifyReq).build();
+		retryerFeign.call(retryerInfoReq);
 	}
 
 	private void financialFlow(Map<String, Object> params, String outTradeNo, String outRefundNo) {

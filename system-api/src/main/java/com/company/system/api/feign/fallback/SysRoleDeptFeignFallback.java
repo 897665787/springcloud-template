@@ -11,7 +11,7 @@ import com.company.system.api.feign.SysRoleDeptFeign;
 import com.company.system.api.request.SysRoleDeptReq;
 import com.company.system.api.response.SysRoleDeptResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysRoleDeptFeignFallback implements FallbackFactory<SysRoleDeptFeign> {

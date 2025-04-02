@@ -10,7 +10,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 区县
- * Created by wjc on 2018/05/30.
+ * Created by JQ棣 on 2018/05/30.
  */
 public class District extends BaseModel {
 

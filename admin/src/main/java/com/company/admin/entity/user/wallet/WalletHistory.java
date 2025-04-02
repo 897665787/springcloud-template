@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 
 /**
  * 钱包历史
- * Created by xuxiaowei on 2018/11/12.
+ * Created by JQ棣 on 2018/11/12.
  */
 @Accessors(chain = true)
 @Getter

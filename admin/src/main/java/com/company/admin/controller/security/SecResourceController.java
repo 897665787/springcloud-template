@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 系统资源Controller
- * Created by xuxiaowei on 2017/11/3.
+ * Created by JQ棣 on 2017/11/3.
  */
 @Controller
 public class SecResourceController {

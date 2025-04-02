@@ -9,7 +9,7 @@ import com.company.tool.api.feign.BannerFeign;
 import com.company.tool.api.request.BannerReq;
 import com.company.tool.api.response.BannerResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class BannerFeignFallback implements FallbackFactory<BannerFeign> {

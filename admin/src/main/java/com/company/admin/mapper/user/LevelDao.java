@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 等级称号Dao
- * Created by wjc on 2018/06/21.
+ * Created by JQ棣 on 2018/06/21.
  */
 public interface LevelDao {
 

@@ -23,7 +23,7 @@ import com.company.admin.service.system.ConfigService;
 import com.company.common.api.Result;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/9/23
  */
 @Controller

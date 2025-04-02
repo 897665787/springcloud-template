@@ -2,7 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="xs" uri="http://code.template.com/tags/jsp/xs" %>
 <%--
-  Created by xuxiaowei on 2018/11/14.
+  Created by JQ棣 on 2018/11/14.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 
 /**
- * @author xxw
+ * @author JQ棣
  * @date 2018/8/27
  */
 public class AutoDescJsonSerializer extends JsonSerializer<Object> implements ContextualSerializer {

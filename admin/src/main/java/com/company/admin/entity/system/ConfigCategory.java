@@ -15,7 +15,7 @@ import lombok.Setter;
 
 /**
  * 配置分类
- * @author xxw
+ * @author JQ棣
  * @date 2018/9/22
  */
 @Getter

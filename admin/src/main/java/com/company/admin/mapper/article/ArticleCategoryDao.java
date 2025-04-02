@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * 文章分类Dao
- * Created by xuxiaowei on 2017/10/28.
+ * Created by JQ棣 on 2017/10/28.
  */
 public interface ArticleCategoryDao {
 

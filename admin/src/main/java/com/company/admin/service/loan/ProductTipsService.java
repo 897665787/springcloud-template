@@ -10,7 +10,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 产品提示Service
- * Created by wjc on 2018/11/20.
+ * Created by JQ棣 on 2018/11/20.
  */
 @Service
 public class ProductTipsService {

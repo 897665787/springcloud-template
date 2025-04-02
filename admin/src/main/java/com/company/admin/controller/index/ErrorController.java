@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created by gustinlau on 05/09/2017.
+ * Created by JQ棣 on 05/09/2017.
  */
 @Controller
 @RequestMapping("/admin/error")

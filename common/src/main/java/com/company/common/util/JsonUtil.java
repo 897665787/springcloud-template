@@ -1,30 +1,10 @@
 package com.company.common.util;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Function;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -33,6 +13,22 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class JsonUtil {
 	private static final Logger logger = LoggerFactory.getLogger(JsonUtil.class);
@@ -124,6 +120,18 @@ public class JsonUtil {
 		return true;
 	}
 
+	public static JsonNode toJsonNode(byte[] content) {
+		if (content == null) {
+			return null;
+		}
+		try {
+			return mapper.readTree(content);
+		} catch (IOException e) {
+			logger.error("io exception error", e);
+		}
+		return null;
+	}
+
 	public static JsonNode toJsonNode(String jsonString) {
 		if (jsonString == null) {
 			return null;
@@ -175,4 +183,52 @@ public class JsonUtil {
 		}
 		return function.apply(fieldNode);
 	}
+
+    /**
+     * 仅打印日志使用
+     * 1.替换byte[]数组的输出
+     * 2.替换长度超过arrMaxLength的数组输出
+     *
+     * @param object
+     * @param arrMaxLength 数组最大长度
+     * @return
+     */
+    public static String toJsonStringReplaceProperties(Object object, int arrMaxLength) {
+        if (object == null) {
+            return null;
+        }
+        JsonNode jsonNode = toJsonNode(object);
+        replaceProperties(jsonNode, arrMaxLength);
+        return toJsonString(jsonNode);
+    }
+
+    public static String toJsonStringReplaceProperties(Object object) {
+        return toJsonStringReplaceProperties(object, 1000);
+    }
+
+    /**
+     * 替换属性序列化(递归)
+     */
+    private static void replaceProperties(JsonNode jsonNode, int arrMaxLength) {
+        if (jsonNode.isArray()) {
+            for (JsonNode node : jsonNode) {
+                replaceProperties(node, arrMaxLength);
+            }
+            return;
+        }
+        Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.fields();
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonNode> entry = iterator.next();
+            JsonNode value = entry.getValue();
+            if (value.isBinary()) {// 移除byte[]属性
+                ObjectNode objectNode = (ObjectNode) jsonNode;
+                objectNode.put(entry.getKey(), "binary data...");
+            } else if (value.size() > arrMaxLength) {
+                ObjectNode objectNode = (ObjectNode) jsonNode;
+                objectNode.put(entry.getKey(), "data too long...");
+            } else {
+                replaceProperties(value, arrMaxLength);// 递归处理子节点
+            }
+        }
+    }
 }

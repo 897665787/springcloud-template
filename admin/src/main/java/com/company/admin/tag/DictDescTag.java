@@ -11,7 +11,7 @@ import com.company.admin.service.system.DictionaryService;
 
 /**
  * 根据value查询desc的标签逻辑
- * Created by gustinlau on 11/2/17.
+ * Created by JQ棣 on 11/2/17.
  */
 public class DictDescTag extends SimpleTagSupport {
 

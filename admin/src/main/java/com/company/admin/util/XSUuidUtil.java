@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * Uuid生成工具
- * Created by xuxiaowei on 2017/10/20.
+ * Created by JQ棣 on 2017/10/20.
  */
 public class XSUuidUtil {
 

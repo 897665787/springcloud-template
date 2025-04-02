@@ -7,7 +7,7 @@ import com.company.user.api.feign.UserFeign;
 import com.company.user.api.request.UserReq;
 import com.company.user.api.response.UserResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

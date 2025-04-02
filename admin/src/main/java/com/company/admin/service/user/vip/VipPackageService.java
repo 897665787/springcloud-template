@@ -10,7 +10,7 @@ import com.company.common.exception.BusinessException;
 
 /**
  * 会员套餐Service
- * Created by xuxiaowei on 2018/11/14.
+ * Created by JQ棣 on 2018/11/14.
  */
 @Service
 public class VipPackageService {

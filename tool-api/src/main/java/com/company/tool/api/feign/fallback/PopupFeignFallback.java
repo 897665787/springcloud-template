@@ -9,7 +9,7 @@ import com.company.tool.api.request.CancelUserPopupReq;
 import com.company.tool.api.request.CreateUserPopupReq;
 import com.company.tool.api.response.BestPopupResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class PopupFeignFallback implements FallbackFactory<PopupFeign> {

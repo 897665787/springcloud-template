@@ -11,7 +11,7 @@ import com.company.system.api.feign.SysLogininfoFeign;
 import com.company.system.api.request.SysLogininfoReq;
 import com.company.system.api.response.SysLogininfoResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysLogininfoFeignFallback implements FallbackFactory<SysLogininfoFeign> {

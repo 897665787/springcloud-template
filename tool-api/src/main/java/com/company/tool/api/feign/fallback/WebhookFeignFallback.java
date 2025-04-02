@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.company.common.api.Result;
 import com.company.tool.api.feign.WebhookFeign;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class WebhookFeignFallback implements FallbackFactory<WebhookFeign> {

@@ -4,7 +4,7 @@ import com.company.admin.entity.base.BaseModel;
 
 /**
  * 令牌
- * Created by xuxiaowei on 2017/10/26.
+ * Created by JQ棣 on 2017/10/26.
  */
 public class Token extends BaseModel {
 

@@ -5,7 +5,7 @@ import com.company.admin.entity.base.BaseModel;
 import java.util.List;
 
 /**
- * @Author: kunye
+ * @Author: JQ棣
  * @Date: 2018/9/21 10:43
  */
 public class StatsCond extends BaseModel {

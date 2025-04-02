@@ -7,7 +7,7 @@ import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.UploadReq;
 import com.company.tool.api.response.UploadResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class FileFeignFallback implements FallbackFactory<FileFeign> {

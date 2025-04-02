@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * App初始化Dao
- * Created by xuxiaowei on 2017/11/13.
+ * Created by JQ棣 on 2017/11/13.
  */
 public interface AppInitDao {
 
