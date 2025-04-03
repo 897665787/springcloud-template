@@ -93,11 +93,36 @@ springcloud-template
 ├── sql -- 项目中的表结构设计
 ```
 
+### 服务说明
+
+| 服务                 | 端口     | 功能说明               |
+|----------------------|----------|--------------------|
+| template-eureka      | 7001     | 注册中心               |
+| template-gateway     | 5001     | 网关                 |
+| template-config      | 4001     | 配置中心（可替换为nacos）    |
+| template-monitor     | 3001     | 监控                 |
+| template-system      | 8003     | 系统服务               |
+| template-tool        | 4001     | 工具服务               |
+| template-user        | 8002     | 用户服务               |
+| template-order       | 8001     | 订单服务               |
+| template-web         | 6001     | web服务              |
+| template-app         | 6101     | app服务              |
+| template-openapi     | 6201     | openapi服务          |
+| template-job         | 7002     | 定时任务               |
+| template-admin       | 5001     | 管理后台（与adminapi二选一） |
+| template-adminapi    | 5001     | 管理后台API（与admin二选一） |
+
 ### 本地开发 运行
 
-- 先启动注册中心eureka，[http://localhost:7001/](http://localhost:7001/)
-- 启动需要的边缘微服务，通过pom找到其依赖的内部微服务启动（如果需要预览API内没有依赖内部微服务，也可不启动），就可以请求相关API进行效果预览了（建议使用postman等工具）
+- dev环境下默认关闭了eureka注册，如开启请修改framework下bootstrap-eureka.yml的dev环境配置
+```yaml
+eureka:
+  client:
+    register-with-eureka: true # 注册到Eureka Server，默认true
+    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+```
 
+- 每个微服务都可以单独启动、单独调试（如果需要预览API内没有依赖内部微服务，也可不启动），就可以请求相关API进行效果预览了（建议使用postman等工具）
 
 ### 运用
 
