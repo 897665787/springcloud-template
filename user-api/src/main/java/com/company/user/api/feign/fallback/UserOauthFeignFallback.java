@@ -8,7 +8,7 @@ import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.request.UserOauthReq;
 import com.company.user.api.response.UserOauthResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class UserOauthFeignFallback implements FallbackFactory<UserOauthFeign> {

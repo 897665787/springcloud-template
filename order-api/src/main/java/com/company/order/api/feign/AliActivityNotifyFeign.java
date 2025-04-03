@@ -11,7 +11,7 @@ import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/aliactivitynotify", fallbackFactory = AliActivityNotifyFeign.AliActivityNotifyFeignFactory.class)
 public interface AliActivityNotifyFeign {

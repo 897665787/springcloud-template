@@ -25,6 +25,11 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
+		<!-- 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载 -->
+		<dependency>
+		    <groupId>org.springframework.cloud</groupId>
+		    <artifactId>spring-cloud-starter-bootstrap</artifactId>
+		</dependency>
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 		<!-- config客户端 -->
 		<dependency>
@@ -74,6 +79,21 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+
+		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+		</dependency>
+		<!-- 可选：如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
+		<!--
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+			<version>2021.0.5.0</version> 版本需与 Spring Cloud 2021.x 兼容
+		</dependency>
+		-->
+		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 
 		<!-- MQ -->
         <!-- rabbitMQ -->

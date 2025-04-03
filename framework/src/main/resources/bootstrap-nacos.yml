@@ -5,7 +5,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
   cloud:
     nacos:
       config:
@@ -23,7 +25,9 @@ spring:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
   cloud:
     nacos:
       config:
@@ -41,7 +45,9 @@ spring:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
   cloud:
     nacos:
       config:
@@ -59,7 +65,9 @@ spring:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
   cloud:
     nacos:
       config:

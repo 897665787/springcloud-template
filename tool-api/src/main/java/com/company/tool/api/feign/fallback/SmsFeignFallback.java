@@ -8,7 +8,7 @@ import com.company.common.api.Result;
 import com.company.tool.api.feign.SmsFeign;
 import com.company.tool.api.request.SendSmsReq;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SmsFeignFallback implements FallbackFactory<SmsFeign> {

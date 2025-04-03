@@ -14,7 +14,7 @@ public class CorsConfigurer implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		// 跨域配置
 		registry.addMapping("/**") // 对那些请求路径有效
-				.allowedOrigins("*").allowedHeaders("*").allowedHeaders("*").allowCredentials(true).maxAge(1800L);
+				.allowedOrigins("*").allowedHeaders("*").allowedHeaders("*").allowCredentials(false).maxAge(1800L);
 	}
 
 }

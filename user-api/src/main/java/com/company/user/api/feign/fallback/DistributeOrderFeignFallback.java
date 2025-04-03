@@ -7,7 +7,7 @@ import com.company.user.api.feign.DistributeOrderFeign;
 import com.company.user.api.request.DistributeBuyOrderReq;
 import com.company.user.api.response.DistributeBuyOrderResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class DistributeOrderFeignFallback implements FallbackFactory<DistributeOrderFeign> {

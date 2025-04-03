@@ -5,7 +5,9 @@
 ---
 # dev环境配置
 spring:
-  profiles: dev
+  config:
+    activate:
+      on-profile: dev
 app:
   # apollo的AppId，创建的时候建议使用spring.application.name一一对应创建，方便统一配置
   id: ${spring.application.name}
@@ -23,7 +25,9 @@ apollo:
 ---
 # test环境配置
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
 app:
   # apollo的AppId，创建的时候建议使用spring.application.name一一对应创建，方便统一配置
   id: ${spring.application.name}
@@ -41,7 +45,9 @@ apollo:
 ---
 # pre环境配置
 spring:
-  profiles: pre
+  config:
+    activate:
+      on-profile: pre
 app:
   # apollo的AppId，创建的时候建议使用spring.application.name一一对应创建，方便统一配置
   id: ${spring.application.name}
@@ -59,7 +65,9 @@ apollo:
 ---
 # prod环境配置
 spring:
-  profiles: prod
+  config:
+    activate:
+      on-profile: prod
 app:
   # apollo的AppId，创建的时候建议使用spring.application.name一一对应创建，方便统一配置
   id: ${spring.application.name}

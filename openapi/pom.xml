@@ -36,6 +36,14 @@
 		    <artifactId>template-order-api</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+		
+		<!-- knife4j文档：https://doc.xiaominfo.com/knife4j -->
+		<dependency>
+			<groupId>com.github.xiaoymin</groupId>
+			<artifactId>knife4j-openapi2-spring-boot-starter</artifactId>
+			<version>4.5.0</version>
+		</dependency>
+		<!-- knife4j文档：https://doc.xiaominfo.com/knife4j -->
 	</dependencies>
 	<build>
 		<plugins>

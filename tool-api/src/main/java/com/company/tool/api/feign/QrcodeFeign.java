@@ -9,7 +9,7 @@ import com.company.common.api.Result;
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.request.WxaCodeReq;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/qrcode", fallbackFactory = QrcodeFeign.QrcodeFeignFactory.class)
 public interface QrcodeFeign {

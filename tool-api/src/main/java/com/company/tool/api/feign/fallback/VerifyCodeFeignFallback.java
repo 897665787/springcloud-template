@@ -6,7 +6,7 @@ import com.company.common.api.Result;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class VerifyCodeFeignFallback implements FallbackFactory<VerifyCodeFeign> {

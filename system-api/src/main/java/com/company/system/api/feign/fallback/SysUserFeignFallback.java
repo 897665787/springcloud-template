@@ -15,7 +15,7 @@ import com.company.system.api.request.SysUserReq;
 import com.company.system.api.response.SysUserInfoResp;
 import com.company.system.api.response.SysUserResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysUserFeignFallback implements FallbackFactory<SysUserFeign> {

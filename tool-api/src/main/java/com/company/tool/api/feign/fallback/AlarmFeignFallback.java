@@ -7,7 +7,7 @@ import com.company.tool.api.feign.AlarmFeign;
 import com.company.tool.api.request.AlarmReq;
 import com.company.tool.api.request.WebhookAlarmReq;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class AlarmFeignFallback implements FallbackFactory<AlarmFeign> {

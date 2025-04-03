@@ -12,7 +12,7 @@ import com.company.system.api.feign.SysUserRoleFeign;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.system.api.response.SysUserRoleResp;
 
-import feign.hystrix.FallbackFactory;
+import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SysUserRoleFeignFallback implements FallbackFactory<SysUserRoleFeign> {
