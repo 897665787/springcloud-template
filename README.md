@@ -93,6 +93,25 @@ springcloud-template
 ├── sql -- 项目中的表结构设计
 ```
 
+### 服务端口
+
+| 服务                  | 端口      |
+|----------------------|----------|
+| template-eureka      | 7001     |
+| template-gateway     | 5001     |
+| template-config      | 4001     |
+| template-monitor     | 3001     |
+| template-tool        | 4001     |
+| template-user        | 8002     |
+| template-system      | 8003     |
+| template-order       | 8001     |
+| template-job         | 7002     |
+| template-web         | 6001     |
+| template-app         | 6101     |
+| template-openapi     | 6201     |
+| template-admin       | 5001     |
+| template-adminapi    | 5001     |
+
 ### 本地开发 运行
 
 - 先启动注册中心eureka，[http://localhost:7001/](http://localhost:7001/)

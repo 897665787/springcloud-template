@@ -9,13 +9,13 @@ ENV TZ=Asia/Shanghai LANG=C.UTF-8 LC_ALL=C.UTF-8
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 安装一些镜像中没有的软件
-RUN apt-get update && apt-get install -y less vim net-tools
+RUN apt-get update && apt-get install -y less vim net-tools procps
 
 # 将jar文件添加到容器中并更名为app.jar
 COPY target/template-*.jar app.jar
 
 # 暴露容器内的端口给外部访问
-EXPOSE 7001
+#EXPOSE 8080 可以在docker run中使用‘-p 8080:8080’指定
 
 # 创建日志目录
 RUN mkdir -p /logs
