@@ -55,7 +55,7 @@
             <onMismatch>DENY</onMismatch>
         </filter>
 	</appender>
-	
+
 	<!-- 异步日志 -->
 	<appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
 		<!-- 不丢失日志，默认的，如果队列的 80% 已满，则会丢弃 TRACT、DEBUG、INFO 级别的日志 -->
@@ -66,7 +66,7 @@
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />
 	</appender>
-	
+
 	<springProfile name="dev">
 		<root>
 			<level value="INFO" />
@@ -76,7 +76,7 @@
 			<!-- <appender-ref ref="ASYNC_FILE" /> -->
 		</root>
 	</springProfile>
-	
+
 	<springProfile name="test,pre,prod">
 		<root>
 			<level value="INFO" />
@@ -85,5 +85,5 @@
 			<!-- <appender-ref ref="ASYNC_FILE" /> -->
 		</root>
 	</springProfile>
-	
+
 </configuration>

@@ -25,11 +25,6 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!-- 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载 -->
-		<dependency>
-		    <groupId>org.springframework.cloud</groupId>
-		    <artifactId>spring-cloud-starter-bootstrap</artifactId>
-		</dependency>
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 		<!-- config客户端 -->
 		<dependency>
@@ -118,9 +113,9 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        
+
         <!-- redisson -->
-        <!-- 
+        <!--
         	引入该配置会使用redission作为redis的连接工具
         <dependency>
 		     <groupId>org.redisson</groupId>
@@ -133,7 +128,7 @@
 		    <artifactId>redisson</artifactId>
 		    <version>3.12.0</version><!-- 最新版是3.32.0，存在客户端与服务端不兼容问题，高版本会导致redisson初始化很慢 -->
 		</dependency>
-		
+
 		<!-- elasticsearch-->
         <dependency>
             <groupId>com.bbossgroups.plugins</groupId>

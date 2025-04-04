@@ -36,7 +36,7 @@ apollo:
   cluster: default
   bootstrap:
     # 开关，false表示不使用apollo
-    enabled: true
+    enabled: false
     # 命名空间（多个使用英文逗号分隔）
     namespaces: application
   # apollo meta server地址（多个使用英文逗号分隔）
@@ -56,7 +56,7 @@ apollo:
   cluster: default
   bootstrap:
     # 开关，false表示不使用apollo
-    enabled: true
+    enabled: false
     # 命名空间（多个使用英文逗号分隔）
     namespaces: application
   # apollo meta server地址（多个使用英文逗号分隔）
@@ -76,7 +76,7 @@ apollo:
   cluster: default
   bootstrap:
     # 开关，false表示不使用apollo
-    enabled: true
+    enabled: false
     # 命名空间（多个使用英文逗号分隔）
     namespaces: application
   # apollo meta server地址（多个使用英文逗号分隔）

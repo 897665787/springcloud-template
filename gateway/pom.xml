@@ -12,7 +12,7 @@
 	<packaging>jar</packaging>
 
 	<description>gateway路由网关</description>
-    
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -25,7 +25,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- 网关用到template-framework的功能比较少，没必要引用，把少部分功能copy过去即可
 		<dependency>
 		    <groupId>com.company</groupId>
@@ -50,12 +50,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-		
-		<!-- 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml文件不再被自动加载 -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-bootstrap</artifactId>
-		</dependency>
+
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 		<!-- config客户端 -->
 		<dependency>
@@ -66,7 +61,13 @@
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-client</artifactId>
-			<version>1.9.2</version>
+			<version>2.4.0</version>
+		</dependency>
+		<!--nacos客户端 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+			<version>2021.1</version>
 		</dependency>
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 
