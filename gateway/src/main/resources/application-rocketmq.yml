@@ -37,7 +37,7 @@ rocketmq:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:

@@ -77,7 +77,7 @@
 		</root>
 	</springProfile>
 
-	<springProfile name="test,pre,prod-1,prod-2">
+	<springProfile name="test,pre,prod-1,prod-2,prod-zone1,prod-zone2">
 		<root>
 			<level value="INFO" />
 			<appender-ref ref="FILE" />

@@ -56,7 +56,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
     import:
       - optional:configserver:http://localhost:4001 # 在Spring Boot 2.7.x版本中，引用了config会有configserver检查
   cloud:

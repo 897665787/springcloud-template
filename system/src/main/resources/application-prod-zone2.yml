@@ -1,0 +1,7 @@
+spring:
+  config:
+    import: classpath:application-prod.yml # 区域配置直接复用application-prod.yml配置
+  cloud:
+    loadbalancer:
+      configurations: zone-preference # 修改ServiceInstanceListSupplier的实现类为ZonePreferenceServiceInstanceListSupplier，详情请看LoadBalancerClientConfiguration
+      zone: zone2 # 负载区域

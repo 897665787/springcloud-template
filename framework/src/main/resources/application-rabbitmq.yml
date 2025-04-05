@@ -46,7 +46,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
   rabbitmq:
     addresses: localhost:5672
     username: guest

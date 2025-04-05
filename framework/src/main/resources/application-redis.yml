@@ -67,7 +67,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod,prod-zone1,prod-zone2
   redis:
     host: 127.0.0.1 # 服务端地址
     port: 6379 # 服务端连接端口
