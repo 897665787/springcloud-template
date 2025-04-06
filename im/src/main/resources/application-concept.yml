@@ -1,0 +1,175 @@
+# concept websocket配置
+# 官方文档：https://github.com/Linyuzai/concept/wiki/Concept-WebSocket-LoadBalance-2
+
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+concept:
+  websocket:
+    type: AUTO #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
+    server: #服务配置
+      default-endpoint: #默认端点
+        enabled: true #是否启用默认端点，默认true
+        prefix: concept-websocket #前缀，默认'/concept-websocket/'
+        path-selector: #Path选择器
+          enabled: true #是否启用Path选择器，默认false
+        user-selector: #User选择器
+          enabled: true #是否启用User选择器，默认false
+      message:
+        retry:
+          times: 0 #客户端重试次数，默认不重试
+          period: 0 #客户端重试间隔，单位ms，默认0ms
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    load-balance: #负载均衡（转发）配置
+      subscriber-master: websocket #主订阅器，默认 websocket
+      subscriber-slave: none #从订阅器，默认无
+      message:
+        retry:
+          times: 0 #转发重试次数，默认不重试
+          period: 0 #转发重试间隔，单位ms，默认0ms
+      monitor: #监控配置
+        enabled: true #是否启用监控，默认true
+        period: 30000 #轮训间隔，单位ms，默认30s
+        logger: true #是否启用日志，默认false
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    executor:
+      thread-pool-size: 1 #线程池大小，默认1
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+concept:
+  websocket:
+    type: AUTO #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
+    server: #服务配置
+      default-endpoint: #默认端点
+        enabled: true #是否启用默认端点，默认true
+        prefix: concept-websocket #前缀，默认'/concept-websocket/'
+        path-selector: #Path选择器
+          enabled: true #是否启用Path选择器，默认false
+        user-selector: #User选择器
+          enabled: true #是否启用User选择器，默认false
+      message:
+        retry:
+          times: 0 #客户端重试次数，默认不重试
+          period: 0 #客户端重试间隔，单位ms，默认0ms
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    load-balance: #负载均衡（转发）配置
+      subscriber-master: websocket #主订阅器，默认 websocket
+      subscriber-slave: none #从订阅器，默认无
+      message:
+        retry:
+          times: 0 #转发重试次数，默认不重试
+          period: 0 #转发重试间隔，单位ms，默认0ms
+      monitor: #监控配置
+        enabled: true #是否启用监控，默认true
+        period: 30000 #轮训间隔，单位ms，默认30s
+        logger: true #是否启用日志，默认false
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    executor:
+      thread-pool-size: 1 #线程池大小，默认1
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+concept:
+  websocket:
+    type: AUTO #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
+    server: #服务配置
+      default-endpoint: #默认端点
+        enabled: true #是否启用默认端点，默认true
+        prefix: concept-websocket #前缀，默认'/concept-websocket/'
+        path-selector: #Path选择器
+          enabled: true #是否启用Path选择器，默认false
+        user-selector: #User选择器
+          enabled: true #是否启用User选择器，默认false
+      message:
+        retry:
+          times: 0 #客户端重试次数，默认不重试
+          period: 0 #客户端重试间隔，单位ms，默认0ms
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    load-balance: #负载均衡（转发）配置
+      subscriber-master: websocket #主订阅器，默认 websocket
+      subscriber-slave: none #从订阅器，默认无
+      message:
+        retry:
+          times: 0 #转发重试次数，默认不重试
+          period: 0 #转发重试间隔，单位ms，默认0ms
+      monitor: #监控配置
+        enabled: true #是否启用监控，默认true
+        period: 30000 #轮训间隔，单位ms，默认30s
+        logger: true #是否启用日志，默认false
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    executor:
+      thread-pool-size: 1 #线程池大小，默认1
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod,prod-zone1,prod-zone2
+concept:
+  websocket:
+    type: AUTO #JAVAX/SERVLET/REACTIVE，AUTO自动适配，默认AUTO
+    server: #服务配置
+      default-endpoint: #默认端点
+        enabled: true #是否启用默认端点，默认true
+        prefix: concept-websocket #前缀，默认'/concept-websocket/'
+        path-selector: #Path选择器
+          enabled: true #是否启用Path选择器，默认false
+        user-selector: #User选择器
+          enabled: true #是否启用User选择器，默认false
+      message:
+        retry:
+          times: 0 #客户端重试次数，默认不重试
+          period: 0 #客户端重试间隔，单位ms，默认0ms
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    load-balance: #负载均衡（转发）配置
+      subscriber-master: websocket #主订阅器，默认 websocket
+      subscriber-slave: none #从订阅器，默认无
+      message:
+        retry:
+          times: 0 #转发重试次数，默认不重试
+          period: 0 #转发重试间隔，单位ms，默认0ms
+      monitor: #监控配置
+        enabled: true #是否启用监控，默认true
+        period: 30000 #轮训间隔，单位ms，默认30s
+        logger: true #是否启用日志，默认false
+      heartbeat: #心跳配置
+        enabled: true #是否启用心跳，默认true
+        period: 60000 #心跳间隔，单位ms，默认1分钟
+        timeout: 210000 #超时时间，单位ms，默认3.5分钟，3次心跳间隔
+    executor:
+      thread-pool-size: 1 #线程池大小，默认1

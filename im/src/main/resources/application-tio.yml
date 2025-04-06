@@ -1,0 +1,116 @@
+# Tio websocket配置
+# 参考文档：https://my.oschina.net/panzi1/blog/3062746
+# 官方文档：https://www.t-io.org/doc/tio/318
+
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+tio:
+  websocket:
+    server: # 详情看TioWebSocketServerProperties、TioProperties
+      port: 6789 # 端口，默认6789
+      heartbeat-timeout: 60000 # 心跳超时时间,默认5000
+    cluster: # 详情看TioClusterProperties
+      enabled: false # 是否支持集群，集群开启需要redis
+      all: true
+      group: false
+      user: true
+      ip: true
+      channel: true
+    redis: # 详情看TioRedisClusterProperties
+      ip: ${spring.redis.host}
+      port: ${spring.redis.port}
+      password: ${spring.redis.password}
+    ssl: # 详情看TioSslProperties
+      enabled: false
+      key-store: key-store path
+      password: password
+      trust-store: trust-store path
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+tio:
+  websocket:
+    server: # 详情看TioWebSocketServerProperties、TioProperties
+      port: 6789 # 端口，默认6789
+      heartbeat-timeout: 60000 # 心跳超时时间,默认5000
+    cluster: # 详情看TioClusterProperties
+      enabled: false # 是否支持集群，集群开启需要redis
+      all: true
+      group: false
+      user: true
+      ip: true
+      channel: true
+    redis: # 详情看TioRedisClusterProperties
+      ip: ${spring.redis.host}
+      port: ${spring.redis.port}
+      password: ${spring.redis.password}
+    ssl: # 详情看TioSslProperties
+      enabled: false
+      key-store: key-store path
+      password: password
+      trust-store: trust-store path
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+tio:
+  websocket:
+    server: # 详情看TioWebSocketServerProperties、TioProperties
+      port: 6789 # 端口，默认6789
+      heartbeat-timeout: 60000 # 心跳超时时间,默认5000
+    cluster: # 详情看TioClusterProperties
+      enabled: false # 是否支持集群，集群开启需要redis
+      all: true
+      group: false
+      user: true
+      ip: true
+      channel: true
+    redis: # 详情看TioRedisClusterProperties
+      ip: ${spring.redis.host}
+      port: ${spring.redis.port}
+      password: ${spring.redis.password}
+    ssl: # 详情看TioSslProperties
+      enabled: false
+      key-store: key-store path
+      password: password
+      trust-store: trust-store path
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod,prod-zone1,prod-zone2
+tio:
+  websocket:
+    server: # 详情看TioWebSocketServerProperties、TioProperties
+      port: 6789 # 端口，默认6789
+      heartbeat-timeout: 60000 # 心跳超时时间,默认5000
+    cluster: # 详情看TioClusterProperties
+      enabled: false # 是否支持集群，集群开启需要redis
+      all: true
+      group: false
+      user: true
+      ip: true
+      channel: true
+    redis: # 详情看TioRedisClusterProperties
+      ip: ${spring.redis.host}
+      port: ${spring.redis.port}
+      password: ${spring.redis.password}
+    ssl: # 详情看TioSslProperties
+      enabled: false
+      key-store: key-store path
+      password: password
+      trust-store: trust-store path
