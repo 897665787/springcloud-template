@@ -28,7 +28,7 @@
 		</dependency>
         <dependency>
 		    <groupId>com.company</groupId>
-		    <artifactId>template-websocket-api</artifactId>
+		    <artifactId>template-im-api</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
 

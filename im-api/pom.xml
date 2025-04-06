@@ -8,7 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>template-websocket-api</artifactId>
+	<artifactId>template-im-api</artifactId>
 	<packaging>jar</packaging>
 
 	<description>即时通讯服务</description>
