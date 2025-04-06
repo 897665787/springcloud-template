@@ -51,7 +51,7 @@ public class ConceptController {
 		if (StringUtils.isBlank(group)) {
 			concept.send(message);
 		} else {
-			concept.send(new GroupMessage(message, group));// 框架未实现
+			concept.send(new GroupMessage(message, group));
 		}
 		return Result.success(message);
 	}
