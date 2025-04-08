@@ -1,15 +1,5 @@
 package com.company.app.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.common.api.Result;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.WebUtil;
@@ -22,6 +12,15 @@ import com.company.tool.api.response.NavResp;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 导航栏API
@@ -42,7 +41,7 @@ public class NavigationController {
 	/**
 	 * 金刚位列表
 	 */
-	@RequestMapping("/nav")
+	@GetMapping("/nav")
 	public Result<List<NavResp>> nav(HttpServletRequest request) {
 		
 		NavReq navReq = new NavReq();
@@ -81,7 +80,7 @@ public class NavigationController {
 	/**
 	 * 轮播图列表
 	 */
-	@RequestMapping("/banner")
+	@GetMapping("/banner")
 	public Result<List<BannerResp>> banner(HttpServletRequest request) {
 		
 		BannerReq bannerReq = new BannerReq();
