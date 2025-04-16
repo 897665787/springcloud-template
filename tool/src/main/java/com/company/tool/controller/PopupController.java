@@ -129,7 +129,7 @@ public class PopupController implements PopupFeign {
 	}
 	
 	/**
-	 * 创建用户弹窗（只弹1次）
+	 * 取消用户弹窗（只弹1次）
 	 */
 	@Override
 	public Result<Void> cancelUserPopup(@RequestBody CancelUserPopupReq cancelUserPopupReq) {

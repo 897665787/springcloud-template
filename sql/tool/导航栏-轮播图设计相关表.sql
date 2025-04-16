@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS `mk_banner_show_condition`;
 CREATE TABLE `mk_banner_show_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bean_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'bean名称(BannerShowCondition的实现类)',
-  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '描述',
+  `description` varchar(255) DEFAULT NULL COMMENT '描述',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序（由大到小排列）',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
