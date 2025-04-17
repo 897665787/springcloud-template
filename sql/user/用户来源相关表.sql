@@ -1,4 +1,4 @@
-CREATE TABLE `bu_user_source` (
+CREATE TABLE `user_source` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `deviceid` varchar(32) NOT NULL DEFAULT '' COMMENT '设备ID',
   `source` varchar(32) NOT NULL DEFAULT '' COMMENT '来源',

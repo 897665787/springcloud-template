@@ -5,8 +5,9 @@ public interface StrategyConstants {
 	String BINDMOBILE_STRATEGY = "bindMobileStrategy";
 	String LOGINRECORD_STRATEGY = "loginRecordStrategy";
 	
+	String DEVICEINFORECORD_STRATEGY = "deviceInfoRecordStrategy";
 	String SOURCERECORD_STRATEGY = "sourceRecordStrategy";
-	
+
 	String MEMBER_BUY_STRATEGY = "memberBuyStrategy";
 	String GOODS_REFUND_STRATEGY = "goodsRefundStrategy";
 	String RECHARGE_STRATEGY = "rechargeStrategy";
