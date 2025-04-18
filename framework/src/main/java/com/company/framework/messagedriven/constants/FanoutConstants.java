@@ -85,6 +85,7 @@ public interface FanoutConstants {
 		String PREFIX = FanoutConstants.PREFIX + "user_logout-";
 		// 队列
 		String LOGOUT_RECORD_QUEUE = PREFIX + "logout_record";
+		String USER_DEVICE_QUEUE = PREFIX + "user_device";
 	}
 	
 	// 优惠券发放事件

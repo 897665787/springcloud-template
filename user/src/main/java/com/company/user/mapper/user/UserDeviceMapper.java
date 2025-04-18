@@ -6,12 +6,21 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
+
 public interface UserDeviceMapper extends BaseMapper<UserDevice> {
 
-    @Insert("insert into user_device(user_id,deviceid) values (#{userId},#{deviceid})"
+    @Insert("insert into user_device(user_id,deviceid,last_login_time) values (#{userId},#{deviceid},#{lastLoginTime})"
             + " ON DUPLICATE KEY UPDATE"
-            + " update_time = now()")
-    int saveOrUpdate(@Param("userId") Integer userId, @Param("deviceid") String deviceid);
+            + " last_login_time = #{lastLoginTime}")
+    int saveOrUpdateLogin(@Param("userId") Integer userId, @Param("deviceid") String deviceid,
+                     @Param("lastLoginTime") LocalDateTime lastLoginTime);
+
+    @Insert("insert into user_device(user_id,deviceid,last_logout_time) values (#{userId},#{deviceid},#{lastLogoutTime})"
+            + " ON DUPLICATE KEY UPDATE"
+            + " last_logout_time = #{lastLogoutTime}")
+    int saveOrUpdateLogout(@Param("userId") Integer userId, @Param("deviceid") String deviceid,
+                     @Param("lastLogoutTime") LocalDateTime lastLogoutTime);
 
     /**
      * 根据设备ID查询用户ID

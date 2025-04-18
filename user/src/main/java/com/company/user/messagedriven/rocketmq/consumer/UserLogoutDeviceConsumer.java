@@ -17,18 +17,18 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-        topic = FanoutConstants.USER_LOGIN.EXCHANGE,
-        consumerGroup = FanoutConstants.USER_LOGIN.USER_DEVICE_QUEUE
+        topic = FanoutConstants.USER_LOGOUT.EXCHANGE,
+        consumerGroup = FanoutConstants.USER_LOGOUT.USER_DEVICE_QUEUE
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
-public class UserLoginDeviceConsumer implements RocketMQListener<MessageExt> {
+public class UserLogoutDeviceConsumer implements RocketMQListener<MessageExt> {
     @Override
     public void onMessage(MessageExt messageExt) {
         Map<String, String> properties = messageExt.getProperties();
         String jsonStrMsg = new String(messageExt.getBody(), StandardCharsets.UTF_8);
 
-        properties.put(HeaderConstants.HEADER_STRATEGY_NAME, StrategyConstants.USERDEVICE_LOGIN_STRATEGY);
+        properties.put(HeaderConstants.HEADER_STRATEGY_NAME, StrategyConstants.USERDEVICE_LOGOUT_STRATEGY);
         ConsumerUtils.handleByStrategy(jsonStrMsg, properties);
     }
 }

@@ -61,32 +61,35 @@ public class DeviceInfoRecordStrategy implements BaseStrategy<Map<String, Object
     private void save2db(String deviceid, String platform, String operator, String channel, String version, String requestip, String userAgent, LocalDateTime time) {
         // 获取记录
         DeviceInfo deviceInfo = deviceInfoMapper.selectByDeviceid(deviceid);
-        if (deviceInfo != null) {
-            // 更新有值的字段
-            DeviceInfo deviceInfo4Update = new DeviceInfo();
-            deviceInfo4Update.setId(deviceInfo.getId());
-            if (StringUtils.isNotBlank(platform)) {
-                deviceInfo4Update.setPlatform(platform);
-            }
-            if (StringUtils.isNotBlank(operator)) {
-                deviceInfo4Update.setOperator(operator);
-            }
-            if (StringUtils.isNotBlank(channel)) {
-                deviceInfo4Update.setChannel(channel);
-            }
-            if (StringUtils.isNotBlank(version)) {
-                deviceInfo4Update.setVersion(version);
-            }
-            if (StringUtils.isNotBlank(requestip)) {
-                deviceInfo4Update.setRequestip(requestip);
-            }
-            if (StringUtils.isNotBlank(userAgent)) {
-                deviceInfo4Update.setRequestUserAgent(userAgent);
-            }
-            deviceInfo4Update.setTime(time);
-            deviceInfoMapper.updateById(deviceInfo4Update);
-        } else {
+        if (deviceInfo == null) {// 新增
             deviceInfoMapper.saveOrUpdate(deviceid, platform, operator, channel, version, requestip, userAgent, time);
+            return;
         }
+        if (time.isBefore(deviceInfo.getTime())) { // 时间小于原来的时间，说明是旧数据，不需要更新
+            return;
+        }
+        // 更新有值的字段
+        DeviceInfo deviceInfo4Update = new DeviceInfo();
+        deviceInfo4Update.setId(deviceInfo.getId());
+        if (StringUtils.isNotBlank(platform)) {
+            deviceInfo4Update.setPlatform(platform);
+        }
+        if (StringUtils.isNotBlank(operator)) {
+            deviceInfo4Update.setOperator(operator);
+        }
+        if (StringUtils.isNotBlank(channel)) {
+            deviceInfo4Update.setChannel(channel);
+        }
+        if (StringUtils.isNotBlank(version)) {
+            deviceInfo4Update.setVersion(version);
+        }
+        if (StringUtils.isNotBlank(requestip)) {
+            deviceInfo4Update.setRequestip(requestip);
+        }
+        if (StringUtils.isNotBlank(userAgent)) {
+            deviceInfo4Update.setRequestUserAgent(userAgent);
+        }
+        deviceInfo4Update.setTime(time);
+        deviceInfoMapper.updateById(deviceInfo4Update);
     }
 }

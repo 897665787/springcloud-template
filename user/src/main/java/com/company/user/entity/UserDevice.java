@@ -22,6 +22,16 @@ public class UserDevice {
 	 */
 	private String deviceid;
 
+	/**
+	 * 最后登录时间
+	 */
+	private LocalDateTime lastLoginTime;
+
+	/**
+	 * 最后登出时间
+	 */
+	private LocalDateTime lastLogoutTime;
+
 	private String remark;
 	private LocalDateTime createTime;
 	private LocalDateTime updateTime;

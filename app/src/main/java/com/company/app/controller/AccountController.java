@@ -1,5 +1,7 @@
 package com.company.app.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -142,6 +144,7 @@ public class AccountController {
 		params.put("device", device);
 		params.put("userId", userId);
 		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGIN.EXCHANGE);
 
 		return tokenValue;
@@ -163,6 +166,7 @@ public class AccountController {
 		params.put("device", device);
 		params.put("userId", HttpContextUtil.currentUserId());
 		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGOUT.EXCHANGE);
 
 		return Result.success("登出成功");

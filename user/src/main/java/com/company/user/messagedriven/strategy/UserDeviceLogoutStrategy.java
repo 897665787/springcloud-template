@@ -1,5 +1,6 @@
 package com.company.user.messagedriven.strategy;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.company.common.constant.HeaderConstants;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.user.mapper.user.UserDeviceMapper;
@@ -8,14 +9,16 @@ import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
- * 绑定用户与设备关系（使用场景：推送）
+ * 绑定用户与设备关系（使用场景：记录登出时间）
  */
 @Slf4j
-@Component(StrategyConstants.USERDEVICE_STRATEGY)
-public class UserDeviceStrategy implements BaseStrategy<Map<String, Object>> {
+@Component(StrategyConstants.USERDEVICE_LOGOUT_STRATEGY)
+public class UserDeviceLogoutStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Autowired
 	private UserDeviceMapper userDeviceMapper;
@@ -24,10 +27,13 @@ public class UserDeviceStrategy implements BaseStrategy<Map<String, Object>> {
 	public void doStrategy(Map<String, Object> params) {
 		Integer userId = MapUtils.getInteger(params, "userId");
 
+		String timeStr = MapUtils.getString(params, "time");
+		LocalDateTime time = LocalDateTimeUtil.parse(timeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> httpContextHeader = (Map<String, String>) MapUtils.getMap(params, "httpContextHeader");
 		String deviceid = httpContextHeader.get(HeaderConstants.HEADER_DEVICEID);
 
-		userDeviceMapper.saveOrUpdate(userId, deviceid);
+		userDeviceMapper.saveOrUpdateLogout(userId, deviceid, time);
 	}
 }

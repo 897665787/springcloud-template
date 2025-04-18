@@ -36,7 +36,7 @@ public class UserLoginListener {
 			return;
 		}
 		Map<String, Object> headers = event.getHeaders();
-		String strategyName = StrategyConstants.USERDEVICE_STRATEGY;
+		String strategyName = StrategyConstants.USERDEVICE_LOGIN_STRATEGY;
 		String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, strategyName, paramsClassName);
 	}
