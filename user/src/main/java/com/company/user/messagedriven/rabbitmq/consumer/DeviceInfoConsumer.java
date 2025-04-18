@@ -18,9 +18,9 @@ public class DeviceInfoConsumer {
 
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.DEVICE_INFO.DEVICE_INFO_RECORD_QUEUE, durable = "false",
 			autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.DEVICE_INFO.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
-	public void sourceRecord(String jsonStrMsg, Channel channel, Message message) {
+	public void deviceInfoRecord(String jsonStrMsg, Channel channel, Message message) {
 		message.getMessageProperties().setHeader(HeaderConstants.HEADER_STRATEGY_NAME,
-				StrategyConstants.SOURCERECORD_STRATEGY);
+				StrategyConstants.DEVICEINFORECORD_STRATEGY);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}
 }
