@@ -18,7 +18,7 @@ import com.company.user.mapper.user.UserSourceMapper;
 import cn.hutool.core.date.LocalDateTimeUtil;
 
 /**
- * 记录来源
+ * 记录来源（使用场景：引流统计、邀请奖励、地推业绩计算等业务场景）
  */
 @Component(StrategyConstants.SOURCERECORD_STRATEGY)
 public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {

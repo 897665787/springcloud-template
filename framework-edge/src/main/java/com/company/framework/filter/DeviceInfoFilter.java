@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * <pre>
- * 设备拦截器，记录设备信息
+ * 设备拦截器，记录设备信息（使用场景：推送等业务场景）
  * </pre>
  */
 @Component

@@ -24,7 +24,7 @@ import com.google.common.collect.Maps;
 
 /**
  * <pre>
- * source拦截器，记录用户来源（可用于引流统计、邀请奖励、地推业绩计算等业务场景）
+ * source拦截器，记录用户来源（使用场景：引流统计、邀请奖励、地推业绩计算等业务场景）
  * </pre>
  */
 @Component

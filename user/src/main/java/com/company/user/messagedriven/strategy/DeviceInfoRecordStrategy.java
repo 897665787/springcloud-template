@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 记录设备信息（用于推送场景）
+ * 记录设备信息（使用场景：推送）
  */
 @Component(StrategyConstants.DEVICEINFORECORD_STRATEGY)
 public class DeviceInfoRecordStrategy implements BaseStrategy<Map<String, Object>> {

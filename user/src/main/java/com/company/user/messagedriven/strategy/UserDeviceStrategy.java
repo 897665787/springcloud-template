@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * 绑定用户与设备关系（用于推送场景）
+ * 绑定用户与设备关系（使用场景：推送）
  */
 @Slf4j
 @Component(StrategyConstants.USERDEVICE_STRATEGY)
