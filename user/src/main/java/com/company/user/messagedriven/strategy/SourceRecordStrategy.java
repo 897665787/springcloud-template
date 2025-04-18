@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.messagedriven.BaseStrategy;
@@ -29,6 +30,9 @@ public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 	@Autowired
 	private UserSourceMapper userSourceMapper;
 
+	@Value("${template.timeoutSeconds.sourceRecord:1800}")
+	private Long timeoutSeconds;
+
 	@Override
 	public void doStrategy(Map<String, Object> params) {
 		String source = MapUtils.getString(params, "source");
@@ -47,7 +51,7 @@ public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 		save2db(deviceid, source, time);
 
 		// 数据量可能很大，需要快速过滤重复的数据，加快处理速度
-		cache.set(key, EXIST_VALUE, 30, TimeUnit.MINUTES);
+		cache.set(key, EXIST_VALUE, timeoutSeconds, TimeUnit.SECONDS);
 	}
 
 	private void save2db(String deviceid, String source, LocalDateTime time) {
