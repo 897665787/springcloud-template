@@ -22,13 +22,14 @@ CREATE TABLE `user_device` (
  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
  `deviceid` varchar(64) NOT NULL COMMENT '设备ID',
+ `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
+ `last_logout_time` datetime DEFAULT NULL COMMENT '最后登出时间',
 
  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
  PRIMARY KEY (`id`) USING BTREE,
  unique KEY `uniq_userid_deviceid` (`user_id`,`deviceid`),
- KEY `idx_userid` (`user_id`),
  KEY `idx_deviceid` (`deviceid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户设备关系表';
 

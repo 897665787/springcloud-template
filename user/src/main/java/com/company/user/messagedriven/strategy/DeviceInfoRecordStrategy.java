@@ -35,6 +35,10 @@ public class DeviceInfoRecordStrategy implements BaseStrategy<Map<String, Object
     @Override
     public void doStrategy(Map<String, Object> params) {
         String deviceid = MapUtils.getString(params, "deviceid");
+        if (StringUtils.isBlank(deviceid)) {
+            // 没有deviceid，不处理
+            return;
+        }
         String platform = MapUtils.getString(params, "platform");
         String operator = MapUtils.getString(params, "operator");
         String channel = MapUtils.getString(params, "channel");
