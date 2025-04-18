@@ -27,4 +27,17 @@ public class UserLoginListener {
 		String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, strategyName, paramsClassName);
 	}
+
+	@EventListener
+	public void userDevice(MessageEvent event) {
+		String jsonStrMsg = event.getJsonStrMsg();
+		String exchange = event.getExchange();
+		if (!FanoutConstants.USER_LOGIN.EXCHANGE.equals(exchange)) {
+			return;
+		}
+		Map<String, Object> headers = event.getHeaders();
+		String strategyName = StrategyConstants.USERDEVICE_STRATEGY;
+		String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
+		ConsumerUtils.handleByStrategy(jsonStrMsg, strategyName, paramsClassName);
+	}
 }

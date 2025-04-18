@@ -63,6 +63,7 @@ public interface FanoutConstants {
 		String PREFIX = FanoutConstants.PREFIX + "user_login-";
 		// 队列
 		String LOGIN_RECORD_QUEUE = PREFIX + "login_record";
+		String USER_DEVICE_QUEUE = PREFIX + "user_device";
 	}
 
 	// 用户注册事件

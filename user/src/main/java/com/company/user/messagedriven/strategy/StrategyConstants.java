@@ -4,7 +4,8 @@ public interface StrategyConstants {
 	String BINDEMAIL_STRATEGY = "bindEmailStrategy";
 	String BINDMOBILE_STRATEGY = "bindMobileStrategy";
 	String LOGINRECORD_STRATEGY = "loginRecordStrategy";
-	
+	String USERDEVICE_STRATEGY = "userDeviceStrategy";
+
 	String DEVICEINFORECORD_STRATEGY = "deviceInfoRecordStrategy";
 	String SOURCERECORD_STRATEGY = "sourceRecordStrategy";
 
