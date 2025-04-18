@@ -1,12 +1,12 @@
 package com.company.user.mapper.user;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.company.user.entity.UserSource;
+import com.company.user.entity.UserDevice;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-public interface UserDeviceMapper extends BaseMapper<UserSource> {
+public interface UserDeviceMapper extends BaseMapper<UserDevice> {
 
     @Insert("insert into user_device(user_id,deviceid) values (#{userId},#{deviceid})"
             + " ON DUPLICATE KEY UPDATE"

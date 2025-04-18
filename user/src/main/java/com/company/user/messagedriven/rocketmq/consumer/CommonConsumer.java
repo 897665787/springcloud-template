@@ -1,7 +1,7 @@
 package com.company.user.messagedriven.rocketmq.consumer;
 
-import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
 import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
+import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
 import com.company.user.messagedriven.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
@@ -11,7 +11,7 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Component
@@ -27,7 +27,7 @@ public class CommonConsumer implements RocketMQListener<MessageExt> {
     @Override
     public void onMessage(MessageExt messageExt) {
         Map<String, String> properties = messageExt.getProperties();
-        String jsonStrMsg = new String(messageExt.getBody(), Charset.forName("UTF-8"));
+        String jsonStrMsg = new String(messageExt.getBody(), StandardCharsets.UTF_8);
         ConsumerUtils.handleByStrategy(jsonStrMsg, properties);
     }
 }
