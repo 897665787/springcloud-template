@@ -53,7 +53,7 @@ public class PushController implements PushFeign {
 	@Override
 	public Result<Void> bindDevice(@RequestBody BindDeviceReq bindDeviceReq) {
 		String deviceid = bindDeviceReq.getDeviceid();
-		String channelId = bindDeviceReq.getChannelId();
+		String pushId = bindDeviceReq.getPushId();
 		String operator = HttpContextUtil.operator();//		ios(iOS)、mac(iOS)、android(Android)、win(Windows,如果获取不到可以不要)
 
 		Constants.DeviceType deviceType = null;
@@ -64,7 +64,7 @@ public class PushController implements PushFeign {
 		} else {
 			throw new IllegalArgumentException("不支持的操作系统类型:" + operator);
 		}
-		pushSender.bindDevice(deviceid, channelId, deviceType);
+		pushSender.bindDevice(deviceid, pushId, deviceType);
 		return Result.success();
 	}
 

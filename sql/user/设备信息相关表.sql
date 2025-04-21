@@ -8,6 +8,7 @@ CREATE TABLE `device_info` (
  `version` varchar(32) DEFAULT NULL COMMENT '版本号',
  `requestip` varchar(32) DEFAULT NULL COMMENT '请求IP',
  `request_user_agent` varchar(255) DEFAULT NULL COMMENT '请求UserAgent',
+ `time` datetime DEFAULT NULL COMMENT '时间',
 
  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

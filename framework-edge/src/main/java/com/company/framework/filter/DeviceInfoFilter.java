@@ -4,6 +4,7 @@ import com.company.common.constant.CommonConstants;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 
 		String requestip = request.getHeader(HttpContextUtil.HEADER_REQUESTIP);
 		if (StringUtils.isBlank(requestip)) {
-			requestip = request.getParameter(HttpContextUtil.HEADER_REQUESTIP);
+			requestip = IpUtil.getRequestIp(request);
 		}
 
 		String userAgent = request.getHeader("User-Agent");

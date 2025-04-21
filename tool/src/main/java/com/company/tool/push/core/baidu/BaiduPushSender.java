@@ -2,25 +2,25 @@ package com.company.tool.push.core.baidu;
 
 
 import com.company.tool.push.core.*;
-import com.company.tool.push.core.repository.DeviceInfo;
-import com.company.tool.push.core.repository.DeviceRepository;
+import com.company.tool.push.core.repository.PushInfo;
+import com.company.tool.push.core.repository.PushInfoRepository;
 
 public class BaiduPushSender implements PushSender {
 
 	private PushClient client = null;
-	private DeviceRepository repository = null;
+	private PushInfoRepository repository = null;
 
-	public BaiduPushSender(String apiKey, String secretKey, DeviceRepository repository) {
+	public BaiduPushSender(String apiKey, String secretKey, PushInfoRepository repository) {
 		this.client = new PushClient(apiKey, secretKey);
 		this.repository = repository;
 	}
 
 	@Override
 	public void bindDevice(String deviceid, String channelId, Constants.DeviceType deviceType) {
-		DeviceInfo deviceInfo = new DeviceInfo();
-		deviceInfo.setChannelId(channelId);
-		deviceInfo.setDeviceType(deviceType);
-		repository.bindDeviceInfo(deviceid, deviceInfo);
+		PushInfo pushInfo = new PushInfo();
+		pushInfo.setPushId(channelId);
+		pushInfo.setDeviceType(deviceType);
+		repository.bindDeviceInfo(deviceid, pushInfo);
 	}
 
 //	@Override
@@ -30,9 +30,9 @@ public class BaiduPushSender implements PushSender {
 
 	@Override
 	public SendResponse send(String deviceid, String title, String content, String intent) {
-		DeviceInfo deviceInfo = repository.getByDeviceid(deviceid);
-		String channelId = deviceInfo.getChannelId();
-		Constants.DeviceType deviceTypeEnum = deviceInfo.getDeviceType();
+		PushInfo pushInfo = repository.getByDeviceid(deviceid);
+		String channelId = pushInfo.getPushId();
+		Constants.DeviceType deviceTypeEnum = pushInfo.getDeviceType();
 
 		Integer deviceType = null;// 设备类型，3：Android，4：IOS
 		if (deviceTypeEnum == Constants.DeviceType.Android) {

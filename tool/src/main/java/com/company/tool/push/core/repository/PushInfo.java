@@ -5,14 +5,14 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 /**
- * 设备信息
+ * 推送信息
  *
  * @author candi.jiang
  */
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class DeviceInfo {
-    String channelId;
+public class PushInfo {
+    String pushId;
     Constants.DeviceType deviceType;
     Constants.MessageType messageType;
 }

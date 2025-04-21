@@ -11,7 +11,7 @@ public interface PushSender {
 	/**
 	 * 绑定设备
 	 */
-	void bindDevice(String deviceid, String channelId, Constants.DeviceType deviceType);
+	void bindDevice(String deviceid, String pushId, Constants.DeviceType deviceType);
 
 	/**
 	 * 获取调用渠道
