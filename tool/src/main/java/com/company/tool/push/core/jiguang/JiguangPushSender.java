@@ -18,9 +18,9 @@ public class JiguangPushSender implements PushSender {
 	}
 
 	@Override
-	public void bindDevice(String deviceid, String channelId, Constants.DeviceType deviceType) {
+	public void bindDevice(String deviceid, String registrationId, Constants.DeviceType deviceType) {
 		PushInfo pushInfo = new PushInfo();
-		pushInfo.setPushId(channelId);
+		pushInfo.setPushId(registrationId);
 		pushInfo.setDeviceType(deviceType);
 		repository.bindDeviceInfo(deviceid, pushInfo);
 	}
@@ -28,7 +28,7 @@ public class JiguangPushSender implements PushSender {
 	@Override
 	public SendResponse send(String deviceid, String title, String content, String intent) {
 		PushInfo pushInfo = repository.getByDeviceid(deviceid);
-		String channelId = pushInfo.getPushId();
-		return client.send(channelId, title, content, intent);
+		String registrationId = pushInfo.getPushId();
+		return client.send(registrationId, title, content, intent);
 	}
 }

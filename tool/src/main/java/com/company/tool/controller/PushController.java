@@ -11,6 +11,7 @@ import com.company.tool.api.request.SendPushReq;
 import com.company.tool.push.AsyncPushSender;
 import com.company.tool.push.core.Constants;
 import com.company.tool.push.core.PushSender;
+import com.company.tool.push.core.repository.PushInfo;
 import com.company.tool.subscribe.SubscribeType;
 import com.company.tool.subscribe.SubscribeTypeBeanFactory;
 import com.company.tool.subscribe.dto.SubscribeSendDto;
@@ -54,8 +55,8 @@ public class PushController implements PushFeign {
 	public Result<Void> bindDevice(@RequestBody BindDeviceReq bindDeviceReq) {
 		String deviceid = bindDeviceReq.getDeviceid();
 		String pushId = bindDeviceReq.getPushId();
-		String operator = HttpContextUtil.operator();//		ios(iOS)、mac(iOS)、android(Android)、win(Windows,如果获取不到可以不要)
 
+		String operator = HttpContextUtil.operator();// ios(iOS)、mac(iOS)、android(Android)、win(Windows,如果获取不到可以不要)
 		Constants.DeviceType deviceType = null;
 		if ("ios".equalsIgnoreCase(operator) || "mac".equalsIgnoreCase(operator)) {
 			deviceType = Constants.DeviceType.iOS;

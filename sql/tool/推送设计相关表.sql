@@ -1,16 +1,15 @@
 CREATE TABLE `push_device_bind` (
  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
+
  `deviceid` varchar(64) NOT NULL COMMENT '设备ID',
- `app_id` varchar(32) NOT NULL COMMENT '推送平台appid',
  `push_id` varchar(64) NOT NULL COMMENT '推送ID（推送平台唯一）',
  `device_type` varchar(16) NOT NULL COMMENT '设备类型(Android:安卓,iOS:苹果)',
- `agent` varchar(16) NOT NULL COMMENT '设备类型(Android:安卓,iOS:苹果)',
 
  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
  PRIMARY KEY (`id`) USING BTREE,
- UNIQUE KEY `uniq_deviceid_channel` (`deviceid`)
+ UNIQUE KEY `uniq_deviceid` (`deviceid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推送设备绑定';
 
 CREATE TABLE `push_template` (

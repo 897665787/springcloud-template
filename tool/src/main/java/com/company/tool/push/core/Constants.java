@@ -1,6 +1,5 @@
 package com.company.tool.push.core;
 
-import com.company.tool.enums.PushTaskDetailEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -43,7 +43,7 @@ public class PushClient {
         });
     }
 
-    public SendResponse send(String channelId, Integer deviceType, String title, String content, String intent, Integer messageType) {
+    public SendResponse send(String channelId, Integer deviceType, String title, String content, String intent, Integer msgType) {
         String message;
         if (deviceType == 3) { // Android
             AndroidMsgStruct msgStruct = new AndroidMsgStruct();
@@ -67,7 +67,7 @@ public class PushClient {
         PushMsgToSingleDeviceRequest request = new PushMsgToSingleDeviceRequest()//
                 .addChannelId(channelId)// 唯一对应一台设备，必须为客户端初始化成功之后返回的channelId，默认null。
                 .addMessage(message).addMsgExpires(3600 * 5) // 相对于当前时间的消息过期时间，单位为秒，取值：(0, 86400 x 7]，默认值为3600 x 5
-                .addMessageType(messageType) // 消息类型,0：透传消息 1：通知 默认值为0
+                .addMessageType(msgType) // 消息类型,0：透传消息 1：通知 默认值为0
                 .addDeviceType(deviceType)// 设备类型，3：Android，4：IOS
                 ;
 

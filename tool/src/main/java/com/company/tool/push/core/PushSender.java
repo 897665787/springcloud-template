@@ -1,11 +1,7 @@
 package com.company.tool.push.core;
 
-import java.util.LinkedHashMap;
-
 /**
  * 推送发送器
- *
- * @author candi.jiang
  */
 public interface PushSender {
 	/**

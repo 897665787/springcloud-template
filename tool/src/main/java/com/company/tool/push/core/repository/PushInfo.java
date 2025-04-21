@@ -6,8 +6,6 @@ import lombok.experimental.FieldDefaults;
 
 /**
  * 推送信息
- *
- * @author candi.jiang
  */
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)

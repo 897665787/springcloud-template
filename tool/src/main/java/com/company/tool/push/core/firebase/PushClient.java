@@ -1,12 +1,14 @@
 package com.company.tool.push.core.firebase;
 
 
+import com.company.tool.push.core.Constants;
 import com.company.tool.push.core.SendResponse;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,10 +28,9 @@ public class PushClient {
     private FirebaseApp firebaseApp = null;
 
     public PushClient(String accountFilePath) {
-        InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream(accountFilePath);
         GoogleCredentials googleCredentials = null;
-        try {
-            googleCredentials = GoogleCredentials.fromStream(serviceAccount);
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(accountFilePath)) {
+            googleCredentials = GoogleCredentials.fromStream(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -37,14 +38,29 @@ public class PushClient {
         firebaseApp = FirebaseApp.initializeApp(options);
     }
 
-    public SendResponse send(String token, String title, String body, String intent) {
-        Notification notification = Notification.builder().setTitle(title).setBody(body).build();
+    public SendResponse send(String token, String title, String body, String intent, Constants.MessageType messageType) {
+        Message.Builder builder = Message.builder().setToken(token);
+        if (messageType == Constants.MessageType.TRANSPORT) {
+            // 透传消息
+            Map<String, String> data = new HashMap<>();
+            data.put("intent", intent);
+            data.put("title", title);
+            data.put("body", body);
 
-        Map<String, String> data = new HashMap<>();
-        data.put("intent", intent);
+            builder.putAllData(data);
+        } else if (messageType == Constants.MessageType.NOTICE) {
+            // 通知消息
+            Notification notification = Notification.builder().setTitle(title).setBody(body).build();
 
-        Message message = Message.builder().setToken(token).setNotification(notification).putAllData(data).build();
+            Map<String, String> data = new HashMap<>();
+            data.put("intent", intent);
 
+            builder.setNotification(notification).putAllData(data);
+        } else {
+            throw new IllegalArgumentException("messageType is not support");
+        }
+
+        Message message = builder.build();
         SendResponse resp = new SendResponse();
         try {
             FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance(firebaseApp);
@@ -67,7 +83,8 @@ public class PushClient {
         String title = "TEST";
         String content = "Hello Baidu push!";
         String intent = "path/to/page";
-        SendResponse sendResponse = pushClient.send(token, title, content, intent);
+        Constants.MessageType messageType = Constants.MessageType.NOTICE;
+        SendResponse sendResponse = pushClient.send(token, title, content, intent, messageType);
         log.info("sendResponse:{}", sendResponse);
 
     }

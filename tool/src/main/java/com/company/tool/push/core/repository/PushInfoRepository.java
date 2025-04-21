@@ -2,8 +2,6 @@ package com.company.tool.push.core.repository;
 
 /**
  * 推送信息仓库
- *
- * @author candi.jiang
  */
 public interface PushInfoRepository {
     /**
