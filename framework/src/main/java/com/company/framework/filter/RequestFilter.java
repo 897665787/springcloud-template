@@ -1,18 +1,5 @@
 package com.company.framework.filter;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.RegexUtil;
@@ -20,8 +7,20 @@ import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.util.IpUtil;
 import com.company.framework.util.WebUtil;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 请求参数日志打印
@@ -57,6 +56,8 @@ public class RequestFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+//		ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);// 不能使用，读取不到body
+
 		long start = System.currentTimeMillis();
 		String contentType = request.getContentType();
 		String bodyStr = "{}";
@@ -74,10 +75,20 @@ public class RequestFilter extends OncePerRequestFilter {
 
 		log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, requestURI, headerStr, paramsStr, bodyStr);
 
-		chain.doFilter(request, response);
+		ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
-		log.info("{} {} {} header:{},param:{},body:{},{}ms", method, requestIp, requestURI, headerStr, paramsStr,
-				bodyStr, System.currentTimeMillis() - start);
+		chain.doFilter(request, responseWrapper);
+
+		String responseBodyStr = "{}";
+		byte[] responseBody = responseWrapper.getContentAsByteArray();
+		if (responseBody.length > 0) {
+			responseBodyStr = new String(responseBody, StandardCharsets.UTF_8);
+		}
+
+		log.info("{} {} {} header:{},param:{},body:{},response:{},{}ms", method, requestIp, requestURI, headerStr, paramsStr, bodyStr, responseBodyStr, System.currentTimeMillis() - start);
+
+		// 内容写出到客户端
+		responseWrapper.copyBodyToResponse();
 	}
 
 }
