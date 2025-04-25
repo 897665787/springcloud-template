@@ -28,7 +28,7 @@ import com.google.common.collect.Maps;
 import cn.hutool.core.date.DateUtil;
 
 /**
- * 短信发送器（异步）
+ * 推送发送器（异步）
  */
 @Component
 public class AsyncPushSender {
