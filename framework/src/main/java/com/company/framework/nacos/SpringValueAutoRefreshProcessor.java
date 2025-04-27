@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostP
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -73,9 +71,7 @@ public class SpringValueAutoRefreshProcessor extends AutowiredAnnotationBeanPost
         super.setOrder(Ordered.LOWEST_PRECEDENCE - 1);
     }
 
-    @EventListener(EnvironmentChangeEvent.class)
-    public void onApplicationEvent(EnvironmentChangeEvent event) {
-        final Set<String> keys = event.getKeys();
+    public void changedKeys(Set<String> keys) {
         if (keys == null || keys.isEmpty()) {
             return;
         }
