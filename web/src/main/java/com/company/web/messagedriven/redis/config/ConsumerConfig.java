@@ -1,17 +1,19 @@
 package com.company.web.messagedriven.redis.config;
 
 import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
-import com.company.web.messagedriven.Constants;
-import com.company.web.messagedriven.redis.consumer.CommonConsumer;
-import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.PatternTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.connection.stream.Consumer;
+import org.springframework.data.redis.connection.stream.ObjectRecord;
+import org.springframework.data.redis.connection.stream.ReadOffset;
+import org.springframework.data.redis.connection.stream.StreamOffset;
+import org.springframework.data.redis.stream.StreamListener;
+import org.springframework.data.redis.stream.StreamMessageListenerContainer;
+import org.springframework.data.redis.stream.Subscription;
+
+import java.time.Duration;
 
 /**
  * 延时队列(用2个队列实现)
@@ -26,27 +28,28 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class ConsumerConfig {
 
-	private CommonConsumer commonConsumer;
-
 	@Bean
-	RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(commonConsumer, new PatternTopic("channelName"));
-		return container;
+	public StreamMessageListenerContainer<String, ObjectRecord<String, String>> streamMessageListenerContainer(
+			RedisConnectionFactory redisConnectionFactory) {
+
+		StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, ObjectRecord<String, String>> options =
+				StreamMessageListenerContainer.StreamMessageListenerContainerOptions
+						.builder()
+						.pollTimeout(Duration.ofSeconds(1))
+						.targetType(String.class)
+						.build();
+
+		return StreamMessageListenerContainer.create(redisConnectionFactory, options);
 	}
 
 	@Bean
-	public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-												   MessageListenerAdapter listenerAdapter) {
-		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.addMessageListener(listenerAdapter, new ChannelTopic("messageChannel"));
-		return container;
-	}
+	public Subscription subscription(
+			StreamMessageListenerContainer<String, ObjectRecord<String, String>> container,
+			StreamListener<String, ObjectRecord<String, String>> streamListener) {
 
-	@Bean
-	public MessageListenerAdapter listenerAdapter(CommonConsumer commonConsumer) {
-		return new MessageListenerAdapter(commonConsumer, "onMessage");
+		return container.receive(
+				Consumer.from("group1", "consumer1"),
+				StreamOffset.create("streamKey", ReadOffset.lastConsumed()),
+				streamListener);
 	}
 }
