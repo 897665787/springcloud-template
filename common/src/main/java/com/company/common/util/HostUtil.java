@@ -1,15 +1,15 @@
 package com.company.common.util;
 
+import cn.hutool.system.SystemUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class HostUtil {
@@ -61,11 +61,22 @@ public class HostUtil {
 		}
 		return "127.0.0.1";
 	}
-	
+
+	/**
+	 * 获取当前进程 PID
+	 *
+	 * @return
+	 */
+	public static long pid() {
+		return SystemUtil.getCurrentPID();
+	}
+
 	public static void main(String[] args) {
 		System.out.println(HostUtil.identity());
 		System.out.println(RandomStringUtils.randomAlphanumeric(8));
 		System.out.println(RandomStringUtils.randomAlphanumeric(22));
 		System.out.println(HostUtil.ip());
+		System.out.println(HostUtil.pid());
+		System.out.println(SystemUtil.getHostInfo().getName());
 	}
 }
