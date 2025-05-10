@@ -123,6 +123,27 @@
 		</dependency>
 		<!-- 企微机器人 -->
 
+		<!-- 消息推送 -->
+		<!-- 百度云：https://push.baidu.com/doc/java/api -->
+		<dependency>
+			<groupId>cn.featherfly</groupId>
+			<artifactId>bccs-api</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<!-- firebase：https://firebase.google.com/docs/admin/setup?hl=zh-cn#java -->
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>9.4.3</version>
+		</dependency>
+		<!-- 极光：https://docs.jiguang.cn/jpush/server/push/server_overview -->
+		<dependency>
+			<groupId>io.github.jpush</groupId>
+			<artifactId>jiguang-sdk</artifactId>
+			<version>5.1.14</version>
+		</dependency>
+		<!-- 消息推送 -->
+
 		<!-- 数据库 -->
 		<!-- mysql -->
         <dependency>
