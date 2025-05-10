@@ -1,32 +1,36 @@
 package com.company.user.entity;
 
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDateTime;
+
 @Data
 @Accessors(chain = true)
-@TableName("user_source")
-public class UserSource {
+@TableName("user_device")
+public class UserDevice {
 	private Integer id;
+
+	/**
+	 * bu_user_info.id
+	 */
+	private Integer userId;
 
 	/**
 	 * 设备ID
 	 */
 	private String deviceid;
-	
+
 	/**
-	 * 来源
+	 * 最后登录时间
 	 */
-	private String source;
-	
+	private LocalDateTime lastLoginTime;
+
 	/**
-	 * 时间
+	 * 最后登出时间
 	 */
-	private LocalDateTime time;
+	private LocalDateTime lastLogoutTime;
 
 	private String remark;
 	private LocalDateTime createTime;

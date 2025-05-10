@@ -28,7 +28,7 @@ public class GlobalConfigChangeListener extends AbstractConfigChangeListener imp
         for (ConfigChangeItem changeItem : changeItems) {
             log.info("changed:{} {} {} -> {}", changeItem.getType(), changeItem.getKey(), changeItem.getOldValue(), changeItem.getNewValue());
         }
-        /* 这里无需发送事件，SpringValueAutoRefreshProcessor会接收到事件，仅打印修改前后值日志
+        /* 这里无需发送事件，EnvironmentChangeListener会接收到事件，仅打印修改前后值日志
         Set<String> changedKeys = changeItems.stream().map(ConfigChangeItem::getKey).collect(Collectors.toSet());
         applicationContext.publishEvent(new EnvironmentChangeEvent(changedKeys));
          */

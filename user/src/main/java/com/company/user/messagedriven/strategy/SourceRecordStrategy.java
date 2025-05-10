@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.messagedriven.BaseStrategy;
@@ -17,7 +18,7 @@ import com.company.user.mapper.user.UserSourceMapper;
 import cn.hutool.core.date.LocalDateTimeUtil;
 
 /**
- * 记录来源
+ * 记录来源（使用场景：引流统计、邀请奖励、地推业绩计算等业务场景）
  */
 @Component(StrategyConstants.SOURCERECORD_STRATEGY)
 public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
@@ -28,6 +29,9 @@ public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 	private ICache cache;
 	@Autowired
 	private UserSourceMapper userSourceMapper;
+
+	@Value("${template.timeoutSeconds.sourceRecord:1800}")
+	private Long timeoutSeconds;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {
@@ -47,7 +51,7 @@ public class SourceRecordStrategy implements BaseStrategy<Map<String, Object>> {
 		save2db(deviceid, source, time);
 
 		// 数据量可能很大，需要快速过滤重复的数据，加快处理速度
-		cache.set(key, EXIST_VALUE, 30, TimeUnit.MINUTES);
+		cache.set(key, EXIST_VALUE, timeoutSeconds, TimeUnit.SECONDS);
 	}
 
 	private void save2db(String deviceid, String source, LocalDateTime time) {

@@ -4,13 +4,15 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import io.github.encrypt.annotation.FieldEncrypt;
+import io.github.encrypt.bean.Encrypted;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @TableName("email_task_detail")
 @Data
 @Accessors(chain = true)
-public class EmailTaskDetail {
+public class EmailTaskDetail implements Encrypted {
 	/**
 	 * ID
 	 */
@@ -26,6 +28,7 @@ public class EmailTaskDetail {
 	/**
 	 * 收件邮箱
 	 */
+	@FieldEncrypt
 	private String toEmail;
 	/**
 	 * 模板参数json

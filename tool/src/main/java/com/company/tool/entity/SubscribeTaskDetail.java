@@ -20,7 +20,7 @@ public class SubscribeTaskDetail {
 	 */
 	private Integer taskId;
 	/**
-	 * 手机号码
+	 * openid
 	 */
 	private String openid;
 	/**

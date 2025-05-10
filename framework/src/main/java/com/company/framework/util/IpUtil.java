@@ -60,10 +60,10 @@ public class IpUtil {
 				InetAddress inet = null;
 				try {
 					inet = InetAddress.getLocalHost();
+					ip = inet.getHostAddress();
 				} catch (UnknownHostException e) {
 					log.error("error : ", e);
 				}
-				ip = inet.getHostAddress();
 			}
 		}
 		return ip;
