@@ -8,11 +8,14 @@ spring:
   config:
     activate:
       on-profile: dev
+    import: optional:nacos:${spring.application.name}.yaml
   cloud:
     nacos:
       config:
         enabled: false # nacos配置中心开关
         server-addr: 127.0.0.1:8848 # config-server的请求路径
+        username:  # 用户名
+        password:  # 密码
         file-extension: yaml # 配置文件格式
         # 命名空间，默认public，一般做环境隔离（如开发、测试、生产），如果nacos-server分环境部署，可以下沉到项目名
         namespace: ${spring.profiles.active}
@@ -20,7 +23,7 @@ spring:
         group: springcloud-template
         # Data ID，格式：${prefix}-${spring.profiles.active}.${file-extension}，prefix默认为spring.application.name
         # 一般配置为微服务名.${file-extension}，不加.${file-extension}可能会读不到配置
-        name: ${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+        name: ${spring.application.name}.yaml # 与spring.config.import配置的optional:nacos:后面的值保持一致
 
 ---
 # test环境配置
@@ -28,11 +31,14 @@ spring:
   config:
     activate:
       on-profile: test
+    import: optional:nacos:${spring.application.name}.yaml
   cloud:
     nacos:
       config:
         enabled: true # nacos配置中心开关
         server-addr: 127.0.0.1:8848 # config-server的请求路径
+        username:  # 用户名
+        password:  # 密码
         file-extension: yaml # 配置文件格式
         # 命名空间，默认public，一般做环境隔离（如开发、测试、生产），如果nacos-server分环境部署，可以下沉到项目名
         namespace: ${spring.profiles.active}
@@ -40,7 +46,7 @@ spring:
         group: springcloud-template
         # Data ID，格式：${prefix}-${spring.profiles.active}.${file-extension}，prefix默认为spring.application.name
         # 一般配置为微服务名.${file-extension}，不加.${file-extension}可能会读不到配置
-        name: ${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+        name: ${spring.application.name}.yaml # 与spring.config.import配置的optional:nacos:后面的值保持一致
 
 ---
 # pre环境配置
@@ -48,11 +54,14 @@ spring:
   config:
     activate:
       on-profile: pre
+    import: optional:nacos:${spring.application.name}.yaml
   cloud:
     nacos:
       config:
         enabled: true # nacos配置中心开关
         server-addr: 127.0.0.1:8848 # config-server的请求路径
+        username:  # 用户名
+        password:  # 密码
         file-extension: yaml # 配置文件格式
         # 命名空间，默认public，一般做环境隔离（如开发、测试、生产），如果nacos-server分环境部署，可以下沉到项目名
         namespace: ${spring.profiles.active}
@@ -60,7 +69,7 @@ spring:
         group: springcloud-template
         # Data ID，格式：${prefix}-${spring.profiles.active}.${file-extension}，prefix默认为spring.application.name
         # 一般配置为微服务名.${file-extension}，不加.${file-extension}可能会读不到配置
-        name: ${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+        name: ${spring.application.name}.yaml # 与spring.config.import配置的optional:nacos:后面的值保持一致
 
 ---
 # prod环境配置
@@ -68,11 +77,14 @@ spring:
   config:
     activate:
       on-profile: prod,prod-zone1,prod-zone2
+    import: optional:nacos:${spring.application.name}.yaml
   cloud:
     nacos:
       config:
         enabled: true # nacos配置中心开关
         server-addr: 127.0.0.1:8848 # config-server的请求路径
+        username:  # 用户名
+        password:  # 密码
         file-extension: yaml # 配置文件格式
         # 命名空间，默认public，一般做环境隔离（如开发、测试、生产），如果nacos-server分环境部署，可以下沉到项目名
         namespace: ${spring.profiles.active}
@@ -80,4 +92,4 @@ spring:
         group: springcloud-template
         # Data ID，格式：${prefix}-${spring.profiles.active}.${file-extension}，prefix默认为spring.application.name
         # 一般配置为微服务名.${file-extension}，不加.${file-extension}可能会读不到配置
-        name: ${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+        name: ${spring.application.name}.yaml # 与spring.config.import配置的optional:nacos:后面的值保持一致
