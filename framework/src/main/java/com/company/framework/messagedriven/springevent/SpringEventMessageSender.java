@@ -54,6 +54,8 @@ public class SpringEventMessageSender implements MessageSender {
 		messageEvent.setJsonStrMsg(paramsStr);
 		messageEvent.setExchange(exchange);
 		applicationEventPublisher.publishEvent(messageEvent);
+		log.info("publishEvent,strategyName:{},toJson:{},exchange:{},routingKey:{}", null, paramsStr, exchange,
+				null);
 	}
 
 	@Override

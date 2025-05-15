@@ -15,19 +15,19 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * MDC日志ID切面（Rocketmq）
+ * MDC日志ID切面
  */
 @Slf4j
 @Aspect
 @Component
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
-public class RocketmqMdcAspect {
+public class MdcAspect {
 
-    // 在onMessage执行之前塞入日志ID，用于追踪整个执行链路
+    // 执行之前塞入日志ID，用于追踪整个执行链路
     @Before("execution(* org.apache.rocketmq.spring.core.RocketMQListener+.onMessage(org.apache.rocketmq.common.message.MessageExt)) && @within(org.apache.rocketmq.spring.annotation.RocketMQMessageListener)")
     public void setMdc(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();// 获取方法参数
-        if (args.length == 0 || !(args[0] instanceof MessageExt)) { // onMessage方法参数不符合预期，拿不到日志ID
+        if (args.length == 0 || !(args[0] instanceof MessageExt)) { // 参数不符合预期，拿不到日志ID
             MdcUtil.put();
             log.info("初始化日志ID");
             return;

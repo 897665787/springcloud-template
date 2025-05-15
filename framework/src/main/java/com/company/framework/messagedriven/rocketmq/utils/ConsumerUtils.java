@@ -83,7 +83,7 @@ public class ConsumerUtils {
 		long start = System.currentTimeMillis();
 		try {
 			String paramsClassName = MapUtils.getString(properties, HeaderConstants.HEADER_PARAMS_CLASS);
-			Class<?> paramsClass = null;
+			Class<?> paramsClass;
 			try {
 				paramsClass = Class.forName(paramsClassName);
 			} catch (ClassNotFoundException e) {
