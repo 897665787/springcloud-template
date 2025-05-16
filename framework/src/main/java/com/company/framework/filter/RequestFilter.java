@@ -5,6 +5,7 @@ import com.company.common.util.JsonUtil;
 import com.company.common.util.RegexUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
+import com.company.framework.filter.request.BodyReaderHttpServletResponseWrapper;
 import com.company.framework.util.IpUtil;
 import com.company.framework.util.WebUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -13,17 +14,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
- * 请求参数日志打印
+ * 请求/响应参数日志打印
  */
 @Slf4j
 @Component
@@ -75,20 +74,16 @@ public class RequestFilter extends OncePerRequestFilter {
 
 		log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, requestURI, headerStr, paramsStr, bodyStr);
 
-		ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+//		ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);// 不能使用，影响文件下载等流操作
+		BodyReaderHttpServletResponseWrapper responseWrapper = new BodyReaderHttpServletResponseWrapper(response);
 
 		chain.doFilter(request, responseWrapper);
 
-		String responseBodyStr = "{}";
-		byte[] responseBody = responseWrapper.getContentAsByteArray();
-		if (responseBody.length > 0) {
-			responseBodyStr = new String(responseBody, StandardCharsets.UTF_8);
-		}
+		String responseBodyStr = responseWrapper.getCachedBodyString();
 
 		log.info("{} {} {} header:{},param:{},body:{},response:{},{}ms", method, requestIp, requestURI, headerStr, paramsStr, bodyStr, responseBodyStr, System.currentTimeMillis() - start);
 
 		// 内容写出到客户端
-		responseWrapper.copyBodyToResponse();
+//		responseWrapper.copyBodyToResponse();
 	}
-
 }
