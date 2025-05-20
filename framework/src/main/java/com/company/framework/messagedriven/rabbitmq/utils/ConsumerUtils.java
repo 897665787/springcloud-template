@@ -1,22 +1,19 @@
 package com.company.framework.messagedriven.rabbitmq.utils;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.function.Consumer;
-
+import com.company.common.exception.BusinessException;
+import com.company.common.util.JsonUtil;
+import com.company.framework.context.SpringContextUtil;
+import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.rabbitmq.client.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
-import com.company.framework.messagedriven.BaseStrategy;
-import com.company.framework.context.SpringContextUtil;
-import com.rabbitmq.client.Channel;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.Map;
+import java.util.function.Consumer;
 
 @Slf4j
 public class ConsumerUtils {
@@ -88,44 +85,38 @@ public class ConsumerUtils {
 	}
 
 	private static void handle(String jsonStrMsg, Channel channel, Message message, Consumer<Object> consumer,
-			boolean unAckIfException) {
+							   boolean unAckIfException) {
+		log.info("jsonStrMsg:{}", jsonStrMsg);
+		if (jsonStrMsg == null) {
+			basicAck(channel, message);
+			return;
+		}
+		long start = System.currentTimeMillis();
 		try {
-			if (jsonStrMsg == null) {
-				log.info("jsonStrMsg is null");
-				basicAck(channel, message);
+			MessageProperties messageProperties = message.getMessageProperties();
+			Map<String, Object> headers = messageProperties.getHeaders();
+			String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
+			Class<?> paramsClass;
+			try {
+				paramsClass = Class.forName(paramsClassName);
+			} catch (ClassNotFoundException e) {
+				log.warn("class {} not found,use {} instead", paramsClassName, Map.class.getName());
+				paramsClass = Map.class;// 找不到类，就用Map
+			}
+			Object entity = JsonUtil.toEntity(jsonStrMsg, paramsClass);
+			consumer.accept(entity);
+		} catch (BusinessException e) {
+			// 业务异常一般是校验不通过，可以当做成功处理
+			log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
+		} catch (Exception e) {
+			log.error("accept error", e);
+			if (unAckIfException) {
 				return;
 			}
-			long start = System.currentTimeMillis();
-			try {
-				MessageProperties messageProperties = message.getMessageProperties();
-				MdcUtil.put(messageProperties.getMessageId());
-				log.info("jsonStrMsg:{}", jsonStrMsg);
-				Map<String, Object> headers = messageProperties.getHeaders();
-				String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
-				Class<?> paramsClass = null;
-				try {
-					paramsClass = Class.forName(paramsClassName);
-				} catch (ClassNotFoundException e) {
-					log.warn("class {} not found,use {} instead", paramsClassName, Map.class.getName());
-					paramsClass = Map.class;// 找不到类，就用Map
-				}
-				Object entity = JsonUtil.toEntity(jsonStrMsg, paramsClass);
-				consumer.accept(entity);
-			} catch (BusinessException e) {
-				// 业务异常一般是校验不通过，可以当做成功处理
-				log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
-			} catch (Exception e) {
-				log.error("accept error", e);
-				if (unAckIfException) {
-					return;
-				}
-			} finally {
-				log.info("耗时:{}ms", System.currentTimeMillis() - start);
-			}
-			basicAck(channel, message);
 		} finally {
-			MdcUtil.remove();
+			log.info("耗时:{}ms", System.currentTimeMillis() - start);
 		}
+		basicAck(channel, message);
 	}
 
 	private static void basicAck(Channel channel, Message message) {
