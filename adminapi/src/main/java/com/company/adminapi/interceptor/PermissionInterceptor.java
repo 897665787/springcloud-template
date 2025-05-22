@@ -1,9 +1,8 @@
 package com.company.adminapi.interceptor;
 
 import com.company.adminapi.annotation.RequirePermissions;
-import com.company.common.api.Result;
 import com.company.common.constant.CommonConstants.InterceptorOrdered;
-import com.company.common.util.JsonUtil;
+import com.company.common.exception.BusinessException;
 import com.company.framework.context.HttpContextUtil;
 import com.company.system.api.feign.SysUserRoleFeign;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 
@@ -71,13 +69,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			return true;
 		}
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter writer = response.getWriter();
-		Result<?> fail = Result.fail("未授权");
-		writer.write(JsonUtil.toJsonString(fail));
 		log.warn("无访问权限:{}.{}", method.getDeclaringClass().getName(), method.getName());
-		
-		return false;
+		throw new BusinessException("未授权");
 	}
 }
