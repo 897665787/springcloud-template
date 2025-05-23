@@ -1,7 +1,7 @@
 package com.company.framework.filter;
 
 import com.company.common.constant.CommonConstants;
-import com.company.framework.context.HttpContextUtil;
+import com.company.common.constant.HeaderConstants;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.util.IpUtil;
@@ -42,9 +42,9 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		String deviceid = request.getHeader(HttpContextUtil.HEADER_DEVICEID);
+		String deviceid = request.getHeader(HeaderConstants.HEADER_DEVICEID);
 		if (StringUtils.isBlank(deviceid)) {
-			deviceid = request.getParameter(HttpContextUtil.HEADER_DEVICEID);
+			deviceid = request.getParameter(HeaderConstants.HEADER_DEVICEID);
 		}
 
 		if (StringUtils.isBlank(deviceid)) {
@@ -53,27 +53,27 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		String platform = request.getHeader(HttpContextUtil.HEADER_PLATFORM);
+		String platform = request.getHeader(HeaderConstants.HEADER_PLATFORM);
 		if (StringUtils.isBlank(platform)) {
-			platform = request.getParameter(HttpContextUtil.HEADER_PLATFORM);
+			platform = request.getParameter(HeaderConstants.HEADER_PLATFORM);
 		}
 
-		String operator = request.getHeader(HttpContextUtil.HEADER_OPERATOR);
+		String operator = request.getHeader(HeaderConstants.HEADER_OPERATOR);
 		if (StringUtils.isBlank(operator)) {
-			operator = request.getParameter(HttpContextUtil.HEADER_OPERATOR);
+			operator = request.getParameter(HeaderConstants.HEADER_OPERATOR);
 		}
 
-		String channel = request.getHeader(HttpContextUtil.HEADER_CHANNEL);
+		String channel = request.getHeader(HeaderConstants.HEADER_CHANNEL);
 		if (StringUtils.isBlank(channel)) {
-			channel = request.getParameter(HttpContextUtil.HEADER_CHANNEL);
+			channel = request.getParameter(HeaderConstants.HEADER_CHANNEL);
 		}
 
-		String version = request.getHeader(HttpContextUtil.HEADER_VERSION);
+		String version = request.getHeader(HeaderConstants.HEADER_VERSION);
 		if (StringUtils.isBlank(version)) {
-			version = request.getParameter(HttpContextUtil.HEADER_VERSION);
+			version = request.getParameter(HeaderConstants.HEADER_VERSION);
 		}
 
-		String requestip = request.getHeader(HttpContextUtil.HEADER_REQUESTIP);
+		String requestip = request.getHeader(HeaderConstants.HEADER_REQUESTIP);
 		if (StringUtils.isBlank(requestip)) {
 			requestip = IpUtil.getRequestIp(request);
 		}

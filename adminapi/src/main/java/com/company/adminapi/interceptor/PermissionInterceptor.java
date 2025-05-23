@@ -2,8 +2,8 @@ package com.company.adminapi.interceptor;
 
 import com.company.adminapi.annotation.RequirePermissions;
 import com.company.common.constant.CommonConstants.InterceptorOrdered;
+import com.company.common.constant.HeaderConstants;
 import com.company.common.exception.BusinessException;
-import com.company.framework.context.HttpContextUtil;
 import com.company.system.api.feign.SysUserRoleFeign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,11 +26,11 @@ import java.util.Enumeration;
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "permission", havingValue = "true", matchIfMissing = true)
 public class PermissionInterceptor implements AsyncHandlerInterceptor {
-	
+
 	@Lazy // 与feign扫描有冲突，构成循环依赖，所以加@Lazy
 	@Autowired
 	private SysUserRoleFeign sysUserRoleFeign;
-	
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -42,7 +42,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 		HandlerMethod handlerMethod = (HandlerMethod) handler;
 
 		Method method = handlerMethod.getMethod();
-		
+
 		RequirePermissions methodAnnotation = AnnotationUtils.findAnnotation(method, RequirePermissions.class);
 		RequirePermissions classAnnotation = AnnotationUtils.findAnnotation(method.getDeclaringClass(), RequirePermissions.class);
 
@@ -50,14 +50,14 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 			// 方法和类上都没有打注解RequirePermissions
 			return true;
 		}
-		
+
 		// 注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值
-		Enumeration<String> headerCurrentUserIdEnum = request.getHeaders(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		Enumeration<String> headerCurrentUserIdEnum = request.getHeaders(HeaderConstants.HEADER_CURRENT_USER_ID);
 		String lastCurrentUserId = null;
 		while (headerCurrentUserIdEnum.hasMoreElements()) {
 			lastCurrentUserId = headerCurrentUserIdEnum.nextElement();
 		}
-		
+
 		String userId = StringUtils.defaultIfBlank(lastCurrentUserId, "0");
 
 		// 判断是否有访问权限？

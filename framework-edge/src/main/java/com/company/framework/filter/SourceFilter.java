@@ -1,26 +1,24 @@
 package com.company.framework.filter;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.common.constant.CommonConstants;
+import com.company.common.constant.HeaderConstants;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.company.common.constant.CommonConstants;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.HttpContextUtil;
-import com.google.common.collect.Maps;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 /**
  * <pre>
@@ -43,9 +41,9 @@ public class SourceFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
-		String source = request.getHeader(HttpContextUtil.HEADER_SOURCE);
+		String source = request.getHeader(HeaderConstants.HEADER_SOURCE);
 		if (StringUtils.isBlank(source)) {
-			source = request.getParameter(HttpContextUtil.HEADER_SOURCE);
+			source = request.getParameter(HeaderConstants.HEADER_SOURCE);
 		}
 
 		if (StringUtils.isBlank(source)) {
@@ -54,9 +52,9 @@ public class SourceFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		String deviceid = request.getHeader(HttpContextUtil.HEADER_DEVICEID);
+		String deviceid = request.getHeader(HeaderConstants.HEADER_DEVICEID);
 		if (StringUtils.isBlank(deviceid)) {
-			deviceid = request.getParameter(HttpContextUtil.HEADER_DEVICEID);
+			deviceid = request.getParameter(HeaderConstants.HEADER_DEVICEID);
 		}
 
 		if (StringUtils.isBlank(deviceid)) {

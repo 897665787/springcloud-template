@@ -1,9 +1,9 @@
 package com.company.framework.interceptor;
 
 import com.company.common.api.ResultCode;
+import com.company.common.constant.HeaderConstants;
 import com.company.common.exception.BusinessException;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HttpContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -40,21 +40,21 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 			// 方法和类上都没有打注解RequireLogin
 			return true;
 		}
-		
+
 		// 判断是否已登录
-//		String userId = request.getHeader(HttpContextUtil.HEADER_CURRENT_USER_ID);
+//		String userId = request.getHeader(HeaderConstants.HEADER_CURRENT_USER_ID);
 		// 注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值
-		Enumeration<String> headerCurrentUserIdEnum = request.getHeaders(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		Enumeration<String> headerCurrentUserIdEnum = request.getHeaders(HeaderConstants.HEADER_CURRENT_USER_ID);
 		String lastCurrentUserId = null;
 		while (headerCurrentUserIdEnum.hasMoreElements()) {
 			lastCurrentUserId = headerCurrentUserIdEnum.nextElement();
 		}
-		
+
 		String userId = lastCurrentUserId;
 		if (StringUtils.isNotBlank(userId)) {
 			return true;
 		}
-		
+
 		// 判断是否有访问权限？
 		log.warn("登录过期:{}.{}", method.getDeclaringClass().getName(), method.getName());
 		throw BusinessException.of(ResultCode.NO_LOGIN);

@@ -20,17 +20,6 @@ import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 
 public class HttpContextUtil {
-	// 公共请求头（与用户无关）
-	public static final String HEADER_PLATFORM = HeaderConstants.HEADER_PLATFORM;// 平台：app(APP)、mini(微信小程序)、h5(H5页面)、alimini(支付宝小程序)、alipaymini(支付宝小程序内H5)
-	public static final String HEADER_OPERATOR = HeaderConstants.HEADER_OPERATOR;// 操作系统：ios(iOS)、mac(iOS)、android(Android)、win(Windows,如果获取不到可以不要)、devtools(小程序开发工具)
-	public static final String HEADER_VERSION = HeaderConstants.HEADER_VERSION;// 版本号：4.1.0
-	public static final String HEADER_DEVICEID = HeaderConstants.HEADER_DEVICEID;// 设备ID：82b6fe22b2063733af477a8df7358238
-	public static final String HEADER_CHANNEL = HeaderConstants.HEADER_CHANNEL;// 渠道：wx(微信小程序)、ali(支付宝小程序)、dev(开发包)、sit(测试包)、uat(验收包)、ios(苹果应用商店)、xiaomi(小米应用商店)、huawei(华为应用商店)等
-	public static final String HEADER_REQUESTIP = HeaderConstants.HEADER_REQUESTIP;// 请求IP（最外层的请求）
-	public static final String HEADER_SOURCE = HeaderConstants.HEADER_SOURCE;// 用户来源：pyqgg(朋友圈广告)、dygg(抖音广告)、dt_15333223333(张三地推)、fx_oQvXm5qqQIiEPewZTtOKugyuEGWA(用户分享)、fx_rebate_oQvXm5qqQIiEPewZTtOKugyuEGWA(用户返现分享)
-
-	// 用户请求头（注：为了防止直接在header设置用户ID，绕过认证，要取最后1个值）
-	public static final String HEADER_CURRENT_USER_ID = HeaderConstants.HEADER_CURRENT_USER_ID;// 当前登录用户id
 
 	private HttpContextUtil() {
 	}
@@ -72,31 +61,31 @@ public class HttpContextUtil {
 	}
 
 	public static String currentUserId() {
-		return lastHead(HEADER_CURRENT_USER_ID);
+		return lastHead(HeaderConstants.HEADER_CURRENT_USER_ID);
 	}
 
 	public static String platform() {
-		return head(HEADER_PLATFORM);
+		return head(HeaderConstants.HEADER_PLATFORM);
 	}
 
 	public static String operator() {
-		return head(HEADER_OPERATOR);
+		return head(HeaderConstants.HEADER_OPERATOR);
 	}
 
 	public static String version() {
-		return head(HEADER_VERSION);
+		return head(HeaderConstants.HEADER_VERSION);
 	}
 
 	public static String deviceid() {
-		return head(HEADER_DEVICEID);
+		return head(HeaderConstants.HEADER_DEVICEID);
 	}
 
 	public static String channel() {
-		return head(HEADER_CHANNEL);
+		return head(HeaderConstants.HEADER_CHANNEL);
 	}
 
 	public static String requestip() {
-		String requestip = head(HEADER_REQUESTIP);
+		String requestip = head(HeaderConstants.HEADER_REQUESTIP);
 		if (StringUtils.isNotBlank(requestip)) {
 			return requestip;
 		}
@@ -110,39 +99,39 @@ public class HttpContextUtil {
 
 
 	public static String source() {
-		return head(HEADER_SOURCE);
+		return head(HeaderConstants.HEADER_SOURCE);
 	}
 
 	public static Map<String, String> httpContextHeader() {
 		Map<String, String> headers = Maps.newHashMap();
-		headers.put(HEADER_CURRENT_USER_ID, currentUserId());
-		headers.put(HEADER_PLATFORM, platform());
-		headers.put(HEADER_OPERATOR, operator());
-		headers.put(HEADER_VERSION, version());
-		headers.put(HEADER_DEVICEID, deviceid());
-		headers.put(HEADER_CHANNEL, channel());
-		headers.put(HEADER_REQUESTIP, requestip());
-		headers.put(HEADER_SOURCE, source());
+		headers.put(HeaderConstants.HEADER_CURRENT_USER_ID, currentUserId());
+		headers.put(HeaderConstants.HEADER_PLATFORM, platform());
+		headers.put(HeaderConstants.HEADER_OPERATOR, operator());
+		headers.put(HeaderConstants.HEADER_VERSION, version());
+		headers.put(HeaderConstants.HEADER_DEVICEID, deviceid());
+		headers.put(HeaderConstants.HEADER_CHANNEL, channel());
+		headers.put(HeaderConstants.HEADER_REQUESTIP, requestip());
+		headers.put(HeaderConstants.HEADER_SOURCE, source());
 		return headers;
 	}
 
 	public static Map<String, String> httpContextHeaderThisRequest(HttpServletRequest request) {
 		Map<String, String> headers = Maps.newHashMap();
 
-		Enumeration<String> headerEnum = request.getHeaders(HttpContextUtil.HEADER_CURRENT_USER_ID);
+		Enumeration<String> headerEnum = request.getHeaders(HeaderConstants.HEADER_CURRENT_USER_ID);
 		String lastCurrentUserId = null;
 		while (headerEnum.hasMoreElements()) {
 			lastCurrentUserId = headerEnum.nextElement();
 		}
-		headers.put(HEADER_CURRENT_USER_ID, lastCurrentUserId);
+		headers.put(HeaderConstants.HEADER_CURRENT_USER_ID, lastCurrentUserId);
 
-		headers.put(HEADER_PLATFORM, request.getHeader(HEADER_PLATFORM));
-		headers.put(HEADER_OPERATOR, request.getHeader(HEADER_OPERATOR));
-		headers.put(HEADER_VERSION, request.getHeader(HEADER_VERSION));
-		headers.put(HEADER_DEVICEID, request.getHeader(HEADER_DEVICEID));
-		headers.put(HEADER_CHANNEL, request.getHeader(HEADER_CHANNEL));
-		headers.put(HEADER_REQUESTIP, request.getHeader(HEADER_REQUESTIP));
-		headers.put(HEADER_SOURCE, request.getHeader(HEADER_SOURCE));
+		headers.put(HeaderConstants.HEADER_PLATFORM, request.getHeader(HeaderConstants.HEADER_PLATFORM));
+		headers.put(HeaderConstants.HEADER_OPERATOR, request.getHeader(HeaderConstants.HEADER_OPERATOR));
+		headers.put(HeaderConstants.HEADER_VERSION, request.getHeader(HeaderConstants.HEADER_VERSION));
+		headers.put(HeaderConstants.HEADER_DEVICEID, request.getHeader(HeaderConstants.HEADER_DEVICEID));
+		headers.put(HeaderConstants.HEADER_CHANNEL, request.getHeader(HeaderConstants.HEADER_CHANNEL));
+		headers.put(HeaderConstants.HEADER_REQUESTIP, request.getHeader(HeaderConstants.HEADER_REQUESTIP));
+		headers.put(HeaderConstants.HEADER_SOURCE, request.getHeader(HeaderConstants.HEADER_SOURCE));
 		return headers;
 	}
 
