@@ -115,15 +115,10 @@ springcloud-template
 | template-admin    | 5001 | 管理后台（与adminapi二选一） |
 | template-adminapi | 5001 | 管理后台API（与admin二选一） |
 
+
+[![流程图截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
+
 [查看 ProcessOn 图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
-
-
-![ProcessOn 图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
-
-
-[![流程图截图](./doc/模块说明.png)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
-
-
 
 ### 本地开发 运行
 
