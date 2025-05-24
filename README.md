@@ -27,6 +27,7 @@
 | ---------------------- |------------|
 | Spring Boot            | 2.7.18     |
 | Spring Cloud Netflix   | 2021.0.9   |
+| Mybatis Plus   | 3.5.7   |
 
 ### 模块说明
 
@@ -106,12 +107,16 @@ springcloud-template
 | template-user     | 8002 | 用户服务               |
 | template-order    | 8001 | 订单服务               |
 | template-im       | 8004 | 即时通讯服务             |
-| template-web      | 6001 | web服务              |
-| template-app      | 6101 | app服务              |
-| template-openapi  | 6201 | openapi服务          |
+| template-web      | 6001 | WEB端              |
+| template-app      | 6101 | APP端              |
+| template-openapi  | 6201 | 第三方访问入口          |
 | template-job      | 7002 | 定时任务               |
-| template-admin    | 5001 | 管理后台（与adminapi二选一） |
-| template-adminapi | 5001 | 管理后台API（与admin二选一） |
+| template-adminapi | 5001 | 管理后台端 |
+
+[详细请查看ProcessOn图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
+
+[![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
+
 
 ### 本地开发 运行
 
