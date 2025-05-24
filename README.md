@@ -121,6 +121,8 @@ springcloud-template
 ![ProcessOn 图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 
 
+[![流程图截图](./path/to/screenshot.png)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
+
 
 ### 本地开发 运行
 
