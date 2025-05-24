@@ -34,3 +34,12 @@ spring:
           filters:
             # StripPrefix：去除原始请求路径中的前1级路径，即/openapi
             - StripPrefix=1
+        - id: gateway-template-adminapi
+          uri: lb://template-adminapi
+          # 设置断言
+          predicates:
+            - Path=/adminapi/**
+          # 配置过滤器（局部）
+          filters:
+            # StripPrefix：去除原始请求路径中的前1级路径，即/adminapi
+            - StripPrefix=1

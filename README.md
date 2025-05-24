@@ -95,9 +95,11 @@ springcloud-template
 
 ### 服务说明
 
+
+
 | 服务                | 端口   | 功能说明               |
 |-------------------|------|--------------------|
-| template-eureka   | 7001 | 注册中心               |
+| template-e ureka   | 7001 | 注册中心               |
 | template-gateway  | 5001 | 网关                 |
 | template-config   | 4001 | 配置中心（可替换为nacos）    |
 | template-monitor  | 3001 | 监控                 |
@@ -112,6 +114,13 @@ springcloud-template
 | template-job      | 7002 | 定时任务               |
 | template-admin    | 5001 | 管理后台（与adminapi二选一） |
 | template-adminapi | 5001 | 管理后台API（与admin二选一） |
+
+[查看 ProcessOn 图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
+
+
+![ProcessOn 图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
+
+
 
 ### 本地开发 运行
 
