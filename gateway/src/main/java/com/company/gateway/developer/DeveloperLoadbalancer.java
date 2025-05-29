@@ -32,7 +32,6 @@ public class DeveloperLoadbalancer extends RoundRobinLoadBalancer {
     }
 
     public Mono<Response<ServiceInstance>> choose(Request request) {
-        request.getContext();
         ServiceInstanceListSupplier supplier = serviceInstanceListSupplierObjectProvider.getIfAvailable(NoopServiceInstanceListSupplier::new);
         return supplier.get(request).next().map(allServerList -> {
             Map<Integer, List<ServiceInstance>> serverInfoMap = allServerList.stream().collect(Collectors.groupingBy(servicePriorityPolicyManager::serverOrder));
