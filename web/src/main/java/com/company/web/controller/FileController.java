@@ -52,6 +52,14 @@ public class FileController {
 		}
 	}
 
+	@PostMapping("/clientUpload")
+	public Result<ClientUploadResp> clientUpload(String fileName) {
+		ClientUploadReq clientUploadReq = new ClientUploadReq();
+		clientUploadReq.setBasePath("web");
+		clientUploadReq.setFileName(fileName);
+		return fileFeign.clientUpload(clientUploadReq);
+	}
+
 	/**
 	 * 获取访问链接
 	 *
