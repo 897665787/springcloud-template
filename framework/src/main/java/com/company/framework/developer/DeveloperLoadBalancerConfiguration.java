@@ -28,7 +28,7 @@ public class DeveloperLoadBalancerConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ReactorLoadBalancer<ServiceInstance> developerServiceInstanceLoadBalancer(Environment environment, LoadBalancerClientFactory loadBalancerClientFactory, ServicePriorityPolicyManager servicePriorityPolicyManager) {
-        String name = environment.getProperty("loadbalancer.client.name");
+        String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
         return new DeveloperLoadbalancer(loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class), name, servicePriorityPolicyManager);
     }
 

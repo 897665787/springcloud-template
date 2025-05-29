@@ -1,6 +1,7 @@
 package com.company.gateway.developer.policy.impl;
 
 import com.company.gateway.developer.policy.ServicePriorityPolicy;
+import com.company.gateway.developer.policy.filter.TokenContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
@@ -12,17 +13,15 @@ public class OtherDeveloperPriorityPolicy implements ServicePriorityPolicy {
     }
 
     public boolean support(@NonNull ServiceInstance serviceInstance) {
-        String developer = serviceInstance.getMetadata().get("developer");
+        String developer = serviceInstance.getMetadata().get("developer");// 入口层需配置token，不能配置userId
         if (StringUtils.isBlank(developer)) {
             return false;
         }
-        // TODO 想办法从请求中获取路由信息
-//        String userId = HttpContextUtil.currentUserId();
-        String userId = null;
-        if (StringUtils.isBlank(userId)) {
+        String token = TokenContext.getToken();// gateway不会解析token，所以直接拿token与developer对比
+        if (StringUtils.isBlank(token)) {
             return true;
         }
-        return !Objects.equals(developer, userId);
+        return !Objects.equals(developer, token);
     }
 
     public int serverOrder(@NonNull ServiceInstance serviceInstance) {

@@ -1,37 +1,33 @@
 package com.company.tool.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpRequest;
 import com.company.common.api.Result;
 import com.company.framework.util.ClasspathUtil;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.api.enums.SmsEnum;
 import com.company.tool.api.enums.WebhookEnum;
+import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.CancelUserPopupReq;
+import com.company.tool.api.request.ClientUploadReq;
 import com.company.tool.api.request.CreateUserPopupReq;
-import com.company.tool.api.request.UploadReq;
-import com.company.tool.api.response.UploadResp;
+import com.company.tool.api.response.ClientUploadResp;
 import com.company.tool.sms.AsyncSmsSender;
 import com.company.tool.webhook.AsyncWebhookSender;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.IoUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -39,9 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 public class TestController {
 
 	@Autowired
-	private FileController fileController;
+	private FileFeign fileFeign;
 	@Autowired
-	private VerifyCodeController verifyCodeController;
+	private VerifyCodeController verifyCodeFeign;
 	@Autowired
 	private AsyncSmsSender asyncSmsSender;
 	@Autowired
@@ -51,7 +47,7 @@ public class TestController {
 
 	@GetMapping("/verifyCodeSms")
 	public Result<String> verifyCodeSms(String mobile, String type) {
-		return verifyCodeController.sms(mobile, type);
+		return verifyCodeFeign.sms(mobile, type);
 	}
 
 	@GetMapping("/webhook")
@@ -76,7 +72,7 @@ public class TestController {
 	}
 	
 	@PostMapping("/upload")
-	public Result<UploadResp> upload(@RequestParam("file") MultipartFile file) {
+	public Result<String> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
@@ -86,38 +82,22 @@ public class TestController {
 		if (size == 0) {
 			return Result.fail("请选择文件");
 		}
-		
-		try (InputStream inputStream = file.getInputStream()) {
-			byte[] bytes = IoUtil.readBytes(inputStream);
-			UploadReq uploadReq = new UploadReq();
-			uploadReq.setBytes(bytes);
-			
-			uploadReq.setFileName(originalFilename);
 
-			/*
-			// 生成文件名，带基础目录
-			uploadReq.setGeneratefileName(true);
-			uploadReq.setBasePath("images");
-			uploadReq.setFileName(originalFilename);
-			*/
-			
-			/*
-			// 不生成文件名，不带基础目录，基础目录写到FileName
-			uploadReq.setGeneratefileName(false);
-			uploadReq.setFileName("images/" + originalFilename);
-			*/
-			
-			/*
-			// 不生成文件名
-			uploadReq.setGeneratefileName(false);
-			uploadReq.setBasePath("aaa");
-			uploadReq.setFileName("images/" + originalFilename);
-			*/
-			
-			return fileController.upload(uploadReq);
+		ClientUploadReq clientUploadReq = new ClientUploadReq();
+		clientUploadReq.setBasePath("web");
+		clientUploadReq.setFileName(originalFilename);
+		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq).dataOrThrow();
+		String fileKey = clientUploadResp.getFileKey();
+		String presignedUrl = clientUploadResp.getPresignedUrl();
+
+		try (InputStream inputStream = file.getInputStream()) {
+			// 客户端使用presignedUrl上传文件
+			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
+			log.info("result:{}", result);
+			return Result.success(fileKey);
 		} catch (IOException e) {
 			log.error("IOException", e);
-			return Result.fail(e.getMessage());
+			return Result.fail("文件上传失败");
 		}
 	}
 

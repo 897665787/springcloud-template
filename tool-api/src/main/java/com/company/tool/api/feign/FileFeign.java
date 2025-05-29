@@ -20,7 +20,7 @@ public interface FileFeign {
     /**
      * <pre>
      * 上传（不建议使用）
-     * bytes在微服务间传递，会有性能问题，xiaohaod
+     * byte[]在微服务间传递，会有性能问题，消耗带宽
      * </pre>
      *
      * @param uploadReq
@@ -37,16 +37,17 @@ public interface FileFeign {
      * 2. 前端请求后端接口上传，后端入口服务就使用presignedUrl上传文件，然后再把fileKey返回给前端，避免文件流传递其他微服务
      * </pre>
      *
+     * @param clientUploadReq
      * @return 预签名链接
      */
-    @GetMapping(value = "/clientUpload")
+    @PostMapping(value = "/clientUpload")
     Result<ClientUploadResp> clientUpload(@RequestBody ClientUploadReq clientUploadReq);
 
     /**
      * 获取预签名链接
      *
      * @param fileKey
-     * @return
+     * @return 预签名链接
      */
     @GetMapping(value = "/presignedUrl")
     Result<String> presignedUrl(@RequestParam("fileKey") String fileKey);

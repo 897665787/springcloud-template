@@ -32,3 +32,8 @@ template:
   sqlInjectFilter:
     # SQL注入过滤关键词（多个英文逗号分隔）
     keywords: union select
+
+# Token 配置
+token:
+  # token名称
+  name: x-token
