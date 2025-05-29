@@ -92,11 +92,8 @@ public class TestController {
 			UploadReq uploadReq = new UploadReq();
 			uploadReq.setBytes(bytes);
 			
-			// 生成文件名
-			uploadReq.setGeneratefileName(true);
 			uploadReq.setFileName(originalFilename);
-			
-			
+
 			/*
 			// 生成文件名，带基础目录
 			uploadReq.setGeneratefileName(true);

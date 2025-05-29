@@ -1,18 +1,14 @@
 package com.company.tool.api.request;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @Accessors(chain = true)
-public class UploadReq {
-
-	@NotNull
-	private byte[] bytes;
-
+public class ClientUploadReq {
 	/**
 	 * 根目录<非必填>
 	 */

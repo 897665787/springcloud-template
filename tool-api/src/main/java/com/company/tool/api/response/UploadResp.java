@@ -10,6 +10,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UploadResp {
 	/**
+	 * 域名访问地址(推荐存储，后续使用presignedUrl获取访问链接)
+	 */
+	String fileKey;
+
+	/**
 	 * 域名访问地址(推荐使用域名)
 	 */
 	String domainUrl;
