@@ -4,14 +4,13 @@ import com.company.gateway.developer.policy.ServicePriorityPolicyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.DefaultResponse;
-import org.springframework.cloud.client.loadbalancer.EmptyResponse;
-import org.springframework.cloud.client.loadbalancer.Request;
-import org.springframework.cloud.client.loadbalancer.Response;
+import org.springframework.cloud.client.loadbalancer.*;
 import org.springframework.cloud.loadbalancer.core.NoopServiceInstanceListSupplier;
 import org.springframework.cloud.loadbalancer.core.RoundRobinLoadBalancer;
 import org.springframework.cloud.loadbalancer.core.ServiceInstanceListSupplier;
+import org.springframework.http.HttpHeaders;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -25,6 +24,9 @@ public class DeveloperLoadbalancer extends RoundRobinLoadBalancer {
     private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierObjectProvider;
     private final ServicePriorityPolicyManager servicePriorityPolicyManager;
 
+    @Value("${template.enable.developer}")
+    private String headerDeveloper;
+
     public DeveloperLoadbalancer(ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierObjectProvider, String serviceId, ServicePriorityPolicyManager servicePriorityPolicyManager) {
         super(serviceInstanceListSupplierObjectProvider, serviceId);
         this.serviceInstanceListSupplierObjectProvider = serviceInstanceListSupplierObjectProvider;
@@ -32,9 +34,17 @@ public class DeveloperLoadbalancer extends RoundRobinLoadBalancer {
     }
 
     public Mono<Response<ServiceInstance>> choose(Request request) {
+        String contextDeveloper;
+        if (request instanceof DefaultRequest) {
+            RequestDataContext context = (RequestDataContext) request.getContext();
+            contextDeveloper = Optional.ofNullable(context).map(RequestDataContext::getClientRequest).map(RequestData::getHeaders).map(v -> v.getFirst(headerDeveloper)).orElse(null);
+        } else {
+            contextDeveloper = null;
+        }
+
         ServiceInstanceListSupplier supplier = serviceInstanceListSupplierObjectProvider.getIfAvailable(NoopServiceInstanceListSupplier::new);
         return supplier.get(request).next().map(allServerList -> {
-            Map<Integer, List<ServiceInstance>> serverInfoMap = allServerList.stream().collect(Collectors.groupingBy(servicePriorityPolicyManager::serverOrder));
+            Map<Integer, List<ServiceInstance>> serverInfoMap = allServerList.stream().collect(Collectors.groupingBy(v -> servicePriorityPolicyManager.serverOrder(v, contextDeveloper)));
             Optional<Integer> minOrder = serverInfoMap.keySet().stream().min(Integer::compareTo);
             List<ServiceInstance> serviceInstances = minOrder.map(serverInfoMap::get).orElse(allServerList);
             ServiceInstance server = this.chooseServer(serviceInstances);

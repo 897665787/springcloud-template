@@ -16,9 +16,6 @@ import org.springframework.core.env.Environment;
 public class DeveloperLoadBalancerConfiguration {
     public static final int DYNAMIC_ROUTE_ORDER = -2147482648;
 
-    public DeveloperLoadBalancerConfiguration() {
-    }
-
     @Bean
     @ConditionalOnMissingBean
     public ReactorLoadBalancer<ServiceInstance> developerServiceInstanceLoadBalancer(Environment environment, LoadBalancerClientFactory loadBalancerClientFactory, ServicePriorityPolicyManager servicePriorityPolicyManager) {

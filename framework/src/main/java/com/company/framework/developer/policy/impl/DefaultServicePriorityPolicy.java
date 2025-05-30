@@ -8,7 +8,7 @@ public class DefaultServicePriorityPolicy implements ServicePriorityPolicy {
     public DefaultServicePriorityPolicy() {
     }
 
-    public boolean support(@NonNull ServiceInstance serviceInstance) {
+    public boolean support(@NonNull ServiceInstance serviceInstance, String contextDeveloper) {
         return true;
     }
 

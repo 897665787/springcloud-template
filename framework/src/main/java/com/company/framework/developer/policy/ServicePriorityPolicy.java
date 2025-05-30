@@ -5,7 +5,7 @@ import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 
 public interface ServicePriorityPolicy extends Ordered {
-    boolean support(@NonNull ServiceInstance serviceInstance);
+    boolean support(@NonNull ServiceInstance serviceInstance, String contextDeveloper);
 
     int serverOrder(@NonNull ServiceInstance serviceInstance);
 

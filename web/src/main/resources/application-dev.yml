@@ -23,3 +23,8 @@ knife4j:
     enable: false  # 是否开启认证
     username: admin # Basic认证用户名
     password: 123456 # Basic认证密码
+
+# 开发者路由配置
+developer:
+  enabled: true
+  header: x-current-user-id

@@ -25,7 +25,7 @@ public class ServicePriorityPolicyManager {
         this.defaultServicePriorityPolicy = Optional.ofNullable(defaultServicePriorityPolicy).orElse(new DefaultServicePriorityPolicy());
     }
 
-    public int serverOrder(@NonNull ServiceInstance serviceInstance) {
+    public int serverOrder(@NonNull ServiceInstance serviceInstance, String contextDeveloper) {
         Iterator<ServicePriorityPolicy> var2 = this.servicePriorityPolicies.iterator();
 
         ServicePriorityPolicy priorityPolicy;
@@ -35,7 +35,7 @@ public class ServicePriorityPolicyManager {
             }
 
             priorityPolicy = var2.next();
-        } while (!priorityPolicy.support(serviceInstance));
+        } while (!priorityPolicy.support(serviceInstance, contextDeveloper));
 
         return priorityPolicy.serverOrder(serviceInstance);
     }

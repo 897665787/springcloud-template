@@ -13,7 +13,7 @@ public class OnLineServicePriorityPolicy implements ServicePriorityPolicy {
     public OnLineServicePriorityPolicy() {
     }
 
-    public boolean support(@NonNull ServiceInstance serviceInstance) {
+    public boolean support(@NonNull ServiceInstance serviceInstance, String contextDeveloper) {
         String developRouteTags = serviceInstance.getMetadata().get("developer_route_tag");
         if (StringUtils.isBlank(developRouteTags)) {
             return false;
