@@ -1,7 +1,7 @@
 package com.company.framework.developer.policy.impl;
 
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.developer.policy.ServicePriorityPolicy;
+import com.company.framework.developer.policy.context.DeveloperContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
@@ -17,11 +17,11 @@ public class OtherDeveloperPriorityPolicy implements ServicePriorityPolicy {
         if (StringUtils.isBlank(developer)) {
             return false;
         }
-        String userId = HttpContextUtil.currentUserId();
-        if (StringUtils.isBlank(userId)) {
+        String contextDeveloper = DeveloperContext.get();
+        if (StringUtils.isBlank(contextDeveloper)) {
             return true;
         }
-        return !Objects.equals(developer, userId);
+        return !Objects.equals(developer, contextDeveloper);
     }
 
     public int serverOrder(@NonNull ServiceInstance serviceInstance) {

@@ -31,28 +31,4 @@ public class DeveloperLoadBalancerConfiguration {
         String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);
         return new DeveloperLoadbalancer(loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class), name, servicePriorityPolicyManager);
     }
-
-    @Bean
-    @ConditionalOnMissingBean({DeveloperSelfPriorityPolicy.class})
-    public ServicePriorityPolicy developerSelfPriorityPolicy() {
-        return new DeveloperSelfPriorityPolicy();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean({OtherDeveloperPriorityPolicy.class})
-    public OtherDeveloperPriorityPolicy otherDeveloperPriorityPolicy() {
-        return new OtherDeveloperPriorityPolicy();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean({OnLineServicePriorityPolicy.class})
-    public ServicePriorityPolicy onLineServicePriorityPolicy() {
-        return new OnLineServicePriorityPolicy();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean({ServicePriorityPolicyManager.class})
-    public ServicePriorityPolicyManager servicePriorityPolicyManager(List<ServicePriorityPolicy> servicePriorityPolicies) {
-        return new ServicePriorityPolicyManager(servicePriorityPolicies);
-    }
 }

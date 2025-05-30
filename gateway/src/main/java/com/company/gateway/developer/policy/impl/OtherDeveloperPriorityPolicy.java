@@ -1,7 +1,7 @@
 package com.company.gateway.developer.policy.impl;
 
 import com.company.gateway.developer.policy.ServicePriorityPolicy;
-import com.company.gateway.developer.policy.filter.TokenContext;
+import com.company.gateway.developer.policy.context.DeveloperContext;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
@@ -17,11 +17,11 @@ public class OtherDeveloperPriorityPolicy implements ServicePriorityPolicy {
         if (StringUtils.isBlank(developer)) {
             return false;
         }
-        String token = TokenContext.getToken();// gateway不会解析token，所以直接拿token与developer对比
-        if (StringUtils.isBlank(token)) {
+        String contextDeveloper = DeveloperContext.get();// gateway不会解析token，所以直接拿token与developer对比
+        if (StringUtils.isBlank(contextDeveloper)) {
             return true;
         }
-        return !Objects.equals(developer, token);
+        return !Objects.equals(developer, contextDeveloper);
     }
 
     public int serverOrder(@NonNull ServiceInstance serviceInstance) {
