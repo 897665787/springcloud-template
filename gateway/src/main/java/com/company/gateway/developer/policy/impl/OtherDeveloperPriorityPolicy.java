@@ -1,28 +1,27 @@
 package com.company.gateway.developer.policy.impl;
 
 import com.company.gateway.developer.policy.ServicePriorityPolicy;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.Objects;
 
 public class OtherDeveloperPriorityPolicy implements ServicePriorityPolicy {
     public OtherDeveloperPriorityPolicy() {
     }
 
-    public boolean support(@NonNull ServiceInstance serviceInstance) {
+    public boolean support(@NonNull ServiceInstance serviceInstance, List<String> developerList) {
         String developer = serviceInstance.getMetadata().get("developer");
         if (StringUtils.isBlank(developer)) {
             return false;
         }
-        // TODO 想办法从请求中获取路由信息
-//        String userId = HttpContextUtil.currentUserId();
-        String userId = null;
-        if (StringUtils.isBlank(userId)) {
+        if (CollectionUtils.isEmpty(developerList)) {
             return true;
         }
-        return !Objects.equals(developer, userId);
+        return !developerList.contains(developer);
     }
 
     public int serverOrder(@NonNull ServiceInstance serviceInstance) {

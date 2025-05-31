@@ -1,4 +1,4 @@
-package com.company.web.controller;
+package com.company.adminapi.controller;
 
 import cn.hutool.http.HttpRequest;
 import com.company.common.api.Result;
@@ -35,7 +35,7 @@ public class FileController {
 		}
 
 		ClientUploadReq clientUploadReq = new ClientUploadReq();
-		clientUploadReq.setBasePath("web");
+		clientUploadReq.setBasePath("adminapi");
 		clientUploadReq.setFileName(originalFilename);
 		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq).dataOrThrow();
 		String fileKey = clientUploadResp.getFileKey();
@@ -61,11 +61,11 @@ public class FileController {
 	}
 
 	/**
-	 * 获取访问链接
-	 *
-	 * @param fileKey
-	 * @return
-	 */
+     * 获取访问链接
+     *
+     * @param fileKey
+     * @return
+     */
 	@GetMapping("/url")
 	public Result<String> url(String fileKey) {
 		return fileFeign.presignedUrl(fileKey);

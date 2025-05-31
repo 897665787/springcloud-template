@@ -2,6 +2,8 @@ package com.company.gateway.filter;
 
 import java.nio.charset.StandardCharsets;
 
+import com.company.common.util.JsonUtil;
+import com.company.gateway.util.IpUtil;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -10,6 +12,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -32,7 +36,7 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 
 	@Value("${filter.response.enable:true}")
 	private boolean enable;
-	
+
 	@Override
 	public int getOrder() {
 		return CommonConstants.FilterOrdered.RESPONSE;
@@ -43,10 +47,14 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 		if (!enable) {
 			return chain.filter(exchange);
 		}
+		ServerHttpRequest request = exchange.getRequest();
+		String requestIp = IpUtil.getRequestIp(request);
+		HttpMethod method = request.getMethod();
+		String path = request.getURI().getPath();
+
 		ServerHttpResponse originalResponse = exchange.getResponse();
 		DataBufferFactory bufferFactory = originalResponse.bufferFactory();
 
-		ServerHttpRequest request = exchange.getRequest();
 		String uniqueKey = request.getHeaders().getFirst(MdcUtil.UNIQUE_KEY);
 
 		long start = System.currentTimeMillis();
@@ -61,7 +69,7 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 						DataBufferUtils.release(dataBuffer);
 						String responseBody = new String(content, StandardCharsets.UTF_8);
 						MdcUtil.put(uniqueKey);
-						log.info("response body:{},{}ms", responseBody, System.currentTimeMillis() - start);
+						log.info("{} {} {} response:{},{}ms", method, requestIp, path, responseBody, System.currentTimeMillis() - start);
 						MdcUtil.remove();
 						return bufferFactory.wrap(content);
 					}));

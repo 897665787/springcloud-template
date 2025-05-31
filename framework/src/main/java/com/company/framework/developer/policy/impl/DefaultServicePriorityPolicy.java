@@ -4,11 +4,13 @@ import com.company.framework.developer.policy.ServicePriorityPolicy;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
+
 public class DefaultServicePriorityPolicy implements ServicePriorityPolicy {
     public DefaultServicePriorityPolicy() {
     }
 
-    public boolean support(@NonNull ServiceInstance serviceInstance) {
+    public boolean support(@NonNull ServiceInstance serviceInstance, List<String> developerList) {
         return true;
     }
 

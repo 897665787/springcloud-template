@@ -6,3 +6,8 @@ template:
 token:
   # 密钥
   secret: hxqhjvtam5
+
+# 开发者路由配置
+developer:
+  enabled: true
+  headers: x-deviceid,x-token

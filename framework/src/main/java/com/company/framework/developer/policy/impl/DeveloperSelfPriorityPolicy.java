@@ -1,27 +1,26 @@
 package com.company.framework.developer.policy.impl;
 
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.developer.policy.ServicePriorityPolicy;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
 
-import java.util.Objects;
+import java.util.List;
 
 public class DeveloperSelfPriorityPolicy implements ServicePriorityPolicy {
     public DeveloperSelfPriorityPolicy() {
     }
 
-    public boolean support(@NonNull ServiceInstance serviceInstance) {
+    public boolean support(@NonNull ServiceInstance serviceInstance, List<String> developerList) {
         String developer = serviceInstance.getMetadata().get("developer");
         if (StringUtils.isBlank(developer)) {
             return false;
         }
-        String userId = HttpContextUtil.currentUserId();
-        if (StringUtils.isBlank(userId)) {
+        if (CollectionUtils.isEmpty(developerList)) {
             return false;
         }
-        return Objects.equals(developer, userId);
+        return developerList.contains(developer);
     }
 
     public int serverOrder(@NonNull ServiceInstance serviceInstance) {

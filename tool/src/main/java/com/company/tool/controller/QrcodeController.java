@@ -33,8 +33,8 @@ public class QrcodeController implements QrcodeFeign {
 	@Override
 	public Result<String> wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq) {
 		byte[] bytes = getWxaCodeBytes(wxaCodeReq);
-		String domainUrl = uploadService.uploadImg(bytes);
-		return Result.success(domainUrl);
+		String fileKey = uploadService.upload(bytes);
+		return Result.success(fileKey);
 	}
 
 	@Override
