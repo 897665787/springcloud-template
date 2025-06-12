@@ -20,8 +20,12 @@ public class AppVersionController implements AppVersionFeign {
     public Result<AppVersionCheckResp> check(String appCode, String currentVersion) {
         AppVersion lastAppVersion = appVersionService.selectLastByAppCode(appCode);
         if (lastAppVersion == null) {
-            return Result.fail("未找到应用版本信息");
+            // 未找到应用版本信息，无需更新
+            AppVersionCheckResp resp = new AppVersionCheckResp();
+            resp.setHasUpdate(false);
+            return Result.success(resp);
         }
+
         String version = lastAppVersion.getVersion();
         String minSupportedVersion = lastAppVersion.getMinSupportedVersion();
 
