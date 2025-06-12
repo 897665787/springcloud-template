@@ -23,13 +23,4 @@ public interface AppVersionFeign {
      */
     @GetMapping("/check")
     Result<AppVersionCheckResp> check(@RequestParam("appCode") String appCode, @RequestParam("currentVersion") String currentVersion);
-
-    /**
-     * 最新版本号
-     *
-     * @param appCode
-     * @return
-     */
-    @GetMapping("/latestVersion")
-    Result<String> latestVersion(@RequestParam("appCode") String appCode);
 }

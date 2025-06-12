@@ -47,13 +47,4 @@ public class AppVersionController implements AppVersionFeign {
         resp.setReleaseNotes(lastAppVersion.getReleaseNotes());
         return Result.success(resp);
     }
-
-    @Override
-    public Result<String> latestVersion(String appCode) {
-        AppVersion lastAppVersion = appVersionService.selectLastByAppCode(appCode);
-        if (lastAppVersion == null) {
-            return Result.fail("未找到应用版本信息");
-        }
-        return Result.success(lastAppVersion.getVersion());
-    }
 }

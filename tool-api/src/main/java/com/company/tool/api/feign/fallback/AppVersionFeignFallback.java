@@ -17,11 +17,6 @@ public class AppVersionFeignFallback implements FallbackFactory<AppVersionFeign>
             public Result<AppVersionCheckResp> check(String appCode, String currentVersion) {
                 return Result.onFallbackError();
             }
-
-            @Override
-            public Result<String> latestVersion(String appCode) {
-                return Result.onFallbackError();
-            }
         };
     }
 }

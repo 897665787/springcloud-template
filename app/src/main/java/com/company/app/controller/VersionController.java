@@ -27,12 +27,4 @@ public class VersionController {
     public Result<AppVersionCheckResp> check(String appCode, String version) {
         return appVersionFeign.check(appCode, version);
     }
-
-    /**
-     * 获取最新版本号
-     */
-    @GetMapping("/latest")
-    public Result<String> latest(String appCode) {
-        return appVersionFeign.latestVersion(appCode);
-    }
 }
