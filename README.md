@@ -1,33 +1,39 @@
-一个基于 Spring Cloud Netflix 、Spring Boot 2.0.3 的微服务开发模板
+一个基于 Spring Cloud Netflix 的微服务开发脚手架，记录了各种基础、通用功能的最佳实践。
 
 ## 功能说明
-
-- 基于Eureka服务下线实现无报错优雅发版
+- 基于Eureka服务下线实现无报错优雅发版，优雅关闭应用
+- 魔改负载路由，实现环境流量路由到开发本机调试
 - 统一异常处理和响应包装
-- 请求参数、响应结果统一日志打印(可将日志ID传递至子线程)
+- 请求参数、响应结果统一日志打印(可将日志ID传递至子线程)，skywalking链路追踪
 - 自定义线程池日志、Tomcat线程池(主要加了日志打印功能)
 - Feign请求头数据在微服务间传递
 - 基于MDC实现的自定义请求链路追踪
 - 基于redis+注解实现的API幂等
+- 配置中心Nacos/Apollo无代码侵入支持@Value动态刷新
+- 消息驱动支持RocketMQ/RabbitMQ/SpringEvent一键切换
+- 缓存支持Guava/Redis一键切换
+- 锁支持ReentrantLock（单机）/Redisson（分布式）一键切换
 - 简单登录demo，支持密码、微信、支付宝授权登录等各种登录方式
-- 文件存储demo，包括阿里云OSS、腾讯云COS等多种云存储方式
+- 文件存储demo，包括阿里云OSS、腾讯云COS等多种云存储方式，支持客户端上传
 - 短信发送demo，支持阿里云、腾讯云等多个渠道，结合MQ实现短信异步发送，并记录短信发送结果
 - 验证码发送demo，支持短信、邮件、图形验证码，结合MQ实现短信异步发送，并提供验证码校验API
 - ToC优惠券实现demo，能够在不修改表结构的情况增加优惠券使用条件，或者增加复杂度更高的使用条件，具有高扩展性
 - ToC弹窗实现demo，能够在不修改表结构的情况增加弹窗条件，或者增加复杂度更高的弹窗条件，具有高扩展性
 - 微信订阅消息实现demo，提供存储设计表结构，代码通用，易于使用，易于问题排查
-- 动态数据源使用demo
+- 动态数据源（主/从读写分离，分库分表）使用demo
 - 导航栏金刚位、轮播图实现demo，能够在不修改表结构的情况增加展示条件，或者增加复杂度更高的展示条件，具有高扩展性
+- APP版本管理demo，精准把控APP版本发布中的推荐更新、强制更新
 
 ## 快速开始
 
 ### 核心依赖
 
-| 依赖                   | 版本       |
-| ---------------------- |------------|
-| Spring Boot            | 2.7.18     |
-| Spring Cloud Netflix   | 2021.0.9   |
-| Mybatis Plus   | 3.5.7   |
+| 依赖                  | 版本       |
+|----------------------|------------|
+| Spring Cloud Netflix | 2021.0.9   |
+| Spring Boot          | 2.7.18     |
+| Mybatis Plus         | 3.5.7   |
+| RocketMQ             | 2.2.3  |
 
 ### 模块说明
 
@@ -39,15 +45,16 @@ springcloud-template
      └── apollo -- apollo属性刷新配置（分享：https://www.toutiao.com/article/7258567779102917139）
      └── autoconfigure -- 自动配置
      └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
+     └── developer -- 环境流量路由到本机，调试神器（分享：https://www.toutiao.com/article/7514716979333268008）
      └── interceptor -- Feign请求头数据在微服务间传递（分享：https://www.toutiao.com/article/7126056949267268108）
      └── threadpool -- 自定义线程池（JDK和Tomcat）
 └── template-framework-edge -- 框架代码(边缘微服务)
      └── filter -- http公共请求参数设置到请求头在微服务内传递
-     └── interceptor -- 访问控制(结合@PublicUrl使用)
+     └── interceptor -- 访问控制(结合@RequireLogin使用)
 ├── template-eureka -- 注册中心
-├── template-gateway -- 网关(与zuul二选一，分享：https://www.toutiao.com/article/7271926711678321215)
-├── template-zuul -- 网关（与gateway二选一）
-├── template-config -- 配置中心
+├── template-gateway -- 网关(分享：https://www.toutiao.com/article/7271926711678321215)
+├── template-zuul -- 网关（版本升级后已移除）
+├── template-config -- 配置中心（建议使用Nacos/Apollo）
 └── template-order -- 订单服务(内部微服务)
      └── template-order-api -- 被依赖开放api
 └── template-order -- 订单服务(内部微服务)
@@ -74,6 +81,7 @@ springcloud-template
      └── canal-- canal使用demo
      └── coupon -- 优惠券设计demo（分享：https://www.toutiao.com/article/7228973418354475572）
           └── UseCouponService -- 优惠券核心类
+     └── wallet -- 钱包设计demo
 ├── template-app -- app端接入层(边缘微服务)
 ├── template-web -- web端接入层(边缘微服务)
      └── easylogin -- 登录方式（分享：https://www.toutiao.com/article/7144259146018406948）

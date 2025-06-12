@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class AlarmController implements AlarmFeign {
 	private AsyncEmailSender asyncEmailSender;
 
 	@Override
-	public Result<Void> webhook(WebhookAlarmReq webhookAlarmReq) {
+	public Result<Void> webhook(@RequestBody WebhookAlarmReq webhookAlarmReq) {
 		WebhookEnum.Type type = webhookAlarmReq.getType();
 		Map<String, String> templateParamMap = webhookAlarmReq.getTemplateParamMap();
 		asyncWebhookSender.send(type, templateParamMap);
@@ -41,7 +42,7 @@ public class AlarmController implements AlarmFeign {
 	}
 
 	@Override
-	public Result<Void> email(AlarmReq alarmReq) {
+	public Result<Void> email(@RequestBody AlarmReq alarmReq) {
 		// TODO
 		List<EmailTemplateParam> emailTemplateParamList = Lists.newArrayList();
 		EmailEnum.Type type = EmailEnum.Type.of(alarmReq.getType());
@@ -50,7 +51,7 @@ public class AlarmController implements AlarmFeign {
 	}
 
 	@Override
-	public Result<Void> sms(AlarmReq alarmReq) {
+	public Result<Void> sms(@RequestBody AlarmReq alarmReq) {
 		// TODO
 		List<MobileTemplateParam> mobileTemplateParamList = Lists.newArrayList();
 		SmsEnum.Type type = SmsEnum.Type.of(alarmReq.getType());
@@ -59,7 +60,7 @@ public class AlarmController implements AlarmFeign {
 	}
 
 	@Override
-	public Result<Void> warn(AlarmReq alarmReq) {
+	public Result<Void> warn(@RequestBody AlarmReq alarmReq) {
 		// TODO
 		return Result.success();
 	}
