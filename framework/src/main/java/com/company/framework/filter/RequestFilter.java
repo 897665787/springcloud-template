@@ -8,6 +8,7 @@ import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.filter.request.BodyReaderHttpServletResponseWrapper;
 import com.company.framework.util.IpUtil;
 import com.company.framework.util.WebUtil;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * 请求/响应参数日志打印
@@ -79,7 +81,10 @@ public class RequestFilter extends OncePerRequestFilter {
 
 		chain.doFilter(request, responseWrapper);
 
-		String responseBodyStr = responseWrapper.getCachedBodyString();
+		String responseBodyStr = "非文本输出";
+		if (isLoggableContentType(responseWrapper.getContentType())) {
+			responseBodyStr = responseWrapper.getCachedBodyString();
+		}
 
 		log.info("{} {} {} response:{},{}ms", method, requestIp, requestURI, responseBodyStr, System.currentTimeMillis() - start);
 
@@ -87,4 +92,21 @@ public class RequestFilter extends OncePerRequestFilter {
 //		responseWrapper.copyBodyToResponse();
 	}
 
+	private static final Set<String> LOGGABLE_RESPONSE_TYPES = Sets.newHashSet(
+			"application/json",
+			"application/xml",
+			"text/plain",
+			"text/html",
+			"text/xml",
+			"text/css",
+			"text/javascript"
+	);
+
+	private boolean isLoggableContentType(String contentType) {
+		if (contentType == null) {
+			return false;
+		}
+		contentType = contentType.split(";")[0].trim().toLowerCase();
+		return LOGGABLE_RESPONSE_TYPES.contains(contentType) || contentType.startsWith("text/");
+	}
 }
