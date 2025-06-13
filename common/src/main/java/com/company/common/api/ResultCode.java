@@ -10,7 +10,7 @@ public enum ResultCode {
 	/* 框架错误码 */
 	SYSTEM_ERROR(500, "系统错误"), //
 	API_FUSING(503, "API熔断"), //
-	NO_LOGIN(302, "未登录"), //
+	NO_LOGIN(401, "未登录"), //
 	/* 自定义业务错误码(4位) */
 	NO_PERMISSION(1002, "未授权"), //
 	PARAM_INVALID(1003, "参数无效"), //
