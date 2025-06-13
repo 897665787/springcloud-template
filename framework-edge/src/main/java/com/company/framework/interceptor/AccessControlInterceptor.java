@@ -1,8 +1,7 @@
 package com.company.framework.interceptor;
 
-import com.company.common.api.ResultCode;
 import com.company.common.constant.HeaderConstants;
-import com.company.common.exception.BusinessException;
+import com.company.common.exception.UnauthorizedException;
 import com.company.framework.annotation.RequireLogin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -56,8 +55,8 @@ public class AccessControlInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// 判断是否有访问权限？
-		log.warn("登录过期:{}.{}", method.getDeclaringClass().getName(), method.getName());
-		throw BusinessException.of(ResultCode.NO_LOGIN);
+		log.warn("访问未授权:{}.{}", method.getDeclaringClass().getName(), method.getName());
+		throw new UnauthorizedException();
 	}
 
 }
