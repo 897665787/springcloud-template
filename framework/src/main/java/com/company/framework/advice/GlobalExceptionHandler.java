@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
+import com.company.common.exception.UnauthorizedException;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.MdcUtil;
@@ -123,6 +124,17 @@ public class GlobalExceptionHandler {
 		log.error("未处理运行时异常", e);
 		sendErrorIfPage(request, response, handler);
 		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
+	}
+
+	/**
+	 * 未授权异常
+	 */
+	@ExceptionHandler(UnauthorizedException.class)
+	public Result<?> unauthorized(UnauthorizedException e, HttpServletRequest request, HttpServletResponse response,
+								  HandlerMethod handler) {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		sendErrorIfPage(request, response, handler);
+		return Result.fail(e);
 	}
 
 	/**

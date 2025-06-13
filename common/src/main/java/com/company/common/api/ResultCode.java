@@ -5,29 +5,31 @@ import lombok.Getter;
 
 @AllArgsConstructor
 public enum ResultCode {
-	SUCCESS(0, "成功"), //
-	FAIL(99, "失败"), //
-	/* 框架错误码 */
-	SYSTEM_ERROR(500, "系统错误"), //
-	API_FUSING(503, "API熔断"), //
-	NO_LOGIN(401, "未登录"), //
-	/* 自定义业务错误码(4位) */
-	NO_PERMISSION(1002, "未授权"), //
-	PARAM_INVALID(1003, "参数无效"), //
-	LOGIN_NEED_MOBILE(9999, "登录需要绑定手机号"), //
-	;
+    /* 框架错误码 */
+    SUCCESS(0, "成功"), //
+    FAIL(1, "失败"), //
+    API_FUSING(503, "系统繁忙，请稍后再试"), // API熔断
 
-	@Getter
-	private Integer code;
-	@Getter
-	private String message;
+    /* 遵循 HTTP 状态码语义 */
+    PARAM_INVALID(400, "参数无效"), // 客户端请求错误（如参数错误）
+    UNAUTHORIZED(401, "未授权，请登录"), // 未认证（需登录）
+    SYSTEM_ERROR(500, "系统错误"), // 服务端错误
 
-	public static ResultCode of(Integer code) {
-		for (ResultCode item : ResultCode.values()) {
-			if (item.getCode().equals(code)) {
-				return item;
-			}
-		}
-		return null;
-	}
+    /* 自定义业务错误码(4位) */
+    LOGIN_NEED_MOBILE(9999, "登录需要绑定手机号"), //
+    ;
+
+    @Getter
+    private Integer code;
+    @Getter
+    private String message;
+
+    public static ResultCode of(Integer code) {
+        for (ResultCode item : ResultCode.values()) {
+            if (item.getCode().equals(code)) {
+                return item;
+            }
+        }
+        return null;
+    }
 }
