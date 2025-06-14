@@ -15,4 +15,9 @@ public interface HeaderConstants {
 
 	// 国际化语言切换
 	String ACCEPT_LANGUAGE = "Accept-Language";// 当前语言
+
+	/**
+	 * 日志追踪ID
+	 */
+	String TRACE_ID = "trace-id";
 }

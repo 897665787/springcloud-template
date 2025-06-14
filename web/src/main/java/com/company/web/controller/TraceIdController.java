@@ -19,10 +19,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TraceIdController {
 
-	@Autowired(required = false)
+	@Autowired
 	private ThreadPoolExecutor threadPoolExecutor;
 
-	@Autowired(required = false)
+	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	@GetMapping(value = "/thread")

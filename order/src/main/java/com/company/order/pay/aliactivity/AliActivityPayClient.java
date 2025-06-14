@@ -25,7 +25,6 @@ import com.alipay.api.response.AlipayMarketingActivityOrderCreateResponse;
 import com.alipay.api.response.AlipayMarketingActivityOrderRefundResponse;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.order.api.response.PayOrderQueryResp;
@@ -49,7 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 支付宝兑换券支付
- * 
+ *
  * <pre>
  * 支付宝钱包支付：用户点击支付，唤起支付宝收银台后， 输入正确完整的支付密码后订单创建。
  * 所以调用支付宝的sdk并不会在支付宝创建订单，需要支付完后才会创建订单
@@ -60,7 +59,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AliActivityPayClient extends BasePayClient {
 
 	private static final String PAY_URL = "https://openapi.alipay.com/gateway.do";
-	
+
 	@Autowired
 	private AliActivityPayConfiguration aliActivityPayConfiguration;
 	@Autowired
@@ -71,10 +70,10 @@ public class AliActivityPayClient extends BasePayClient {
 	private AliActivityCouponMapper aliActivityCouponMapper;
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-	
+
 	@Value("${template.mock.aliactivitynotify:false}")
 	private Boolean mockNotify;
-	
+
 	/**
 	 * <pre>
 	 * 官方文档：https://opendocs.alipay.com/pre-open/02cs7x
@@ -92,21 +91,21 @@ public class AliActivityPayClient extends BasePayClient {
 			aliActivityPayId = aliActivityPay.getId();
 			remark = aliActivityPay.getRemark();
 		}
-    	
+
     	AlipayMarketingActivityOrderCreateRequest request = new AlipayMarketingActivityOrderCreateRequest();
     	AlipayMarketingActivityOrderCreateModel model = new AlipayMarketingActivityOrderCreateModel();
     	model.setBuyerId(payParams.getOpenid());
     	model.setTotalAmount(payParams.getAmount().toString());
     	model.setOutOrderNo(payParams.getOutTradeNo());
-    	
+
 		List<SaleActivityInfo> saleActivityInfoList = JsonUtil.toList(payParams.getBody(), SaleActivityInfo.class);
 		model.setSaleActivityInfoList(saleActivityInfoList);
-    	
+
 		model.setChInfo(payParams.getProductId());
 //    	model.setPromoTraceInfo(promoTraceInfo);
-		
+
         request.setBizModel(model);
-        
+
         PayConfig payConfig = aliActivityPayConfiguration.getPayConfig(payParams.getAppid());
 		try {
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
@@ -116,7 +115,7 @@ public class AliActivityPayClient extends BasePayClient {
 	                AliActivityConstants.CHARSET,
 	                payConfig.getPubKey(),
 	                AliActivityConstants.SIGNTYPE);
-			
+
 			AlipayMarketingActivityOrderCreateResponse response = alipayClient.execute(request);
 			log.info("AlipayMarketingActivityOrderCreateResponse:{}", JsonUtil.toJsonString(response));
 			/**
@@ -151,11 +150,11 @@ public class AliActivityPayClient extends BasePayClient {
 			 * </pre>
 			 */
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, response, remark);
-            
+
 			if (!response.isSuccess()) {
 				throw new BusinessException(response.getMsg());
 			}
-			
+
 			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
 				executor.submit(() -> {
 					try {
@@ -167,7 +166,7 @@ public class AliActivityPayClient extends BasePayClient {
 					NotifyMock.payNotify(payConfig, request);
 				});
 			}
-			
+
 			/**
 			 * <pre>
 			 * 前端使用小程序支付，返回tradeNo
@@ -179,13 +178,13 @@ public class AliActivityPayClient extends BasePayClient {
 		} catch (AlipayApiException e) {
         	// 支付异常
 			log.error("AliActivityPay error", e);
-			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
 			throw new BusinessException(e.getErrMsg());
         } catch (Exception e) {
         	// 支付异常
 			log.error("AliActivityPay error", e);
-			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
 			throw new BusinessException(e.getMessage());
         }
@@ -202,7 +201,7 @@ public class AliActivityPayClient extends BasePayClient {
 				.setSaleActivityInfoList(payParams.getBody())
 				.setTotalAmount           (payParams.getAmount())
 				;
-    	
+
 		if (result != null) {
 			/* 支付信息 */
 			if (result.isSuccess()) {
@@ -230,11 +229,11 @@ public class AliActivityPayClient extends BasePayClient {
 			resp.setMessage("订单不存在");
 			return resp;
 		}
-		
+
 		if (AliActivityConstants.TradeStatus.payHasResult(aliActivityPay.getTradeStatus())) {
 			// 回调结果
 			resp.setResult(true);
-			
+
 			boolean paySuccess = AliActivityConstants.TradeStatus.paySuccess(aliActivityPay.getTradeStatus());
 			resp.setPaySuccess(paySuccess);
 
@@ -251,12 +250,12 @@ public class AliActivityPayClient extends BasePayClient {
 			}
 			return resp;
 		}
-		
+
 		resp.setResult(false);
 		resp.setMessage("无API接口，等待回调逻辑");
 		return resp;
 	}
-	
+
 	/**
 	 * <pre>
 	 * 官方文档：https://opendocs.alipay.com/pre-open/02cqrz
@@ -272,9 +271,9 @@ public class AliActivityPayClient extends BasePayClient {
 			}
 			aliActivityPayRefundId = aliActivityPayRefund.getId();
 		}
-		
+
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outTradeNo);
-		
+
 		AlipayMarketingActivityOrderRefundRequest request = new AlipayMarketingActivityOrderRefundRequest();
 		AlipayMarketingActivityOrderRefundModel model = new AlipayMarketingActivityOrderRefundModel();
 		model.setOrderNo(aliActivityPay.getOrderNo());
@@ -287,30 +286,30 @@ public class AliActivityPayClient extends BasePayClient {
 			RefundActivityInfo refundActivityInfo = new RefundActivityInfo();
 			refundActivityInfo.setActivityId(saleActivityInfo.getActivityId());
 			refundActivityInfo.setQuantity(String.valueOf(saleActivityInfo.getQuantity()));
-			
+
 			// 根据activityId,buyerId查询券码
 			List<AliActivityCoupon> aliActivityCouponList = aliActivityCouponMapper
 					.selectByActivityIdReceiveUserId(refundActivityInfo.getActivityId(), aliActivityPay.getBuyerId());
 			List<String> voucherCodeList = aliActivityCouponList.stream().map(AliActivityCoupon::getVoucherCode)
 					.collect(Collectors.toList());
 			refundActivityInfo.setVoucherCodeList(voucherCodeList);
-			
+
 			refundActivityInfoList.add(refundActivityInfo);
 		}
-      
+
         model.setRefundActivityInfoList(refundActivityInfoList);
         String refundActivityInfoListStr = JsonUtil.toJsonString(refundActivityInfoList);
-        
+
 		/**
 		 * 退款类型： USER_REFUND：用户主动发起退款
-		 * 
+		 *
 		 * AUTO_EXPIRE：过期自动退款
 		 */
 //		model.setRefundType("USER_REFUND");
         request.setBizModel(model);
 		// 支付宝退款通知url不支持动态设置，而是直接把支付时设置的通知url作为退款通知url
 		// request.setNotifyUrl(notifyUrl);
-    	
+
 		try {
 			PayConfig payConfig = aliActivityPayConfiguration.getPayConfig(aliActivityPay.getAppid());
 			AlipayClient alipayClient = new DefaultAlipayClient(PAY_URL,
@@ -320,7 +319,7 @@ public class AliActivityPayClient extends BasePayClient {
 	                AliActivityConstants.CHARSET,
 	                payConfig.getPubKey(),
 	                AliActivityConstants.SIGNTYPE);
-        	
+
         	refundResult2AliActivityPayRefund(aliActivityPayRefundId, aliActivityPay, outRefundNo, refundActivityInfoListStr, null);
         	AlipayMarketingActivityOrderRefundResponse response = alipayClient.execute(request);
 			log.info("refund response:{}", JsonUtil.toJsonString(response));
@@ -332,7 +331,7 @@ public class AliActivityPayClient extends BasePayClient {
 		} catch (AlipayApiException e) {
 			// 退款异常
 			log.error("AliActivityPayRefund error", e);
-			String remark = Utils.rightRemark(aliActivityPayRefund.getRemark(), "请求异常,logid:" + MdcUtil.get());
+			String remark = Utils.rightRemark(aliActivityPayRefund.getRemark(), "请求异常");
 			refundResult2AliActivityPayRefund(aliActivityPayRefundId, aliActivityPay, outRefundNo, refundActivityInfoListStr, remark);
 			throw new BusinessException(e.getErrMsg());
 		}
@@ -353,10 +352,10 @@ public class AliActivityPayClient extends BasePayClient {
 		aliActivityPayRefund.setId(aliActivityPayRefunddb.getId());
 		aliActivityPayRefundMapper.updateById(aliActivityPayRefund);
 	}
-	
+
 	private void refundResult2AliActivityPayRefund(Integer aliActivityPayRefundId, AliActivityPay aliActivityPay, String outRefundNo,
 			String refundActivityInfoListStr, String remark) {
-		
+
 		// 保存支付宝支付退款数据
 		AliActivityPayRefund aliActivityPayRefund = new AliActivityPayRefund()
 				/* 退款参数 */
@@ -367,7 +366,7 @@ public class AliActivityPayClient extends BasePayClient {
 				.setRefundActivityInfoList(refundActivityInfoListStr);
 
 		aliActivityPayRefund.setRemark(remark);
-		
+
 		if (aliActivityPayRefundId == null) {
 			aliActivityPayRefundMapper.insert(aliActivityPayRefund);
 		} else {

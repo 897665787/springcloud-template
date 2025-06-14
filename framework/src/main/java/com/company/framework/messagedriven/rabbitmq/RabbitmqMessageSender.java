@@ -2,10 +2,10 @@ package com.company.framework.messagedriven.rabbitmq;
 
 import cn.hutool.core.util.RandomUtil;
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.framework.trace.TraceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
@@ -21,6 +21,8 @@ public class RabbitmqMessageSender implements MessageSender {
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
+	@Autowired
+	private TraceManager traceManager;
 
 	@Override
 	public void sendNormalMessage(String strategyName, Object toJson, String exchange, String routingKey) {
@@ -40,7 +42,7 @@ public class RabbitmqMessageSender implements MessageSender {
 
 	/**
 	 * 发送消息
-	 * 
+	 *
 	 * @param strategyName
 	 * @param toJson
 	 * @param exchange
@@ -57,7 +59,7 @@ public class RabbitmqMessageSender implements MessageSender {
 				messageProperties.setHeader(HeaderConstants.HEADER_STRATEGY_NAME, strategyName);
 			}
 			messageProperties.setHeader(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
-			messageProperties.setMessageId(MdcUtil.get());
+			messageProperties.setMessageId(traceManager.get());
 			if (delaySeconds != null) {
 				Integer delayMillis = delaySeconds * 1000;// 设置延时毫秒值
 				messageProperties.setDelay(delayMillis);// x-delayed延时

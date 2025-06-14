@@ -3,7 +3,10 @@ package com.company.gateway.filter;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
+import com.company.common.constant.HeaderConstants;
+import com.company.gateway.trace.TraceManager;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -21,7 +24,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import com.company.common.constant.CommonConstants;
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.gateway.util.IpUtil;
 import com.company.gateway.util.WebUtil;
 
@@ -35,6 +37,8 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 public class RequestFilter implements GlobalFilter, Ordered {
+	@Autowired
+	private TraceManager traceManager;
 
 	@Value("${filter.request.enable:true}")
 	private boolean enable;
@@ -43,7 +47,7 @@ public class RequestFilter implements GlobalFilter, Ordered {
     public int getOrder() {
         return CommonConstants.FilterOrdered.REQUEST;
     }
-    
+
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 		if (!enable) {
@@ -57,7 +61,7 @@ public class RequestFilter implements GlobalFilter, Ordered {
 		String path = request.getURI().getPath();
 		try {
 			String paramsStr = JsonUtil.toJsonString(WebUtil.getReqParam(request));
-			String uniqueKey = request.getHeaders().getFirst(MdcUtil.UNIQUE_KEY);
+			String uniqueKey = request.getHeaders().getFirst(HeaderConstants.TRACE_ID);
 
 			String contentType = Optional.ofNullable(headers).map(HttpHeaders::getContentType).map(MediaType::toString)
 					.orElse(null);
@@ -85,20 +89,20 @@ public class RequestFilter implements GlobalFilter, Ordered {
 					}
 					String finalBodyStr = bodyStr;
 
-					MdcUtil.put(uniqueKey);
+					traceManager.put(uniqueKey);
 					log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, path, headerStr, paramsStr,
 							finalBodyStr);
-					MdcUtil.remove();
-					
+					traceManager.remove();
+
 					return chain.filter(exchange.mutate().request(decorator).build());
 				});
 			}
 
 			String finalBodyStr = "{}";
-			MdcUtil.put(uniqueKey);
+			traceManager.put(uniqueKey);
 			log.info("{} {} {} header:{},param:{},body:{}", method, requestIp, path, headerStr, paramsStr,
 					finalBodyStr);
-			MdcUtil.remove();
+			traceManager.remove();
 			return chain.filter(exchange.mutate().request(request).build());
 		} catch (Exception e) {
 			// 避免filter逻辑中的任何异常，直接转发请求

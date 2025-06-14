@@ -1,5 +1,8 @@
 package com.company.gateway.filter;
 
+import com.company.common.constant.HeaderConstants;
+import com.company.gateway.trace.TraceManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -8,19 +11,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.company.common.constant.CommonConstants;
-import com.company.common.util.MdcUtil;
 
 import reactor.core.publisher.Mono;
 
 /**
- * 对客户端请求添加MDC
+ * 对客户端请求添加追踪ID
  */
 @Component
-public class MdcFilter implements GlobalFilter, Ordered {
+public class TraceFilter implements GlobalFilter, Ordered {
 
 	static {
 		System.setProperty("log4j2.isThreadContextMapInheritable", "true");
 	}
+
+	@Autowired
+	private TraceManager traceManager;
 
 	@Override
 	public int getOrder() {
@@ -30,11 +35,11 @@ public class MdcFilter implements GlobalFilter, Ordered {
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 		ServerHttpRequest request = exchange.getRequest();
-		MdcUtil.put();
-		request = request.mutate().header(MdcUtil.UNIQUE_KEY, MdcUtil.get()).build();
+		traceManager.put();
+		request = request.mutate().header(HeaderConstants.TRACE_ID, traceManager.get()).build();
 
 		return chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(() -> {
-			MdcUtil.remove();
+			traceManager.remove();
 		}));
 	}
 }

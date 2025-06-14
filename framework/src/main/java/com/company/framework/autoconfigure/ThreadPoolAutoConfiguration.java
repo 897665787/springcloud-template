@@ -1,19 +1,18 @@
 package com.company.framework.autoconfigure;
 
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import com.company.framework.threadpool.TraceThreadPoolExecutor;
+import com.company.framework.trace.TraceManager;
+import com.company.framework.threadpool.TraceThreadPoolTaskExecutor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.company.framework.threadpool.CustomThreadPoolTaskExecutor;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
 @ConditionalOnProperty(prefix = "template", name = "threadpool.maxPoolSize")
@@ -21,8 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 public class ThreadPoolAutoConfiguration {
 
 	@Bean(destroyMethod = "destroy")
-	ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties properties) {
-		ThreadPoolTaskExecutor executor = new CustomThreadPoolTaskExecutor();
+	@ConditionalOnMissingBean
+	ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties properties, TraceManager traceManager) {
+		ThreadPoolTaskExecutor executor = new TraceThreadPoolTaskExecutor(traceManager);
 		// 设置线程池核心容量
 		executor.setCorePoolSize(properties.getCorePoolSize());
 		// 设置线程池最大容量
@@ -38,24 +38,25 @@ public class ThreadPoolAutoConfiguration {
 		// 设置线程池中任务的等待时间，如果超过这个时候还没有销毁就强制销毁，以确保应用最后能够被关闭，而不是阻塞住。
 		executor.setAwaitTerminationSeconds(properties.getAwaitTerminationSeconds());
 		// 设置任务丢弃后的处理策略
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setRejectedExecutionHandler(new CustomCallerRunsPolicy());
+		executor.setThreadFactory(new CustomDefaultThreadFactory());
 		return executor;
 	}
-	/*
-	@Bean
-	ThreadPoolExecutor threadPoolExecutor() {
-		int corePoolSize = 4;
-		int maximumPoolSize = 5;
-		long keepAliveTime = 1L;
-		BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(10);
-		ThreadPoolExecutor threadPoolExecutor = new CustomThreadPoolExecutor(corePoolSize, maximumPoolSize,
-				keepAliveTime, TimeUnit.SECONDS, workQueue, new CustomDefaultThreadFactory(), new CustomCallerRunsPolicy());
 
+	@Bean
+	@ConditionalOnMissingBean
+	ThreadPoolExecutor threadPoolExecutor(ThreadPoolProperties properties, TraceManager traceManager) {
+		int corePoolSize = properties.getCorePoolSize();
+		int maximumPoolSize = properties.getMaxPoolSize();
+		long keepAliveTime = properties.getKeepAliveSeconds();
+		BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
+		ThreadPoolExecutor threadPoolExecutor = new TraceThreadPoolExecutor(corePoolSize, maximumPoolSize,
+				keepAliveTime, TimeUnit.SECONDS, workQueue, new CustomDefaultThreadFactory(), new CustomCallerRunsPolicy(), traceManager);
 		return threadPoolExecutor;
 	}
-*/
+
 	@Slf4j
-	static class CustomDefaultThreadFactory implements ThreadFactory {
+	public static class CustomDefaultThreadFactory implements ThreadFactory {
 		private static final AtomicInteger poolNumber = new AtomicInteger(1);
 		private final ThreadGroup group;
 		private final AtomicInteger threadNumber = new AtomicInteger(1);
@@ -64,7 +65,7 @@ public class ThreadPoolAutoConfiguration {
 		CustomDefaultThreadFactory() {
 			SecurityManager s = System.getSecurityManager();
 			group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-			namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
+			namePrefix = "custom-pool-" + poolNumber.getAndIncrement() + "-thread-";
 		}
 
 		public Thread newThread(Runnable r) {

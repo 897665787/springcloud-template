@@ -1,10 +1,10 @@
 package com.company.framework.messagedriven.rocketmq;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
+import com.company.framework.trace.TraceManager;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +26,8 @@ public class RocketmqMessageSender implements MessageSender {
 
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
+    @Autowired
+    private TraceManager traceManager;
 
     @Override
     public void sendNormalMessage(String strategyName, Object toJson, String topic, String tag) {
@@ -58,7 +60,7 @@ public class RocketmqMessageSender implements MessageSender {
         Map<String, Object> headers = Maps.newHashMap();
         headers.put(HeaderConstants.HEADER_STRATEGY_NAME, strategyName);
         headers.put(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
-        headers.put(HeaderConstants.HEADER_MESSAGE_ID, MdcUtil.get());
+        headers.put(HeaderConstants.HEADER_MESSAGE_ID, traceManager.get());
 
         MessageHeaders messageHeaders = new MessageHeaders(headers);
         Message<String> message = MessageBuilder.createMessage(paramsStr, messageHeaders);

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.api.enums.PopupEnum;
@@ -48,7 +48,9 @@ public class PopService {
 	private UserPopupService userPopupService;
 	@Autowired
 	private PopupLogService popupLogService;
-	
+	@Autowired
+	private TraceManager traceManager;
+
 	@Value("${popup.minPopInterval.seconds:0}")
 	private Integer minPopIntervalSeconds;// 弹窗最小时间间隔(s)
 
@@ -56,7 +58,7 @@ public class PopService {
 	 * <pre>
 	 * 用户最优的弹窗
 	 * </pre>
-	 * 
+	 *
 	 * @param userId
 	 *            用户ID
 	 * @param deviceid
@@ -70,7 +72,7 @@ public class PopService {
 			log.warn("userId和deviceid必须有1个有值,userId:{},deviceid:{}", userId, deviceid);
 			return null;
 		}
-		
+
 		LocalDateTime now = LocalDateTime.now();
 
 		if (minPopIntervalSeconds > 0) {
@@ -100,7 +102,7 @@ public class PopService {
 			List<PopupCondition> popupConditionList = popupIdConditionMap.get(popup.getId());
 			Boolean canPop = this.canPop(popup, popupConditionList, userId, deviceid, runtimeAttach);
 			if (canPop) {
-				bestPopup = popup; 
+				bestPopup = popup;
 				break;
 			}
 		}
@@ -111,22 +113,22 @@ public class PopService {
 			Map<String, String> configParams = Maps.newHashMap();
 			configParams.put("{userId}", String.valueOf(userId));
 			configParams.put("{deviceid}", deviceid);
-			
+
 			String longitude = runtimeAttach.get("longitude");
 			configParams.put("{longitude}", longitude);
 			String latitude = runtimeAttach.get("latitude");
 			configParams.put("{latitude}", latitude);
-			
+
 			String cityCode = runtimeAttach.get("cityCode");
 			if (StringUtils.isBlank(cityCode)) {
 				cityCode = "440300";
 			}
 			configParams.put("{cityCode}", cityCode);
-			
+
 			String token = runtimeAttach.get("token");
 			configParams.put("{token}", token);
 			/* ============定义弹窗配置中的参数============ */
-			
+
 			// 自定义参数替换（可用于复杂参数的生成）
 			Map<String, ReplaceParam> replaceParamBeans = SpringContextUtil.getBeansOfType(ReplaceParam.class);
 			Set<Entry<String, ReplaceParam>> entrySet = replaceParamBeans.entrySet();
@@ -143,7 +145,7 @@ public class PopService {
 
 			bestPopupCanPop = this.buildPopupCanPop(bestPopup, configParams);
 		}
-		
+
 		// 查询个人弹窗
 		UserPopup userPopup = userPopupService.selectByPopupLog(userId, PopupEnum.LogBusinessType.USER_POPUP,
 				PopupEnum.Status.ON, now);
@@ -160,7 +162,7 @@ public class PopService {
 			popupLog.setUserId(userId);
 			popupLog.setDeviceid(deviceid);
 			popupLogService.save(popupLog);
-			
+
 			bestPopupCanPop.setPopupLogId(popupLog.getId());
 		}
 		return bestPopupCanPop;
@@ -177,12 +179,12 @@ public class PopService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = MdcUtil.get();
+		String traceId = traceManager.get();
 		List<Supplier<Boolean>> supplierList = popupConditionList.stream().map(v -> {
 			Supplier<Boolean> supplier = () -> {
-				String subTraceId = MdcUtil.get();
+				String subTraceId = traceManager.get();
 				if (subTraceId == null) {
-					MdcUtil.put(traceId);
+					traceManager.put(traceId);
 				}
 				String beanName = v.getPopCondition();
 				PopCondition condition = SpringContextUtil.getBean(beanName, PopCondition.class);
@@ -202,7 +204,7 @@ public class PopService {
 					log.error("canPop error", e);
 				}
 				if (subTraceId == null) {
-					MdcUtil.remove();
+					traceManager.remove();
 				}
 				return canPop;
 			};
@@ -222,17 +224,17 @@ public class PopService {
 		bestPopupCanPop.setBusinessType(PopupEnum.LogBusinessType.POPUP);
 		bestPopupCanPop.setBusinessId(popup.getId());
 		bestPopupCanPop.setPriority(popup.getPriority());
-		
+
 		// 其他数据
 		bestPopupCanPop.setTitle(Utils.replaceConfigParams(popup.getTitle(), configParams));
 		bestPopupCanPop.setText(Utils.replaceConfigParams(popup.getText(), configParams));
-		
+
 		PopImage popImage = JsonUtil.toEntity(popup.getBgImg(), PopImage.class);
 		if (popImage != null) {
 			popImage.setImgUrl(Utils.replaceConfigParams(popImage.getImgUrl(), configParams));
 			popImage.setValue(Utils.replaceConfigParams(popImage.getValue(), configParams));
 			bestPopupCanPop.setBgImg(popImage);
-			
+
 			PopImage nextPopImage = popImage.getNext();
 			while (nextPopImage != null) {
 				nextPopImage.setImgUrl(Utils.replaceConfigParams(nextPopImage.getImgUrl(), configParams));
@@ -247,7 +249,7 @@ public class PopService {
 			closeBtn.setValue(Utils.replaceConfigParams(closeBtn.getValue(), configParams));
 			bestPopupCanPop.setCloseBtn(closeBtn);
 		}
-		
+
 		return bestPopupCanPop;
 	}
 

@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.MdcUtil;
 import com.company.framework.aspect.IdempotentUtil;
 import com.company.framework.cache.ICache;
 import com.company.framework.context.HttpContextUtil;
@@ -23,7 +23,7 @@ import feign.RequestTemplate;
 
 /**
  * feign调用过程中传递header值
- * 
+ *
  * 依赖Hystrix自定义并发策略:TransferHystrixConcurrencyStrategy
  */
 @Component
@@ -31,6 +31,8 @@ public class FeignHeaderInterceptor implements RequestInterceptor {
 
 	@Autowired
 	private ICache cache;
+	@Autowired
+	private TraceManager traceManager;
 
 	@Override
 	public void apply(RequestTemplate template) {
@@ -39,7 +41,7 @@ public class FeignHeaderInterceptor implements RequestInterceptor {
 		// 请求上下文中传递到下游的相关headers
 		headers.putAll(HttpContextUtil.httpContextHeaders());
 		// 日志追踪ID
-		headers.putAll(MdcUtil.headers());
+		headers.putAll(traceManager.headers());
 		// 幂等
 		headers.putAll(idempotentheaders(IdempotentUtil.headers()));
 		// 其他headers

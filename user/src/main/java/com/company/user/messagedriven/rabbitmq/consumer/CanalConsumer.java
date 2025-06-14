@@ -1,8 +1,10 @@
 package com.company.user.messagedriven.rabbitmq.consumer;
 
-import java.io.IOException;
-import java.util.function.Consumer;
-
+import com.company.common.exception.BusinessException;
+import com.company.common.util.JsonUtil;
+import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.rabbitmq.client.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -12,13 +14,8 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.rabbitmq.client.Channel;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.function.Consumer;
 
 @Slf4j
 @Component
@@ -38,32 +35,27 @@ public class CanalConsumer {
 	}
 
 	private static void handleByConsumer(byte[] jsonByteMsg, Channel channel, Message message, Consumer<String> consumer) {
-		try {
-			if (jsonByteMsg == null) {
-				log.info("jsonByteMsg is null");
-				basicAck(channel, message);
-				return;
-			}
-			String jsonStrMsg = new String(jsonByteMsg);
-			
-			long start = System.currentTimeMillis();
-			try {
-				MessageProperties messageProperties = message.getMessageProperties();
-				MdcUtil.put(messageProperties.getMessageId());
-				log.info("jsonStrMsg:{}", jsonStrMsg);
-				consumer.accept(jsonStrMsg);
-			} catch (BusinessException e) {
-				// 业务异常一般是校验不通过，可以当做成功处理
-				log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
-			} catch (Exception e) {
-				log.error("accept error", e);
-			} finally {
-				log.info("耗时:{}ms", System.currentTimeMillis() - start);
-			}
+		if (jsonByteMsg == null) {
+			log.info("jsonByteMsg is null");
 			basicAck(channel, message);
-		} finally {
-			MdcUtil.remove();
+			return;
 		}
+		String jsonStrMsg = new String(jsonByteMsg);
+
+		long start = System.currentTimeMillis();
+		try {
+			MessageProperties messageProperties = message.getMessageProperties();
+			log.info("jsonStrMsg:{}", jsonStrMsg);
+			consumer.accept(jsonStrMsg);
+		} catch (BusinessException e) {
+			// 业务异常一般是校验不通过，可以当做成功处理
+			log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
+		} catch (Exception e) {
+			log.error("accept error", e);
+		} finally {
+			log.info("耗时:{}ms", System.currentTimeMillis() - start);
+		}
+		basicAck(channel, message);
 	}
 	private static void basicAck(Channel channel, Message message) {
 		try {

@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
@@ -32,9 +34,9 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
+import com.company.common.exception.UnauthorizedException;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.framework.context.SpringContextUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,9 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+	@Autowired
+	private TraceManager traceManager;
+
 	/**
 	 * 拦截异常
 	 */
@@ -54,7 +59,7 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("未知异常:", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
+		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(traceManager.get());
 	}
 
 	/**
@@ -78,7 +83,7 @@ public class GlobalExceptionHandler {
 		log.warn(message, e);
 		return Result.fail(message);
 	}
-	
+
 	/**
 	 * 参数缺失
 	 */
@@ -89,7 +94,7 @@ public class GlobalExceptionHandler {
 //		log.warn(message, e);
 		return Result.fail(message);
 	}
-	
+
 	/**
 	 * 参数类型不匹配
 	 */
@@ -101,7 +106,7 @@ public class GlobalExceptionHandler {
 //		log.warn(message, e);
 		return Result.fail(message);
 	}
-	
+
 	/**
 	 * 文件上传大小限制
 	 */
@@ -122,7 +127,18 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("未处理运行时异常", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(MdcUtil.get());
+		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(traceManager.get());
+	}
+
+	/**
+	 * 未授权异常
+	 */
+	@ExceptionHandler(UnauthorizedException.class)
+	public Result<?> unauthorized(UnauthorizedException e, HttpServletRequest request, HttpServletResponse response,
+								  HandlerMethod handler) {
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		sendErrorIfPage(request, response, handler);
+		return Result.fail(e);
 	}
 
 	/**

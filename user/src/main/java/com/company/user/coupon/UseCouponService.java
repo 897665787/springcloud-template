@@ -9,12 +9,12 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.user.coupon.dto.MatchResult;
@@ -39,13 +39,15 @@ public class UseCouponService {
 	private UserCouponService userCouponService;
 	@Autowired
 	private CouponTemplateConditionService couponTemplateConditionService;
+	@Autowired
+	private TraceManager traceManager;
 
 	/**
 	 * <pre>
 	 * 用户优惠券列表（未使用、即将过期、已使用、已过期）
 	 * 应用场景：用户查看自己的优惠券列表
 	 * </pre>
-	 * 
+	 *
 	 * @param userId
 	 * @param status
 	 * @param seeRuntimeAttach
@@ -87,7 +89,7 @@ public class UseCouponService {
 	 * 用户优惠券列表
 	 * 应用场景：支付时展示选择优惠券的列表
 	 * </pre>
-	 * 
+	 *
 	 * @param userId
 	 * @param orderAmount
 	 * @param runtimeAttach
@@ -145,7 +147,7 @@ public class UseCouponService {
 	 * 用户最优的可用优惠券
 	 * 应用场景：支付时自动为用户选择优惠券
 	 * </pre>
-	 * 
+	 *
 	 * @param userId
 	 * @param orderAmount
 	 * @param runtimeAttach
@@ -168,7 +170,7 @@ public class UseCouponService {
 
 		List<UserCoupon> userCouponCanSeeList = this.canSee(userCouponList, couponTemplateIdConditionMap, userId,
 				runtimeAttach);
-		
+
 		// 先按优惠紧急对优惠券进行排序，接下来查询到第一张满足条件的优惠券就行
 		Collections.sort(userCouponCanSeeList, (a, b) -> {
 			// 先按优惠金额倒序，金额一致按过期时间正序
@@ -192,7 +194,7 @@ public class UseCouponService {
 			}
 			return compareTo;
 		});
-		
+
 		UserCouponCanUse bestCouponCanUse = null;
 		for (UserCoupon userCoupon : userCouponCanSeeList) {
 			List<CouponTemplateCondition> couponTemplateConditionList = couponTemplateIdConditionMap
@@ -212,7 +214,7 @@ public class UseCouponService {
 	 * 用户最优的可用优惠券(批量)
 	 * 应用场景：商品展示券后价
 	 * </pre>
-	 * 
+	 *
 	 * @param userId
 	 * @param seeRuntimeAttach
 	 * @param userCouponCanUseParamList
@@ -291,7 +293,7 @@ public class UseCouponService {
 	 * 判断优惠券能否使用
 	 * 应用场景：创建订单时校验优惠券
 	 * </pre>
-	 * 
+	 *
 	 * @param userCouponId
 	 * @param userId
 	 * @param orderAmount
@@ -334,12 +336,12 @@ public class UseCouponService {
 			/*
 			 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 			 */
-			String traceId = MdcUtil.get();
+			String traceId = traceManager.get();
 			List<Supplier<Boolean>> supplierList = couponTemplateConditionList.stream().map(v -> {
 				Supplier<Boolean> supplier = () -> {
-					String subTraceId = MdcUtil.get();
+					String subTraceId = traceManager.get();
 					if (subTraceId == null) {
-						MdcUtil.put(traceId);
+						traceManager.put(traceId);
 					}
 					String beanName = v.getUseCondition();
 					UseCondition condition = SpringContextUtil.getBean(beanName, UseCondition.class);
@@ -357,7 +359,7 @@ public class UseCouponService {
 						log.error("canSee error", e);
 					}
 					if (subTraceId == null) {
-						MdcUtil.remove();
+						traceManager.remove();
 					}
 					return canSee;
 				};
@@ -399,12 +401,12 @@ public class UseCouponService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = MdcUtil.get();
+		String traceId = traceManager.get();
 		List<Supplier<MatchResult>> supplierList = couponTemplateConditionList.stream().map(v -> {
 			Supplier<MatchResult> supplier = () -> {
-				String subTraceId = MdcUtil.get();
+				String subTraceId = traceManager.get();
 				if (subTraceId == null) {
-					MdcUtil.put(traceId);
+					traceManager.put(traceId);
 				}
 				String beanName = v.getUseCondition();
 				UseCondition condition = SpringContextUtil.getBean(beanName, UseCondition.class);
@@ -430,7 +432,7 @@ public class UseCouponService {
 					canUse = MatchResult.builder().canUse(false).reason("系统判断异常").build();
 				}
 				if (subTraceId == null) {
-					MdcUtil.remove();
+					traceManager.remove();
 				}
 				return canUse;
 			};
@@ -450,7 +452,7 @@ public class UseCouponService {
 	 * 商品过滤
 	 * 应用场景：券适用商品列表
 	 * </pre>
-	 * 
+	 *
 	 * @param couponTemplateId
 	 * @return 商品编码列表
 	 */

@@ -40,9 +40,9 @@ public class ApiController {
 	private OrderFeign orderFeign;
 	@Autowired
 	private UserFeign userFeign;
-	@Autowired(required = false)
+	@Autowired
 	private ThreadPoolExecutor threadPoolExecutor;
-	@Autowired(required = false)
+	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private TimeService timeService;

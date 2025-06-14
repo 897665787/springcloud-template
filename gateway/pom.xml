@@ -25,6 +25,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- aop -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 
 		<!-- 网关用到template-framework的功能比较少，没必要引用，把少部分功能copy过去即可
 		<dependency>
