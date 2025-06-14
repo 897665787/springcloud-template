@@ -90,6 +90,33 @@
 		-->
 		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 
+		<!-- ################## 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 ################## -->
+		<!-- 启动参数加上：-javaagent:/path/to/transmittable-thread-local-2.x.x.jar -->
+		<dependency>
+			<groupId>com.ofpay</groupId>
+			<artifactId>logback-mdc-ttl</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>transmittable-thread-local</artifactId>
+			<version>2.14.5</version>
+		</dependency>
+		<!-- ################## 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 ################## -->
+
+		<!-- skywalking日志追踪 -->
+		<dependency>
+			<groupId>org.apache.skywalking</groupId>
+			<artifactId>apm-toolkit-logback-1.x</artifactId>
+			<version>9.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.skywalking</groupId>
+			<artifactId>apm-toolkit-trace</artifactId>
+			<version>9.3.0</version>
+		</dependency>
+		<!-- skywalking日志追踪 -->
+
 		<!-- MQ -->
         <!-- rabbitMQ -->
 		<dependency>
