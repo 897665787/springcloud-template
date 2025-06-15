@@ -1,11 +1,10 @@
 spring:
   application:
     name: template-user
-    
+
 template:
   domain: http://t-domain.com
   enable:
     redis: false
     redisson: false
     idempotent: false
-    data-encypt: false

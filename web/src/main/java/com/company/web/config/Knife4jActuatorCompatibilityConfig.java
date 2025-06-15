@@ -1,4 +1,4 @@
-package com.company.web.autoconfigure;
+package com.company.web.config;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
@@ -25,7 +25,7 @@ public class Knife4jActuatorCompatibilityConfig {
 	/**
 	 * 解决springboot升到2.6.x之后，knife4j报错
 	 * 原文链接：https://gitee.com/xiaoym/knife4j/issues/I4JT89
-	 * 
+	 *
 	 * @param wes the web endpoints supplier
 	 * @param ses the servlet endpoints supplier
 	 * @param ces the controller endpoints supplier

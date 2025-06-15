@@ -30,6 +30,12 @@
 		    	</exclusion>
 		    </exclusions>
 		</dependency>
+		<!-- 请求参数解密、响应值加密，源码：https://gitee.com/licoy/encrypt-body-spring-boot-starter -->
+		<dependency>
+			<groupId>cn.licoy</groupId>
+			<artifactId>encrypt-body-spring-boot-starter</artifactId>
+			<version>1.2.3</version>
+		</dependency>
 	</dependencies>
 
 </project>

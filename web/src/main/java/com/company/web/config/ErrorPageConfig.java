@@ -1,4 +1,4 @@
-package com.company.web.autoconfigure;
+package com.company.web.config;
 
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;

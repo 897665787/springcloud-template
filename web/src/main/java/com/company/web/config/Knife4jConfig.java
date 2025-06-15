@@ -1,4 +1,4 @@
-package com.company.web.autoconfigure;
+package com.company.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,7 @@ public class Knife4jConfig {
 				.version("v1.0.0")
 				.title(applicationName + " API文档")
                 .build();
-        
+
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)
