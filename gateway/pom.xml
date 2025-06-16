@@ -25,6 +25,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- aop -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 
 		<!-- 网关用到template-framework的功能比较少，没必要引用，把少部分功能copy过去即可
 		<dependency>
@@ -91,6 +96,19 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
+
+		<!-- skywalking日志追踪 -->
+		<dependency>
+			<groupId>org.apache.skywalking</groupId>
+			<artifactId>apm-toolkit-logback-1.x</artifactId>
+			<version>9.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.skywalking</groupId>
+			<artifactId>apm-toolkit-trace</artifactId>
+			<version>9.3.0</version>
+		</dependency>
+		<!-- skywalking日志追踪 -->
 
 		<!-- MQ -->
 		<!-- rabbitMQ -->

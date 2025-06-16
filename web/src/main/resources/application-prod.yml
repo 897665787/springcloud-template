@@ -5,7 +5,6 @@ template:
     lock: redisson # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
     message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
-    data-encypt: false
     access-control: true
   mock:
     time: false
@@ -23,3 +22,15 @@ knife4j:
     enable: true  # 是否开启认证
     username: admin # Basic认证用户名
     password: 123456 # Basic认证密码
+
+# 开发者路由配置
+developer:
+  enabled: false
+  headers: x-deviceid,x-current-user-id
+
+# body加解密
+encrypt:
+  body:
+    enabled: false # 是否开启加解密
+    aes-key: 1468657f04e24e4d8c43f1b8b4032984 #AES加解密秘钥
+    des-key: 1468657f04e24e4d8c43f1b8b4032984 #DES加解密秘钥

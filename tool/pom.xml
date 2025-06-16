@@ -41,13 +41,13 @@
 			<artifactId>template-order-api</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-		
+
 		<!-- 文件系统 -->
 		<!-- 源码：https://gitee.com/jq_di/file-storage -->
 		<dependency>
 		    <groupId>com.jqdi</groupId>
 		    <artifactId>file-storage-spring-boot-starter</artifactId>
-		    <version>1.0.0</version>
+		    <version>2.0.0</version>
 		</dependency>
 		<!-- minio -->
 		<dependency>
@@ -57,7 +57,7 @@
 			<!-- 8.0.x版本会报错：Unsupported OkHttp library found. Must use okhttp >= 4.8.1 -->
 		</dependency>
 		<!-- 文件系统 -->
-		
+
 		<!-- 短信SMS -->
 		<!-- 源码：https://gitee.com/jq_di/sms-sender -->
 		<dependency>

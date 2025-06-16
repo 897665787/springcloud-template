@@ -5,22 +5,8 @@ template:
     lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
     message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
-    data-encypt: false
     access-control: false
     permission: false
-
-filestorage:
-  active: local
-  local:
-    endpoint: D:/home/data/oss
-    bucketName: buket-template-dev
-    domain: http://localhost:4001 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
-  minio:
-    endpoint: http://127.0.0.1:9000
-    accessKey: pRYo5fCm9ZyVNKLA
-    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
-    bucketName: buket-template-dev
-    domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
 
 # Token 配置
 token:

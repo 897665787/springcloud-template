@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -30,7 +31,6 @@ import org.springframework.web.client.RestTemplate;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
@@ -74,6 +74,8 @@ public class OrderController implements OrderFeign {
 	private OrderProductService orderProductService;
 	@Autowired
 	private PayRefundApplyMapper payRefundApplyMapper;
+	@Autowired
+	private TraceManager traceManager;
 
 	@Override
 	public Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
@@ -155,12 +157,12 @@ public class OrderController implements OrderFeign {
 		boolean affect = orderService.paySuccess(orderCode, payAmount, payTime);
 		return Result.success(affect);
 	}
-	
+
 	@Override
 	public Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq) {
 		String orderCode = orderReceiveReq.getOrderCode();
 		LocalDateTime finishTime = orderReceiveReq.getFinishTime();
-		
+
 		boolean affect = orderService.finish(orderCode, finishTime);
 		return Result.success(affect);
 	}
@@ -191,11 +193,11 @@ public class OrderController implements OrderFeign {
 		if (!updateSuccess) {
 			return Result.fail("当前不可申请退款，请刷新后重试！");
 		}
-		
+
 		OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(order.getSubStatus());
 		resp.setOldSubStatus(oldSubStatus);
 		// TODO 如果有手续费之类的扣费逻辑，需要提供接口根据子订单逻辑来计算可退款金额
-		
+
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(order.getOrderCode());
 		String subOrderUrl = order.getSubOrderUrl();
 		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.CALC_CANREFUNDAMOUNT, subOrderUrl, order, orderProductList);
@@ -260,17 +262,17 @@ public class OrderController implements OrderFeign {
 		List<String> orderCodeList = orderList.stream().map(Order::getOrderCode).collect(Collectors.toList());
 		Map<String, List<OrderProduct>> orderCodeThisListMap = orderProductService.groupByOrderCodes(orderCodeList);
 
-		String traceId = MdcUtil.get();
+		String traceId = traceManager.get();
 		List<OrderResp> orderRespList = orderList.parallelStream().map(v -> {
-			String subTraceId = MdcUtil.get();
+			String subTraceId = traceManager.get();
 			if (subTraceId == null) {
-				MdcUtil.put(traceId);
+				traceManager.put(traceId);
 			}
 
 			OrderResp orderResp = toOrderResp(v, orderCodeThisListMap);
 
 			if (subTraceId == null) {
-				MdcUtil.remove();
+				traceManager.remove();
 			}
 			return orderResp;
 		}).collect(Collectors.toList());
@@ -559,7 +561,7 @@ public class OrderController implements OrderFeign {
 		long start = System.currentTimeMillis();
 		try {
 			HttpHeaders headers = new HttpHeaders();
-			MdcUtil.headers2().forEach((k, v) -> headers.addAll(k, v));// 日志追踪ID
+			traceManager.headers().forEach((k, v) -> headers.addAll(k, v));// 日志追踪ID
 			HttpContextUtil.httpContextHeaders().forEach((k, v) -> headers.addAll(k, v));// 请求头
 			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject, headers);
 			@SuppressWarnings("rawtypes")
@@ -583,7 +585,7 @@ public class OrderController implements OrderFeign {
 		dataMap.put("message", remark);
 		return dataMap;
 	}
-	
+
 	@Override
 	public Result<List<String>> select4OverSendSuccess(Integer limit) {
 		List<String> orderCodeList = orderService.select4OverSendSuccess(limit);

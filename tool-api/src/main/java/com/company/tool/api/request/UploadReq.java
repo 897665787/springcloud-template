@@ -14,14 +14,9 @@ public class UploadReq {
 	private byte[] bytes;
 
 	/**
-	 * 是否生成文件名
-	 */
-	private boolean generatefileName = true;
-
-	/**
 	 * 根目录<非必填>
 	 */
-	private String basePath;
+	private String basePath = "";
 
 	/**
 	 * 文件名

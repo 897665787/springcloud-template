@@ -12,13 +12,13 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.api.enums.NavItemEnum;
@@ -41,12 +41,13 @@ public class NavShowService {
 	private NavItemService navItemService;
 	@Autowired
 	private NavItemConditionService navItemConditionService;
-
+	@Autowired
+	private TraceManager traceManager;
 	/**
 	 * <pre>
 	 * 导航栏金刚位列表
 	 * </pre>
-	 * 
+	 *
 	 * @param maxSize
 	 *            最多返回多少个
 	 * @param runtimeAttach
@@ -76,7 +77,7 @@ public class NavShowService {
 			}
 			navItemListCanShow.add(navItem);
 		}
-		
+
 		if (CollectionUtils.isEmpty(navItemListCanShow)) {
 			return Collections.emptyList();
 		}
@@ -102,12 +103,12 @@ public class NavShowService {
 
 		String token = runtimeAttach.get("token");
 		configParams.put("{token}", token);
-		
+
 		// 自定义参数替换（可用于复杂参数的生成）
 		Map<String, NavReplaceParam> replaceParamBeans = SpringContextUtil.getBeansOfType(NavReplaceParam.class);
 		Set<Entry<String, NavReplaceParam>> entrySet = replaceParamBeans.entrySet();
 		/* ============定义金刚位配置中的参数============ */
-		
+
 		List<NavItemCanShow> navItemCanShowList = Lists.newArrayList();
 		for (NavItem navItem : finalShowList) {
 			String attachJson = navItem.getAttachJson();
@@ -132,7 +133,7 @@ public class NavShowService {
 
 			navItemCanShow.setTitle(Utils.replaceConfigParams(navItem.getTitle(), configParams));
 			navItemCanShow.setLogo(Utils.replaceConfigParams(navItem.getLogo(), configParams));
-			
+
 			navItemCanShow.setType(NavItemEnum.Type.of(navItem.getType()));
 			navItemCanShow.setValue(Utils.replaceConfigParams(navItem.getValue(), configParams));
 			navItemCanShow.setAttachJson(Utils.replaceConfigParams(navItem.getAttachJson(), configParams));
@@ -145,7 +146,7 @@ public class NavShowService {
 
 	/**
 	 * 最终展示列表
-	 * 
+	 *
 	 * @param maxSize
 	 * @param navItemList
 	 * @return
@@ -211,12 +212,12 @@ public class NavShowService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = MdcUtil.get();
+		String traceId = traceManager.get();
 		List<Supplier<Boolean>> supplierList = navItemConditionList.stream().map(v -> {
 			Supplier<Boolean> supplier = () -> {
-				String subTraceId = MdcUtil.get();
+				String subTraceId = traceManager.get();
 				if (subTraceId == null) {
-					MdcUtil.put(traceId);
+					traceManager.put(traceId);
 				}
 				String beanName = v.getShowCondition();
 				NavShowCondition condition = SpringContextUtil.getBean(beanName, NavShowCondition.class);
@@ -236,7 +237,7 @@ public class NavShowService {
 					log.error("canShow error", e);
 				}
 				if (subTraceId == null) {
-					MdcUtil.remove();
+					traceManager.remove();
 				}
 				return canShow;
 			};

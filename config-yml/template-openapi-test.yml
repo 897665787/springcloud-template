@@ -1,11 +1,10 @@
 spring:
   application:
     name: template-openapi2
-    
+
 template:
   domain: http://d-domain.com
   enable:
     redis: false
     redisson: false
     idempotent: false
-    data-encypt: false

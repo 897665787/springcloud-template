@@ -1,22 +1,18 @@
 package com.company.web.controller;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
+import cn.hutool.http.HttpRequest;
 import com.company.common.api.Result;
 import com.company.tool.api.feign.FileFeign;
-import com.company.tool.api.request.UploadReq;
-import com.company.tool.api.response.UploadResp;
-
-import cn.hutool.core.io.IoUtil;
+import com.company.tool.api.request.ClientUploadReq;
+import com.company.tool.api.response.ClientUploadResp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 @RestController
@@ -27,7 +23,7 @@ public class FileController {
 	private FileFeign fileFeign;
 
 	@PostMapping("/upload")
-	public Result<UploadResp> upload(@RequestParam("file") MultipartFile file) {
+	public Result<String> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
@@ -37,41 +33,41 @@ public class FileController {
 		if (size == 0) {
 			return Result.fail("请选择文件");
 		}
-		
+
+		ClientUploadReq clientUploadReq = new ClientUploadReq();
+		clientUploadReq.setBasePath("web");
+		clientUploadReq.setFileName(originalFilename);
+		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq).dataOrThrow();
+		String fileKey = clientUploadResp.getFileKey();
+		String presignedUrl = clientUploadResp.getPresignedUrl();
+
 		try (InputStream inputStream = file.getInputStream()) {
-			byte[] bytes = IoUtil.readBytes(inputStream);
-			UploadReq uploadReq = new UploadReq();
-			uploadReq.setBytes(bytes);
-			
-			// 生成文件名
-			uploadReq.setGeneratefileName(true);
-			uploadReq.setFileName(originalFilename);
-			
-			
-			/*
-			// 生成文件名，带基础目录
-			uploadReq.setGeneratefileName(true);
-			uploadReq.setBasePath("images");
-			uploadReq.setFileName(originalFilename);
-			*/
-			
-			/*
-			// 不生成文件名，不带基础目录，基础目录写到FileName
-			uploadReq.setGeneratefileName(false);
-			uploadReq.setFileName("images/" + originalFilename);
-			*/
-			
-			/*
-			// 不生成文件名
-			uploadReq.setGeneratefileName(false);
-			uploadReq.setBasePath("aaa");
-			uploadReq.setFileName("images/" + originalFilename);
-			*/
-			
-			return fileFeign.upload(uploadReq);
+			// 客户端使用presignedUrl上传文件
+			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
+			log.info("result:{}", result);
+			return Result.success(fileKey);
 		} catch (IOException e) {
 			log.error("IOException", e);
-			return Result.fail(e.getMessage());
+			return Result.fail("文件上传失败");
 		}
+	}
+
+	@PostMapping("/clientUpload")
+	public Result<ClientUploadResp> clientUpload(String fileName) {
+		ClientUploadReq clientUploadReq = new ClientUploadReq();
+		clientUploadReq.setBasePath("web");
+		clientUploadReq.setFileName(fileName);
+		return fileFeign.clientUpload(clientUploadReq);
+	}
+
+	/**
+	 * 获取访问链接
+	 *
+	 * @param fileKey
+	 * @return
+	 */
+	@GetMapping("/url")
+	public Result<String> url(String fileKey) {
+		return fileFeign.presignedUrl(fileKey);
 	}
 }

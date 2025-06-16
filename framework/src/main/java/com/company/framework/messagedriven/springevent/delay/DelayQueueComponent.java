@@ -3,11 +3,11 @@ package com.company.framework.messagedriven.springevent.delay;
 import java.util.concurrent.DelayQueue;
 import java.util.function.Consumer;
 
+import com.company.framework.trace.TraceManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-
-import com.company.common.util.MdcUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "message-driven", havingValue = "springevent")
 public class DelayQueueComponent implements CommandLineRunner {
+	@Autowired
+	private TraceManager traceManager;
 
 	private DelayQueue<DelayedConsumer> delayQueue = new DelayQueue<>();
 
@@ -32,10 +34,10 @@ public class DelayQueueComponent implements CommandLineRunner {
 					DelayedConsumer delayMessageEvent = delayQueue.take();// 阻塞
 					Consumer<Long> consumer = delayMessageEvent.getConsumer();
 					String traceId = delayMessageEvent.getTraceId();
-					MdcUtil.put(traceId);
+					traceManager.put(traceId);
 					long time = delayMessageEvent.getTime();
 					consumer.accept(time);
-					MdcUtil.remove();
+					traceManager.remove();
 				} catch (InterruptedException e) {
 					log.error("DelayMessageEvent thread error", e);
 				}

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.exception.BusinessException;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.order.api.response.PayOrderQueryResp;
@@ -65,7 +64,7 @@ public class WxPayClient extends BasePayClient {
 
 	private static final String PAY_CALLBACK_URL = "/notify/wxPay";
 	private static final String REFUND_CALLBACK_URL = "/notify/wxPayRefund";
-    
+
 	@Autowired
 	private WxPayConfiguration wxPayConfiguration;
 	@Autowired
@@ -74,20 +73,20 @@ public class WxPayClient extends BasePayClient {
 	private WxPayRefundMapper wxPayRefundMapper;
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-	
+
 	@Value("${template.domain}")
 	private String domain;
-	
+
 	@Value("${template.mock.wxnotify:false}")
 	private Boolean mockNotify;
-	
+
 	@Override
     protected Object requestPayInfo(PayParams payParams) {
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(payParams.getOutTradeNo());
-		
+
 		String appid = payParams.getAppid();
 		PayConfig payConfig = wxPayConfiguration.getPayConfig(appid);
-		
+
 		String tradeType = payConfig.getTradeType();
 		Integer wxPayId = null;
 		String remark = null;
@@ -102,11 +101,11 @@ public class WxPayClient extends BasePayClient {
 			wxPayId = wxPay.getId();
 			remark = wxPay.getRemark();
 		}
-		
+
 		// 公共参数
 		WxPayConfig wxPayConfig = new WxPayConfig();
 		wxPayConfig.setAppId(appid);
-		
+
 		String mchid = payParams.getMchid();
 		if (StringUtils.isBlank(mchid)) {
 			mchid = payConfig.getMchId();
@@ -114,7 +113,7 @@ public class WxPayClient extends BasePayClient {
 		wxPayConfig.setMchId(mchid);
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(mchid);
 		wxPayConfig.setMchKey(mchConfig.getMchKey());
-		
+
 		// 私有参数
 		WxPayUnifiedOrderRequest request = WxPayUnifiedOrderRequest.newBuilder().build();
 		request.setBody(payParams.getBody());
@@ -130,13 +129,13 @@ public class WxPayClient extends BasePayClient {
 			request.setSceneInfo(
 					"{\"h5_info\": {\"type\":\"Wap\",\"wap_url\": \"" + domain + "\",\"wap_name\": \"业务名称\"}}");
 		}
-		
+
 		try {
 			WxPayService wxPayService = new WxPayServiceImpl();
 			wxPayService.setConfig(wxPayConfig);
-			
+
 			WxPayUnifiedOrderResult unifiedOrderResult = wxPayService.unifiedOrder(request);
-			
+
 			remark = Utils.rightRemark(remark, resultMsg(unifiedOrderResult));
 			requestResult2WxPay(wxPayId, appid, mchid, request, unifiedOrderResult, remark);
 
@@ -144,7 +143,7 @@ public class WxPayClient extends BasePayClient {
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
 				throw new BusinessException(unifiedOrderResult.getReturnMsg());
 			}
-			
+
 			String resultCode = unifiedOrderResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
 				throw new BusinessException(unifiedOrderResult.getErrCodeDes());
@@ -155,7 +154,7 @@ public class WxPayClient extends BasePayClient {
 			Object payInfo = orderResultTransfer.toPayInfo(request.getAppid(), request.getMchId(),
 					unifiedOrderResult.getPrepayId(), unifiedOrderResult.getCodeURL(),
 					unifiedOrderResult.getMwebUrl());
-			
+
 			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
 				executor.submit(() -> {
 					try {
@@ -172,11 +171,11 @@ public class WxPayClient extends BasePayClient {
 			// 支付异常
 			log.error("WxPay error", e);
 			WxPayUnifiedOrderResult result = BaseWxPayResult.fromXML(e.getXmlString(), WxPayUnifiedOrderResult.class);
-			
+
 			remark = Utils.rightRemark(remark, resultMsg(result));
-			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2WxPay(wxPayId, appid, mchid, request, result, remark);
-			
+
 			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
@@ -199,7 +198,7 @@ public class WxPayClient extends BasePayClient {
 				.setProductId         (request.getProductId())
 				.setOpenid             (request.getOpenid())
 				;
-    	
+
 		if (result != null) {
 			/* 支付信息 */
 			wxPay.setPrepayId(result.getPrepayId());
@@ -225,7 +224,7 @@ public class WxPayClient extends BasePayClient {
 			resp.setMessage("订单不存在");
 			return resp;
 		}
-		
+
 		if (WxPayConstants.WxpayTradeStatus.SUCCESS.equals(wxPay.getTradeState())
 				|| WxPayConstants.WxpayTradeStatus.CLOSED.equals(wxPay.getTradeState())) {
 			// 出结果了
@@ -233,7 +232,7 @@ public class WxPayClient extends BasePayClient {
 
 			boolean paySuccess = Objects.equal(wxPay.getTradeState(), WxPayConstants.WxpayTradeStatus.SUCCESS);
 			resp.setPaySuccess(paySuccess);
-			
+
 			if (paySuccess) {
 				resp.setPayAmount(
 						new BigDecimal(wxPay.getTotalFee()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP));
@@ -247,14 +246,14 @@ public class WxPayClient extends BasePayClient {
 			}
 			return resp;
 		}
-		
+
 		// 公共参数
 		WxPayConfig wxPayConfig = new WxPayConfig();
 		wxPayConfig.setAppId(wxPay.getAppid());
 		wxPayConfig.setMchId(wxPay.getMchid());
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
 		wxPayConfig.setMchKey(mchConfig.getMchKey());
-		
+
 		try {
 			WxPayService wxPayService = new WxPayServiceImpl();
 			wxPayService.setConfig(wxPayConfig);
@@ -263,7 +262,7 @@ public class WxPayClient extends BasePayClient {
 			WxPayOrderQueryRequest request = WxPayOrderQueryRequest.newBuilder().build();
 			request.setOutTradeNo(wxPay.getOutTradeNo());
 			request.setNonceStr(RandomStringUtils.randomAlphanumeric(16));
-			
+
 			WxPayOrderQueryResult orderQueryResult = wxPayService.queryOrder(request);
 
 			String returnCode = orderQueryResult.getReturnCode();
@@ -283,7 +282,7 @@ public class WxPayClient extends BasePayClient {
 			// 保存查询结果数据
 			String remark = Utils.rightRemark(wxPay.getRemark(), "tradeState:" + orderQueryResult.getTradeState());
 			queryResult2WxPay(outTradeNo, orderQueryResult, remark);
-						
+
 			if (!(WxPayConstants.WxpayTradeStatus.SUCCESS.equals(orderQueryResult.getTradeState())
 					|| WxPayConstants.WxpayTradeStatus.CLOSED.equals(orderQueryResult.getTradeState()))) {
 				// 未出结果
@@ -293,11 +292,11 @@ public class WxPayClient extends BasePayClient {
 			}
 
 			resp.setResult(true);
-			
+
 			boolean paySuccess = Objects.equal(orderQueryResult.getTradeState(),
 					WxPayConstants.WxpayTradeStatus.SUCCESS);
 			resp.setPaySuccess(paySuccess);
-			
+
 			if (paySuccess) {
 				resp.setPayAmount(
 						new BigDecimal(wxPay.getTotalFee()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP));
@@ -338,7 +337,7 @@ public class WxPayClient extends BasePayClient {
 		Integer affect = wxPayMapper.update(wxPay4Update, wrapper);
 		return affect > 0;
 	}
-	
+
 	@Override
 	public void requestRefund(String outTradeNo, String outRefundNo, BigDecimal refundAmount) {
 		WxPayRefund wxPayRefund = wxPayRefundMapper.selectByOutRefundNo(outRefundNo);
@@ -351,9 +350,9 @@ public class WxPayClient extends BasePayClient {
 			wxPayRefundId = wxPayRefund.getId();
 			remark = wxPayRefund.getRemark();
 		}
-    	
+
 		WxPay wxPay = wxPayMapper.selectByOutTradeNo(outTradeNo);
-		
+
 		// 公共参数
 		WxPayConfig wxPayConfig = new WxPayConfig();
         wxPayConfig.setAppId(wxPay.getAppid());
@@ -361,7 +360,7 @@ public class WxPayClient extends BasePayClient {
         WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
         wxPayConfig.setMchKey(mchConfig.getMchKey());
         wxPayConfig.setKeyPath(mchConfig.getKeyPath());// 退款时用到证书
-        
+
 		// 私有参数
 		WxPayRefundRequest request = WxPayRefundRequest.newBuilder().build();
         request.setNonceStr(RandomStringUtils.randomAlphanumeric(16));
@@ -370,21 +369,21 @@ public class WxPayClient extends BasePayClient {
         request.setTotalFee(wxPay.getTotalFee());
         request.setRefundFee(refundAmount.multiply(new BigDecimal(100)).intValue());
         request.setNotifyUrl(domain + REFUND_CALLBACK_URL);
-        
+
         try {
 			WxPayService wxPayService = new WxPayServiceImpl();
 	        wxPayService.setConfig(wxPayConfig);
-	        
+
         	WxPayRefundResult refundResult = wxPayService.refund(request);
 
 			remark = Utils.rightRemark(remark, resultMsg(refundResult));
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, refundResult, remark);
-			
+
 			String returnCode = refundResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
 				throw new BusinessException(refundResult.getReturnMsg());
 			}
-			
+
 			String resultCode = refundResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
 				throw new BusinessException(refundResult.getErrCodeDes());
@@ -400,18 +399,18 @@ public class WxPayClient extends BasePayClient {
 				result.setErrCode(WxPayErrorCode.Refund.PARAM_ERROR);
 				result.setErrCodeDes(e.getCustomErrorMsg());
 			}
-			
+
 			remark = Utils.rightRemark(remark, resultMsg(result));
-			remark = Utils.rightRemark(remark, "请求异常,logid:" + MdcUtil.get());
+			remark = Utils.rightRemark(remark, "请求异常");
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, result, remark);
-			
+
 			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
 	private void refundResult2WxPayRefund(Integer wxPayRefundId, WxPayConfig wxPayConfig, WxPayRefundRequest request,
 			WxPayRefundResult result, String remark) {
-		
+
 		// 保存微信支付退款数据
     	WxPayRefund wxPayRefund = new WxPayRefund()
 				/* 退款参数 */
@@ -424,14 +423,14 @@ public class WxPayClient extends BasePayClient {
 				.setTotalFee           (request.getTotalFee())
 				.setRefundFee           (request.getRefundFee())
 				;
-    	
+
 		if (result != null) {
 			/* 退款结果 */
 			wxPayRefund.setRefundId(result.getRefundId());
 			wxPayRefund.setCashFee(result.getCashFee());
 		}
 		wxPayRefund.setRemark(remark);
-		
+
 		if (wxPayRefundId == null) {
 			wxPayRefundMapper.insert(wxPayRefund);
 		} else {
@@ -447,7 +446,7 @@ public class WxPayClient extends BasePayClient {
 			// 未找到订单，不用关闭（可认为是关闭成功）
 			return;
 		}
-		
+
 		if (StringUtils.isAllBlank(wxPay.getPrepayId(), wxPay.getMwebUrl(), wxPay.getCodeUrl())) {// 未成功下过单
 			// 未成功下过单，不用关闭（可认为是关闭成功）
 			return;
@@ -459,7 +458,7 @@ public class WxPayClient extends BasePayClient {
 		wxPayConfig.setMchId(wxPay.getMchid());
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPay.getMchid());
 		wxPayConfig.setMchKey(mchConfig.getMchKey());
-		
+
 		try {
 			WxPayService wxPayService = new WxPayServiceImpl();
 			wxPayService.setConfig(wxPayConfig);
@@ -489,7 +488,7 @@ public class WxPayClient extends BasePayClient {
 			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
-	
+
 	@Override
 	public PayRefundQueryResp refundQuery(String outRefundNo) {
 		PayRefundQueryResp resp = new PayRefundQueryResp();
@@ -515,14 +514,14 @@ public class WxPayClient extends BasePayClient {
 			}
 			return resp;
 		}
-		
+
 		// 公共参数
 		WxPayConfig wxPayConfig = new WxPayConfig();
 		wxPayConfig.setAppId(wxPayRefund.getAppid());
 		wxPayConfig.setMchId(wxPayRefund.getMchid());
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(wxPayRefund.getMchid());
 		wxPayConfig.setMchKey(mchConfig.getMchKey());
-		
+
 		try {
 			WxPayService wxPayService = new WxPayServiceImpl();
 			wxPayService.setConfig(wxPayConfig);
@@ -531,7 +530,7 @@ public class WxPayClient extends BasePayClient {
 			WxPayRefundQueryRequest request = WxPayRefundQueryRequest.newBuilder().build();
 			request.setOutRefundNo(outRefundNo);
 			request.setNonceStr(RandomStringUtils.randomAlphanumeric(16));
-			
+
 			WxPayRefundQueryResult refundQueryResult = wxPayService.refundQuery(request);
 
 			String returnCode = refundQueryResult.getReturnCode();
@@ -564,13 +563,13 @@ public class WxPayClient extends BasePayClient {
 				resp.setMessage("未查询到退款订单");
 				return resp;
 			}
-			
+
 			String refundStatus = refundRecord.getRefundStatus();
-			
+
 			// 保存查询结果数据
 			String remark = Utils.rightRemark(wxPayRefund.getRemark(), "refundStatus:" + refundStatus);
 			refundQueryResult2WxPay(outRefundNo, refundStatus, remark);
-						
+
 			if (!(WxPayConstants.RefundStatus.SUCCESS.equals(refundStatus)
 					|| WxPayConstants.RefundStatus.REFUND_CLOSE.equals(refundStatus))) {
 				// 未出结果
@@ -578,9 +577,9 @@ public class WxPayClient extends BasePayClient {
 				resp.setMessage("未出结果");
 				return resp;
 			}
-			
+
 			resp.setResult(true);
-			
+
 			boolean refundSuccess = Objects.equal(refundRecord.getRefundStatus(), WxPayConstants.RefundStatus.SUCCESS);
 			resp.setRefundSuccess(refundSuccess);
 

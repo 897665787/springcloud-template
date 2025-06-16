@@ -1,6 +1,7 @@
 package com.company.web.controller;
 
 import com.company.common.api.Result;
+import com.company.common.constant.HeaderConstants;
 import com.company.common.util.JsonUtil;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.autoconfigure.ThreadPoolProperties;
@@ -39,9 +40,9 @@ public class ApiController {
 	private OrderFeign orderFeign;
 	@Autowired
 	private UserFeign userFeign;
-	@Autowired(required = false)
+	@Autowired
 	private ThreadPoolExecutor threadPoolExecutor;
-	@Autowired(required = false)
+	@Autowired
 	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	@Autowired
 	private TimeService timeService;
@@ -54,10 +55,10 @@ public class ApiController {
 		map.put("beanDefinitionNames", beanDefinitionNames);
 		return Result.success(map);
 	}
-	
+
 	@Autowired
 	private ICache cache;
-	
+
 	@GetMapping(value = "/timestr")
 	public Result<String> timestr() {
 		String string1 = cache.get("aaaaaaa", () -> {
@@ -66,7 +67,7 @@ public class ApiController {
 //			return null;
 		});
 		System.out.println(string1);
-		
+
 //		String string2 = RedisUtils.get("aaaaaaa", () -> {
 ////			int a = 1/0;
 //			return ""+System.currentTimeMillis();
@@ -98,14 +99,14 @@ public class ApiController {
 //		return byId;
 		return Result.success();
 	}
-	
+
 	@GetMapping(value = "/getUserById")
 	public Result<UserResp> getUserById(Long id) {
 		Result<UserResp> byId = userFeign.getById(1L);
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
 		return byId;
 	}
-	
+
 	@GetMapping(value = "/getInt")
 	public Result<Integer> getInt(HttpServletRequest request) {
 		String thname = Thread.currentThread().getName();
@@ -116,20 +117,20 @@ public class ApiController {
 //			System.err.println(thname2+" "+"ApiController submit platform():" + HttpContextUtil.platform());
 ////			System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HttpContextUtil.httpContextHeader());
 //		});
-		
+
 		Future<Integer> submit = threadPoolTaskExecutor.submit(()->{
 		String thname2 = Thread.currentThread().getName();
-			System.err.println(thname2+" "+"ApiController submit request platform():" + request.getHeader(HttpContextUtil.HEADER_PLATFORM));
+			System.err.println(thname2+" "+"ApiController submit request platform():" + request.getHeader(HeaderConstants.HEADER_PLATFORM));
 			System.err.println(thname2+" "+"ApiController submit platform():" + HttpContextUtil.platform());
 	//		System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HttpContextUtil.httpContextHeader());
 		return 1;
 		});
-		
+
 //		List<Integer> list = Lists.newArrayList(1,2,3,4);
 //		List<Integer> collect = list.parallelStream().map(a->{
 //			return a+1;
 //		}).collect(Collectors.toList());
-		
+
 //		threadPoolTaskExecutor.execute(()->{
 //			String thname2 = Thread.currentThread().getName();
 //			System.err.println(thname2+" "+"ApiController execute platform():" + HttpContextUtil.platform());
@@ -137,17 +138,17 @@ public class ApiController {
 //		});
 		return Result.success(1);
 	}
-	
+
 	@GetMapping(value = "/getString")
 	public Result<String> getString() {
 		return Result.success("addddddd");
 	}
-	
+
 	@GetMapping(value = "/time")
 	public Result<Date> time() {
 		return Result.success(new Date());
 	}
-	
+
 	@GetMapping(value = "/onoff")
 	public Result<OrderResp> onoff() {
 		for (int i = 0; i < 3000; i++) {
@@ -164,7 +165,7 @@ public class ApiController {
 
 	@Autowired
 	SequenceGenerator sequenceGenerator;
-	
+
 	@GetMapping(value = "/retryGet")
 	public Result<OrderResp> retryGet(Long id) {
 		log.info("retryGet");
@@ -182,7 +183,7 @@ public class ApiController {
 //		return byId;
 		return Result.success();
 	}
-	
+
 	@GetMapping(value = "/threadpool")
 	public Result<Integer> threadpool() {
 		System.out.println("threadPoolExecutor:"+threadPoolExecutor);
@@ -200,7 +201,7 @@ public class ApiController {
 		}
 		return Result.success(1);
 	}
-	
+
 	@GetMapping(value = "/threadpooltask")
 	public Result<Integer> threadpooltask() {
 		System.out.println("threadPoolTaskExecutor:"+threadPoolTaskExecutor);
@@ -216,11 +217,11 @@ public class ApiController {
 			});
 			System.out.println("submit:"+n);
 		}
-		
+
 		threadPoolTaskExecutor.getActiveCount();
 		return Result.success(1);
 	}
-	
+
 	@GetMapping(value = "/log")
 	public Result<Integer> log() {
 		long start = System.currentTimeMillis();

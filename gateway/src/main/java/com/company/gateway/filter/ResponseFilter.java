@@ -1,8 +1,12 @@
 package com.company.gateway.filter;
 
-import java.nio.charset.StandardCharsets;
-
+import com.company.common.constant.CommonConstants;
+import com.company.common.constant.HeaderConstants;
+import com.company.gateway.trace.TraceManager;
+import com.company.gateway.util.IpUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -10,18 +14,16 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
-
-import com.company.common.constant.CommonConstants;
-import com.company.common.util.MdcUtil;
-
-import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * 响应参数日志打印
@@ -32,7 +34,9 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 
 	@Value("${filter.response.enable:true}")
 	private boolean enable;
-	
+	@Autowired
+	private TraceManager traceManager;
+
 	@Override
 	public int getOrder() {
 		return CommonConstants.FilterOrdered.RESPONSE;
@@ -43,11 +47,15 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 		if (!enable) {
 			return chain.filter(exchange);
 		}
+		ServerHttpRequest request = exchange.getRequest();
+		String requestIp = IpUtil.getRequestIp(request);
+		HttpMethod method = request.getMethod();
+		String path = request.getURI().getPath();
+
 		ServerHttpResponse originalResponse = exchange.getResponse();
 		DataBufferFactory bufferFactory = originalResponse.bufferFactory();
 
-		ServerHttpRequest request = exchange.getRequest();
-		String uniqueKey = request.getHeaders().getFirst(MdcUtil.UNIQUE_KEY);
+		String uniqueKey = request.getHeaders().getFirst(HeaderConstants.TRACE_ID);
 
 		long start = System.currentTimeMillis();
 		ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
@@ -60,9 +68,9 @@ public class ResponseFilter implements GlobalFilter, Ordered {
 						dataBuffer.read(content);
 						DataBufferUtils.release(dataBuffer);
 						String responseBody = new String(content, StandardCharsets.UTF_8);
-						MdcUtil.put(uniqueKey);
-						log.info("response body:{},{}ms", responseBody, System.currentTimeMillis() - start);
-						MdcUtil.remove();
+						traceManager.put(uniqueKey);
+						log.info("{} {} {} response:{},{}ms", method, requestIp, path, responseBody, System.currentTimeMillis() - start);
+						traceManager.remove();
 						return bufferFactory.wrap(content);
 					}));
 				}

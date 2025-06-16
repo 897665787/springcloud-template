@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.util.IpUtil;
@@ -41,6 +41,8 @@ public class WebhookSenderConsumer {
 	private WebhookTaskService webhookTaskService;
 	@Autowired
 	private WebhookTemplateService webhookTemplateService;
+	@Autowired
+	private TraceManager traceManager;
 
 	public void consumer(Integer webhookTaskId) {
 		WebhookTask webhookTask = webhookTaskService.getById(webhookTaskId);
@@ -73,7 +75,7 @@ public class WebhookSenderConsumer {
 		@SuppressWarnings("unchecked")
 		LinkedHashMap<String, String> templateParamMap = JsonUtil.toEntity(webhookTask.getTemplateParamJson(),
 				LinkedHashMap.class);
-		
+
 		String type = webhookTask.getType();
 		WebhookTemplate webhookTemplate = webhookTemplateService.selectByType(type);
 		if (webhookTemplate == null) {
@@ -83,13 +85,13 @@ public class WebhookSenderConsumer {
 		}
 
 		String templateContent = webhookTemplate.getTemplateContent();
-		
+
 		// 插入系统公共参数
 		templateParamMap.putIfAbsent("taskid", String.valueOf(webhookTaskId));
 		templateParamMap.putIfAbsent("type", type);
 		templateParamMap.putIfAbsent("time", DateUtil.now());
 		templateParamMap.putIfAbsent("host", IpUtil.getHostIp());
-		templateParamMap.putIfAbsent("traceid", MdcUtil.get());
+		templateParamMap.putIfAbsent("traceid", traceManager.get());
 		templateParamMap.putIfAbsent("application", SpringContextUtil.getProperty("spring.application.name"));
 		String content = fillTemplateContent(templateContent, templateParamMap);
 
@@ -131,9 +133,9 @@ public class WebhookSenderConsumer {
 
 	/**
 	 * 填充模板内容
-	 * 
+	 *
 	 * @param templateContent
-	 * @param map
+	 * @param templateParamMap
 	 * @return
 	 */
 	private String fillTemplateContent(String templateContent, LinkedHashMap<String, String> templateParamMap) {

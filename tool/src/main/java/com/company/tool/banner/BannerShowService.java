@@ -8,12 +8,12 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.api.enums.BannerEnum;
@@ -34,12 +34,14 @@ public class BannerShowService {
 	private BannerService bannerService;
 	@Autowired
 	private BannerConditionService bannerConditionService;
+	@Autowired
+	private TraceManager traceManager;
 
 	/**
 	 * <pre>
 	 * 轮播图列表
 	 * </pre>
-	 * 
+	 *
 	 * @param runtimeAttach
 	 * @return
 	 */
@@ -91,7 +93,7 @@ public class BannerShowService {
 		String token = runtimeAttach.get("token");
 		configParams.put("{token}", token);
 		/* ============定义金刚位配置中的参数============ */
-		
+
 		List<BannerCanShow> bannerCanShowList = Lists.newArrayList();
 		for (Banner banner : bannerListCanShow) {
 			BannerCanShow bannerCanShow = new BannerCanShow();
@@ -118,12 +120,12 @@ public class BannerShowService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = MdcUtil.get();
+		String traceId = traceManager.get();
 		List<Supplier<Boolean>> supplierList = bannerConditionList.stream().map(v -> {
 			Supplier<Boolean> supplier = () -> {
-				String subTraceId = MdcUtil.get();
+				String subTraceId = traceManager.get();
 				if (subTraceId == null) {
-					MdcUtil.put(traceId);
+					traceManager.put(traceId);
 				}
 				String beanName = v.getShowCondition();
 				BannerShowCondition condition = SpringContextUtil.getBean(beanName, BannerShowCondition.class);
@@ -143,7 +145,7 @@ public class BannerShowService {
 					log.error("canShow error", e);
 				}
 				if (subTraceId == null) {
-					MdcUtil.remove();
+					traceManager.remove();
 				}
 				return canShow;
 			};

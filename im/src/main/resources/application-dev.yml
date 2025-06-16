@@ -5,4 +5,3 @@ template:
     lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
     idempotent: false
     message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
-    data-encypt: false

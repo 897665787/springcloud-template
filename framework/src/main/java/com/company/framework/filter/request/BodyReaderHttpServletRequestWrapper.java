@@ -1,16 +1,15 @@
 package com.company.framework.filter.request;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
-import org.apache.commons.io.IOUtils;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
@@ -20,13 +19,13 @@ public class BodyReaderHttpServletRequestWrapper extends HttpServletRequestWrapp
 	public BodyReaderHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
 		super(request);
 		String bodyString = getBodyString(request);
-		body = bodyString.getBytes(Charset.forName("UTF-8"));
+		body = bodyString.getBytes(StandardCharsets.UTF_8);
 		bodyStr = bodyString;
 	}
 
 	public String getBodyString(HttpServletRequest request) throws IOException {
 		try (InputStream inputStream = request.getInputStream()) {
-			String body = IOUtils.toString(inputStream, Charset.forName("UTF-8"));
+			String body = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
 			// body 有换行和空格，暂时没想到好的办法处理
 			return body;
 		}

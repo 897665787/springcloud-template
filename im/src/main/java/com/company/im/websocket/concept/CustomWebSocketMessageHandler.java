@@ -2,12 +2,13 @@ package com.company.im.websocket.concept;
 
 import java.util.Map;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.im.websocket.dto.WsMsg;
 import com.github.linyuzai.connection.loadbalance.core.concept.Connection;
 import com.github.linyuzai.connection.loadbalance.core.concept.ConnectionLoadBalanceConcept;
@@ -21,10 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class CustomWebSocketMessageHandler implements WebSocketMessageHandler {
+	@Autowired
+	private TraceManager traceManager;
 
 	@Override
 	public void onMessage(Message message, Connection connection, ConnectionLoadBalanceConcept concept) {
-		MdcUtil.put();
+		traceManager.put();
 		log.info("message:{}", JsonUtil.toJsonString(message));
 		Map<Object, Object> metadata = connection.getMetadata();
 		log.info("connection metadata:{}", JsonUtil.toJsonString(metadata));
@@ -43,7 +46,7 @@ public class CustomWebSocketMessageHandler implements WebSocketMessageHandler {
 			String msg = String.format("接收到【%s】的信息:%s", userId, wsMsg.getMessage());
 			concept.send(new UserMessage(msg, toUserId));
 		}
-		MdcUtil.remove();
+		traceManager.remove();
 	}
 
 }

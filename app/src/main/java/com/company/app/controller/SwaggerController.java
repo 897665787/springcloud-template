@@ -1,31 +1,23 @@
 package com.company.app.controller;
 
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.app.req.SwaggerReq;
 import com.company.app.resp.SwaggerResp;
 import com.company.common.api.Result;
 import com.company.common.util.PropertyUtils;
-import com.company.framework.annotation.EncryptResultData;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/swagger")
 public class SwaggerController {
 
 	@PostMapping(value = "/post-body-row-result")
-	@EncryptResultData
 	public Result<Map<String, Object>> postbodyrowresult(@RequestBody Map<String, Object> param) {
 		return Result.success(param);
 	}
 
 	@PostMapping(value = "/post-body-row2")
-	@EncryptResultData
 	public String postbodyrownoresult2(@RequestBody Map<String, Object> param) {
 		return "SUCCESS";
 	}

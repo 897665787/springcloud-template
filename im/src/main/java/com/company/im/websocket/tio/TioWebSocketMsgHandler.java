@@ -1,6 +1,8 @@
 package com.company.im.websocket.tio;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
@@ -13,7 +15,6 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.im.websocket.dto.WsMsg;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class TioWebSocketMsgHandler implements IWsMsgHandler {
+
+	@Autowired
+	private TraceManager traceManager;
 
 	/**
 	 * 握手
@@ -124,7 +128,7 @@ public class TioWebSocketMsgHandler implements IWsMsgHandler {
 	 */
 	@Override
 	public Object onText(WsRequest wsRequest, String message, ChannelContext channelContext) {
-		MdcUtil.put();
+		traceManager.put();
 		String id = channelContext.getId();
 		String bsId = channelContext.getBsId();
 		String token = channelContext.getToken();
@@ -147,7 +151,7 @@ public class TioWebSocketMsgHandler implements IWsMsgHandler {
 			Tio.sendToUser(tioConfig, toUserId, packet);
 			result = String.format("发送给【%s】成功", toUserId);
 		}
-		MdcUtil.remove();
+		traceManager.remove();
 		return result;
 	}
 }

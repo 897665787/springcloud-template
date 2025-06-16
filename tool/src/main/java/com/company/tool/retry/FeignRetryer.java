@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
-import com.company.common.util.MdcUtil;
 import com.company.common.util.Utils;
 import com.company.tool.api.enums.RetryerEnum;
 import com.company.tool.entity.RetryTask;
@@ -40,6 +40,8 @@ public class FeignRetryer {
 	private ThreadPoolTaskExecutor executor;
 	@Autowired
 	private RetryTaskMapper baseMapper;
+	@Autowired
+	private TraceManager traceManager;
 
 	@Value("${retry.maxDays:30}")
 	private Integer maxDays;
@@ -68,7 +70,7 @@ public class FeignRetryer {
 				.setNextDisposeTime(nextDisposeTime)
 				.setMaxFailure(maxFailure)
 				.setFailure(0)
-				.setTraceId(MdcUtil.get())
+				.setTraceId(traceManager.get())
 				.setSecondsStrategy(secondsStrategy.getCode());
 		baseMapper.insert(retryTask);
 
@@ -84,7 +86,7 @@ public class FeignRetryer {
 
 	public void call(Integer id) {
 		RetryTask retryTask = baseMapper.selectById(id);
-		Optional.ofNullable(retryTask.getTraceId()).ifPresent(MdcUtil::put);// 重试情况下使用同一个logid方便追踪日志
+		Optional.ofNullable(retryTask.getTraceId()).ifPresent(traceManager::put);// 重试情况下使用同一个logid方便追踪日志
 
 		// 安全措施，防止很久之前的数据被误调用
 		LocalDateTime createTime = retryTask.getCreateTime();
@@ -113,7 +115,7 @@ public class FeignRetryer {
 		long start = System.currentTimeMillis();
 		try {
 			HttpHeaders headers = new HttpHeaders();
-			MdcUtil.headers2().forEach((k, v) -> headers.addAll(k, v));// 日志追踪ID
+			traceManager.headers().forEach((k, v) -> headers.addAll(k, v));// 日志追踪ID
 			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject, headers);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(retryTask.getUrl(), httpEntity,
