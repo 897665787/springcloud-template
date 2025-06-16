@@ -125,8 +125,8 @@ public class AsyncPushSender {
 		SendPushMQDto params = new SendPushMQDto();
 		params.setPushTaskDetailId(pushTaskDetailId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDSMS_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.SEND_SMS.KEY);
+		messageSender.sendNormalMessage(StrategyConstants.SENDPUSH_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+				Constants.QUEUE.SEND_PUSH.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
 		PushTaskDetail pushTaskDetail = pushTaskDetailService.getById(pushTaskDetailId);

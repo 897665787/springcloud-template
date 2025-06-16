@@ -52,5 +52,10 @@ public interface Constants {
 			String KEY = PREFIX + "key-send_subscribe";
 		}
 
+		// 发送推送
+		interface SEND_PUSH {
+			String NAME = PREFIX + "send_push";
+			String KEY = PREFIX + "key-send_push";
+		}
 	}
 }

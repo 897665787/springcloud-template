@@ -8,6 +8,7 @@ public interface StrategyConstants {
 	String SENDEMAIL_STRATEGY = "sendEmailStrategy";
 	String SENDWEBHOOK_STRATEGY = "sendWebhookStrategy";
 	String SENDSUBSCRIBE_STRATEGY = "sendSubscribeStrategy";
+	String SENDPUSH_STRATEGY = "sendPushStrategy";
 	
 	String COUPON_RECEIVE_STRATEGY = "couponReceiveStrategy";
 	String COUPON_TOUSE_STRATEGY = "couponTouseStrategy";
