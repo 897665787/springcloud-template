@@ -2,19 +2,19 @@ CREATE TABLE `push_device_bind` (
  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
 
  `deviceid` varchar(64) NOT NULL COMMENT '设备ID',
+ `platorm_type` varchar(8) NOT NULL COMMENT '平台(baidu:百度云,jiguang:极光,firebase:Firebase)',
  `push_id` varchar(64) NOT NULL COMMENT '推送ID（推送平台唯一）',
- `device_type` varchar(16) NOT NULL COMMENT '设备类型(Android:安卓,iOS:苹果)',
 
  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
  PRIMARY KEY (`id`) USING BTREE,
- UNIQUE KEY `uniq_deviceid` (`deviceid`)
+ UNIQUE KEY `uniq_deviceid_platormtype` (`deviceid`,platorm_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推送设备绑定';
 
 CREATE TABLE `push_template` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `type` varchar(16) NOT NULL COMMENT '业务类型(verifycode:验证码,market:营销活动,tips:提示信息)',
+  `type` varchar(16) NOT NULL COMMENT '业务类型(message:消息,market:营销活动)',
   `template_title` varchar(32) DEFAULT NULL COMMENT '模板标题',
   `template_content` varchar(255) DEFAULT NULL COMMENT '模板内容',
   `template_intent` varchar(255) DEFAULT NULL COMMENT '模板意图',
@@ -53,6 +53,6 @@ CREATE TABLE `push_task_detail` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_taskid` (`task_id`),
-  KEY `idx_topush` (`to_push`),
+  KEY `idx_deviceid` (`deviceid`),
   KEY `idx_plansendtime_status` (`plan_send_time`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='推送发送任务明细';
