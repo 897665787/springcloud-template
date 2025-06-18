@@ -1,6 +1,8 @@
 package com.company.order.api.feign;
 
 import com.company.common.api.Result;
+import com.company.common.api.ResultCode;
+import com.company.common.exception.BusinessException;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface FeignTestFeign {
 
     @GetMapping("/getnoparam")
-    Result<OrderDetailResp> getnoparam();
+    OrderDetailResp getnoparam();
 
     @GetMapping("/getparam")
     Result<OrderDetailResp> getparam(@RequestParam("orderCode") String orderCode);
@@ -32,18 +34,21 @@ public interface FeignTestFeign {
             return new FeignTestFeign() {
 
                 @Override
-                public Result<OrderDetailResp> getnoparam() {
+                public OrderDetailResp getnoparam() {
                     return Result.onFallbackError();
+//                    throw BusinessException.of(ResultCode.API_FUSING);
                 }
 
                 @Override
                 public Result<OrderDetailResp> getparam(String orderCode) {
-                    return Result.onFallbackError();
+                    throw BusinessException.of(ResultCode.API_FUSING);
+//                    return Result.onFallbackError();
                 }
 
                 @Override
                 public Result<OrderDetailResp> postbody(RegisterOrderReq registerOrderReq) {
                     return Result.onFallbackError();
+//                    return Result.success(new OrderDetailResp());
                 }
             };
         }

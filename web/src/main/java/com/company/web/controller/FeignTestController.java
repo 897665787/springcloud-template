@@ -20,7 +20,7 @@ public class FeignTestController {
     private FeignTestFeign feignTestFeign;
 
     @GetMapping(value = "/getnoparam")
-    public Result<OrderDetailResp> getnoparam() {
+    public OrderDetailResp getnoparam() {
         return feignTestFeign.getnoparam();
     }
 

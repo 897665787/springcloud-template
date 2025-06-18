@@ -83,7 +83,11 @@ public class Result<T> {
 		return data;
 	}
 
-	public static <T> Result<T> onFallbackError() {
-		return new Result<T>().setResultCode(ResultCode.API_FUSING);
+//	public static <T> Result<T> onFallbackError() {
+//		return new Result<T>().setResultCode(ResultCode.API_FUSING);
+//	}
+
+	public static <T> T onFallbackError() {
+		throw BusinessException.of(ResultCode.API_FUSING);
 	}
 }
