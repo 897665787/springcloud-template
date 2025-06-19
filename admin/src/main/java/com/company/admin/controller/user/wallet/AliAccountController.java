@@ -24,28 +24,28 @@ public class AliAccountController {
 
 	@RequestMapping(value = "/admin/user/aliAccount/get", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> get(AliAccount aliAccount) {
-		return Result.success(aliAccountService.get(aliAccount));
+	public ? get(AliAccount aliAccount) {
+		return aliAccountService.get(aliAccount);
 	}
 
 	@RequestMapping(value = "/admin/user/aliAccount/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> save(@Validated(AliAccount.Save.class) AliAccount aliAccount) {
+	public ? save(@Validated(AliAccount.Save.class) AliAccount aliAccount) {
 		aliAccountService.save(aliAccount);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/aliAccount/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(AliAccount aliAccount) {
+	public ? remove(AliAccount aliAccount) {
 		aliAccountService.remove(aliAccount);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/aliAccount/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> update(@Validated(AliAccount.Update.class) AliAccount aliAccount) {
+	public ? update(@Validated(AliAccount.Update.class) AliAccount aliAccount) {
 		aliAccountService.update(aliAccount);
-		return Result.success();
+		return null;
 	}
 }

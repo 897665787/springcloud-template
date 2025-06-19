@@ -33,28 +33,28 @@ public class AppInitController {
 
     @RequestMapping(value = "/admin/system/appInit/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(AppInit appInit) {
-        return Result.success(appInitService.get(appInit));
+    public ? adminGet(AppInit appInit) {
+        return appInitService.get(appInit);
     }
 
     @RequestMapping(value = "/admin/system/appInit/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(AppInit.Save.class) AppInit appInit) {
+    public ? adminSave(@Validated(AppInit.Save.class) AppInit appInit) {
         appInitService.save(appInit);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/appInit/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(AppInit appInit) {
+    public ? adminRemove(AppInit appInit) {
         appInitService.remove(appInit);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/appInit/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(AppInit.Update.class) AppInit appInit) {
+    public ? adminUpdate(@Validated(AppInit.Update.class) AppInit appInit) {
         appInitService.update(appInit);
-        return Result.success();
+        return null;
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
 import com.company.common.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.constant.Constants;
@@ -21,27 +20,27 @@ import com.company.system.api.response.SysUserRoleResp;
 public interface SysUserRoleFeign {
 
 	@GetMapping("/page")
-	Result<PageResp<SysUserRoleResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "userId", required = false) Integer userId, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
-	
+	PageResp<SysUserRoleResp> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "userId", required = false) Integer userId, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+
 	@GetMapping("/list")
-	Result<List<SysUserRoleResp>> list(@RequestParam(value = "userId", required = false) Integer userId, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
+	List<SysUserRoleResp> list(@RequestParam(value = "userId", required = false) Integer userId, @RequestParam(value = "roleId", required = false) Integer roleId, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
 	@GetMapping("/query")
-	Result<SysUserRoleResp> query(@RequestParam("id") Integer id);
+	SysUserRoleResp query(@RequestParam("id") Integer id);
 
 	@GetMapping("/listRoleIdByUserId")
-	Result<Set<Integer>> listRoleIdByUserId(@RequestParam("userId") Integer userId);
+	Set<Integer> listRoleIdByUserId(@RequestParam("userId") Integer userId);
 
 	@PostMapping("/save")
-	Result<Boolean> save(@RequestBody SysUserRoleReq sysUserRoleReq);
+	Boolean save(@RequestBody SysUserRoleReq sysUserRoleReq);
 
 	@PostMapping("/update")
-	Result<Boolean> update(@RequestBody SysUserRoleReq sysUserRoleReq);
+	Boolean update(@RequestBody SysUserRoleReq sysUserRoleReq);
 
 	@PostMapping("/remove")
-	Result<Boolean> remove(@RequestBody RemoveReq<Integer> req);
+	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 	@GetMapping("/hasPermission")
-	Result<Boolean> hasPermission(@RequestParam("userId") Integer userId,
+	Boolean hasPermission(@RequestParam("userId") Integer userId,
 			@RequestParam("permission") String permission);
 }

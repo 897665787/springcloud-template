@@ -1,8 +1,17 @@
 package com.company.system.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
-import com.company.common.api.Result;
 import com.company.common.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.common.util.PropertyUtils;
@@ -16,15 +25,6 @@ import com.company.system.entity.SysMenu;
 import com.company.system.enums.SysMenuEnum;
 import com.company.system.service.SysMenuService;
 import com.company.system.service.SysRoleService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/sysMenu")
@@ -64,72 +64,72 @@ public class SysMenuController implements SysMenuFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
-	public Result<PageResp<SysMenuResp>> page(Long current, Long size, Integer parentId, String menuName,
+	public PageResp<SysMenuResp> page(Long current, Long size, Integer parentId, String menuName,
 											  String menuType, String status, Integer visible, String perms,
 											  String createTimeStart, String createTimeEnd) {
 		QueryWrapper<SysMenu> queryWrapper = toQueryWrapper(parentId, menuName, menuType, status, visible, perms,
 				createTimeStart, createTimeEnd);
-		
+
 		long count = sysMenuService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysMenu> list = sysMenuService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysMenuResp.class);
-		return Result.success(PageResp.of(count, respList));
+		return PageResp.of(count, respList);
 	}
-	
+
 	@Override
-	public Result<List<SysMenuResp>> list(Integer parentId, String menuName, Integer orderNum, String menuType,
+	public List<SysMenuResp> list(Integer parentId, String menuName, Integer orderNum, String menuType,
 										  String status, Integer visible, String perms,
 										  String createTimeStart, String createTimeEnd) {
 		QueryWrapper<SysMenu> queryWrapper = toQueryWrapper(parentId, menuName, menuType, status, visible, perms,
 				createTimeStart, createTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysMenu> list = sysMenuService.list(queryWrapper);
-		
+
 		List<SysMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysMenuResp.class);
-		return Result.success(respList);
+		return respList;
 	}
 
 	@Override
-	public Result<SysMenuResp> query(Integer id) {
+	public SysMenuResp query(Integer id) {
 		SysMenu sysMenu = sysMenuService.getById(id);
 		SysMenuResp sysMenuResp = PropertyUtils.copyProperties(sysMenu, SysMenuResp.class);
-		return Result.success(sysMenuResp);
+		return sysMenuResp;
 	}
 
 	@Override
-	public Result<Boolean> save(SysMenuReq sysMenuReq) {
+	public Boolean save(SysMenuReq sysMenuReq) {
 		SysMenu sysMenu = PropertyUtils.copyProperties(sysMenuReq, SysMenu.class);
 		boolean success = sysMenuService.save(sysMenu);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> update(SysMenuReq sysMenuReq) {
+	public Boolean update(SysMenuReq sysMenuReq) {
 		SysMenu sysMenu = PropertyUtils.copyProperties(sysMenuReq, SysMenu.class);
 		boolean success = sysMenuService.updateById(sysMenu);
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<Boolean> remove(@RequestBody RemoveReq<Integer> req) {
+	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		if (req.getIdList() == null || req.getIdList().isEmpty()) {
-			return Result.success(true);
+			return true;
 		}
 		boolean success = sysMenuService.removeBatchByIds(req.getIdList());
-		return Result.success(success);
+		return success;
 	}
 
 	@Override
-	public Result<List<RouterResp>> getRouters(Integer userId) {
+	public List<RouterResp> getRouters(Integer userId) {
 		boolean isAdmin = sysRoleService.hasRole(userId, Constants.SUPER_ROLE);
 		List<MenuTreeNode> nodeList = sysMenuService.getTree(userId, isAdmin);
-		return Result.success(buildRouters(nodeList));
+		return buildRouters(nodeList);
 	}
 
 	private List<RouterResp> buildRouters(List<MenuTreeNode> nodeList) {

@@ -1,14 +1,14 @@
 package com.company.im.api.feign;
 
-import com.company.common.api.Result;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import com.company.im.api.constant.Constants;
 import com.company.im.api.feign.fallback.WebsocketFeignFallback;
 import com.company.im.api.request.AllReq;
 import com.company.im.api.request.GroupReq;
 import com.company.im.api.request.UserReq;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/websocket", fallbackFactory = WebsocketFeignFallback.class)
 public interface WebsocketFeign {
@@ -20,7 +20,7 @@ public interface WebsocketFeign {
      * @return
      */
     @PostMapping("/sendToAll")
-    Result<Void> sendToAll(@RequestBody AllReq allReq);
+    Void sendToAll(@RequestBody AllReq allReq);
 
     /**
      * 发消息给指定用户
@@ -29,7 +29,7 @@ public interface WebsocketFeign {
      * @return
      */
     @PostMapping("/sendToUser")
-    Result<Void> sendToUser(@RequestBody UserReq userReq);
+    Void sendToUser(@RequestBody UserReq userReq);
 
     /**
      * 发消息到组
@@ -38,6 +38,6 @@ public interface WebsocketFeign {
      * @return
      */
     @PostMapping("/sendToGroup")
-    Result<Void> sendToGroup(@RequestBody GroupReq groupReq);
+    Void sendToGroup(@RequestBody GroupReq groupReq);
 
 }

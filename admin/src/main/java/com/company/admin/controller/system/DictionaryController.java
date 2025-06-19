@@ -28,38 +28,38 @@ public class DictionaryController {
     private DictionaryService dictionaryService;
 
     @PostMapping("/save")
-    public Result<?> save(@Validated(Dictionary.Save.class) Dictionary dictionary) {
+    public ? save(@Validated(Dictionary.Save.class) Dictionary dictionary) {
         dictionaryService.save(dictionary);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/remove")
-    public Result<?> delete(@NotNull Long id) {
+    public ? delete(@NotNull Long id) {
         dictionaryService.deleteById(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/get")
-    public Result<?> find(@NotNull Long id) {
-        return Result.success(dictionaryService.findById(id));
+    public ? find(@NotNull Long id) {
+        return dictionaryService.findById(id);
     }
 
     @PostMapping("/update")
-    public Result<?> update(@Validated(Dictionary.Update.class) Dictionary dictionary) {
+    public ? update(@Validated(Dictionary.Update.class) Dictionary dictionary) {
         dictionaryService.update(dictionary);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/lock/update")
-    public Result<?> updateLock(@NotNull Long id) {
+    public ? updateLock(@NotNull Long id) {
         dictionaryService.updateLock(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/reload")
     @ResponseBody
-    public Result<?> reload() {
+    public ? reload() {
         dictionaryService.invalidateCache();
-        return Result.success();
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package com.company.tool.api.feign;
 
 import java.util.List;
 
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,18 +15,16 @@ import com.company.tool.api.constant.Constants;
 import com.company.tool.api.feign.RetryerFeign.RetryerFeignFactory;
 import com.company.tool.api.request.RetryerInfoReq;
 
-import org.springframework.cloud.openfeign.FallbackFactory;
-
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/retryer", fallbackFactory = RetryerFeignFactory.class)
 public interface RetryerFeign {
 	@PostMapping("/call")
-	Result<Void> call(@RequestBody RetryerInfoReq req);
+	Void call(@RequestBody RetryerInfoReq req);
 
 	@GetMapping("/selectId4Call")
-	Result<List<Integer>> selectId4Call();
+	List<Integer> selectId4Call();
 
 	@PostMapping("/callById")
-	Result<Void> callById(@RequestParam("id") Integer id);
+	Void callById(@RequestParam("id") Integer id);
 
 	@Component
 	class RetryerFeignFactory implements FallbackFactory<RetryerFeign> {
@@ -34,17 +33,17 @@ public interface RetryerFeign {
 		public RetryerFeign create(Throwable throwable) {
 			return new RetryerFeign() {
 				@Override
-				public Result<Void> call(RetryerInfoReq req) {
+				public Void call(RetryerInfoReq req) {
 					return Result.onFallbackError();
 				}
 
 				@Override
-				public Result<List<Integer>> selectId4Call() {
+				public List<Integer> selectId4Call() {
 					return Result.onFallbackError();
 				}
 
 				@Override
-				public Result<Void> callById(Integer id) {
+				public Void callById(Integer id) {
 					return Result.onFallbackError();
 				}
 

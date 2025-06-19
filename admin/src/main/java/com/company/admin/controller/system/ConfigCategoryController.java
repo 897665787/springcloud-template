@@ -33,46 +33,46 @@ public class ConfigCategoryController {
 
     @PostMapping("/save")
     @ResponseBody
-    public Result<?> save(@Validated(ConfigCategory.Save.class) ConfigCategory configCategory) {
+    public ? save(@Validated(ConfigCategory.Save.class) ConfigCategory configCategory) {
         configCategoryService.save(configCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/delete")
     @ResponseBody
-    public Result<?> delete(@NotNull Long id) {
+    public ? delete(@NotNull Long id) {
         configCategoryService.deleteById(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/find")
     @ResponseBody
-    public Result<?> find(@NotNull Long id) {
-        return Result.success(configCategoryService.findById(id));
+    public ? find(@NotNull Long id) {
+        return configCategoryService.findById(id);
     }
 
     @PostMapping("/update")
     @ResponseBody
-    public Result<?> update(@Validated(ConfigCategory.Update.class) ConfigCategory configCategory) {
+    public ? update(@Validated(ConfigCategory.Update.class) ConfigCategory configCategory) {
         configCategoryService.update(configCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/parent-drop-down-list")
     @ResponseBody
-    public Result<?> parentDropDownList() {
-        return Result.success(configCategoryService.findComboByParent(true));
+    public ? parentDropDownList() {
+        return configCategoryService.findComboByParent(true);
     }
 
     @RequestMapping("/drop-down-list")
     @ResponseBody
-    public Result<?> dropDownList() {
-        return Result.success(configCategoryService.findComboByParent(false));
+    public ? dropDownList() {
+        return configCategoryService.findComboByParent(false);
     }
 
     @RequestMapping("/tree")
     @ResponseBody
-    public Result<?> tree() {
-        return Result.success(configCategoryService.findTree());
+    public ? tree() {
+        return configCategoryService.findTree();
     }
 }

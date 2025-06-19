@@ -23,14 +23,14 @@ public class CommentController {
 
 	@Autowired
 	private CommentService commentService;
-	
+
 	@RequestMapping(value = "/admin/interact/comment/list", method = RequestMethod.GET)
 	@Pagination
 	@ResponseBody
-	public Result<?> list(Comment comment) {
-		return Result.success(commentService.listAndCount(comment));
+	public ? list(Comment comment) {
+		return commentService.listAndCount(comment);
 	}
-	
+
 	/**
 	 * 隐藏/展示
 	 * @param comment{id,hided}
@@ -38,11 +38,11 @@ public class CommentController {
 	 */
 	@RequestMapping(value = "/admin/interact/comment/hided", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> hided(@Validated(Comment.Hided.class) Comment comment) {
+	public ? hided(@Validated(Comment.Hided.class) Comment comment) {
 		commentService.hided(comment);
-		return Result.success();
+		return null;
 	}
-	
+
 	/**
 	 * 评论评论列表
 	 * @param model

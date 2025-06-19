@@ -17,22 +17,22 @@ public class UserOauthFeignFallback implements FallbackFactory<UserOauthFeign> {
 	public UserOauthFeign create(final Throwable e) {
 		return new UserOauthFeign() {
 			@Override
-			public Result<Boolean> bindOauth(UserOauthReq userInfoReq) {
+			public Boolean bindOauth(UserOauthReq userInfoReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<UserOauthResp> selectOauth(IdentityType identityType, String identifier) {
+			public UserOauthResp selectOauth(IdentityType identityType, String identifier) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<String> selectCertificate(Integer userId, IdentityType identityType) {
+			public String selectCertificate(Integer userId, IdentityType identityType) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<String> selectIdentifier(Integer userId, IdentityType identityType) {
+			public String selectIdentifier(Integer userId, IdentityType identityType) {
 				return Result.onFallbackError();
 			}
 

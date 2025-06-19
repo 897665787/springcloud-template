@@ -8,14 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.BestPopupReq;
+import com.company.tool.api.response.BestPopupResp;
 
 /**
  * 弹窗API
- * 
+ *
  * @author JQ棣
  */
 @RestController
@@ -29,9 +29,9 @@ public class PopupController {
 	 * 用户最优的弹窗(前端唯一入口)
 	 */
 	@RequestMapping("/best")
-	public Result<?> best(HttpServletRequest request) {
+	public BestPopupResp best(HttpServletRequest request) {
 		BestPopupReq bestPopupReq = new BestPopupReq();
-		
+
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
 		/* 补充一些系统可自动获取的参数 */
@@ -41,18 +41,18 @@ public class PopupController {
 		// runtimeAttach.put("token", token);
 		// }
 		/* 补充一些弹窗替换的参数 */
-		
+
 		bestPopupReq.setRuntimeAttach(runtimeAttach);
 
 		return popupFeign.bestPopup(bestPopupReq);
 	}
-	
+
 	/**
 	 * 前端确认展示了弹窗
 	 */
 	@RequestMapping("/display")
-	public Result<?> display(Integer popupLogId) {
+	public Void display(Integer popupLogId) {
 		popupFeign.remarkPopupLog(popupLogId, "mini展示弹窗");
-		return Result.success();
+		return null;
 	}
 }

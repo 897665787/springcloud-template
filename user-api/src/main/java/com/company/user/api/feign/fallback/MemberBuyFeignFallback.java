@@ -16,7 +16,7 @@ public class MemberBuyFeignFallback implements FallbackFactory<MemberBuyFeign> {
 	public MemberBuyFeign create(final Throwable e) {
 		return new MemberBuyFeign() {
 			@Override
-			public Result<MemberBuyOrderResp> buy(MemberBuyOrderReq memberBuyOrderReq) {
+			public MemberBuyOrderResp buy(MemberBuyOrderReq memberBuyOrderReq) {
 				return Result.onFallbackError();
 			}
 		};

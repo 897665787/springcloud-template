@@ -12,7 +12,7 @@ public class DeviceFeignFallback implements FallbackFactory<DeviceFeign> {
 	public DeviceFeign create(final Throwable e) {
 		return new DeviceFeign() {
 			@Override
-			public Result<Boolean> isOnline(String deviceid) {
+			public Boolean isOnline(String deviceid) {
 				return Result.onFallbackError();
 			}
 		};

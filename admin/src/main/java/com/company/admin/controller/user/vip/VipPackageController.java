@@ -34,28 +34,28 @@ public class VipPackageController {
 
 	@RequestMapping(value = "/admin/user/vipPackage/get", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> get(VipPackage vipPackage) {
-		return Result.success(vipPackageService.get(vipPackage));
+	public ? get(VipPackage vipPackage) {
+		return vipPackageService.get(vipPackage);
 	}
 
 	@RequestMapping(value = "/admin/user/vipPackage/save", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> save(@Validated(VipPackage.Save.class) VipPackage vipPackage) {
+	public ? save(@Validated(VipPackage.Save.class) VipPackage vipPackage) {
 		vipPackageService.save(vipPackage);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/vipPackage/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(VipPackage vipPackage) {
+	public ? remove(VipPackage vipPackage) {
 		vipPackageService.remove(vipPackage);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/vipPackage/update", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> update(@Validated(VipPackage.Update.class) VipPackage vipPackage) {
+	public ? update(@Validated(VipPackage.Update.class) VipPackage vipPackage) {
 		vipPackageService.update(vipPackage);
-		return Result.success();
+		return null;
 	}
 }

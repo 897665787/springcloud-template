@@ -36,28 +36,28 @@ public class UserContactController {
 
     @RequestMapping(value = "/admin/user/userContact/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(UserContact userContact) {
-        return Result.success(userContactService.get(userContact));
+    public ? get(UserContact userContact) {
+        return userContactService.get(userContact);
     }
 
     @RequestMapping(value = "/admin/user/userContact/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(UserContact.Save.class) UserContact userContact) {
+    public ? save(@Validated(UserContact.Save.class) UserContact userContact) {
         userContactService.save(userContact);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/userContact/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(UserContact userContact) {
+    public ? remove(UserContact userContact) {
         userContactService.remove(userContact);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/userContact/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(UserContact.Update.class) UserContact userContact) {
+    public ? update(@Validated(UserContact.Update.class) UserContact userContact) {
         userContactService.update(userContact);
-        return Result.success();
+        return null;
     }
 }

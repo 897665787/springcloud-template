@@ -33,49 +33,49 @@ public class CityController {
 
     @RequestMapping(value = "/admin/system/city/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(City city) {
-        return Result.success(cityService.get(city));
+    public ? adminGet(City city) {
+        return cityService.get(city);
     }
 
     @RequestMapping(value = "/admin/system/city/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(City.Save.class) City city) {
+    public ? adminSave(@Validated(City.Save.class) City city) {
         cityService.save(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(City city) {
+    public ? adminRemove(City city) {
         cityService.remove(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(City.Update.class) City city) {
+    public ? adminUpdate(@Validated(City.Update.class) City city) {
         cityService.update(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateStatus(City city) {
+    public ? adminUpdateStatus(City city) {
         cityService.updateStatus(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/district/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateDistrictStatus(City city) {
+    public ? adminUpdateDistrictStatus(City city) {
         cityService.updateDistrictStatus(city);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/city/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminCityList(City city) {
-        return Result.success(cityService.listCombo(city));
+    public ? adminCityList(City city) {
+        return cityService.listCombo(city);
     }
 
 }

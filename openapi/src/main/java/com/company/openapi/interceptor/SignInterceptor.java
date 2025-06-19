@@ -69,7 +69,7 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		}
 		
 		String appsecret = signConfiguration.getAppsecret(appid);
-//		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid).dataOrThrow();// appsecret也可以保存到数据库
+//		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid);// appsecret也可以保存到数据库
 		if (StringUtils.isBlank(appsecret)) {
 			throw new BusinessException("appid错误");
 		}

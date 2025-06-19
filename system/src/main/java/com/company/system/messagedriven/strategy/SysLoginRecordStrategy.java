@@ -59,7 +59,7 @@ public class SysLoginRecordStrategy implements BaseStrategy<Map<String, Object>>
 		sysLogininfo.setChannel(channel);
 		sysLogininfo.setIp(requestip);
 
-//		Result<LocationResp> result = locationFeign.getByIp(requestip);
+//		LocationResp result = locationFeign.getByIp(requestip);
 //		if (result.successCode()) {
 //			sysLogininfo.setAddress(result.getData().getAddress());
 //		}

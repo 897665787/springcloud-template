@@ -122,7 +122,7 @@ public class FeignRetryer {
 					Result.class);
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {
 				@SuppressWarnings("unchecked")
-				Result<Boolean> result = responseEntity.getBody();
+				Boolean result = responseEntity.getBody();
 				log.info("{}ms,调用结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
 				remark = result.getMessage();
 				if (result.successCode()) {

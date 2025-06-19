@@ -31,7 +31,7 @@ public class SecStaffLogController {
 
     @RequestMapping(value = "/admin/security/secStaffLog/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecStaffLog secStaffLog) {
-        return Result.success(secStaffLogService.get(secStaffLog));
+    public ? adminGet(SecStaffLog secStaffLog) {
+        return secStaffLogService.get(secStaffLog);
     }
 }

@@ -1,18 +1,24 @@
 package com.company.web.controller;
 
-import cn.hutool.http.HttpRequest;
-import com.company.common.api.Result;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.company.common.exception.BusinessException;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.ClientUploadReq;
 import com.company.tool.api.response.ClientUploadResp;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
+import cn.hutool.http.HttpRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -23,7 +29,7 @@ public class FileController {
 	private FileFeign fileFeign;
 
 	@PostMapping("/upload")
-	public Result<String> upload(@RequestParam("file") MultipartFile file) {
+	public String upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
@@ -31,13 +37,13 @@ public class FileController {
 		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
 
 		if (size == 0) {
-			return Result.fail("请选择文件");
+			throw new BusinessException("请选择文件");
 		}
 
 		ClientUploadReq clientUploadReq = new ClientUploadReq();
 		clientUploadReq.setBasePath("web");
 		clientUploadReq.setFileName(originalFilename);
-		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq).dataOrThrow();
+		ClientUploadResp clientUploadResp = fileFeign.clientUpload(clientUploadReq);
 		String fileKey = clientUploadResp.getFileKey();
 		String presignedUrl = clientUploadResp.getPresignedUrl();
 
@@ -45,15 +51,15 @@ public class FileController {
 			// 客户端使用presignedUrl上传文件
 			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
 			log.info("result:{}", result);
-			return Result.success(fileKey);
+			return fileKey;
 		} catch (IOException e) {
 			log.error("IOException", e);
-			return Result.fail("文件上传失败");
+			throw new BusinessException("文件上传失败");
 		}
 	}
 
 	@PostMapping("/clientUpload")
-	public Result<ClientUploadResp> clientUpload(String fileName) {
+	public ClientUploadResp clientUpload(String fileName) {
 		ClientUploadReq clientUploadReq = new ClientUploadReq();
 		clientUploadReq.setBasePath("web");
 		clientUploadReq.setFileName(fileName);
@@ -67,7 +73,7 @@ public class FileController {
 	 * @return
 	 */
 	@GetMapping("/url")
-	public Result<String> url(String fileKey) {
+	public String url(String fileKey) {
 		return fileFeign.presignedUrl(fileKey);
 	}
 }

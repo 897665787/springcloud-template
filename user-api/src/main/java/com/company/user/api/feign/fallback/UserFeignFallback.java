@@ -17,31 +17,31 @@ public class UserFeignFallback implements FallbackFactory<UserFeign> {
 	@Override
 	public UserFeign create(final Throwable e) {
 		return new UserFeign() {
-			public Result<UserResp> getById(Long id) {
+			public UserResp getById(Long id) {
 				log.error("getById error", e);
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<UserResp> retryGet(Long id) {
+			public UserResp retryGet(Long id) {
 				log.error("retryGet error", e);
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<UserResp> retryPost(UserReq userReq) {
+			public UserResp retryPost(UserReq userReq) {
 				log.error("retryPost error", e);
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<UserResp> idempotent(UserReq userReq) {
+			public UserResp idempotent(UserReq userReq) {
 				log.error("idempotent error", e);
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> noreturn() {
+			public Void noreturn() {
 				log.error("noreturn error", e);
 				return Result.onFallbackError();
 			}

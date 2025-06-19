@@ -34,35 +34,35 @@ public class HotWordController {
 
     @RequestMapping(value = "/admin/marketing/hotWord/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(HotWord hotWord) {
-        return Result.success(hotWordService.get(hotWord));
+    public ? get(HotWord hotWord) {
+        return hotWordService.get(hotWord);
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(HotWord.Save.class) HotWord hotWord) {
+    public ? save(@Validated(HotWord.Save.class) HotWord hotWord) {
         hotWordService.save(hotWord);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(HotWord hotWord) {
+    public ? remove(HotWord hotWord) {
         hotWordService.remove(hotWord);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(HotWord.Update.class) HotWord hotWord) {
+    public ? update(@Validated(HotWord.Update.class) HotWord hotWord) {
         hotWordService.update(hotWord);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/hotWord/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> updateStatus(HotWord hotWord) {
+    public ? updateStatus(HotWord hotWord) {
         hotWordService.update(hotWord);
-        return Result.success();
+        return null;
     }
 }

@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 
 /**
  * 部署相关接口（用于优雅发版）
- * 
+ *
  * @author JQ棣
  *
  */
@@ -25,17 +25,16 @@ public class XxlJobController {
 
 	/**
 	 * 服务下线
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping(value = "/executor/destroy", method = RequestMethod.GET)
-	public Result<?> destroy() {
+	public void destroy() {
 		try {
 			// 下线执行器
 			Optional.ofNullable(xxlJobExecutor).ifPresent(XxlJobSpringExecutor::destroy);
-			return Result.success();
 		} catch (Exception e) {
-			return Result.fail(ExceptionUtils.getMessage(e));
+			throw new BusinessException(ExceptionUtils.getMessage(e));
 		}
 	}
 }

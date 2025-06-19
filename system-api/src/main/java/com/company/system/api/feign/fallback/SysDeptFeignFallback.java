@@ -21,32 +21,32 @@ public class SysDeptFeignFallback implements FallbackFactory<SysDeptFeign> {
 		return new SysDeptFeign() {
 
 			@Override
-			public Result<PageResp<SysDeptResp>> page(Long current, Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+			public PageResp<SysDeptResp> page(Long current, Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<List<SysDeptResp>> list(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
+			public List<SysDeptResp> list(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<SysDeptResp> query(Integer id) {
+			public SysDeptResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysDeptReq sysDeptReq) {
+			public Boolean save(SysDeptReq sysDeptReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysDeptReq sysDeptReq) {
+			public Boolean update(SysDeptReq sysDeptReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 

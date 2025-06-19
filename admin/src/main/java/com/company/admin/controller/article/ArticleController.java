@@ -61,23 +61,23 @@ public class ArticleController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Article.Save.class) Article article) {
+    public ? adminSave(@Validated(Article.Save.class) Article article) {
         articleService.save(article);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Article article) {
+    public ? adminRemove(Article article) {
         articleService.remove(article);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Article.Update.class) Article article) {
+    public ? adminUpdate(@Validated(Article.Update.class) Article article) {
         articleService.update(article);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/preview", method = RequestMethod.GET)

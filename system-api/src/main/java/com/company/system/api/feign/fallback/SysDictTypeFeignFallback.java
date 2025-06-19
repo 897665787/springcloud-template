@@ -21,32 +21,32 @@ public class SysDictTypeFeignFallback implements FallbackFactory<SysDictTypeFeig
 		return new SysDictTypeFeign() {
 
 			@Override
-			public Result<PageResp<SysDictTypeResp>> page(Long current, Long size, String dictName, String dictType, String status, String dictRemark) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<List<SysDictTypeResp>> list(String dictName, String dictType, String status, String dictRemark) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<SysDictTypeResp> query(Integer id) {
+			public PageResp<SysDictTypeResp> page(Long current, Long size, String dictName, String dictType, String status, String dictRemark) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysDictTypeReq sysDictTypeReq) {
+			public List<SysDictTypeResp> list(String dictName, String dictType, String status, String dictRemark) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysDictTypeReq sysDictTypeReq) {
+			public SysDictTypeResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean save(SysDictTypeReq sysDictTypeReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Boolean update(SysDictTypeReq sysDictTypeReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 

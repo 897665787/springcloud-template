@@ -36,52 +36,52 @@ public class ImageCategoryController {
 
     @RequestMapping(value = "/admin/content/imageCategory/tree", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminTree(ImageCategory imageCategory) {
+    public ? adminTree(ImageCategory imageCategory) {
         imageCategory = imageCategory == null ? new ImageCategory() : imageCategory;
-        return Result.success(imageCategoryService.tree(imageCategory));
+        return imageCategoryService.tree(imageCategory);
     }
 
     @RequestMapping(value = "/admin/content/imageCategory/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(ImageCategory imageCategory) {
+    public ? adminGet(ImageCategory imageCategory) {
         ImageCategory i = imageCategoryService.get(imageCategory);
-        return Result.success(i);
+        return i;
     }
 
     @RequestMapping(value = "/admin/content/imageCategory/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(ImageCategory.Save.class) @RequestBody ImageCategory imageCategory) {
+    public ? adminSave(@Validated(ImageCategory.Save.class) @RequestBody ImageCategory imageCategory) {
         imageCategory.setLock(0);
         imageCategoryService.save(imageCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/imageCategory/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(ImageCategory imageCategory) {
+    public ? adminRemove(ImageCategory imageCategory) {
         imageCategoryService.remove(imageCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/imageCategory/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(ImageCategory.Update.class) @RequestBody ImageCategory imageCategory)
+    public ? adminUpdate(@Validated(ImageCategory.Update.class) @RequestBody ImageCategory imageCategory)
             {
         imageCategoryService.update(imageCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/imageCategory/lock", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminLock(ImageCategory imageCategory)
+    public ? adminLock(ImageCategory imageCategory)
             {
         imageCategoryService.updateLock(imageCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/imageCategory/jumpType/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> listJumptype(ImageCategory imageCategory) {
-        return Result.success(imageCategoryService.listJumpType(imageCategory));
+    public ? listJumptype(ImageCategory imageCategory) {
+        return imageCategoryService.listJumpType(imageCategory);
     }
 }

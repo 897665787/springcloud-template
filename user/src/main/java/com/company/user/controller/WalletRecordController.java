@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.framework.context.HttpContextUtil;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.feign.WalletRecordFeign;
@@ -31,7 +30,7 @@ public class WalletRecordController implements WalletRecordFeign {
 	private WalletRecordService walletRecordService;
 
 	@Override
-	public Result<List<WalletRecordResp>> pageMain(
+	public List<WalletRecordResp> pageMain(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
@@ -47,6 +46,6 @@ public class WalletRecordController implements WalletRecordFeign {
 			resp.setCreateTime(v.getCreateTime());
 			return resp;
 		}).collect(Collectors.toList());
-		return Result.success(respList);
+		return respList;
 	}
 }

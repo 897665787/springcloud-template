@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
@@ -46,23 +46,23 @@ public class RefundApplyController implements RefundApplyFeign {
 
 	@Autowired
 	private PayFeign payFeign;
-	
+
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-	
+
 	/**
 	 * 退款申请
-	 * 
+	 *
 	 * <pre>
 	 * 如果需要获得退款结果，请订阅 FanoutConstants.REFUND_APPLY_RESULT 的广播消息
 	 * 参考：RefundApplyResultConsumer
 	 * </pre>
-	 * 
+	 *
 	 * @param payRefundApplyReq
 	 * @return
 	 */
 	@Override
-	public Result<Integer> refundApply(@RequestBody @Valid PayRefundApplyReq payRefundApplyReq) {
+	public Integer refundApply(@RequestBody @Valid PayRefundApplyReq payRefundApplyReq) {
 		PayRefundApply payRefundApply = new PayRefundApply();
 		payRefundApply.setOrderCode(payRefundApplyReq.getOrderCode());
 		payRefundApply.setOldOrderCode(payRefundApplyReq.getOldOrderCode());
@@ -75,35 +75,35 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundApply.setRemark(payRefundApplyReq.getRemark());
 
 		payRefundApplyMapper.insert(payRefundApply);
-		return Result.success(payRefundApply.getId());
+		return payRefundApply.getId();
 	}
-	
+
 	@Override
-	public Result<List<Integer>> selectId4Deal() {
+	public List<Integer> selectId4Deal() {
 		List<Integer> idList = payRefundApplyMapper.selectId4Deal(PayRefundApplyEnum.RefundStatus.NO_REFUND,
 				PayRefundApplyEnum.VerifyStatus.PASS, PayRefundApplyEnum.VerifyStatus.REJECT);
-		return Result.success(idList);
+		return idList;
 	}
 
 	/**
 	 * 处理退款申请
-	 * 
+	 *
 	 * <pre>
 	 * 申请结果或退款结果会以广播方式通知到各业务
 	 * </pre>
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
 	@Override
-	public Result<Boolean> dealRefundApply(@RequestParam("id") Integer id) {
+	public Boolean dealRefundApply(@RequestParam("id") Integer id) {
 		PayRefundApply payRefundApply = payRefundApplyMapper.selectById(id);
 		if (PayRefundApplyEnum.VerifyStatus
 				.of(payRefundApply.getVerifyStatus()) == PayRefundApplyEnum.VerifyStatus.WAIT_VERIFY) {
 			// ‘待审核’的数据不处理
-			return Result.fail("‘待审核’的数据不处理");
+			throw new BusinessException("‘待审核’的数据不处理");
 		}
-		
+
 		if (PayRefundApplyEnum.RefundStatus
 				.of(payRefundApply.getRefundStatus()) == PayRefundApplyEnum.RefundStatus.REJECT
 				|| PayRefundApplyEnum.RefundStatus
@@ -113,7 +113,7 @@ public class RefundApplyController implements RefundApplyFeign {
 				|| PayRefundApplyEnum.RefundStatus
 						.of(payRefundApply.getRefundStatus()) == PayRefundApplyEnum.RefundStatus.REFUND_FAIL) {
 			// ‘END状态’的数据不处理
-			return Result.fail("‘END状态’的数据不处理");
+			throw new BusinessException("‘END状态’的数据不处理");
 		}
 
 		String remark = Utils.rightRemark(payRefundApply.getRemark(), PayRefundApplyEnum.RefundStatus.DEALING.getDesc());
@@ -126,10 +126,10 @@ public class RefundApplyController implements RefundApplyFeign {
 			remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.DEALING.getDesc());
 			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.REJECT, remark,
 					payRefundApply.getId());
-			
+
 			orderRefundApplyEventMessage(false, "审核驳回", payRefundApply.getOldOrderCode(),
 					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
-			return Result.success(Boolean.TRUE);
+			return Boolean.TRUE;
 		}
 
 		BigDecimal amount = payRefundApply.getAmount();
@@ -138,7 +138,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS.getDesc());
 			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS, remark,
 					payRefundApply.getId());
-			
+
 			executor.submit(() -> {
 				RefundNotifyReq refundNotifyReq = new RefundNotifyReq();
 				refundNotifyReq.setSuccess(true);
@@ -159,12 +159,12 @@ public class RefundApplyController implements RefundApplyFeign {
 
 				refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 				refundNotifyReq.setRefundAll(true);
-				
-				Result<Void> refundNotifyResult = this.refundNotify(refundNotifyReq);
+
+				Void refundNotifyResult = this.refundNotify(refundNotifyReq);
 				log.info("refundNotify:{}", JsonUtil.toJsonString(refundNotifyResult));
 				// 后续逻辑 ----------> refundNotify
 			});
-			return Result.success(Boolean.TRUE);
+			return Boolean.TRUE;
 		}
 
 		PayRefundReq payRefundReq = new PayRefundReq();
@@ -176,7 +176,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundReq.setAttach(payRefundApply.getAttach());
 		payRefundReq.setRefundAmount(amount);
 
-		Result<Void> result = payFeign.refund(payRefundReq);
+		Void result = payFeign.refund(payRefundReq);
 		if (!result.successCode()) {
 			// 申请退款失败
 			remark = Utils.rightRemark(remark, result.getMessage());
@@ -184,24 +184,24 @@ public class RefundApplyController implements RefundApplyFeign {
 					payRefundApply.getId());
 			orderRefundApplyEventMessage(false, result.getMessage(), payRefundApply.getOldOrderCode(),
 					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
-			return Result.fail("申请退款失败");
+			throw new BusinessException("申请退款失败");
 		}
 		// 申请退款成功
 		remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS.getDesc());
 		payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS, remark,
 				payRefundApply.getId());
-		return Result.success(Boolean.TRUE);
+		return Boolean.TRUE;
 		// 后续逻辑 ----------> refundNotify
 	}
 
 	/**
 	 * 退款回调(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param refundNotifyReq
 	 * @return
 	 */
 	@PostMapping("/refundNotify")
-	public Result<Void> refundNotify(@RequestBody RefundNotifyReq refundNotifyReq) {
+	public Void refundNotify(@RequestBody RefundNotifyReq refundNotifyReq) {
 		String refundOrderCode = refundNotifyReq.getRefundOrderCode();
 		PayRefundApply payRefundApply = payRefundApplyMapper.selectByOrderCode(refundOrderCode);
 
@@ -213,7 +213,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			orderRefundApplyEventMessage(false, refundNotifyReq.getMessage(), refundNotifyReq.getOrderCode(),
 					refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getPayAmount(), refundNotifyReq.getThisRefundAmount(),
 					refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
-			return Result.success();
+			return null;
 		}
 
 		// 退款成功
@@ -223,9 +223,9 @@ public class RefundApplyController implements RefundApplyFeign {
 		orderRefundApplyEventMessage(true, refundNotifyReq.getMessage(), refundNotifyReq.getOrderCode(),
 				refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getPayAmount(), refundNotifyReq.getThisRefundAmount(),
 				refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
-		return Result.success();
+		return null;
 	}
-	
+
     /**
 	 * 订单退款申请结果事件发布消息
 	 */
@@ -241,7 +241,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		params.put("thisRefundAmount", thisRefundAmount);
 		params.put("totalRefundAmount", totalRefundAmount);
 		params.put("refundAll", refundAll);
-		
+
 		messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
 	}
 }

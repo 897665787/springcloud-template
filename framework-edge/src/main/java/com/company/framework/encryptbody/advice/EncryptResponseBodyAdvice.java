@@ -109,7 +109,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 		// 尝试处理Result封装类型
 //		if (body instanceof Result) {
-//			Result<?> result = (Result<?>) body;
+//			? result = (?) body;
 //			Object data = result.getData();
 //			if (data == null) {
 //				return result;
@@ -135,7 +135,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 //				// 加密数据并设置回Result
 //				String str = CommonUtils.convertToStringOrJson(data, objectMapper);
 //				String encryptedStr =  switchEncrypt(str, genericAnnotation);
-//				return Result.success(encryptedStr).setCode(result.getCode()).setMessage(result.getMessage());
+//				return encryptedStr).setCode(result.getCode()).setMessage(result.getMessage();
 //			}
 //		}
 

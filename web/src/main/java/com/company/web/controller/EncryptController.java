@@ -1,8 +1,13 @@
 package com.company.web.controller;
 
-import cn.licoy.encryptbody.annotation.encrypt.EncryptBody;
-import cn.licoy.encryptbody.enums.EncryptBodyMethod;
-import com.company.common.api.Result;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.company.common.util.JsonUtil;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
@@ -10,13 +15,9 @@ import com.company.web.req.DecryptEntityReq;
 import com.company.web.req.DecryptFieldReq;
 import com.company.web.resp.EncryptEntityResp;
 import com.company.web.resp.EncryptFieldResp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import cn.licoy.encryptbody.annotation.encrypt.EncryptBody;
+import cn.licoy.encryptbody.enums.EncryptBodyMethod;
 
 @RestController
 @RequestMapping("/encrypt")
@@ -26,19 +27,19 @@ public class EncryptController {
 	private UserFeign userFeign;
 
 	@PostMapping(value = "/post-body-row")
-	public Result<UserResp> postbodyrow(@RequestBody Map<String, Object> param) {
+	public UserResp postbodyrow(@RequestBody Map<String, Object> param) {
 //		if(true){
 //			throw new BusinessException("asdasd");
 //		}
 
-		Result<UserResp> byId = userFeign.getById(1L);
+		UserResp byId = userFeign.getById(1L);
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
 		return byId;
 	}
 
 	@PostMapping(value = "/post-body-row-result")
-	public Result<Map<String, Object>> postbodyrowresult(@RequestBody Map<String, Object> param) {
-		return Result.success(param);
+	public Map<String, Object> postbodyrowresult(@RequestBody Map<String, Object> param) {
+		return param;
 	}
 
 	@PostMapping(value = "/post-body-row2")
@@ -48,8 +49,8 @@ public class EncryptController {
 
 	@PostMapping(value = "/post-body-row-result2")
 	@EncryptBody(value = EncryptBodyMethod.AES)
-	public Result<Map<String, Object>> postbodyrowresult2(@RequestBody Map<String, Object> param) {
-		return Result.success(param);
+	public Map<String, Object> postbodyrowresult2(@RequestBody Map<String, Object> param) {
+		return param;
 	}
 
 	@PostMapping(value = "/post-body-row3")
@@ -88,7 +89,7 @@ public class EncryptController {
 	}
 
 	@PostMapping(value = "/decrypt-field")
-	public Result<EncryptFieldResp> decryptField(@RequestBody DecryptFieldReq req) {
+	public EncryptFieldResp decryptField(@RequestBody DecryptFieldReq req) {
 		EncryptFieldResp resp = new EncryptFieldResp();
 		resp.setId(1);
 		resp.setName("张三");
@@ -97,6 +98,6 @@ public class EncryptController {
 		resp.setMd5encryptbody("md5encryptbody");
 //		resp.setRsaencryptbody("rsaencryptbody");
 //		resp.setShaencryptbody("shaencryptbody");
-		return Result.success(resp);
+		return resp;
 	}
 }

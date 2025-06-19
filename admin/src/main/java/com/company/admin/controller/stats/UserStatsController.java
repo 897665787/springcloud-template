@@ -44,9 +44,9 @@ public class UserStatsController {
 	 */
 	@RequestMapping(value = "/diagram", method = RequestMethod.GET)
 	@ResponseBody
-	public Result<?> diagram(StatsCond statsCond) throws ParseException {
+	public ? diagram(StatsCond statsCond) throws ParseException {
 		checkCond(statsCond);
-		return Result.success(userStatsService.diagram(statsCond));
+		return userStatsService.diagram(statsCond);
 	}
 
 	/**
@@ -63,9 +63,9 @@ public class UserStatsController {
 	 */
 	@RequestMapping(value = "/sex/diagram", method = RequestMethod.GET)
 	@ResponseBody
-	public Result<?> sexDiagram(StatsCond statsCond) throws ParseException {
+	public ? sexDiagram(StatsCond statsCond) throws ParseException {
 		checkCond(statsCond);
-		return Result.success(userStatsService.sexDiagram(statsCond));
+		return userStatsService.sexDiagram(statsCond);
 	}
 
 	/**
@@ -82,9 +82,9 @@ public class UserStatsController {
 	 */
 	@RequestMapping(value = "/age/diagram", method = RequestMethod.GET)
 	@ResponseBody
-	public Result<?> ageDiagram(StatsCond statsCond) throws ParseException {
+	public ? ageDiagram(StatsCond statsCond) throws ParseException {
 		checkCond(statsCond);
-		return Result.success(userStatsService.ageDiagram(statsCond));
+		return userStatsService.ageDiagram(statsCond);
 	}
 
 	/**

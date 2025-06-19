@@ -16,7 +16,7 @@ public class RechargeOrderFeignFallback implements FallbackFactory<RechargeOrder
 	public RechargeOrderFeign create(final Throwable e) {
 		return new RechargeOrderFeign() {
 			@Override
-			public Result<RechargeOrderResp> buy(RechargeOrderReq rechargeOrderReq) {
+			public RechargeOrderResp buy(RechargeOrderReq rechargeOrderReq) {
 				return Result.onFallbackError();
 			}
 		};

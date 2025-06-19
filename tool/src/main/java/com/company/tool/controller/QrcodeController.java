@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.tool.api.feign.QrcodeFeign;
 import com.company.tool.api.request.WxaCodeReq;
 import com.company.tool.filestorage.UploadService;
@@ -16,7 +15,7 @@ import com.company.tool.qrcode.dto.LineColorParam;
 
 /**
  * 二维码
- * 
+ *
  * <pre>
  * 1.获取小程序码
  * </pre>
@@ -31,16 +30,16 @@ public class QrcodeController implements QrcodeFeign {
 	private UploadService uploadService;
 
 	@Override
-	public Result<String> wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq) {
+	public String wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq) {
 		byte[] bytes = getWxaCodeBytes(wxaCodeReq);
 		String fileKey = uploadService.upload(bytes);
-		return Result.success(fileKey);
+		return fileKey;
 	}
 
 	@Override
-	public Result<byte[]> wxaCode(@RequestBody WxaCodeReq wxaCodeReq) {
+	public byte[] wxaCode(@RequestBody WxaCodeReq wxaCodeReq) {
 		byte[] bytes = getWxaCodeBytes(wxaCodeReq);
-		return Result.success(bytes);
+		return bytes;
 	}
 
 	private byte[] getWxaCodeBytes(WxaCodeReq wxaCodeReq) {

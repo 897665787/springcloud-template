@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.user.api.feign.OpenAccessAccountFeign;
 import com.company.user.service.OpenAccessAccountService;
 
@@ -16,8 +15,8 @@ public class OpenAccessAccountController implements OpenAccessAccountFeign {
 	private OpenAccessAccountService openAccessAccountService;
 
 	@Override
-	public Result<String> getAppKeyByAppid(String appid) {
+	public String getAppKeyByAppid(String appid) {
 		String appKey = openAccessAccountService.getAppKeyByAppid(appid);
-		return Result.success(appKey);
+		return appKey;
 	}
 }

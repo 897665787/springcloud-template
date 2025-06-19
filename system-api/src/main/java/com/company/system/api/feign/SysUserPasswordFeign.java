@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.SysUserPasswordFeignFallback;
 import com.company.system.api.request.SaveNewPasswordReq;
@@ -16,11 +15,11 @@ import com.company.system.api.response.SysUserPasswordResp;
 public interface SysUserPasswordFeign {
 
 	@GetMapping("/getBySysUserId")
-	Result<SysUserPasswordResp> getBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
+	SysUserPasswordResp getBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
 
 	@GetMapping("/getPasswordBySysUserId")
-	Result<String> getPasswordBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
+	String getPasswordBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
 
 	@PostMapping("/saveNewPassword")
-	Result<Void> saveNewPassword(@RequestBody SaveNewPasswordReq saveNewPasswordReq);
+	Void saveNewPassword(@RequestBody SaveNewPasswordReq saveNewPasswordReq);
 }

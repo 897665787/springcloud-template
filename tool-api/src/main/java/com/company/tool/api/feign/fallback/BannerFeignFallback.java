@@ -18,7 +18,7 @@ public class BannerFeignFallback implements FallbackFactory<BannerFeign> {
 	public BannerFeign create(final Throwable e) {
 		return new BannerFeign() {
 			@Override
-			public Result<List<BannerResp>> list(BannerReq bannerReq) {
+			public List<BannerResp> list(BannerReq bannerReq) {
 				return Result.onFallbackError();
 			}
 		};

@@ -29,47 +29,47 @@ public class ArticleCategoryController {
 
     @RequestMapping(value = "/tree", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminTree(ArticleCategory articleCategory) {
+    public ? adminTree(ArticleCategory articleCategory) {
         articleCategory = articleCategory == null ? new ArticleCategory() : articleCategory;
-        return Result.success(articleCategoryService.tree(articleCategory));
+        return articleCategoryService.tree(articleCategory);
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(ArticleCategory articleCategory) {
-        return Result.success(articleCategoryService.get(articleCategory));
+    public ? adminGet(ArticleCategory articleCategory) {
+        return articleCategoryService.get(articleCategory);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(ArticleCategory.Save.class) ArticleCategory articleCategory) {
+    public ? adminSave(@Validated(ArticleCategory.Save.class) ArticleCategory articleCategory) {
         articleCategory.setLock(0);
         articleCategoryService.save(articleCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(ArticleCategory articleCategory) {
+    public ? adminRemove(ArticleCategory articleCategory) {
         articleCategoryService.remove(articleCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(ArticleCategory.Update.class) ArticleCategory articleCategory)
+    public ? adminUpdate(@Validated(ArticleCategory.Update.class) ArticleCategory articleCategory)
             {
         if (articleCategory.getParent() == null)
             articleCategory.setParent(new ArticleCategory());
         articleCategoryService.update(articleCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/lock", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminLock(ArticleCategory articleCategory)
+    public ? adminLock(ArticleCategory articleCategory)
             {
         articleCategoryService.updateLock(articleCategory);
-        return Result.success();
+        return null;
     }
 }

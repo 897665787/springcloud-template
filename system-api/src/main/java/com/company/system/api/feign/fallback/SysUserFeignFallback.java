@@ -25,62 +25,62 @@ public class SysUserFeignFallback implements FallbackFactory<SysUserFeign> {
 		return new SysUserFeign() {
 
 			@Override
-			public Result<PageResp<SysUserResp>> page(Long current, Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+			public PageResp<SysUserResp> page(Long current, Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<List<SysUserResp>> list(String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+			public List<SysUserResp> list(String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<SysUserResp> query(Integer id) {
+			public SysUserResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysUserReq sysUserReq) {
+			public Boolean save(SysUserReq sysUserReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysUserReq sysUserReq) {
+			public Boolean update(SysUserReq sysUserReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<SysUserResp> getByAccount(String account) {
+			public SysUserResp getByAccount(String account) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<SysUserResp> getById(Integer id) {
+			public SysUserResp getById(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<SysUserInfoResp> getInfo(Integer userId) {
+			public SysUserInfoResp getInfo(Integer userId) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<List<SysUserResp>> getByBatchId(List<Integer> ids) {
+			public List<SysUserResp> getByBatchId(List<Integer> ids) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Map<Integer, String>> mapNicknameById(Collection<Integer> ids) {
+			public Map<Integer, String> mapNicknameById(Collection<Integer> ids) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> assignRole(SysUserAssignRoleReq req) {
+			public Boolean assignRole(SysUserAssignRoleReq req) {
 				return Result.onFallbackError();
 			}
 		};

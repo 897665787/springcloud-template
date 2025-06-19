@@ -1,19 +1,13 @@
 package com.company.adminapi.converter;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.company.common.api.Result;
-import com.company.common.constant.CommonConstants;
-import com.company.common.response.PageResp;
-import com.company.common.util.JsonUtil;
-import com.company.adminapi.converter.annotation.RespConverter;
-import com.company.adminapi.converter.annotation.RespConverters;
-import com.company.adminapi.converter.ds.ConverterDataSource;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
@@ -26,13 +20,20 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.company.adminapi.converter.annotation.RespConverter;
+import com.company.adminapi.converter.annotation.RespConverters;
+import com.company.adminapi.converter.ds.ConverterDataSource;
+import com.company.common.constant.CommonConstants;
+import com.company.common.response.PageResp;
+import com.company.common.util.JsonUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 对响应的Result中的Resp实体进行字段值转换
@@ -40,7 +41,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Order(2)
 @RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
-public class RespConverterAdvice implements ResponseBodyAdvice<Result<Object>> {
+public class RespConverterAdvice implements ResponseBodyAdvice<Object> {
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {
@@ -50,7 +51,7 @@ public class RespConverterAdvice implements ResponseBodyAdvice<Result<Object>> {
 	}
 
 	@Override
-	public Result<Object> beforeBodyWrite(Result<Object> body, MethodParameter returnType, MediaType mediaType,
+	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType mediaType,
 			Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest request, ServerHttpResponse response) {
 		if (body == null) {
 			return body;

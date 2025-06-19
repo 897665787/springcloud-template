@@ -32,16 +32,16 @@ public class FeedbackController {
 
     @RequestMapping(value = "/admin/marketing/feedback/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Feedback feedback) {
+    public ? adminRemove(Feedback feedback) {
         feedbackService.remove(feedback);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/marketing/feedback/solve", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSolve(Feedback feedback){
+    public ? adminSolve(Feedback feedback){
         feedbackService.solve(feedback);
-        return Result.success();
+        return null;
     }
 
 }

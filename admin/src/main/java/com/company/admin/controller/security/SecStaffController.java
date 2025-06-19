@@ -40,7 +40,7 @@ public class SecStaffController {
 
     @RequestMapping(value = "/admin/security/secStaff/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecStaff secStaff, HttpServletRequest request) {
+    public ? adminGet(SecStaff secStaff, HttpServletRequest request) {
         //防止非超级管理员获取超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -51,26 +51,26 @@ public class SecStaffController {
         else {
             secStaff.setType(11);
         }
-        return Result.success(secStaffService.get(secStaff));
+        return secStaffService.get(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecStaff.Save.class) SecStaff secStaff) throws Exception {
+    public ? adminSave(@Validated(SecStaff.Save.class) SecStaff secStaff) throws Exception {
         secStaffService.save(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecStaff secStaff) {
+    public ? adminRemove(SecStaff secStaff) {
         secStaffService.remove(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
+    public ? adminUpdate(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
         //防止非超级管理员修改超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -82,48 +82,48 @@ public class SecStaffController {
             secStaff.setType(11);
         }
         secStaffService.update(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secRole/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminListRole(SecStaff secStaff) {
-        return Result.success(secStaffService.listRole(secStaff));
+    public ? adminListRole(SecStaff secStaff) {
+        return secStaffService.listRole(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secRole/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorizeRole(SecStaff secStaff, Long[] roleIds) {
+    public ? adminAuthorizeRole(SecStaff secStaff, Long[] roleIds) {
         List<SecRole> roleList = new ArrayList<>();
         for (Long item : roleIds) {
             roleList.add(new SecRole(item));
         }
         secStaff.setRoleList(roleList);
         secStaffService.authorizeRole(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secOrg/tree", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminListOrg(SecStaff secStaff) {
-        return Result.success(secStaffService.treeOrganization(secStaff));
+    public ? adminListOrg(SecStaff secStaff) {
+        return secStaffService.treeOrganization(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/secOrg/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorizeOrg(SecStaff secStaff, Long[] organizationIds) {
+    public ? adminAuthorizeOrg(SecStaff secStaff, Long[] organizationIds) {
         List<SecOrganization> orgList = new ArrayList<>();
         for (Long item : organizationIds) {
             orgList.add(new SecOrganization(item));
         }
         secStaff.setOrganizationList(orgList);
         secStaffService.authorizeOrganization(secStaff);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secStaff/info/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGetInfo(SecStaff secStaff, HttpServletRequest request) {
+    public ? adminGetInfo(SecStaff secStaff, HttpServletRequest request) {
         //防止非超级管理员获取超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -134,12 +134,12 @@ public class SecStaffController {
         else {
             secStaff.setType(11);
         }
-        return Result.success(secStaffService.get(secStaff));
+        return secStaffService.get(secStaff);
     }
 
     @RequestMapping(value = "/admin/security/secStaff/info/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateInfo(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
+    public ? adminUpdateInfo(@Validated(SecStaff.Update.class) SecStaff secStaff, HttpServletRequest request) throws Exception {
         //防止非超级管理员修改超级管理员信息
         SecurityContextImpl securityContextImpl = (SecurityContextImpl) request.getSession()
                 .getAttribute("SPRING_SECURITY_CONTEXT");
@@ -152,6 +152,6 @@ public class SecStaffController {
         }
         secStaff.setId(currentStaff.getId());
         secStaffService.update(secStaff);
-        return Result.success();
+        return null;
     }
 }

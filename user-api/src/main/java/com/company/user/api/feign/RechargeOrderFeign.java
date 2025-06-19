@@ -4,7 +4,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.company.common.api.Result;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.RechargeOrderFeignFallback;
 import com.company.user.api.request.RechargeOrderReq;
@@ -15,11 +14,11 @@ public interface RechargeOrderFeign {
 
 	/**
 	 * 购买
-	 * 
+	 *
 	 * @param rechargeOrderReq
 	 * @return
 	 */
 	@PostMapping("/buy")
-	Result<RechargeOrderResp> buy(@RequestBody RechargeOrderReq rechargeOrderReq);
+	RechargeOrderResp buy(@RequestBody RechargeOrderReq rechargeOrderReq);
 
 }
