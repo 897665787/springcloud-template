@@ -59,15 +59,15 @@ public class EncryptController {
 	}
 
 	@PostMapping(value = "/encrypt-entity")
-	public Result<EncryptEntityResp> encryptEntity(@RequestBody Map<String, Object> param) {
+	public EncryptEntityResp encryptEntity(@RequestBody Map<String, Object> param) {
 		EncryptEntityResp resp = new EncryptEntityResp();
 		resp.setId(1);
 		resp.setName("张三");
-		return Result.success(resp);
+		return resp;
 	}
 
 	@PostMapping(value = "/encrypt-field")
-	public Result<EncryptFieldResp> encryptField(@RequestBody Map<String, Object> param) {
+	public EncryptFieldResp encryptField(@RequestBody Map<String, Object> param) {
 		EncryptFieldResp resp = new EncryptFieldResp();
 		resp.setId(1);
 		resp.setName("张三");
@@ -76,15 +76,15 @@ public class EncryptController {
 		resp.setMd5encryptbody("md5encryptbody");
 //		resp.setRsaencryptbody("rsaencryptbody");
 //		resp.setShaencryptbody("shaencryptbody");
-		return Result.success(resp);
+		return resp;
 	}
 
 	@PostMapping(value = "/decrypt-entity")
-	public Result<EncryptEntityResp> decryptEntity(@RequestBody DecryptEntityReq req) {
+	public EncryptEntityResp decryptEntity(@RequestBody DecryptEntityReq req) {
 		EncryptEntityResp resp = new EncryptEntityResp();
 		resp.setId(1);
 		resp.setName("张三");
-		return Result.success(resp);
+		return resp;
 	}
 
 	@PostMapping(value = "/decrypt-field")

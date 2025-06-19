@@ -1,8 +1,6 @@
 package com.company.order.api.feign;
 
 import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
-import com.company.common.exception.BusinessException;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -21,10 +19,10 @@ public interface FeignTestFeign {
     OrderDetailResp getnoparam();
 
     @GetMapping("/getparam")
-    Result<OrderDetailResp> getparam(@RequestParam("orderCode") String orderCode);
+    OrderDetailResp getparam(@RequestParam("orderCode") String orderCode);
 
     @PostMapping("/postbody")
-    Result<OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq);
+    OrderDetailResp postbody(@RequestBody RegisterOrderReq registerOrderReq);
 
     @Component
     public class FeignTestFeignFallback implements FallbackFactory<FeignTestFeign> {
@@ -36,19 +34,16 @@ public interface FeignTestFeign {
                 @Override
                 public OrderDetailResp getnoparam() {
                     return Result.onFallbackError();
-//                    throw BusinessException.of(ResultCode.API_FUSING);
                 }
 
                 @Override
-                public Result<OrderDetailResp> getparam(String orderCode) {
-                    throw BusinessException.of(ResultCode.API_FUSING);
-//                    return Result.onFallbackError();
-                }
-
-                @Override
-                public Result<OrderDetailResp> postbody(RegisterOrderReq registerOrderReq) {
+                public OrderDetailResp getparam(String orderCode) {
                     return Result.onFallbackError();
-//                    return Result.success(new OrderDetailResp());
+                }
+
+                @Override
+                public OrderDetailResp postbody(RegisterOrderReq registerOrderReq) {
+                    return Result.onFallbackError();
                 }
             };
         }

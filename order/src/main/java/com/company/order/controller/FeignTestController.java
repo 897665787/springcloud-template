@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 public class FeignTestController implements FeignTestFeign {
 
 	@Override
-	@ExcludeFromGracefulResponse
+//	@ExcludeFromGracefulResponse
 	public OrderDetailResp getnoparam() {
 		OrderDetailResp resp = new OrderDetailResp();
 		resp.setOrderCode("123456");
@@ -27,20 +27,20 @@ public class FeignTestController implements FeignTestFeign {
 	}
 
 	@Override
-	public Result<OrderDetailResp> getparam(String orderCode) {
+	public OrderDetailResp getparam(String orderCode) {
 		OrderDetailResp resp = new OrderDetailResp();
 		resp.setOrderCode(orderCode);
 		resp.setOrderType("normal");
 		resp.setPayAmount(new BigDecimal("100.00"));
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<OrderDetailResp> postbody(RegisterOrderReq registerOrderReq) {
+	public OrderDetailResp postbody(RegisterOrderReq registerOrderReq) {
 		OrderDetailResp resp = new OrderDetailResp();
 		resp.setOrderCode(registerOrderReq.getOrderCode());
 		resp.setOrderType(registerOrderReq.getOrderType());
 		resp.setPayAmount(registerOrderReq.getOrderAmount());
-		return Result.success(resp);
+		return resp;
 	}
 }

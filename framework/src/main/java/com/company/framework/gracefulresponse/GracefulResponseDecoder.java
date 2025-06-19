@@ -14,25 +14,19 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-/**
- * feign调用过程中传递header值
- *
- * 依赖Hystrix自定义并发策略:TransferHystrixConcurrencyStrategy
- */
-public class Custom2Decoder extends SpringDecoder {
-	public Custom2Decoder(ObjectFactory<HttpMessageConverters> messageConverters) {
+public class GracefulResponseDecoder extends SpringDecoder {
+	public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
 		super(messageConverters);
 	}
 
-	public Custom2Decoder(ObjectFactory<HttpMessageConverters> messageConverters,
-						  ObjectProvider<HttpMessageConverterCustomizer> customizers) {
+	public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters,
+                                   ObjectProvider<HttpMessageConverterCustomizer> customizers) {
 		super(messageConverters, customizers);
 	}
 
 	@Override
 	public Object decode(final Response response, Type type) throws IOException, FeignException {
 		String typeName = type.getTypeName();
-
 		if (true) {
 			// 解析响应体并转换为 BaseResponse<T>
 			String json = Util.toString(response.body().asReader());

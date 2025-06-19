@@ -1,6 +1,5 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -25,12 +24,12 @@ public class FeignTestController {
     }
 
     @GetMapping(value = "/getparam")
-    public Result<OrderDetailResp> getparam(String orderCode) {
+    public OrderDetailResp getparam(String orderCode) {
         return feignTestFeign.getparam(orderCode);
     }
 
     @GetMapping(value = "/postbody")
-    public Result<OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
+    public OrderDetailResp postbody(@RequestBody RegisterOrderReq registerOrderReq) {
         return feignTestFeign.postbody(registerOrderReq);
     }
 }
