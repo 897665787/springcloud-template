@@ -2,6 +2,8 @@ package com.company.order.controller;
 
 import java.math.BigDecimal;
 
+import com.company.common.exception.BusinessException;
+import com.company.framework.gracefulresponse.exception.BusinessGRException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +30,9 @@ public class FeignTestController implements FeignTestFeign {
 
 	@Override
 	public OrderDetailResp getparam(String orderCode) {
+		if (true) {
+			throw new BusinessGRException("aaaaaaaaaaaaaaaaaaaaa");
+		}
 		OrderDetailResp resp = new OrderDetailResp();
 		resp.setOrderCode(orderCode);
 		resp.setOrderType("normal");

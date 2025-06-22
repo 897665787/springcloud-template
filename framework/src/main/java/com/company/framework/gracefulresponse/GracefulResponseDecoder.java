@@ -1,18 +1,22 @@
 package com.company.framework.gracefulresponse;
 
-import com.company.common.util.JsonUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import feign.FeignException;
-import feign.Response;
-import feign.Util;
+import java.io.IOException;
+import java.lang.reflect.Type;
+
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomizer;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
+import com.company.common.util.JsonUtil;
+import com.company.framework.gracefulresponse.exception.BusinessGRException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.feiniaojin.gracefulresponse.defaults.DefaultConstants;
+
+import feign.FeignException;
+import feign.Response;
+import feign.Util;
 
 public class GracefulResponseDecoder extends SpringDecoder {
 	public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
@@ -32,9 +36,17 @@ public class GracefulResponseDecoder extends SpringDecoder {
 			String json = Util.toString(response.body().asReader());
 
 			JsonNode jsonNode = JsonUtil.toJsonNode(json);// 确保json格式正确
-			JsonNode entity2 = jsonNode.get("data");
+			String code = jsonNode.get("code").asText();
+			if (!DefaultConstants.DEFAULT_SUCCESS_CODE.equals(code)) {
+				String msg = jsonNode.get("msg").asText();
+//				FeignException.errorStatus("", response);
+//				throw new FeignException(response.status(), msg);
+				throw new BusinessGRException(Integer.valueOf(code), msg);
+			}
 
-			String jsonString = JsonUtil.toJsonString(entity2);
+			JsonNode data = jsonNode.get("data");
+
+			String jsonString = JsonUtil.toJsonString(data);
 			try {
 				Class<?> aClass1 = Class.forName(typeName);
 				System.out.println("Class: " + aClass1.getName());

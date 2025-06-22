@@ -278,7 +278,7 @@ public class PayController implements PayFeign {
 		OrderPayEnum.Status status = OrderPayEnum.Status.of(orderPay.getStatus());
 		if (status != OrderPayEnum.Status.WAITPAY) {
 			// 订单不是未支付状态，结束查询
-			return null, "订单不是未支付状态，结束查询";
+//			return null, "订单不是未支付状态，结束查询";
 		}
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPay.getMethod()));
@@ -288,7 +288,7 @@ public class PayController implements PayFeign {
 		}
 		if (!payOrderQuery.getPaySuccess()) {
 			// 有结果但不是支付成功，结束查询
-			return null, "有结果但不是支付成功，结束查询";
+//			return null, "有结果但不是支付成功，结束查询";
 		}
 
 		// MQ异步处理
@@ -307,7 +307,8 @@ public class PayController implements PayFeign {
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 
-		return null, "支付成功";
+//		return null, "支付成功";
+		return null;
 	}
 
 	@Override
@@ -526,7 +527,7 @@ public class PayController implements PayFeign {
 		OrderPayRefundEnum.Status status = OrderPayRefundEnum.Status.of(orderPayRefund.getStatus());
 		if (status != OrderPayRefundEnum.Status.WAIT_APPLY) {
 			// 订单不是未退款状态，结束查询
-			return null, "订单不是未退款状态，结束查询";
+//			return null, "订单不是未退款状态，结束查询";
 		}
 
 		PayClient payClient = PayFactory.of(OrderPayEnum.Method.of(orderPayRefund.getMethod()));
@@ -536,7 +537,7 @@ public class PayController implements PayFeign {
 		}
 		if (!payRefundQuery.getRefundSuccess()) {
 			// 有结果但不是退款成功，结束查询
-			return null, "有结果但不是退款成功，结束查询";
+//			return null, "有结果但不是退款成功，结束查询";
 		}
 
 		// MQ异步处理
@@ -559,7 +560,8 @@ public class PayController implements PayFeign {
 		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 				Constants.QUEUE.COMMON.KEY);
 
-		return null, "退款成功";
+//		return null, "退款成功";
+		return null;
 	}
 
 }

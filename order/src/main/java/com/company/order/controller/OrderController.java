@@ -571,10 +571,10 @@ public class OrderController implements OrderFeign {
 				@SuppressWarnings("unchecked")
 				Object result = responseEntity.getBody();
 				log.info("{}ms,结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
-				remark = result.getMessage();
-				if (result.successCode()) {
-					return result.getData();
-				}
+//				remark = result.getMessage();
+//				if (result.successCode()) {
+//					return result.getData();
+//				}
 			} else {
 				remark = "响应码:" + responseEntity.getStatusCodeValue();
 			}

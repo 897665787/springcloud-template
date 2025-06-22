@@ -177,15 +177,15 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundReq.setRefundAmount(amount);
 
 		Void result = payFeign.refund(payRefundReq);
-		if (!result.successCode()) {
-			// 申请退款失败
-			remark = Utils.rightRemark(remark, result.getMessage());
-			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_FAIL, remark,
-					payRefundApply.getId());
-			orderRefundApplyEventMessage(false, result.getMessage(), payRefundApply.getOldOrderCode(),
-					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
-			throw new BusinessException("申请退款失败");
-		}
+//		if (!result.successCode()) {
+//			// 申请退款失败
+//			remark = Utils.rightRemark(remark, result.getMessage());
+//			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_FAIL, remark,
+//					payRefundApply.getId());
+//			orderRefundApplyEventMessage(false, result.getMessage(), payRefundApply.getOldOrderCode(),
+//					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
+//			throw new BusinessException("申请退款失败");
+//		}
 		// 申请退款成功
 		remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS.getDesc());
 		payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS, remark,
