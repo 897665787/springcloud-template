@@ -76,18 +76,19 @@
         </dependency>
 
 		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
+		<!-- Resilience4J -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
-		</dependency>
-		<!-- 可选：如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
-		<!--
+		</dependency>-->
+		<!-- Sentinel：相比于Resilience4J优点在于有控制台可以来配置熔断规则 -->
+		<!-- 如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-			<version>2021.0.5.0</version> 版本需与 Spring Cloud 2021.x 兼容
+			<version>2021.0.6.2</version>
 		</dependency>
-		-->
 		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 
 		<!-- ################## 替换普通MDC，利用transmittable-thread-local解决ForkJoinPool日志ID传递问题 ################## -->

@@ -1,0 +1,17 @@
+# 熔断器 配置
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        # 熔断器的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
+        timeoutDuration: 5s  # 执行超时时间（整个调用过程>=单次请求*重试次数）
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        failureRateThreshold: 50    # 触发熔断的失败率阈值（%）
+        minimumNumberOfCalls: 5     # 最小调用次数
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10       # 滑动窗口大小
+        waitDurationInOpenState: 5s # 熔断开启后等待时间
+        permittedNumberOfCallsInHalfOpenState: 3
