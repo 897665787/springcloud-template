@@ -33,8 +33,8 @@ logging:
 
 # Feign 配置
 feign:
-  sentinel:
-    enabled: true # feign启用sentinel熔断支持
+#  sentinel:
+#    enabled: true # feign启用sentinel熔断支持
 #  circuitbreaker:
 #    enabled: true  # feign启用resilience4j熔断支持
   #httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection

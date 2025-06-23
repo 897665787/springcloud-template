@@ -1,3 +1,4 @@
+# 官方整合文档：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel
 # 熔断器 配置
 spring:
   cloud:
@@ -7,11 +8,16 @@ spring:
       transport:
         dashboard: localhost:8080 # Sentinel控制台地址
         port: ${server.port}1 # 当前服务端口+1作为Sentinel本地监控端口，默认8719
-#      datasource: # 数据记录到哪里？
+#      datasource: # 动态数据源支持
 #        ds1:
 #          nacos:
-#            server-addr: localhost:8848
-#            dataId: ${spring.application.name}-sentinel
-#            groupId: DEFAULT_GROUP
-#            rule-type: flow
+#            server-addr: ${spring.cloud.nacos.config.server-addr}
+#            data-id: ${spring.application.name}-sentinel
+#            group-id: ${spring.cloud.nacos.config.group}
 #            data-type: json
+#            rule-type: degrade
+
+# Feign 支持
+feign:
+  sentinel:
+    enabled: ${spring.cloud.sentinel.enabled} # feign启用sentinel熔断支持

@@ -77,12 +77,11 @@
 
 		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 		<!-- Resilience4J -->
-		<!--
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
-		</dependency>-->
-		<!-- Sentinel：相比于Resilience4J优点在于有控制台可以来配置熔断规则 -->
+		</dependency>
+		<!-- Sentinel：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel，相比于Resilience4J优点在于有控制台可以来配置熔断规则 -->
 		<!-- 如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>

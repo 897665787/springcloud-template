@@ -1,3 +1,10 @@
+# 开关
+spring:
+  cloud:
+    circuitbreaker:
+      resilience4j:
+        enabled: false  # 启用resilience4j
+
 # 熔断器 配置
 resilience4j:
   timelimiter:
@@ -15,3 +22,8 @@ resilience4j:
         slidingWindowSize: 10       # 滑动窗口大小
         waitDurationInOpenState: 5s # 熔断开启后等待时间
         permittedNumberOfCallsInHalfOpenState: 3
+
+# Feign 支持
+feign:
+  circuitbreaker:
+    enabled: ${spring.cloud.circuitbreaker.resilience4j.enabled}  # feign启用resilience4j熔断支持
