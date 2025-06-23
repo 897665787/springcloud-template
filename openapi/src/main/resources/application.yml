@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: redis,rabbitmq,rocketmq
+    include: redis,rabbitmq,rocketmq,resilience4j,sentinel
   main:
     allow-bean-definition-overriding: true
 
@@ -15,8 +15,6 @@ logging:
 
 # Feign 配置
 feign:
-  circuitbreaker:
-    enabled: true  # 启用 Feign 熔断支持
     #httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection
     #enabled: true
     #okhttp: # 使用okhttp作为http客户端  ，默认HttpURLConnection
@@ -26,24 +24,6 @@ feign:
       default:
         connectTimeout: 1000 # 连接超时时间，默认1000ms
         readTimeout: 5000 # 读取超时时间（单次请求），默认1000ms
-
-# 熔断器 配置
-resilience4j:
-  timelimiter:
-    configs:
-      default:
-        # 熔断器的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
-        timeoutDuration: 5s  # 执行超时时间（整个调用过程>=单次请求*重试次数）
-  circuitbreaker:
-    configs:
-      default:
-        registerHealthIndicator: true
-        failureRateThreshold: 50    # 触发熔断的失败率阈值（%）
-        minimumNumberOfCalls: 5     # 最小调用次数
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 10       # 滑动窗口大小
-        waitDurationInOpenState: 5s # 熔断开启后等待时间
-        permittedNumberOfCallsInHalfOpenState: 3
 
 template:
   sequence:

@@ -1,13 +1,12 @@
-# 官方整合文档：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel
-# 熔断器 配置
+# 熔断器 配置，官方整合文档：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel
 spring:
   cloud:
     sentinel:
-      enabled: true # 启用Sentinel
+      enabled: true # 启用Sentinel，建议与application-resilience4j.yml二选一使用
       eager: true # 启动马上初始化，默认false
       transport:
         dashboard: localhost:8080 # Sentinel控制台地址
-        port: ${server.port}1 # 当前服务端口+1作为Sentinel本地监控端口，默认8719
+        port: 1${server.port} # 1+当前服务端口作为Sentinel本地监控端口，默认8719
 #      datasource: # 动态数据源支持
 #        ds1:
 #          nacos:
