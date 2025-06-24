@@ -7,21 +7,33 @@ spring:
 
 # 熔断器 配置
 resilience4j:
-  timelimiter:
+  circuitbreaker: # 服务调用保护
+    configs:
+      default:
+        registerHealthIndicator: true
+        failureRateThreshold: 50    # 以百分比配置失败率阈值。当失败率等于或者大于阈值时，断路器状态变关闭为开启，并进行服务降级，默认50
+        minimumNumberOfCalls: 5     # 在每个滑动窗口期样本数，配置断路器计算错误率或者慢调用率的最小调用数。比如设置为5意味着，在计算故障率之前，必须至少调用5次。如果只记录了4次，即使4次都失败了，断路器也不会进入到打开状态。默认100
+        slidingWindowType: COUNT_BASED # 断路器的滑动窗口期类型，默认COUNT_BASED（基于调用数量统计）
+        slidingWindowSize: 10       # 滑动窗口大小，默认100
+        waitDurationInOpenState: 5s # 从OPEN到HALF_OPEN状态需要等待的时间，默认60000（ms，毫秒）
+        permittedNumberOfCallsInHalfOpenState: 10 # 断路器在半开的状态下，允许通过的调用次数，默认10
+  retry: # 网络波动、临时故障
+    configs:
+      default:
+        maxAttempts: 1              # 最大重试次数（包含首次调用）
+        waitDuration: 1s            # 重试间隔时间
+        retryExceptions:            # 重试异常列表
+          - java.lang.Exception
+  ratelimiter: # 防止服务过载
+    configs:
+      default:
+        limitForPeriod: 1          # 每个时间段内允许的最大请求数
+        limitRefreshPeriod: 1s      # 刷新时间段
+  timelimiter: # 避免长时间阻塞
     configs:
       default:
         # 熔断器的超时时间 = Ribbon的重试次数(包含首次) * (ribbon.ReadTimeout + ribbon.ConnectTimeout)
         timeoutDuration: 5s  # 执行超时时间（整个调用过程>=单次请求*重试次数）
-  circuitbreaker:
-    configs:
-      default:
-        registerHealthIndicator: true
-        failureRateThreshold: 50    # 触发熔断的失败率阈值（%）
-        minimumNumberOfCalls: 5     # 最小调用次数
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 10       # 滑动窗口大小
-        waitDurationInOpenState: 5s # 熔断开启后等待时间
-        permittedNumberOfCallsInHalfOpenState: 3
 
 # Feign 支持
 feign:
