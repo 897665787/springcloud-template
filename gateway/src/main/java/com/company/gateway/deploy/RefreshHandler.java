@@ -27,7 +27,7 @@ public class RefreshHandler {
 	 */
 	public void refresh(String application) {
 		// 从Eureka Server获取注册信息，默认true
-		boolean fetchRegistry = SpringContextUtil.getBooleanProperty("eureka.client.fetch-registry", true);
+		boolean fetchRegistry = SpringContextUtil.getBooleanProperty("eureka.client.enabled", true);
 		if (!fetchRegistry) {
 			// 不获取注册信息，不需要刷新
 			return;

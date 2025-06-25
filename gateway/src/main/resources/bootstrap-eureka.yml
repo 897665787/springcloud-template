@@ -13,6 +13,7 @@ eureka:
     lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
   client:
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
@@ -32,6 +33,7 @@ eureka:
     lease-expiration-duration-in-seconds: 30 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 10 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
   client:
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
@@ -51,6 +53,7 @@ eureka:
     lease-expiration-duration-in-seconds: 90 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
   client:
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
@@ -70,6 +73,7 @@ eureka:
     lease-expiration-duration-in-seconds: 90 # Eureka注册中心（服务端）在收到客户端心跳之后，等待下一次心跳的超时时间，如果在这个时间内没有收到下次心跳，则移除该客户端。（默认90秒）
     lease-renewal-interval-in-seconds: 30 # 客户端向注册中心发送心跳的时间间隔（默认30秒）
   client:
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
@@ -91,6 +95,7 @@ eureka:
     metadata-map:
       zone: zone1  # 标识当前实例的 Zone
   client:
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
@@ -112,6 +117,7 @@ eureka:
     metadata-map:
       zone: zone2  # 标识当前实例的 Zone
   client:
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔
