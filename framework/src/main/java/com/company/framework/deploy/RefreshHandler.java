@@ -5,6 +5,8 @@ import com.company.framework.context.SpringContextUtil;
 import com.netflix.discovery.DiscoveryClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
+import org.springframework.cloud.client.serviceregistry.Registration;
+import org.springframework.cloud.client.serviceregistry.ServiceRegistry;
 import org.springframework.cloud.loadbalancer.cache.DefaultLoadBalancerCacheManager;
 import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
 import org.springframework.stereotype.Component;
@@ -42,6 +44,10 @@ public class RefreshHandler {
 	 */
 	private void refreshRegistry(String application) {
 		try {
+			ServiceRegistry<Registration> serviceRegistry = SpringContextUtil.getBean(ServiceRegistry.class);
+			Registration registration = SpringContextUtil.getBean(Registration.class);
+			serviceRegistry.deregister(registration);
+
 			DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
 			log.info("{},application before:{}", application,
 					JsonUtil.toJsonString(client.getApplication(application)));
