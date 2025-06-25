@@ -2,7 +2,7 @@ spring:
   config:
     import: classpath:bootstrap.yml # 在Spring Boot 2.7.x版本中，默认情况下，bootstrap.yml件不再被自动加载
   profiles:
-    include: resilience4j,sentinel,redis,rabbitmq,rocketmq
+    include: feign,resilience4j,sentinel,redis,rabbitmq,rocketmq
   main:
     allow-bean-definition-overriding: true
   servlet:
@@ -30,18 +30,6 @@ logging:
   file:
     #日志文件目录。./表示相对于项目根目录，即项目根目录下的logs目录。也可配置绝对路径，如：/home/webapp/logs
     path: ./logs/${spring.application.name}
-
-# Feign 配置
-feign:
-  #httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection
-    #enabled: true
-  #okhttp: # 使用okhttp作为http客户端  ，默认HttpURLConnection
-    #enabled: true
-  client:
-    config:
-      default:
-        connectTimeout: 1000 # 连接超时时间，默认1000ms
-        readTimeout: 2000 # 读取超时时间（单次请求），默认1000ms
 
 template:
   sequence:
