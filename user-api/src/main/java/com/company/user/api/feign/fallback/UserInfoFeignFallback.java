@@ -19,17 +19,17 @@ public class UserInfoFeignFallback implements FallbackFactory<UserInfoFeign> {
 	public UserInfoFeign create(final Throwable e) {
 		return new UserInfoFeign() {
 			@Override
-			public Result<UserInfoResp> findOrCreateUser(UserInfoReq userInfoReq) {
+			public UserInfoResp findOrCreateUser(UserInfoReq userInfoReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<UserInfoResp> getById(Integer id) {
+			public UserInfoResp getById(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Map<Integer, String>> mapUidById(Collection<Integer> idList) {
+			public Map<Integer, String> mapUidById(Collection<Integer> idList) {
 				return Result.onFallbackError();
 			}
 		};

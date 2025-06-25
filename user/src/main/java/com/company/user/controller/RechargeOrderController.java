@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
+import com.company.framework.context.HttpContextUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
@@ -85,12 +85,12 @@ public class RechargeOrderController implements RechargeOrderFeign {
 
 	/**
 	 * 购买
-	 * 
+	 *
 	 * @param rechargeOrderReq
 	 * @return
 	 */
 	@Override
-	public Result<RechargeOrderResp> buy(@RequestBody RechargeOrderReq rechargeOrderReq) {
+	public RechargeOrderResp buy(@RequestBody RechargeOrderReq rechargeOrderReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
 		BigDecimal rechargeAmount = rechargeOrderReq.getRechargeAmount();
@@ -105,7 +105,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 
 		BigDecimal payAmount = rechargeOrderReq.getPayAmount();
 		if (payAmount.compareTo(needPayAmount) != 0) {
-			return Result.fail("支付金额不匹配");
+			throw new BusinessException("支付金额不匹配");
 		}
 
 		// TODO 条件校验（下单限制、风控）
@@ -146,7 +146,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 
 		registerOrderReq.setProductList(orderProductReqList);
 
-		orderFeign.registerOrder(registerOrderReq).dataOrThrow();
+		orderFeign.registerOrder(registerOrderReq);
 
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			executor.submit(() -> {
@@ -155,10 +155,10 @@ public class RechargeOrderController implements RechargeOrderFeign {
 				payNotifyReq.setOrderCode(orderCode);
 				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
-				Result<Void> buyNotifyResult = buyNotify(payNotifyReq);
+				Void buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
 			});
-			return Result.success(new RechargeOrderResp().setNeedPay(false));
+			return new RechargeOrderResp().setNeedPay(false);
 		}
 
 		// 获取支付参数
@@ -177,21 +177,21 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		// payReq.setAttach(attach);
 		// payReq.setTimeoutSeconds(timeoutSeconds);
 		// payReq.setRemark(remark);
-		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
+		PayResp payResp = payFeign.unifiedorder(payReq);
 		if (!payResp.getSuccess()) {
-			return Result.fail("支付失败，请稍后重试");
+			throw new BusinessException("支付失败，请稍后重试");
 		}
-		return Result.success(new RechargeOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo()));
+		return new RechargeOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo());
 	}
 
 	/**
 	 * 购买回调(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param payNotifyReq
 	 * @return
 	 */
 	@PostMapping("/buyNotify")
-	public Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
+	public Void buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
 
@@ -199,13 +199,13 @@ public class RechargeOrderController implements RechargeOrderFeign {
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
 			OrderCancelReq orderCancelReq = new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time);
-			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq).dataOrThrow();
+			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq);
 			if (!cancelByTimeout) {
 				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
-				return Result.success();
+				return null;
 			}
 
-			return Result.success();
+			return null;
 		}
 
 		// 支付成功
@@ -214,10 +214,10 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
 		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
 				.setPayTime(time);
-		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq).dataOrThrow();
+		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
-			return Result.success();
+			return null;
 		}
 
 		// 发布‘支付成功’事件
@@ -236,7 +236,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 				giftAmount);
 
 		String uniqueCode = orderCode;
-		
+
 		Map<String, Object> attachMap = Maps.newHashMap();
 		attachMap.put("businessType", "recharge");
 		attachMap.put("businessId", rechargeOrder.getId());
@@ -250,27 +250,27 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		// 修改‘订单中心’数据
 		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
 
-		return Result.success();
+		return null;
 	}
 
 	/**
 	 * 根据订单号执行/查询子订单(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param orderReq
 	 * @return
 	 */
 	@PostMapping("/subOrder")
-	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
+	public Object subOrder(@RequestBody OrderReq orderReq) {
 		OrderEnum.SubOrderEventEnum subOrderEvent = orderReq.getSubOrderEvent();
 		if (subOrderEvent == OrderEnum.SubOrderEventEnum.USER_CANCEL) {
 			userCancel(orderReq);
-			return Result.success(detail(orderReq));
+			return detail(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_ITEM) {
-			return Result.success(item(orderReq));
+			return item(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_DETAIL) {
-			return Result.success(detail(orderReq));
+			return detail(orderReq);
 		}
-		return Result.success();
+		return null;
 	}
 
 	private void userCancel(OrderReq orderReq) {
@@ -280,7 +280,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 			// 关闭支付订单，不关心结果
 			PayCloseReq payCloseReq = new PayCloseReq();
 			payCloseReq.setOrderCode(orderCode);
-			Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
+			Void payCloseResp = payFeign.payClose(payCloseReq);
 			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
 		}
 	}

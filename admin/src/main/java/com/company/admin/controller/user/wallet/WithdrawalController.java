@@ -33,21 +33,21 @@ public class WithdrawalController {
 
 //	@RequestMapping(value = "/admin/user/withdrawal/get", method = RequestMethod.POST)
 //	@ResponseBody
-//	public Result<?> get(Withdrawal withdrawal) {
-//		return Result.success(withdrawalService.get(withdrawal));
+//	public ? get(Withdrawal withdrawal) {
+//		return withdrawalService.get(withdrawal);
 //	}
 
 	@RequestMapping(value = "/admin/user/withdrawal/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> remove(Withdrawal withdrawal) {
+	public ? remove(Withdrawal withdrawal) {
 		withdrawalService.remove(withdrawal);
-		return Result.success();
+		return null;
 	}
 
 	@RequestMapping(value = "/admin/user/withdrawal/audit", method = RequestMethod.POST)
 	@ResponseBody
-	public Result<?> audit(Withdrawal withdrawal) {
+	public ? audit(Withdrawal withdrawal) {
 		withdrawalService.update(withdrawal);
-		return Result.success();
+		return null;
 	}
 }

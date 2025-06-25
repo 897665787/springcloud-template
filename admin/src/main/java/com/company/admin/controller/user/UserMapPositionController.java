@@ -41,28 +41,28 @@ public class UserMapPositionController {
 
     @RequestMapping(value = "/admin/user/userMapPosition/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(UserMapPosition userMapPosition) {
-        return Result.success(userMapPositionService.get(userMapPosition));
+    public ? get(UserMapPosition userMapPosition) {
+        return userMapPositionService.get(userMapPosition);
     }
 
 //	@RequestMapping(value = "/admin/user/userMapPosition/save", method = RequestMethod.POST)
 //	@ResponseBody
-//	public Result<?> save(@Validated(UserMapPosition.Save.class) UserMapPosition userMapPosition) {
+//	public ? save(@Validated(UserMapPosition.Save.class) UserMapPosition userMapPosition) {
 //		userMapPositionService.save(userMapPosition);
-//		return Result.success();
+//		return null;
 //	}
 
     @RequestMapping(value = "/admin/user/userMapPosition/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(UserMapPosition userMapPosition) {
+    public ? remove(UserMapPosition userMapPosition) {
         userMapPositionService.remove(userMapPosition);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/user/userMapPosition/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(UserMapPosition.Update.class) UserMapPosition userMapPosition) {
+    public ? update(@Validated(UserMapPosition.Update.class) UserMapPosition userMapPosition) {
         userMapPositionService.update(userMapPosition);
-        return Result.success();
+        return null;
     }
 }

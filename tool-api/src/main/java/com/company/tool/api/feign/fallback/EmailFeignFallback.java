@@ -18,17 +18,17 @@ public class EmailFeignFallback implements FallbackFactory<EmailFeign> {
 		return new EmailFeign() {
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
+			public List<Integer> select4PreTimeSend(Integer limit) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
+			public Void exePreTimeSend(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> send(SendEmailReq sendEmailReq) {
+			public Void send(SendEmailReq sendEmailReq) {
 				return Result.onFallbackError();
 			}
 		};

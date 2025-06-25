@@ -1,12 +1,13 @@
 package com.company.im.api.feign.fallback;
 
+import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.stereotype.Component;
+
 import com.company.common.api.Result;
 import com.company.im.api.feign.WebsocketFeign;
 import com.company.im.api.request.AllReq;
 import com.company.im.api.request.GroupReq;
 import com.company.im.api.request.UserReq;
-import org.springframework.cloud.openfeign.FallbackFactory;
-import org.springframework.stereotype.Component;
 
 @Component
 public class WebsocketFeignFallback implements FallbackFactory<WebsocketFeign> {
@@ -15,17 +16,17 @@ public class WebsocketFeignFallback implements FallbackFactory<WebsocketFeign> {
 	public WebsocketFeign create(final Throwable e) {
 		return new WebsocketFeign() {
 			@Override
-			public Result<Void> sendToAll(AllReq allReq) {
+			public Void sendToAll(AllReq allReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> sendToUser(UserReq userReq) {
+			public Void sendToUser(UserReq userReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> sendToGroup(GroupReq groupReq) {
+			public Void sendToGroup(GroupReq groupReq) {
 				return Result.onFallbackError();
 			}
 		};

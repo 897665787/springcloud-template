@@ -1,6 +1,7 @@
 package com.company.framework.deploy;
 
 import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.context.SpringContextUtil;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 /**
  * 部署相关接口（用于优雅发版）
- * 
+ *
  * @author JQ棣
  *
  */
@@ -30,29 +31,28 @@ public class DeployController {
 
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	/**
 	 * 服务下线
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping(value = "/offline", method = RequestMethod.GET)
-	public Result<?> offline() {
+	public void offline() {
 		try {
 			DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
 			client.shutdown();
-			
+
 			// 通知其他服务刷新服务列表，即时中断请求流量
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("application", SpringContextUtil.getProperty("spring.application.name"));
 			params.put("type", "offline");
 			messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
-			
+
 			// 下线MQ消费者
 			Optional.ofNullable(rabbitListenerEndpointRegistry).ifPresent(RabbitListenerEndpointRegistry::stop);
-			return Result.success();
 		} catch (Exception e) {
-			return Result.fail(ExceptionUtils.getMessage(e));
+			throw new BusinessException(ExceptionUtils.getMessage(e));
 		}
 	}
 

@@ -17,22 +17,22 @@ public class AlarmFeignFallback implements FallbackFactory<AlarmFeign> {
 		return new AlarmFeign() {
 
 			@Override
-			public Result<Void> webhook(WebhookAlarmReq webhookAlarmReq) {
+			public Void webhook(WebhookAlarmReq webhookAlarmReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> sms(AlarmReq alarmReq) {
+			public Void sms(AlarmReq alarmReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> email(AlarmReq alarmReq) {
+			public Void email(AlarmReq alarmReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> warn(AlarmReq alarmReq) {
+			public Void warn(AlarmReq alarmReq) {
 				return Result.onFallbackError();
 			}
 		};

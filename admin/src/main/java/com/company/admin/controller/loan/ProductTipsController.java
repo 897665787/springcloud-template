@@ -33,28 +33,28 @@ public class ProductTipsController {
 
     @RequestMapping(value = "/admin/loan/productTips/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(ProductTips productTips) {
-        return Result.success(productTipsService.get(productTips));
+    public ? get(ProductTips productTips) {
+        return productTipsService.get(productTips);
     }
 
     @RequestMapping(value = "/admin/loan/productTips/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(ProductTips.Save.class) ProductTips productTips) {
+    public ? save(@Validated(ProductTips.Save.class) ProductTips productTips) {
         productTipsService.save(productTips);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/loan/productTips/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(ProductTips productTips) {
+    public ? remove(ProductTips productTips) {
         productTipsService.remove(productTips);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/loan/productTips/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(ProductTips.Update.class) ProductTips productTips) {
+    public ? update(@Validated(ProductTips.Update.class) ProductTips productTips) {
         productTipsService.update(productTips);
-        return Result.success();
+        return null;
     }
 }

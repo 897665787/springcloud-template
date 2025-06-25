@@ -29,77 +29,77 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 	public OrderFeign create(final Throwable e) {
 		return new OrderFeign() {
 			@Override
-			public Result<Void> registerOrder(RegisterOrderReq registerOrderReq) {
+			public Void registerOrder(RegisterOrderReq registerOrderReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<OrderDetailResp> cancelByUser(OrderCancelReq orderCancelReq) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<Boolean> cancelByTimeout(OrderCancelReq orderCancelReq) {
+			public OrderDetailResp cancelByUser(OrderCancelReq orderCancelReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<Boolean> receive(OrderReceiveReq orderReceiveReq) {
+			public Boolean cancelByTimeout(OrderCancelReq orderCancelReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> finish(OrderFinishReq orderFinishReq) {
+			public Boolean paySuccess(OrderPaySuccessReq orderPaySuccessReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<OrderRefundApplyResp> refundApply(OrderRefundApplyReq orderRefundApplyReq) {
+			public Boolean receive(OrderReceiveReq orderReceiveReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> refundFail(OrderRefundFailReq orderRefundFailReq) {
+			public Boolean finish(OrderFinishReq orderFinishReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
+			public OrderRefundApplyResp refundApply(OrderRefundApplyReq orderRefundApplyReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> deleteOrder(String orderCode) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
+			public Boolean refundFail(OrderRefundFailReq orderRefundFailReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<OrderDetailResp> detail(String orderCode) {
+			public Boolean refundFinish(OrderRefundFinishReq orderRefundFinishReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<List<String>> select4OverSendSuccess(Integer limit) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<List<String>> select4OverWaitReview(Integer limit) {
+			public Void deleteOrder(String orderCode) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Order4Resp> selectByOrderCode(String orderCode) {
+			public List<OrderResp> page(Integer current, Integer size, StatusEnum status) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public OrderDetailResp detail(String orderCode) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public List<String> select4OverSendSuccess(Integer limit) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public List<String> select4OverWaitReview(Integer limit) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Order4Resp selectByOrderCode(String orderCode) {
 				return Result.onFallbackError();
 			}
 

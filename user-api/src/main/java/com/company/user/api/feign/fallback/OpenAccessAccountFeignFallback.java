@@ -16,7 +16,7 @@ public class OpenAccessAccountFeignFallback implements FallbackFactory<OpenAcces
 	public OpenAccessAccountFeign create(final Throwable e) {
 		return new OpenAccessAccountFeign() {
 			@Override
-			public Result<String> getAppKeyByAppid(String appid) {
+			public String getAppKeyByAppid(String appid) {
 				log.error("getAppKeyByAppid error", e);
 				return Result.onFallbackError();
 			}

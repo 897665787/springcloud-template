@@ -16,7 +16,7 @@ public class DistributeOrderFeignFallback implements FallbackFactory<DistributeO
 	public DistributeOrderFeign create(final Throwable e) {
 		return new DistributeOrderFeign() {
 			@Override
-			public Result<DistributeBuyOrderResp> buy(DistributeBuyOrderReq distributeBuyOrderReq) {
+			public DistributeBuyOrderResp buy(DistributeBuyOrderReq distributeBuyOrderReq) {
 				return Result.onFallbackError();
 			}
 		};

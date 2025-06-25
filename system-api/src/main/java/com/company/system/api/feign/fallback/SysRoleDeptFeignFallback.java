@@ -21,32 +21,32 @@ public class SysRoleDeptFeignFallback implements FallbackFactory<SysRoleDeptFeig
 		return new SysRoleDeptFeign() {
 
 			@Override
-			public Result<PageResp<SysRoleDeptResp>> page(Long current, Long size, Integer roleId, Integer deptId) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<List<SysRoleDeptResp>> list(Integer roleId, Integer deptId) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<SysRoleDeptResp> query(Integer id) {
+			public PageResp<SysRoleDeptResp> page(Long current, Long size, Integer roleId, Integer deptId) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysRoleDeptReq sysRoleDeptReq) {
+			public List<SysRoleDeptResp> list(Integer roleId, Integer deptId) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysRoleDeptReq sysRoleDeptReq) {
+			public SysRoleDeptResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean save(SysRoleDeptReq sysRoleDeptReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Boolean update(SysRoleDeptReq sysRoleDeptReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 

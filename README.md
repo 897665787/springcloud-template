@@ -153,3 +153,17 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
 ### 其他说明
 
 1. 联系作者 <a href="mailto:897665787@qq.com">897665787@qq.com</a>
+
+### 引用项目
+http://sa-token.dev33.cn
+https://gitee.com/jq_di/file-storage
+https://gitee.com/jq_di/sms-sender
+https://gitee.com/felord/wecom-sdk
+https://github.com/panlicun/mybatisplus-database-encrypt-spring-boot-starter
+dynamic-datasource-spring-boot-starter
+logback-mdc-ttl
+https://gitee.com/licoy/encrypt-body-spring-boot-starter
+https://www.jb51.net/article/232513.htm
+
+concept-websocket-loadbalance-spring-boot-starter
+tio-websocket-spring-boot-starter

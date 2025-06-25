@@ -16,7 +16,7 @@ public class MysqlVerifycodeRepository implements VerifycodeRepository {
 	@Override
 	public boolean checkVerifycode(String identifier, String verifyCode) {
 		Boolean verifyPass = verifyCodeFeign.verify(Constants.VerifyCodeType.LOGIN, identifier, verifyCode)
-				.dataOrThrow();
+				;
 		return verifyPass;
 	}
 

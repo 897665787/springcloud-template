@@ -62,7 +62,7 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 			return data;
 		}
 
-		Result<?> result = (Result<?>) data;
+		? result = (?) data;
 		if (!result.successCode()) {
 			return data;
 		}

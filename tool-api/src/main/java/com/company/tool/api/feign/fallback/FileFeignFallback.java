@@ -17,17 +17,17 @@ public class FileFeignFallback implements FallbackFactory<FileFeign> {
         return new FileFeign() {
 
             @Override
-            public Result<UploadResp> upload(UploadReq uploadReq) {
+            public UploadResp upload(UploadReq uploadReq) {
                 return Result.onFallbackError();
             }
 
             @Override
-            public Result<ClientUploadResp> clientUpload(ClientUploadReq clientUploadReq) {
+            public ClientUploadResp clientUpload(ClientUploadReq clientUploadReq) {
                 return Result.onFallbackError();
             }
 
             @Override
-            public Result<String> presignedUrl(String fileKey) {
+            public String presignedUrl(String fileKey) {
                 return Result.onFallbackError();
             }
         };

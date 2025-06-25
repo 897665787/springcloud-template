@@ -16,22 +16,22 @@ public class VerifyCodeFeignFallback implements FallbackFactory<VerifyCodeFeign>
 		return new VerifyCodeFeign() {
 
 			@Override
-			public Result<String> sms(String mobile, String type) {
+			public String sms(String mobile, String type) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<String> email(String email, String type) {
+			public String email(String email, String type) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<CaptchaResp> captcha(String type) {
+			public CaptchaResp captcha(String type) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> verify(String type, String certificate, String inputcode) {
+			public Boolean verify(String type, String certificate, String inputcode) {
 				return Result.onFallbackError();
 			}
 		};

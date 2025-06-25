@@ -37,37 +37,37 @@ public class SecResourceController {
 
     @RequestMapping(value = "/admin/security/secResource/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecResource secResource) {
-        return Result.success(secResourceService.get(secResource));
+    public ? adminGet(SecResource secResource) {
+        return secResourceService.get(secResource);
     }
 
     @RequestMapping(value = "/admin/security/secResource/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecResource.Save.class) SecResource secResource) {
+    public ? adminSave(@Validated(SecResource.Save.class) SecResource secResource) {
         secResourceService.save(secResource);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secResource/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecResource secResource) {
+    public ? adminRemove(SecResource secResource) {
         secResourceService.remove(secResource);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secResource/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecResource.Update.class) SecResource secResource) {
+    public ? adminUpdate(@Validated(SecResource.Update.class) SecResource secResource) {
         secResourceService.update(secResource);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secResource/reload", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> reload() throws Exception {
+    public ? reload() throws Exception {
         secResourceService.reload();
         secResourceService.invalidateCache();
-        return Result.success();
+        return null;
     }
     //endregion
 }

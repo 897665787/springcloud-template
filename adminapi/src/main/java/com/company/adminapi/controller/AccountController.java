@@ -21,18 +21,18 @@ import com.company.adminapi.resp.LoginResp;
 import com.company.adminapi.token.TokenService;
 import com.company.adminapi.util.PassWordUtil;
 import com.company.adminapi.util.TokenValueUtil;
-import com.company.common.api.Result;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.common.exception.BusinessException;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
-import com.company.tool.api.feign.VerifyCodeFeign;
-import com.company.tool.api.response.CaptchaResp;
-import com.google.common.collect.Maps;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.response.SysUserPasswordResp;
 import com.company.system.api.response.SysUserResp;
+import com.company.tool.api.feign.VerifyCodeFeign;
+import com.company.tool.api.response.CaptchaResp;
+import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 
@@ -53,7 +53,7 @@ public class AccountController {
 	private VerifyCodeFeign verifyCodeFeign;
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Value("${token.name}")
 	private String headerToken;
 
@@ -61,38 +61,38 @@ public class AccountController {
 	private String tokenPrefix;
 
 	@GetMapping(value = "/captcha")
-	public Result<CaptchaResp> captcha() {
+	public CaptchaResp captcha() {
 		return verifyCodeFeign.captcha(Constants.VerifyCodeType.ADMIN_LOGIN);
 	}
 
 	@PostMapping(value = "/login")
-	public Result<LoginResp> login(@Valid @RequestBody LoginReq loginReq) {
+	public LoginResp login(@Valid @RequestBody LoginReq loginReq) {
 		String account = loginReq.getAccount();
-		SysUserResp sysUserResp = sysUserFeign.getByAccount(account).dataOrThrow();
+		SysUserResp sysUserResp = sysUserFeign.getByAccount(account);
 		if (sysUserResp == null) {
-			return Result.fail("账号不存在");
+			throw new BusinessException("账号不存在");
 		}
 
 		if (!"ON".equalsIgnoreCase(sysUserResp.getStatus())) {
-			return Result.fail("账号已停用");
+			throw new BusinessException("账号已停用");
 		}
 
 		String password = loginReq.getPassword();
 		String md5Password = PassWordUtil.md5(password);
 		SysUserPasswordResp sysUserPasswordResp = sysUserPasswordFeign.getBySysUserId(sysUserResp.getId())
-				.dataOrThrow();
+				;
 		if (!sysUserPasswordResp.getCanUse()) {
-			return Result.fail(sysUserPasswordResp.getPasswordTips());
+			throw new BusinessException(sysUserPasswordResp.getPasswordTips());
 		}
-		
+
 		if (!md5Password.equals(sysUserPasswordResp.getPassword())) {
-			return Result.fail("密码错误");
+			throw new BusinessException("密码错误");
 		}
 
 		Boolean verifyPass = verifyCodeFeign
-				.verify(Constants.VerifyCodeType.ADMIN_LOGIN, loginReq.getUuid(), loginReq.getCode()).dataOrThrow();
+				.verify(Constants.VerifyCodeType.ADMIN_LOGIN, loginReq.getUuid(), loginReq.getCode());
 		if (!verifyPass) {
-			return Result.fail("验证码错误");
+			throw new BusinessException("验证码错误");
 		}
 
 		Integer sysUserId = sysUserResp.getId();
@@ -102,13 +102,13 @@ public class AccountController {
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
 			tokenValue = tokenPrefix + " " + tokenValue;
 		}
-		
+
 		publishLoginEvent(sysUserId, device, account);
 
 		LoginResp resp = new LoginResp();
 		resp.setToken(tokenValue);
 		resp.setTips(sysUserPasswordResp.getPasswordTips());
-		return Result.success(resp);
+		return resp;
 	}
 
 	// 发布登录事件
@@ -121,18 +121,18 @@ public class AccountController {
 		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
 		messageSender.sendFanoutMessage(params, FanoutConstants.SYS_USER_LOGIN.EXCHANGE);
 	}
-	
+
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public Result<String> logout(HttpServletRequest request) {
+	public String logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return Result.success("登出成功");
+			return "登出成功";
 		}
 
 		tokenService.invalid(token);
 
-		return Result.success("登出成功");
+		return "登出成功";
 	}
 }

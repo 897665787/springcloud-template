@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.order.es.dto.EsTestDto;
@@ -30,7 +29,7 @@ import cn.hutool.json.JSONUtil;
 
 /**
  * 查看索引：http://172.20.33.24:8705/_cat/indices?v
- * 
+ *
  * @author JQ棣
  */
 @RestController
@@ -42,7 +41,7 @@ public class ESController {
 
 	/**
 	 * 获取客户端
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/clientUtil")
@@ -63,11 +62,11 @@ public class ESController {
 
 	/**
 	 * 创建索引（不一定要用）
-	 * 
+	 *
 	 * <pre>
 	 * 使用场景：默认生成的索引字段配置，不是想要的字段属性的情况下使用
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/createIndiceMappingByDSL")
@@ -75,12 +74,12 @@ public class ESController {
 		ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/createIndiceMapping.xml");
 		String createIndiceMapping = clientUtil.createIndiceMapping(indexName, "mapping4lsq.candi_test_v2");
 		// 查看索引结构：http://172.20.33.24:8705/lsq.candi_test_v2/_mapping?pretty
-		return Result.success(createIndiceMapping);
+		return createIndiceMapping;
 	}
-	
+
 	/**
 	 * 添加或修改索引属性
-	 * 
+	 *
 	 * @param indexName
 	 * @return
 	 */
@@ -89,24 +88,24 @@ public class ESController {
 		ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/updateIndiceMapping.xml");
 		String updateIndiceMapping = clientUtil.updateIndiceMapping(indexName + "/_mapping",
 				"mapping4lsq.candi_test_v2");
-		return Result.success(updateIndiceMapping);
+		return updateIndiceMapping;
 	}
-	
+
 	/**
 	 * 删除索引（没有权限）
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/dropIndice")
 	public Object dropIndice(String indexName) {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
 		String dropIndice = clientUtil.dropIndice(indexName);
-		return Result.success(dropIndice);
+		return dropIndice;
 	}
 
 	/**
 	 * 判断索引是否存在
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/existIndice")
@@ -137,9 +136,9 @@ public class ESController {
 		// 1.索引不存在会自动创建索引并且会添加文档
 		// 2.文档已存在会更新文档，根据@ESId注解的字段作唯一
 		String addDocument = clientUtil.addDocument(indexName, estestdto);
-		return Result.success(addDocument);
+		return addDocument;
 	}
-	
+
 	@GetMapping(value = "/getDocumentById")
 	public Object getDocumentById(String indexName, String id) {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
@@ -162,7 +161,7 @@ public class ESController {
 		// clientUtil.deleteDocuments(indexName, new String[] { "1", "2", "3"
 		// });
 
-		return Result.success(deleteDocument);
+		return deleteDocument;
 	}
 
 	@GetMapping(value = "/queryAll")
@@ -171,7 +170,7 @@ public class ESController {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
 		ESDatas<EsTestDto> searchList = clientUtil.searchList(indexName + "/_search", queryAll, EsTestDto.class);
 		List<EsTestDto> datas = searchList.getDatas();
-		
+
 		System.out.println(JSONUtil.toJsonPrettyStr(datas));
 		return datas;
 	}
@@ -199,7 +198,7 @@ public class ESController {
 			esShopInfoDto.setDistance(distance);
 			return esShopInfoDto;
 		}).collect(Collectors.toList());
-		
+
 		System.out.println(JSONUtil.toJsonPrettyStr(datas));
 		return datas;
 	}

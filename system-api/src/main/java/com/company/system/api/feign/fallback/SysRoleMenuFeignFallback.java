@@ -21,32 +21,32 @@ public class SysRoleMenuFeignFallback implements FallbackFactory<SysRoleMenuFeig
 		return new SysRoleMenuFeign() {
 
 			@Override
-			public Result<PageResp<SysRoleMenuResp>> page(Long current, Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+			public PageResp<SysRoleMenuResp> page(Long current, Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<List<SysRoleMenuResp>> list(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+			public List<SysRoleMenuResp> list(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<SysRoleMenuResp> query(Integer id) {
+			public SysRoleMenuResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysRoleMenuReq sysRoleMenuReq) {
+			public Boolean save(SysRoleMenuReq sysRoleMenuReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysRoleMenuReq sysRoleMenuReq) {
+			public Boolean update(SysRoleMenuReq sysRoleMenuReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 

@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.Utils;
+import com.company.framework.context.HttpContextUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderEnum.StatusEnum;
@@ -103,14 +103,14 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 * @return
 	 */
 	@Override
-	public Result<DistributeBuyOrderResp> buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq) {
+	public DistributeBuyOrderResp buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
 		
 		// TODO 从购物车获取商品数据
 		List<ShopCart> shopCartList = shopCartService.selectByUserId(userId);
 		if (shopCartList.isEmpty()) {
-			return Result.fail("购物车未找到商品");
+			throw new BusinessException("购物车未找到商品");
 		}
 		
 		BigDecimal productAmount = BigDecimal.ZERO;
@@ -139,7 +139,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			UserCouponCanUse userCouponCanUse = useCouponService.canUse(userCouponId, userId, orderAmount,
 					runtimeAttach);
 			if (!userCouponCanUse.getCanUse()) {
-				return Result.fail("优惠券不可用");
+				throw new BusinessException("优惠券不可用");
 			}
 			reduceAmount = userCouponCanUse.getReduceAmount();
 		}
@@ -148,13 +148,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		
 		BigDecimal payAmount = distributeBuyOrderReq.getPayAmount();
 		if (payAmount.compareTo(needPayAmount) != 0) {
-			return Result.fail("支付金额不匹配");
+			throw new BusinessException("支付金额不匹配");
 		}
 
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，锁定优惠券
 			Integer affect = userCouponService.updateStatus(userCouponId, "nouse", "used");
 			if (affect == 0) {
-				return Result.fail("优惠券不可用");
+				throw new BusinessException("优惠券不可用");
 			}
 		}
 		
@@ -210,7 +210,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 		registerOrderReq.setProductList(orderProductReqList);
 
-		orderFeign.registerOrder(registerOrderReq).dataOrThrow();
+		orderFeign.registerOrder(registerOrderReq);
 
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			executor.submit(() -> {
@@ -219,10 +219,10 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				payNotifyReq.setOrderCode(orderCode);
 				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
-				Result<Void> buyNotifyResult = buyNotify(payNotifyReq);
+				Void buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
 			});
-			return Result.success(new DistributeBuyOrderResp().setNeedPay(false));
+			return new DistributeBuyOrderResp().setNeedPay(false);
 		}
 
 		// 获取支付参数
@@ -237,11 +237,11 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
 		payReq.setOpenid(HttpContextUtil.deviceid());
 		payReq.setNotifyUrl(Constants.feignUrl("/distributeOrder/buyNotify"));
-		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
+		PayResp payResp = payFeign.unifiedorder(payReq);
 		if (!payResp.getSuccess()) {
-			return Result.fail("支付失败，请稍后重试");
+			throw new BusinessException("支付失败，请稍后重试");
 		}
-		return Result.success(new DistributeBuyOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo()));
+		return new DistributeBuyOrderResp().setNeedPay(true).setPayInfo(payResp.getPayInfo());
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 * @return
 	 */
 	@PostMapping("/buyNotify")
-	public Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
+	public Void buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
 		
@@ -265,7 +265,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
 			
-			return Result.success();
+			return null;
 		}
 		
 		// 支付成功
@@ -280,10 +280,10 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
 		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
 				.setPayTime(time);
-		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq).dataOrThrow();
+		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
-			return Result.success();
+			return null;
 		}
 		
     	// 发布‘支付成功’事件
@@ -291,7 +291,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		params.put("orderCode", orderCode);
 		messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_SUCCESS.EXCHANGE);
 		
-		return Result.success();
+		return null;
 	}
 
 	/**
@@ -301,17 +301,17 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 * @return
 	 */
 	@PostMapping("/subOrder")
-	public Result<Object> subOrder(@RequestBody OrderReq orderReq) {
+	public Object subOrder(@RequestBody OrderReq orderReq) {
 		OrderEnum.SubOrderEventEnum subOrderEvent = orderReq.getSubOrderEvent();
 		if (subOrderEvent == OrderEnum.SubOrderEventEnum.USER_CANCEL) {
 			userCancel(orderReq);
-			return Result.success(detail(orderReq));
+			return detail(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_ITEM) {
-			return Result.success(item(orderReq));
+			return item(orderReq);
 		} else if (subOrderEvent == OrderEnum.SubOrderEventEnum.QUERY_DETAIL) {
-			return Result.success(detail(orderReq));
+			return detail(orderReq);
 		}
-		return Result.success();
+		return null;
 	}
 
 	private void userCancel(OrderReq orderReq) {
@@ -326,7 +326,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			// 关闭支付订单，不关心结果
 			PayCloseReq payCloseReq = new PayCloseReq();
 			payCloseReq.setOrderCode(orderCode);
-			Result<Void> payCloseResp = payFeign.payClose(payCloseReq);
+			Void payCloseResp = payFeign.payClose(payCloseReq);
 			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
 		}
 	}

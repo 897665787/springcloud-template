@@ -17,17 +17,17 @@ public class SysUserPasswordFeignFallback implements FallbackFactory<SysUserPass
 		return new SysUserPasswordFeign() {
 
 			@Override
-			public Result<SysUserPasswordResp> getBySysUserId(Integer sysUserId) {
+			public SysUserPasswordResp getBySysUserId(Integer sysUserId) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<String> getPasswordBySysUserId(Integer sysUserId) {
+			public String getPasswordBySysUserId(Integer sysUserId) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> saveNewPassword(SaveNewPasswordReq saveNewPasswordReq) {
+			public Void saveNewPassword(SaveNewPasswordReq saveNewPasswordReq) {
 				return Result.onFallbackError();
 			}
 

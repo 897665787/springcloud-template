@@ -34,41 +34,41 @@ public class DistrictController {
 
     @RequestMapping(value = "/admin/system/district/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> get(District district) {
-        return Result.success(districtService.get(district));
+    public ? get(District district) {
+        return districtService.get(district);
     }
 
     @RequestMapping(value = "/admin/system/district/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> save(@Validated(District.Save.class) District district) {
+    public ? save(@Validated(District.Save.class) District district) {
         districtService.save(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> remove(District district) {
+    public ? remove(District district) {
         districtService.remove(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> update(@Validated(District.Update.class) District district) {
+    public ? update(@Validated(District.Update.class) District district) {
         districtService.update(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/status/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdateStatus(District district) {
+    public ? adminUpdateStatus(District district) {
         districtService.updateStatus(district);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/district/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminDistrictList(District district) {
-        return Result.success(districtService.listCombo(district));
+    public ? adminDistrictList(District district) {
+        return districtService.listCombo(district);
     }
 }

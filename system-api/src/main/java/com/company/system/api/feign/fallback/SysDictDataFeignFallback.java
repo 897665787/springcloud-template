@@ -21,42 +21,42 @@ public class SysDictDataFeignFallback implements FallbackFactory<SysDictDataFeig
 		return new SysDictDataFeign() {
 
 			@Override
-			public Result<PageResp<SysDictDataResp>> page(Long current, Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<List<SysDictDataResp>> list(String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<SysDictDataResp> query(Integer id) {
+			public PageResp<SysDictDataResp> page(Long current, Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysDictDataReq sysDictDataReq) {
+			public List<SysDictDataResp> list(String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysDictDataReq sysDictDataReq) {
+			public SysDictDataResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean save(SysDictDataReq sysDictDataReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<List<SysDictDataResp>> getByType(String type) {
+			public Boolean update(SysDictDataReq sysDictDataReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<String> getValueByTypeCode(String type, String code) {
+			public Boolean remove(RemoveReq<Integer> req) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public List<SysDictDataResp> getByType(String type) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public String getValueByTypeCode(String type, String code) {
 				return Result.onFallbackError();
 			}
 

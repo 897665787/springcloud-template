@@ -11,11 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliNotifyFeign;
 import com.company.order.entity.AliPay;
@@ -24,6 +21,8 @@ import com.company.order.entity.PayNotify;
 import com.company.order.mapper.AliPayMapper;
 import com.company.order.mapper.AliPayRefundMapper;
 import com.company.order.mapper.PayNotifyMapper;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.ali.AliConstants;
 import com.company.order.pay.ali.config.AliPayConfiguration;
 import com.company.order.pay.ali.config.AliPayProperties;
@@ -38,7 +37,7 @@ public class AliNotifyController implements AliNotifyFeign {
 
 	@Autowired
 	private AliPayMapper aliPayMapper;
-	
+
 	@Autowired
 	private AliPayRefundMapper aliPayRefundMapper;
 
@@ -47,12 +46,12 @@ public class AliNotifyController implements AliNotifyFeign {
 
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Autowired
 	private AliPayConfiguration aliPayConfiguration;
 
 	@Override
-	public Result<String> aliPayNotify(@RequestBody Map<String, String> aliParams) {
+	public String aliPayNotify(@RequestBody Map<String, String> aliParams) {
 		String notifyData = JsonUtil.toJsonString(aliParams);
 		// 记录原始数据
 		log.info("ali notify data:{}", notifyData);
@@ -67,12 +66,12 @@ public class AliNotifyController implements AliNotifyFeign {
 					AliConstants.CHARSET, AliConstants.SIGNTYPE);
 			if (!signVerified) {
 				payNotifyMapper.updateRemarkById("验签失败", payNotify.getId());
-				return Result.success("fail");
+				return "fail";
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-			return Result.success("fail");
+			return "fail";
 		}
 
 		String tradeStatus = aliParams.get("trade_status");
@@ -153,7 +152,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-				return Result.success("success");
+				return "success";
 			}
 
 			// MQ异步处理
@@ -217,13 +216,13 @@ public class AliNotifyController implements AliNotifyFeign {
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-				return Result.success("success");
+				return "success";
 			}
 
 			// MQ异步处理
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("outTradeNo", outTradeNo);
-			
+
 			params.put("time", aliParams.get("gmt_payment"));
 
 			//财务流水信息
@@ -235,6 +234,6 @@ public class AliNotifyController implements AliNotifyFeign {
 			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 					Constants.QUEUE.PAY_NOTIFY.KEY);
 		}
-		return Result.success("success");
+		return "success";
 	}
 }

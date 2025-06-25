@@ -15,12 +15,12 @@ public class CouponFeignFallback implements FallbackFactory<CouponFeign> {
 	public CouponFeign create(final Throwable e) {
 		return new CouponFeign() {
 			@Override
-			public Result<UserCouponResp> getUserCouponById(Integer userCouponId) {
+			public UserCouponResp getUserCouponById(Integer userCouponId) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> isMatchTemplate(Integer userCouponId, Integer couponTemplateId) {
+			public Boolean isMatchTemplate(Integer userCouponId, Integer couponTemplateId) {
 				return Result.onFallbackError();
 			}
 		};

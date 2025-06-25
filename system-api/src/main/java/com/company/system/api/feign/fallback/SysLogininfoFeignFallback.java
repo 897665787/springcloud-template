@@ -21,32 +21,32 @@ public class SysLogininfoFeignFallback implements FallbackFactory<SysLogininfoFe
 		return new SysLogininfoFeign() {
 
 			@Override
-			public Result<PageResp<SysLogininfoResp>> page(Long current, Long size, Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<List<SysLogininfoResp>> list(Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
-				return Result.onFallbackError();
-			}
-			
-			@Override
-			public Result<SysLogininfoResp> query(Integer id) {
+			public PageResp<SysLogininfoResp> page(Long current, Long size, Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysLogininfoReq sysLogininfoReq) {
+			public List<SysLogininfoResp> list(Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysLogininfoReq sysLogininfoReq) {
+			public SysLogininfoResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean save(SysLogininfoReq sysLogininfoReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Boolean update(SysLogininfoReq sysLogininfoReq) {
+				return Result.onFallbackError();
+			}
+
+			@Override
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 

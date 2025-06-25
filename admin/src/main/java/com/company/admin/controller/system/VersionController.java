@@ -31,28 +31,28 @@ public class VersionController {
 
     @RequestMapping(value = "/admin/system/version/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(Version version) {
-        return Result.success(versionService.get(version));
+    public ? adminGet(Version version) {
+        return versionService.get(version);
     }
 
     @RequestMapping(value = "/admin/system/version/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Version.Save.class) Version version) {
+    public ? adminSave(@Validated(Version.Save.class) Version version) {
         versionService.save(version);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/version/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Version version) {
+    public ? adminRemove(Version version) {
         versionService.remove(version);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/system/version/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Version.Update.class) Version version) {
+    public ? adminUpdate(@Validated(Version.Update.class) Version version) {
         versionService.update(version);
-        return Result.success();
+        return null;
     }
 }

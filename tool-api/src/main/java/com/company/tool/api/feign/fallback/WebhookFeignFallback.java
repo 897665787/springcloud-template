@@ -17,12 +17,12 @@ public class WebhookFeignFallback implements FallbackFactory<WebhookFeign> {
 		return new WebhookFeign() {
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
+			public List<Integer> select4PreTimeSend(Integer limit) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
+			public Void exePreTimeSend(Integer id) {
 				return Result.onFallbackError();
 			}
 		};

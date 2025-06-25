@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.company.framework.trace.TraceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -30,9 +29,11 @@ import org.springframework.web.client.RestTemplate;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.trace.TraceManager;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -78,7 +79,7 @@ public class OrderController implements OrderFeign {
 	private TraceManager traceManager;
 
 	@Override
-	public Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
+	public Void registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
 		Integer userId = registerOrderReq.getUserId();
 		String orderCode = registerOrderReq.getOrderCode();
 		String orderType = registerOrderReq.getOrderType();
@@ -117,16 +118,16 @@ public class OrderController implements OrderFeign {
 			}
 		}
 
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq) {
+	public OrderDetailResp cancelByUser(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
 		boolean affect = orderService.cancel(orderCode, cancelTime);
 		if (!affect) {
-			return Result.fail("取消订单失败，请刷新订单");
+			throw new BusinessException("取消订单失败，请刷新订单");
 		}
 
 		Order order = orderService.selectByOrderCode(orderCode);
@@ -137,61 +138,61 @@ public class OrderController implements OrderFeign {
 		Object data = requestSubOrder(OrderEnum.SubOrderEventEnum.USER_CANCEL, subOrderUrl, order, orderProductList);
 		orderDetailResp.setSubOrder(data);
 
-		return Result.success(orderDetailResp);
+		return orderDetailResp;
 	}
 
 	@Override
-	public Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
+	public Boolean cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq) {
 		String orderCode = orderCancelReq.getOrderCode();
 		LocalDateTime cancelTime = orderCancelReq.getCancelTime();
 		boolean affect = orderService.cancel(orderCode, cancelTime);
-		return Result.success(affect);
+		return affect;
 	}
 
 	@Override
-	public Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
+	public Boolean paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq) {
 		String orderCode = orderPaySuccessReq.getOrderCode();
 		BigDecimal payAmount = orderPaySuccessReq.getPayAmount();
 		LocalDateTime payTime = orderPaySuccessReq.getPayTime();
 
 		boolean affect = orderService.paySuccess(orderCode, payAmount, payTime);
-		return Result.success(affect);
+		return affect;
 	}
 
 	@Override
-	public Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq) {
+	public Boolean receive(@RequestBody OrderReceiveReq orderReceiveReq) {
 		String orderCode = orderReceiveReq.getOrderCode();
 		LocalDateTime finishTime = orderReceiveReq.getFinishTime();
 
 		boolean affect = orderService.finish(orderCode, finishTime);
-		return Result.success(affect);
+		return affect;
 	}
 
 	@Override
-	public Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq) {
+	public Boolean finish(@RequestBody OrderFinishReq orderFinishReq) {
 		String orderCode = orderFinishReq.getOrderCode();
 		LocalDateTime finishTime = orderFinishReq.getFinishTime();
 
 		boolean affect = orderService.finish(orderCode, finishTime);
-		return Result.success(affect);
+		return affect;
 	}
 
 	@Override
-	public Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq) {
+	public OrderRefundApplyResp refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq) {
 		String orderCode = orderRefundApplyReq.getOrderCode();
 		Order order = orderService.selectByOrderCode(orderCode);
 
 		BigDecimal needPayAmount = order.getNeedPayAmount();
 		BigDecimal refundAmount = order.getRefundAmount();
 		if (needPayAmount.compareTo(refundAmount) <= 0) {
-			return Result.fail("无可退款金额");
+			throw new BusinessException("无可退款金额");
 		}
 
 		OrderRefundApplyResp resp = new OrderRefundApplyResp();
 		LocalDateTime refundApplyTime = orderRefundApplyReq.getRefundApplyTime();
 		boolean updateSuccess = orderService.refundApply(orderCode, refundApplyTime);
 		if (!updateSuccess) {
-			return Result.fail("当前不可申请退款，请刷新后重试！");
+			throw new BusinessException("当前不可申请退款，请刷新后重试！");
 		}
 
 		OrderEnum.SubStatusEnum oldSubStatus = OrderEnum.SubStatusEnum.of(order.getSubStatus());
@@ -212,47 +213,47 @@ public class OrderController implements OrderFeign {
 		String attach = JsonUtil.getString(dataJSON, "attach");
 		resp.setAttach(attach);
 
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<Boolean> refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq) {
+	public Boolean refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq) {
 		String orderCode = orderRefundFailReq.getOrderCode();
 		OrderEnum.SubStatusEnum oldSubStatus = orderRefundFailReq.getOldSubStatus();
 		String failReason = orderRefundFailReq.getFailReason();
 
 		boolean affect = orderService.refundFail(orderCode, oldSubStatus, failReason);
-		return Result.success(affect);
+		return affect;
 	}
 
 	@Override
-	public Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
+	public Boolean refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq) {
 		String orderCode = orderRefundFinishReq.getOrderCode();
 		LocalDateTime refundFinishTime = orderRefundFinishReq.getRefundFinishTime();
 		BigDecimal totalRefundAmount = orderRefundFinishReq.getTotalRefundAmount();
 		Boolean refundAll = orderRefundFinishReq.getRefundAll();
 
 		boolean affect = orderService.refundFinish(orderCode, refundFinishTime, totalRefundAmount, refundAll);
-		return Result.success(affect);
+		return affect;
 	}
 
 	@Override
-	public Result<Void> deleteOrder(String orderCode) {
+	public Void deleteOrder(String orderCode) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
-			return Result.fail("订单不存在");
+			throw new BusinessException("订单不存在");
 		}
 		if (!order.getUserId().equals(userId)) {
-			return Result.fail("订单不匹配");
+			throw new BusinessException("订单不匹配");
 		}
 
 		orderService.deleteOrder(orderCode);
-		return Result.success();
+		return null;
 	}
 
 	@Override
-	public Result<List<OrderResp>> page(
+	public List<OrderResp> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size, OrderEnum.StatusEnum status) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
@@ -276,7 +277,7 @@ public class OrderController implements OrderFeign {
 			}
 			return orderResp;
 		}).collect(Collectors.toList());
-		return Result.success(orderRespList);
+		return orderRespList;
 	}
 
 	private OrderResp toOrderResp(Order order, Map<String, List<OrderProduct>> orderCodeThisListMap) {
@@ -414,19 +415,19 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<OrderDetailResp> detail(String orderCode) {
+	public OrderDetailResp detail(String orderCode) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
-			return Result.fail("订单不存在");
+			throw new BusinessException("订单不存在");
 		}
 		if (!order.getUserId().equals(userId)) {
-			return Result.fail("订单不匹配");
+			throw new BusinessException("订单不匹配");
 		}
 
 		OrderDetailResp orderDetailResp = toOrderDetailResp(order);
 
-		return Result.success(orderDetailResp);
+		return orderDetailResp;
 	}
 
 	private OrderDetailResp toOrderDetailResp(Order order) {
@@ -568,12 +569,12 @@ public class OrderController implements OrderFeign {
 			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(url, httpEntity, Result.class);
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {
 				@SuppressWarnings("unchecked")
-				Result<Object> result = responseEntity.getBody();
+				Object result = responseEntity.getBody();
 				log.info("{}ms,结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
-				remark = result.getMessage();
-				if (result.successCode()) {
-					return result.getData();
-				}
+//				remark = result.getMessage();
+//				if (result.successCode()) {
+//					return result.getData();
+//				}
 			} else {
 				remark = "响应码:" + responseEntity.getStatusCodeValue();
 			}
@@ -587,21 +588,21 @@ public class OrderController implements OrderFeign {
 	}
 
 	@Override
-	public Result<List<String>> select4OverSendSuccess(Integer limit) {
+	public List<String> select4OverSendSuccess(Integer limit) {
 		List<String> orderCodeList = orderService.select4OverSendSuccess(limit);
-		return Result.success(orderCodeList);
+		return orderCodeList;
 	}
 
 	@Override
-	public Result<List<String>> select4OverWaitReview(Integer limit) {
+	public List<String> select4OverWaitReview(Integer limit) {
 		List<String> orderCodeList = orderService.select4OverWaitReview(limit);
-		return Result.success(orderCodeList);
+		return orderCodeList;
 	}
 
 	@Override
-	public Result<Order4Resp> selectByOrderCode(String orderCode) {
+	public Order4Resp selectByOrderCode(String orderCode) {
 		Order order = orderService.selectByOrderCode(orderCode);
-		return Result.success(PropertyUtils.copyProperties(order, Order4Resp.class));
+		return PropertyUtils.copyProperties(order, Order4Resp.class);
 	}
 
 }

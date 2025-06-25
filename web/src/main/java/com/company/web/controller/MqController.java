@@ -1,19 +1,20 @@
 package com.company.web.controller;
 
-import cn.hutool.core.date.DateUtil;
-import com.company.common.api.Result;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.web.messagedriven.Constants;
-import com.company.web.messagedriven.strategy.StrategyConstants;
-import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.web.messagedriven.Constants;
+import com.company.web.messagedriven.strategy.StrategyConstants;
+import com.google.common.collect.Maps;
+
+import cn.hutool.core.date.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/mq")
@@ -23,7 +24,7 @@ public class MqController {
 	private MessageSender messageSender;
 
 	@GetMapping(value = "/sendNormalMessage")
-	public Result<String> sendNormalMessage(String message) {
+	public String sendNormalMessage(String message) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("open", message);
 		params.put("open2", message);
@@ -37,22 +38,22 @@ public class MqController {
 //		param.put("time", DateUtil.now());
 //		messageSender.sendNormalMessage(StrategyConstants.USER_STRATEGY, param, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.ROUTING_KEY);
 
-		return Result.success("success");
+		return "success";
 	}
 
 	@GetMapping(value = "/sendFanoutMessage")
-	public Result<String> sendFanoutMessage(String message) {
+	public String sendFanoutMessage(String message) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("open", message);
 		params.put("open2", message);
 		params.put("time", DateUtil.now());
 		messageSender.sendFanoutMessage(params, FanoutConstants.ORDER_CREATE.EXCHANGE);
 
-		return Result.success("success");
+		return "success";
 	}
 
 	@GetMapping(value = "/sendDelayMessage")
-	public Result<String> sendDelayMessage(String message, Integer delaySeconds) {
+	public String sendDelayMessage(String message, Integer delaySeconds) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("open", message);
 		params.put("time", DateUtil.now());
@@ -60,11 +61,11 @@ public class MqController {
 
 		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 				Constants.QUEUE.DEAD_LETTER.KEY, delaySeconds);
-		return Result.success("success");
+		return "success";
 	}
-	
+
 	@GetMapping(value = "/sendXDelayMessage")
-	public Result<String> sendXDelayMessage(String message, Integer delaySeconds) {
+	public String sendXDelayMessage(String message, Integer delaySeconds) {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("open", message);
 		params.put("time", DateUtil.now());
@@ -72,6 +73,6 @@ public class MqController {
 
 		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
 				Constants.QUEUE.XDELAYED.KEY, delaySeconds);
-		return Result.success("success");
+		return "success";
 	}
 }

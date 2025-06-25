@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+import com.company.common.exception.BusinessException;
 import com.company.tool.api.enums.EmailEnum;
 import com.company.tool.api.enums.SmsEnum;
 import com.company.tool.api.feign.VerifyCodeFeign;
@@ -33,20 +33,20 @@ public class VerifyCodeController implements VerifyCodeFeign {
 	private AsyncSmsSender asyncSmsSender;
 	@Autowired
 	private AsyncEmailSender asyncEmailSender;
-	
+
 	@Override
-	public Result<String> sms(String mobile, String type) {
+	public String sms(String mobile, String type) {
 		VerifyCode verifyCode = verifyCodeService.selectLastByCertificateType(mobile, type);
 		if (verifyCode != null) {
 			if (VerifyCodeEnum.Status.UN_USE == VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
 				LocalDateTime validTime = verifyCode.getValidTime();
 				LocalDateTime now = LocalDateTime.now();
 				if (validTime.compareTo(now) >= 0) {// 未使用且未过期
-					return Result.fail("验证码已发送，请勿重复操作！");
+					throw new BusinessException("验证码已发送，请勿重复操作！");
 				}
 			}
 		}
-		
+
 		String code = RandomUtil.randomNumbers(6);
 
 		verifyCodeService.save(type, mobile, code);
@@ -59,22 +59,22 @@ public class VerifyCodeController implements VerifyCodeFeign {
 
 		asyncSmsSender.send(mobile, templateParamMap, SmsEnum.Type.VERIFYCODE, planSendTime, overTime);
 
-		return Result.success("验证码发送成功");
+		return "验证码发送成功";
 	}
 
 	@Override
-	public Result<String> email(String email, String type) {
+	public String email(String email, String type) {
 		VerifyCode verifyCode = verifyCodeService.selectLastByCertificateType(email, type);
 		if (verifyCode != null) {
 			if (VerifyCodeEnum.Status.UN_USE == VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
 				LocalDateTime validTime = verifyCode.getValidTime();
 				LocalDateTime now = LocalDateTime.now();
 				if (validTime.compareTo(now) >= 0) {// 未使用且未过期
-					return Result.fail("验证码已发送，请勿重复操作！");
+					throw new BusinessException("验证码已发送，请勿重复操作！");
 				}
 			}
 		}
-		
+
 		String code = RandomUtil.randomNumbers(6);
 
 		verifyCodeService.save(type, email, code);
@@ -87,11 +87,11 @@ public class VerifyCodeController implements VerifyCodeFeign {
 
 		asyncEmailSender.send(email, templateParamMap, EmailEnum.Type.VERIFYCODE, planSendTime, overTime);
 
-		return Result.success("验证码发送成功");
+		return "验证码发送成功";
 	}
-	
+
 	@Override
-	public Result<CaptchaResp> captcha(String type) {
+	public CaptchaResp captcha(String type) {
 		LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(200, 90, 4, 100);
 		String code = lineCaptcha.getCode();
 		String uuid = IdUtil.fastSimpleUUID();
@@ -101,12 +101,12 @@ public class VerifyCodeController implements VerifyCodeFeign {
 		CaptchaResp resp = new CaptchaResp();
 		resp.setUuid(uuid);
 		resp.setImageBase64Data(lineCaptcha.getImageBase64Data());
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<Boolean> verify(String type, String certificate, String inputcode) {
+	public Boolean verify(String type, String certificate, String inputcode) {
 		boolean verifyPass = verifyCodeService.verify(type, certificate, inputcode);
-		return Result.success(verifyPass);
+		return verifyPass;
 	}
 }

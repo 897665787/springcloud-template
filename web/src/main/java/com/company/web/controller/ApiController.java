@@ -1,6 +1,21 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
+import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.company.common.constant.HeaderConstants;
 import com.company.common.util.JsonUtil;
 import com.company.framework.annotation.RequireLogin;
@@ -15,21 +30,8 @@ import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
@@ -48,19 +50,24 @@ public class ApiController {
 	private TimeService timeService;
 
 	@GetMapping(value = "/beans")
-	public Result<Map<?,?>> beans() {
+	public Map<?,?> beans() {
 		ApplicationContext context = SpringContextUtil.getContext();
 		String[] beanDefinitionNames = context.getBeanDefinitionNames();
 		Map<String, Object> map = Maps.newHashMap();
 		map.put("beanDefinitionNames", beanDefinitionNames);
-		return Result.success(map);
+		return map;
+	}
+
+	@GetMapping(value = "/returnnull")
+	public void returnnull() {
+		System.out.println("returnnull");
 	}
 
 	@Autowired
 	private ICache cache;
 
 	@GetMapping(value = "/timestr")
-	public Result<String> timestr() {
+	public String timestr() {
 		String string1 = cache.get("aaaaaaa", () -> {
 //			int a = 1/0;
 			return ""+System.currentTimeMillis();
@@ -73,7 +80,7 @@ public class ApiController {
 //			return ""+System.currentTimeMillis();
 //		});
 //		System.out.println(string2);
-		return Result.success(timeService.getTime());
+		return timeService.getTime();
 	}
 
 	@Autowired
@@ -82,33 +89,33 @@ public class ApiController {
 	private Integer maxPoolSize;
 
     @GetMapping(value = "/info")
-    public Result<Map<String, Object>> info() {
+    public Map<String, Object> info() {
         Map<String, Object> map = Maps.newHashMap();
         map.put("threadPoolProperties", threadPoolProperties);
         map.put("maxPoolSize", maxPoolSize);
-        return Result.success(map);
+        return map;
     }
 
 	@RequireLogin
 	@GetMapping(value = "/getOrderById")
-	public Result<OrderResp> getOrderById(Long id) {
+	public OrderResp getOrderById(Long id) {
 //		if (true)
 //			throw new BusinessException(1, "aaaaaaaaaaa");
-//		Result<OrderResp> byId = orderFeign.getById(id);
+//		OrderResp byId = orderFeign.getById(id);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 //		return byId;
-		return Result.success();
+		return null;
 	}
 
 	@GetMapping(value = "/getUserById")
-	public Result<UserResp> getUserById(Long id) {
-		Result<UserResp> byId = userFeign.getById(1L);
+	public UserResp getUserById(Long id) {
+		UserResp byId = userFeign.getById(1L);
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
 		return byId;
 	}
 
 	@GetMapping(value = "/getInt")
-	public Result<Integer> getInt(HttpServletRequest request) {
+	public Integer getInt(HttpServletRequest request) {
 		String thname = Thread.currentThread().getName();
 		System.out.println(thname+" "+"ApiController platform():" + HttpContextUtil.platform());
 		System.out.println(thname+" "+"ApiController httpContextHeader():" + HttpContextUtil.httpContextHeader());
@@ -136,56 +143,56 @@ public class ApiController {
 //			System.err.println(thname2+" "+"ApiController execute platform():" + HttpContextUtil.platform());
 ////			System.out.println(thname2+" "+"ApiController execute httpContextHeader():" + HttpContextUtil.httpContextHeader());
 //		});
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/getString")
-	public Result<String> getString() {
-		return Result.success("addddddd");
+	public String getString() {
+		return "addddddd";
 	}
 
 	@GetMapping(value = "/time")
-	public Result<Date> time() {
-		return Result.success(new Date());
+	public Date time() {
+		return new Date();
 	}
 
 	@GetMapping(value = "/onoff")
-	public Result<OrderResp> onoff() {
+	public OrderResp onoff() {
 		for (int i = 0; i < 3000; i++) {
-//			Result<OrderResp> byId = orderFeign.getById((long)i);
+//			OrderResp byId = orderFeign.getById((long)i);
 //			log.info("onoff:{}",byId);
 		}
-		return Result.success(new OrderResp());
+		return new OrderResp();
 	}
 
 	@GetMapping(value = "/send")
-	public Result<String> send() {
-		return Result.success("{}");
+	public String send() {
+		return "{}";
 	}
 
 	@Autowired
 	SequenceGenerator sequenceGenerator;
 
 	@GetMapping(value = "/retryGet")
-	public Result<OrderResp> retryGet(Long id) {
+	public OrderResp retryGet(Long id) {
 		log.info("retryGet");
-//		Result<OrderResp> byId = orderFeign.retryGet(id);
+//		OrderResp byId = orderFeign.retryGet(id);
 //		log.info("retryGet:{}", byId);
 //		return byId;
-		return Result.success();
+		return null;
 	}
 
 	@GetMapping(value = "/retryPost")
-	public Result<OrderResp> retryPost(Long id) {
+	public OrderResp retryPost(Long id) {
 		log.info("retryPost");
-//		Result<OrderResp> byId = orderFeign.retryPost(new OrderReq().setId(id));
+//		OrderResp byId = orderFeign.retryPost(new OrderReq().setId(id));
 //		log.info("retryPost:{}", byId);
 //		return byId;
-		return Result.success();
+		return null;
 	}
 
 	@GetMapping(value = "/threadpool")
-	public Result<Integer> threadpool() {
+	public Integer threadpool() {
 		System.out.println("threadPoolExecutor:"+threadPoolExecutor);
 		for (int i = 0; i < 3; i++) {
 			int n = i;
@@ -199,11 +206,11 @@ public class ApiController {
 			});
 			System.out.println("submit:"+n);
 		}
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/threadpooltask")
-	public Result<Integer> threadpooltask() {
+	public Integer threadpooltask() {
 		System.out.println("threadPoolTaskExecutor:"+threadPoolTaskExecutor);
 		for (int i = 0; i < 3; i++) {
 			int n = i;
@@ -219,11 +226,11 @@ public class ApiController {
 		}
 
 		threadPoolTaskExecutor.getActiveCount();
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/log")
-	public Result<Integer> log() {
+	public Integer log() {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 1; i++) {
 			try{
@@ -237,6 +244,6 @@ public class ApiController {
 		long end = System.currentTimeMillis();
 		System.out.println("cost:"+(end-start));
 		log.info("cost:{}", (end-start));
-		return Result.success(1);
+		return 1;
 	}
 }

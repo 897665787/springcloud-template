@@ -41,28 +41,28 @@ public class ImageController {
 
     @RequestMapping(value = "/admin/content/image/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(Image image) {
-        return Result.success(imageService.get(image));
+    public ? adminGet(Image image) {
+        return imageService.get(image);
     }
 
     @RequestMapping(value = "/admin/content/image/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(Image.Save.class) Image image) {
+    public ? adminSave(@Validated(Image.Save.class) Image image) {
         imageService.save(image);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/image/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(Image image) {
+    public ? adminRemove(Image image) {
         imageService.remove(image);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/content/image/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(Image.Update.class) Image image) {
+    public ? adminUpdate(@Validated(Image.Update.class) Image image) {
         imageService.update(image);
-        return Result.success();
+        return null;
     }
 }

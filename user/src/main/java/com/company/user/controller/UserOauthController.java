@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.common.util.PropertyUtils;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserOauthFeign;
@@ -24,30 +23,30 @@ public class UserOauthController implements UserOauthFeign {
 	private UserOauthMapper userOauthMapper;
 
 	@Override
-	public Result<UserOauthResp> selectOauth(UserOauthEnum.IdentityType identityType, String identifier) {
+	public UserOauthResp selectOauth(UserOauthEnum.IdentityType identityType, String identifier) {
 
 		UserOauth userOauth = userOauthMapper.selectByIdentityTypeIdentifier(identityType, identifier);
-		return Result.success(PropertyUtils.copyProperties(userOauth, UserOauthResp.class));
+		return PropertyUtils.copyProperties(userOauth, UserOauthResp.class);
 	}
 
 	@Override
-	public Result<String> selectIdentifier(Integer userId, UserOauthEnum.IdentityType identityType) {
+	public String selectIdentifier(Integer userId, UserOauthEnum.IdentityType identityType) {
 		UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, identityType);
-		return Result.success(userOauth.getIdentifier());
+		return userOauth.getIdentifier();
 	}
 
 	@Override
-	public Result<String> selectCertificate(Integer userId, UserOauthEnum.IdentityType identityType) {
+	public String selectCertificate(Integer userId, UserOauthEnum.IdentityType identityType) {
 		UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, identityType);
-		return Result.success(userOauth.getCertificate());
+		return userOauth.getCertificate();
 	}
 
 	@Override
-	public Result<Boolean> bindOauth(@RequestBody @Valid UserOauthReq userInfoReq) {
+	public Boolean bindOauth(@RequestBody @Valid UserOauthReq userInfoReq) {
 
 		userOauthMapper.bindOauth(userInfoReq.getUserId(), userInfoReq.getIdentityType(), userInfoReq.getIdentifier(),
 				userInfoReq.getCertificate());
 
-		return Result.success(true);
+		return true;
 	}
 }

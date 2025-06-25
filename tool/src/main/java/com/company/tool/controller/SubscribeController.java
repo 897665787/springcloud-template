@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.enums.SubscribeEnum;
@@ -56,15 +55,15 @@ public class SubscribeController implements SubscribeFeign {
 	private UserOauthFeign userOauthFeign;
 	@Autowired
 	private IMaTool maTool;
-	
+
 	@Value("${appid.wx.miniapp:1111}")
 	private String appid;
-	
+
 	// 'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤
 	private static final String SUBSCRIBEMESSAGE_TEMPLATE_ACCEPT = "accept";
 
 	@Override
-	public Result<List<String>> selectTemplateCodeByGroup(String group) {
+	public List<String> selectTemplateCodeByGroup(String group) {
 		List<SubscribeEnum.Type> typeList = subscribeGroupTypeService.selectTypesByGroup(group);
 
 		// 配置约定，最多3个
@@ -74,11 +73,11 @@ public class SubscribeController implements SubscribeFeign {
 			return subscribeTypeTemplateConfig.getTemplateCode();
 		}).collect(Collectors.toList());
 
-		return Result.success(templateCodeList);
+		return templateCodeList;
 	}
-	
+
 	@Override
-	public Result<Void> grant(@RequestBody SubscribeGrantReq subscribeGrantReq) {
+	public Void grant(@RequestBody SubscribeGrantReq subscribeGrantReq) {
 		String openid = subscribeGrantReq.getOpenid();
 		String resJson = subscribeGrantReq.getResJson();
 
@@ -104,13 +103,13 @@ public class SubscribeController implements SubscribeFeign {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		if (userId == null) {// 未登录情况下尝试通过openid查到用户ID
 			UserOauthResp userOauthResp = userOauthFeign
-					.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid).dataOrThrow();
+					.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid);
 			userId = Optional.ofNullable(userOauthResp).map(UserOauthResp::getUserId).orElse(null);
 		}
-		
+
 		String group = subscribeGrantReq.getGroup();
 		Map<String, String> runtimeAttach = subscribeGrantReq.getRuntimeAttach();
-		
+
 		// 即时创建订阅消息发送任务
 		for (String templateCode : templateCodeList) {
 			SubscribeEnum.Type type = subscribeGroupTypeService.selectTypeByGroupTemplateCode(group, templateCode);
@@ -138,11 +137,11 @@ public class SubscribeController implements SubscribeFeign {
 			asyncSubscribeSender.send(openid, page, valueList, type, planSendTime, overTime);
 		}
 
-		return Result.success();
+		return null;
 	}
-	
+
 	@Override
-	public Result<Void> send(@RequestBody SubscribeSendReq subscribeSendReq) {
+	public Void send(@RequestBody SubscribeSendReq subscribeSendReq) {
 		String openid = subscribeSendReq.getOpenid();
 		String page = subscribeSendReq.getPage();
 		List<String> valueList = subscribeSendReq.getValueList();
@@ -154,28 +153,28 @@ public class SubscribeController implements SubscribeFeign {
 		// 发送订阅消息
 		asyncSubscribeSender.send(openid, page, valueList, type, planSendTime, overTime);
 
-		return Result.success();
+		return null;
 	}
-	
+
 	@Override
-	public Result<List<Integer>> select4PreTimeSend(Integer limit) {
+	public List<Integer> select4PreTimeSend(Integer limit) {
 		List<Integer> idList = asyncSubscribeSender.select4PreTimeSend(limit);
-		return Result.success(idList);
+		return idList;
 	}
-	
+
 	@Override
-	public Result<Void> exePreTimeSend(Integer id) {
+	public Void exePreTimeSend(Integer id) {
 		asyncSubscribeSender.exePreTimeSend(id);
-		return Result.success();
+		return null;
 	}
 
 	/**
 	 * 同步模板数据并保存到数据库
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
-	public Result<Void> syncTemplate() {
+	public Void syncTemplate() {
 		List<SubscribeTemplateInfo> templateList = maTool.getTemplateList(appid);
 		for (SubscribeTemplateInfo subscribeTemplateInfo : templateList) {
 			String priTmplId = subscribeTemplateInfo.getPriTmplId();
@@ -201,6 +200,6 @@ public class SubscribeController implements SubscribeFeign {
 				subscribeTemplateService.updateById(subscribeTemplate4Update);
 			}
 		}
-		return Result.success();
+		return null;
 	}
 }

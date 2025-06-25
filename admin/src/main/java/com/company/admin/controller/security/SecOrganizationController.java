@@ -41,47 +41,47 @@ public class SecOrganizationController {
 
     @RequestMapping(value = "/admin/security/secOrganization/get", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminGet(SecOrganization secOrganization) {
-        return Result.success(secOrganizationService.get(secOrganization));
+    public ? adminGet(SecOrganization secOrganization) {
+        return secOrganizationService.get(secOrganization);
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/save", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminSave(@Validated(SecOrganization.Save.class) SecOrganization secOrganization) {
+    public ? adminSave(@Validated(SecOrganization.Save.class) SecOrganization secOrganization) {
         secOrganizationService.save(secOrganization);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/remove", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminRemove(SecOrganization secOrganization) {
+    public ? adminRemove(SecOrganization secOrganization) {
         secOrganizationService.remove(secOrganization);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/update", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminUpdate(@Validated(SecOrganization.Update.class) SecOrganization secOrganization) {
+    public ? adminUpdate(@Validated(SecOrganization.Update.class) SecOrganization secOrganization) {
         secOrganizationService.update(secOrganization);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/secRole/list", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminListRole(SecOrganization secOrganization) {
-        return Result.success(secOrganizationService.listRole(secOrganization));
+    public ? adminListRole(SecOrganization secOrganization) {
+        return secOrganizationService.listRole(secOrganization);
     }
 
     @RequestMapping(value = "/admin/security/secOrganization/authorize", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> adminAuthorize(SecOrganization secOrganization, Long[] roleIds) {
+    public ? adminAuthorize(SecOrganization secOrganization, Long[] roleIds) {
         List<SecRole> roleList = new ArrayList<>();
         for (Long item : roleIds) {
             roleList.add(new SecRole(item));
         }
         secOrganization.setRoleList(roleList);
         secOrganizationService.authorizeRole(secOrganization);
-        return Result.success();
+        return null;
     }
     //endregion
 }

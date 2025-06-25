@@ -1,5 +1,6 @@
 package com.company.order.api.feign;
 
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 
-import org.springframework.cloud.openfeign.FallbackFactory;
-
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/wxnotify", fallbackFactory = WxNotifyFeign.WxNotifyFeignFactory.class)
 public interface WxNotifyFeign {
 
@@ -17,7 +16,7 @@ public interface WxNotifyFeign {
 	 * 微信支付回调
 	 */
 	@PostMapping("/wxPayNotify")
-	Result<String> wxPayNotify(@RequestBody String xmlString);
+	String wxPayNotify(@RequestBody String xmlString);
 	
 	/**
 	 * 退款回调
@@ -26,7 +25,7 @@ public interface WxNotifyFeign {
 	 * @return
 	 */
 	@PostMapping("/wxPayRefundNotify")
-	Result<String> wxPayRefundNotify(@RequestBody String xmlString);
+	String wxPayRefundNotify(@RequestBody String xmlString);
 	
 	@Component
 	class WxNotifyFeignFactory implements FallbackFactory<WxNotifyFeign> {
@@ -36,12 +35,12 @@ public interface WxNotifyFeign {
 			return new WxNotifyFeign() {
 
 				@Override
-				public Result<String> wxPayNotify(String xmlString) {
+				public String wxPayNotify(String xmlString) {
 					return Result.onFallbackError();
 				}
 
 				@Override
-				public Result<String> wxPayRefundNotify(String xmlString) {
+				public String wxPayRefundNotify(String xmlString) {
 					return Result.onFallbackError();
 				}
 

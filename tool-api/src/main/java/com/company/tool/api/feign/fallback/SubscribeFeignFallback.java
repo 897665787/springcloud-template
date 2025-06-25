@@ -19,32 +19,32 @@ public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
 		return new SubscribeFeign() {
 
 			@Override
-			public Result<List<String>> selectTemplateCodeByGroup(String group) {
+			public List<String> selectTemplateCodeByGroup(String group) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> grant(SubscribeGrantReq subscribeGrantReq) {
+			public Void grant(SubscribeGrantReq subscribeGrantReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> send(SubscribeSendReq subscribeSendReq) {
+			public Void send(SubscribeSendReq subscribeSendReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
+			public List<Integer> select4PreTimeSend(Integer limit) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
+			public Void exePreTimeSend(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> syncTemplate() {
+			public Void syncTemplate() {
 				return Result.onFallbackError();
 			}
 

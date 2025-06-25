@@ -18,8 +18,8 @@ public class UserFollowController {
 
     @RequestMapping(value = "/admin/user/userFollow/list", method = RequestMethod.GET)
     @ResponseBody
-    public Result<?> list(UserFollow userFollow) {
-        return Result.success(userFollowService.listAndCount(userFollow));
+    public ? list(UserFollow userFollow) {
+        return userFollowService.listAndCount(userFollow);
     }
-    
+
 }

@@ -18,7 +18,7 @@ public class NavFeignFallback implements FallbackFactory<NavFeign> {
 	public NavFeign create(final Throwable e) {
 		return new NavFeign() {
 			@Override
-			public Result<List<NavResp>> list(NavReq navReq) {
+			public List<NavResp> list(NavReq navReq) {
 				return Result.onFallbackError();
 			}
 		};

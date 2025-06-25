@@ -21,42 +21,42 @@ public class SysConfigFeignFallback implements FallbackFactory<SysConfigFeign> {
 		return new SysConfigFeign() {
 
 			@Override
-			public Result<PageResp<SysConfigResp>> page(Long current, Long size, String name, String code, String value, String configRemark) {
+			public PageResp<SysConfigResp> page(Long current, Long size, String name, String code, String value, String configRemark) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<List<SysConfigResp>> list(String name, String code, String value, String configRemark) {
+			public List<SysConfigResp> list(String name, String code, String value, String configRemark) {
 				return Result.onFallbackError();
 			}
 			
 			@Override
-			public Result<SysConfigResp> query(Integer id) {
+			public SysConfigResp query(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> save(SysConfigReq sysConfigReq) {
+			public Boolean save(SysConfigReq sysConfigReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> update(SysConfigReq sysConfigReq) {
+			public Boolean update(SysConfigReq sysConfigReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> remove(RemoveReq<Integer> req) {
+			public Boolean remove(RemoveReq<Integer> req) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<String> getValueByCode(String code) {
+			public String getValueByCode(String code) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Boolean> updateValueByCode(String value, String code) {
+			public Boolean updateValueByCode(String value, String code) {
 				return Result.onFallbackError();
 			}
 

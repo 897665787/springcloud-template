@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
 import com.company.common.util.JsonUtil;
 import com.company.common.util.PropertyUtils;
 import com.company.order.es.dto.Brand;
@@ -36,13 +35,13 @@ import cn.hutool.json.JSONUtil;
 
 /**
  * 查看索引：http://172.20.33.24:8705/_cat/indices?v
- * 
+ *
  * @author JQ棣
  */
 @RestController
 @RequestMapping("/brand")
 public class BrandController {
-	
+
 	public static void main(String[] args) {
 		double lon = RandomUtils.nextDouble(73.66, 135.05);
 		double lat = RandomUtils.nextDouble(3.86, 53.55);
@@ -54,12 +53,12 @@ public class BrandController {
 		for (int i = 0; i < count; i++) {
 			addDocument2(indexName, (i + 1) + "");
 		}
-		return Result.success();
+		return null;
 	}
 	@GetMapping(value = "/addDocument")
 	public Object addDocument2(String indexName, String id) {
 		Faker faker = new Faker(Locale.CHINA);
-		
+
 		Brand estestdto = new Brand();
 		estestdto.setId(id);
 		estestdto.setName(faker.name().fullName());
@@ -73,13 +72,13 @@ public class BrandController {
 		location.setLon(lon);
 		location.setLat(lat);
 		estestdto.setLocation(location);
-		
+
 //		estestdto.setLongitude(new BigDecimal(faker.address().longitude()));
 //		estestdto.setLatitude(new BigDecimal("22.53332"));
 		estestdto.setUpdateDate(new Date());
 		estestdto.setRemark(faker.name().title());
 		estestdto.setDistance(BigDecimal.ONE);
-		
+
 		List<Product> productList = Lists.newArrayList();
 		for (int i = 0; i < 3; i++) {
 			Product product = new Product();
@@ -94,7 +93,7 @@ public class BrandController {
 				address.setCity(faker.address().city());
 				address.setDistrict(faker.address().country());
 				address.setAddr(faker.address().streetName());
-				
+
 				GeoPoint location2 = new GeoPoint();
 				double lon2 = RandomUtils.nextDouble(93.66, 115.05);
 				double lat2 = RandomUtils.nextDouble(20.86, 43.55);
@@ -114,7 +113,7 @@ public class BrandController {
 		// 1.索引不存在会自动创建索引并且会添加文档
 		// 2.文档已存在会更新文档，根据@ESId注解的字段作唯一
 		String addDocument = clientUtil.addDocument(indexName, estestdto);
-		return Result.success(addDocument);
+		return addDocument;
 	}
 
 	@GetMapping(value = "/getDocumentById")
@@ -133,7 +132,7 @@ public class BrandController {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
 		ESDatas<Brand> searchList = clientUtil.searchList(indexName + "/_search", queryAll, Brand.class);
 		List<Brand> datas = searchList.getDatas();
-		
+
 		System.out.println(JSONUtil.toJsonPrettyStr(datas));
 		return datas;
 	}
@@ -160,7 +159,7 @@ public class BrandController {
 			esShopInfoDto.setDistance(distance);
 			return esShopInfoDto;
 		}).collect(Collectors.toList());
-		
+
 		System.out.println(JSONUtil.toJsonPrettyStr(datas));
 		return datas;
 	}

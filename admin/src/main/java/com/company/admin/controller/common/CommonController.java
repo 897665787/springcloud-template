@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.company.common.api.Result;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.jqdi.filestorage.core.FileStorage;
@@ -33,11 +32,11 @@ public class CommonController {
 
     @RequestMapping("/admin/editor/token")
 	@ResponseBody
-	public Result<?> ossTokenEncrypt(String token) {
+	public ? ossTokenEncrypt(String token) {
 		Map<String, String> result = Maps.newHashMap();
 //		result.put("accessKeyId", "1");
 //		result.put("accessKeySecret", "1");
-		return Result.success(result);
+		return result;
 	}
 
 
@@ -51,7 +50,7 @@ public class CommonController {
      */
     @RequestMapping(value = "/admin/common/api/file/upload", method = RequestMethod.POST)
     @ResponseBody
-    public Result<?> fileUpload(String[] folders, MultipartFile[] files) throws Exception {
+    public ? fileUpload(String[] folders, MultipartFile[] files) throws Exception {
     	List<String> resultList = Lists.newArrayList();
 		for (int i = 0; i < files.length; i++) {
     		MultipartFile file = files[i];
@@ -60,21 +59,21 @@ public class CommonController {
     		String contentType = file.getContentType();
     		long size = file.getSize();
     		log.info("name:{},originalFilename:{},contentType:{},size:{}", name, originalFilename, contentType, size);
-    		
+
     		try (InputStream inputStream = file.getInputStream()) {
     			String fileName = generateFileName(file.getOriginalFilename());
 				String fullFileName = fullFileName(folders[i], fileName);
 
     			FileUrl fileUrl = fileStorage.upload(inputStream, fullFileName);
-    			
+
     			resultList.add(fileUrl.getDomainUrl());
     		} catch (IOException e) {
     			log.error("IOException", e);
     		}
 		}
-        return Result.success(resultList);
+        return resultList;
     }
-    
+
 
 	private static String fullFileName(String basePath, String fileName) {
 		if (basePath == null) {
@@ -88,7 +87,7 @@ public class CommonController {
 		}
 		return basePath + fileName;
 	}
-	
+
 	private static String generateFileName(String fileName) {
 		// 生成文件名（目录+文件名，例如:basePath/202201/01/00033d9fea0b484eac1509567e87e61a.jpg）
 		Calendar now = Calendar.getInstance();

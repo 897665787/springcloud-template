@@ -45,16 +45,16 @@ public class DictionaryCategoryController {
 
     @PostMapping("/save")
     @ResponseBody
-    public Result<?> save(@Validated(DictionaryCategory.Save.class) DictionaryCategory dictionaryCategory) {
+    public ? save(@Validated(DictionaryCategory.Save.class) DictionaryCategory dictionaryCategory) {
         dictionaryCategoryService.save(dictionaryCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/remove")
     @ResponseBody
-    public Result<?> delete(@NotNull Long id) {
+    public ? delete(@NotNull Long id) {
         dictionaryCategoryService.deleteById(id);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/get")
@@ -70,15 +70,15 @@ public class DictionaryCategoryController {
 
     @PostMapping("/update")
     @ResponseBody
-    public Result<?> update(@Validated(DictionaryCategory.Update.class) DictionaryCategory dictionaryCategory) {
+    public ? update(@Validated(DictionaryCategory.Update.class) DictionaryCategory dictionaryCategory) {
         dictionaryCategoryService.update(dictionaryCategory);
-        return Result.success();
+        return null;
     }
 
     @RequestMapping("/lock/update")
     @ResponseBody
-    public Result<?> updateLock(@NotNull Long id) {
+    public ? updateLock(@NotNull Long id) {
         dictionaryCategoryService.updateLock(id);
-        return Result.success();
+        return null;
     }
 }
