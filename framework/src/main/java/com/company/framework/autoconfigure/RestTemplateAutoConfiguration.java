@@ -1,5 +1,6 @@
 package com.company.framework.autoconfigure;
 
+import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -26,6 +27,7 @@ public class RestTemplateAutoConfiguration {
 
 	// 启用负载，注册在eureka服务上的实例有效 需要 通过服务名访问
 	@LoadBalanced
+//	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
 	public RestTemplate restTemplate() {
 		return new RestTemplate(httpRequestFactory());
