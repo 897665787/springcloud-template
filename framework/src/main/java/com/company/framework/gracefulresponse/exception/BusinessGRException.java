@@ -8,7 +8,7 @@ import com.feiniaojin.gracefulresponse.api.ExceptionMapper;
  *
  * @author JQ棣
  */
-@ExceptionMapper(code= "3212", msg = "业务异常aaaaaaaaa")
+@ExceptionMapper(code= "3212", msg = "业务异常", msgReplaceable = true)
 public class BusinessGRException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 

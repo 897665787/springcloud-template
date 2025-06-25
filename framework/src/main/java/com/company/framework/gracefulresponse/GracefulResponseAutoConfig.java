@@ -1,5 +1,6 @@
 package com.company.framework.gracefulresponse;
 
+import com.feiniaojin.gracefulresponse.AutoConfig;
 import com.feiniaojin.gracefulresponse.EnableGracefulResponse;
 import feign.codec.Decoder;
 import feign.optionals.OptionalDecoder;
@@ -12,9 +13,11 @@ import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomize
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
-@EnableGracefulResponse
+//@EnableGracefulResponse
+@Import(AutoConfig2.class)
 public class GracefulResponseAutoConfig {
 
     @Autowired

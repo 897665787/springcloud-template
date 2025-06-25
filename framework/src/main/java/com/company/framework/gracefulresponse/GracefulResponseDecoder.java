@@ -3,6 +3,8 @@ package com.company.framework.gracefulresponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+import com.company.framework.gracefulresponse.exception.BusinessFeignException;
+import com.feiniaojin.gracefulresponse.GracefulResponse;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
@@ -41,7 +43,9 @@ public class GracefulResponseDecoder extends SpringDecoder {
 				String msg = jsonNode.get("msg").asText();
 //				FeignException.errorStatus("", response);
 //				throw new FeignException(response.status(), msg);
-				throw new BusinessGRException(Integer.valueOf(code), msg);
+//				GracefulResponse.raiseException(code,msg);
+//				return null;
+				throw new BusinessFeignException(Integer.valueOf(code), msg);
 			}
 
 			JsonNode data = jsonNode.get("data");

@@ -46,14 +46,19 @@ public interface FeignTestFeign {
                 public OrderDetailResp getparam(String orderCode) {
                     System.out.println("getparam fallback:" + e);
 
-                    Throwable cause = e.getCause();
+//                    Throwable cause = e.getCause();
+//                    try {
+//                        if (cause != null) {
+//                            throw cause;
+//                        }
+//                        throw e;
+//                    } catch (Throwable exc) {
+//                        throw new RuntimeException(exc);
+//                    }
                     try {
-                        if (cause != null) {
-                            throw cause;
-                        }
                         throw e;
-                    } catch (Throwable exc) {
-                        throw new RuntimeException(exc);
+                    } catch (Throwable ex) {
+                        throw new RuntimeException(ex);
                     }
 //                    return Result.onFallbackError();
                 }
