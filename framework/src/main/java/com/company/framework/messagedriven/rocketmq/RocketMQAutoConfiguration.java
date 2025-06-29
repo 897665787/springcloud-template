@@ -1,4 +1,4 @@
-package com.company.framework.autoconfigure;
+package com.company.framework.messagedriven.rocketmq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;

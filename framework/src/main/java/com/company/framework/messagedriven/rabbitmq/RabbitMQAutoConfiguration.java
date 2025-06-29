@@ -1,4 +1,4 @@
-package com.company.framework.autoconfigure;
+package com.company.framework.messagedriven.rabbitmq;
 
 import com.company.common.util.HostUtil;
 import com.company.common.util.JsonUtil;

@@ -1,7 +1,7 @@
 package com.company.app.messagedriven.rocketmq.consumer;
 
 import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
-import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
+import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.app.messagedriven.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;

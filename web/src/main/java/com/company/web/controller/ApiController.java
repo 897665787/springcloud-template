@@ -4,7 +4,7 @@ import com.company.common.api.Result;
 import com.company.common.constant.HeaderConstants;
 import com.company.common.util.JsonUtil;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.autoconfigure.ThreadPoolProperties;
+import com.company.framework.threadpool.ThreadPoolProperties;
 import com.company.framework.cache.ICache;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.context.SpringContextUtil;

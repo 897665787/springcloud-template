@@ -97,6 +97,24 @@
 		</dependency>
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 
+		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
+		<!-- Resilience4J -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+		</dependency>
+		<!-- Sentinel：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel，相比于Resilience4J优点在于有控制台可以来配置熔断规则 -->
+		<!-- 如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+		</dependency>
+		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
+
 		<!-- skywalking日志追踪 -->
 		<dependency>
 			<groupId>org.apache.skywalking</groupId>

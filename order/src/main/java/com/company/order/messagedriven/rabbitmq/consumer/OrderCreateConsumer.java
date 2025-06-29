@@ -1,7 +1,7 @@
 package com.company.order.messagedriven.rabbitmq.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
-import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -26,7 +26,7 @@ public class OrderCreateConsumer {
 				StrategyConstants.SMS_STRATEGY);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}
-	
+
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.ORDER_CREATE.COUNTMONEY_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.ORDER_CREATE.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
 	public void countmoney(String jsonStrMsg, Channel channel, Message message) {
 		message.getMessageProperties().setHeader(HeaderConstants.HEADER_STRATEGY_NAME,

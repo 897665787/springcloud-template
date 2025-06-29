@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>设备ID生成示例</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+</head>
+
+<body>
+  <html>
+    <div>deviceId:<span id="deviceId"></span></div>
+  </html>
+  <script>
+    // 尝试从localStorage读取现有设备ID
+    function getDeviceId() {
+      const storedId = localStorage.getItem('deviceId');
+      if (storedId) {
+        return storedId;  // 已存在则直接返回
+      }
+      return generateAndStoreId(); // 不存在则生成并存储
+    }
+
+    // 生成新ID并保存
+    async function generateAndStoreId() {
+      return new Promise((resolve) => {
+        Fingerprint2.get((components) => {
+          // 1. 处理微信浏览器UA的兼容性问题（避免网络切换导致ID变化）
+          const values = components.map((component, index) => {
+            if (index === 0 && component.key === 'user_agent') {
+              return component.value.replace(/\bNetType\/\w+\b/, '');
+            }
+            return component.value;
+          });
+          
+          // 2. 生成唯一哈希ID
+          const deviceId = Fingerprint2.x64hash128(values.join(''), 31);
+          
+          // 3. 存储到localStorage
+          localStorage.setItem('deviceId', deviceId);
+          resolve(deviceId);
+        });
+      });
+    }
+
+    // 使用示例
+    (async () => {
+      const deviceId = await getDeviceId();
+      console.log('设备ID:', deviceId); // 输出或发送到后端
+      document.getElementById("deviceId").innerHTML = deviceId;
+    })();
+  </script>
+</body>
+</html>

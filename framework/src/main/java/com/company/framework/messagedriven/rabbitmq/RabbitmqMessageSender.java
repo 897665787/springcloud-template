@@ -4,7 +4,6 @@ import cn.hutool.core.util.RandomUtil;
 import com.company.common.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
-import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
 import com.company.framework.trace.TraceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;

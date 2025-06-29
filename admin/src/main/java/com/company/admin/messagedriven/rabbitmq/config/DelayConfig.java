@@ -1,6 +1,6 @@
 package com.company.admin.messagedriven.rabbitmq.config;
 
-import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -14,11 +14,11 @@ import com.company.admin.messagedriven.Constants;
 
 /**
  * 延时队列(用2个队列实现)
- * 
+ *
  * <pre>
  * 无法解决高延时消息阻塞低延时消息问题
  * </pre>
- * 
+ *
  * @return
  */
 @Configuration
@@ -32,7 +32,7 @@ public class DelayConfig {
 
 	/**
 	 * 死信队列
-	 * 
+	 *
 	 * @return
 	 */
 	@Bean
@@ -49,7 +49,7 @@ public class DelayConfig {
 
 	/**
 	 * 死信队列和交换机绑定
-	 * 
+	 *
 	 * @return
 	 */
 	@Bean

@@ -1,6 +1,6 @@
 package com.company.user.messagedriven.rocketmq.consumer;
 
-import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
+import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;

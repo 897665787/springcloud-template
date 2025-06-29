@@ -1,0 +1,24 @@
+# 熔断器 配置，官方整合文档：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel
+spring:
+  cloud:
+    sentinel:
+      enabled: true # 启用Sentinel，建议与application-resilience4j.yml二选一使用
+      eager: true # 启动马上初始化，默认false
+      transport:
+        dashboard: localhost:8080 # Sentinel控制台地址
+        port: 1${server.port} # 1+当前服务端口作为Sentinel本地监控端口，默认8719
+#      datasource: # 动态数据源支持
+#        ds1:
+#          nacos:
+#            server-addr: ${spring.cloud.nacos.config.server-addr}
+#            data-id: ${spring.application.name}-sentinel
+#            group-id: ${spring.cloud.nacos.config.group}
+#            data-type: json
+#            rule-type: degrade
+      filter:
+        enabled: false # Sentinel 网关流控默认的粒度是 route 维度以及自定义 API 分组维度，默认不支持 URL 粒度
+
+# Feign 支持
+feign:
+  sentinel:
+    enabled: ${spring.cloud.sentinel.enabled} # feign启用sentinel熔断支持
