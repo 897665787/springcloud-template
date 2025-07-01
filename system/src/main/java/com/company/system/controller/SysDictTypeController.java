@@ -2,7 +2,7 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.common.request.RemoveReq;
+import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysDictTypeFeign;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
@@ -42,27 +42,27 @@ public class SysDictTypeController implements SysDictTypeFeign {
 		}
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysDictTypeResp>> page(Long current, Long size, String dictName, String dictType, String status, String dictRemark) {
 		QueryWrapper<SysDictType> queryWrapper = toQueryWrapper(dictName, dictType, status, dictRemark);
-		
+
 		long count = sysDictTypeService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysDictType> list = sysDictTypeService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysDictTypeResp> respList = PropertyUtils.copyArrayProperties(list, SysDictTypeResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysDictTypeResp>> list(String dictName, String dictType, String status, String dictRemark) {
 		QueryWrapper<SysDictType> queryWrapper = toQueryWrapper(dictName, dictType, status, dictRemark);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysDictType> list = sysDictTypeService.list(queryWrapper);
-		
+
 		List<SysDictTypeResp> respList = PropertyUtils.copyArrayProperties(list, SysDictTypeResp.class);
 		return Result.success(respList);
 	}

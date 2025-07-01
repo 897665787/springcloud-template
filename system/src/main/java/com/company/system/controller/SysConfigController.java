@@ -2,7 +2,7 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.common.request.RemoveReq;
+import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,8 +13,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
@@ -44,13 +44,13 @@ public class SysConfigController implements SysConfigFeign {
 		}
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysConfigResp>> page(Long current, Long size, String name, String code, String value, String configRemark) {
 		QueryWrapper<SysConfig> queryWrapper = toQueryWrapper(name, code, value, configRemark);
-		
+
 //		long count = sysConfigService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		Page<SysConfig> page = PageDTO.of(current, size);
 		List<SysConfig> list = sysConfigService.list(page, queryWrapper);
@@ -58,14 +58,14 @@ public class SysConfigController implements SysConfigFeign {
 		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(list, SysConfigResp.class);
 		return Result.success(PageResp.of(page.getTotal(), respList));
 	}
-	
+
 	@Override
 	public Result<List<SysConfigResp>> list(String name, String code, String value, String configRemark) {
 		QueryWrapper<SysConfig> queryWrapper = toQueryWrapper(name, code, value, configRemark);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysConfig> list = sysConfigService.list(queryWrapper);
-		
+
 		List<SysConfigResp> respList = PropertyUtils.copyArrayProperties(list, SysConfigResp.class);
 		return Result.success(respList);
 	}

@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 

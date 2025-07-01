@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.coupon.SeeParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
@@ -36,7 +36,7 @@ public class GroupMealRedPacketCondition implements UseCondition {
 			log.info("{}条件不满足,当前不是外卖团餐下单:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return false;
 		}
-		
+
 		canSee = "redpacket".equals(couponType);
 		if (!canSee) {
 			log.info("{}条件不满足,当前不是外卖团餐红包:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
@@ -44,7 +44,7 @@ public class GroupMealRedPacketCondition implements UseCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public MatchResult canUse(UseParam useParam) {
 		Map<String, String> runtimeAttach = useParam.getRuntimeAttach();
@@ -54,7 +54,7 @@ public class GroupMealRedPacketCondition implements UseCondition {
 			log.info("{}条件不满足,当前不是外卖团餐下单:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return MatchResult.builder().canUse(false).reason("仅限外卖团餐可用").build();
 		}
-		
+
 		String couponType = runtimeAttach.get("couponType");
 		canUse = "redpacket".equals(couponType);
 		if (!canUse) {

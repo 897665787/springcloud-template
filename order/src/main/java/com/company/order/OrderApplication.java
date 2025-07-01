@@ -1,6 +1,6 @@
 package com.company.order;
 
-import com.company.common.constant.CommonConstants;
+import com.company.framework.constant.CommonConstants;
 import com.company.framework.context.SpringContextUtil;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.frameworkset.elasticsearch.boot.BBossESAutoConfiguration;
@@ -14,7 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class OrderApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run(OrderApplication.class, args);
-		
+
 		SpringApplication springApplication = new SpringApplication(OrderApplication.class);
 		// 初始化ApplicationContext，保证在所有bean实例化前面
 		springApplication.addInitializers(SpringContextUtil.newInstance());

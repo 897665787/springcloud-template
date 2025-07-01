@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.annotation.Idempotent;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.request.UserReq;
@@ -26,7 +26,7 @@ public class UserController implements UserFeign {
 
 	@Autowired
 	private OrderFeign orderFeign;
-	
+
 	@Override
 	public Result<UserResp> getById(Long id) {
 		System.out.println("UserController thread:"+Thread.currentThread());
@@ -78,7 +78,7 @@ public class UserController implements UserFeign {
 		log.info("retryGet:{}", user);
 		return Result.success(PropertyUtils.copyProperties(user, UserResp.class));
 	}
-	
+
 	@Override
 	@Idempotent
 	public Result<UserResp> idempotent(@RequestBody UserReq userReq) {

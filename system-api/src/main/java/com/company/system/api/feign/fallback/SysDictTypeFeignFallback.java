@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.feign.SysDictTypeFeign;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
@@ -24,12 +24,12 @@ public class SysDictTypeFeignFallback implements FallbackFactory<SysDictTypeFeig
 			public Result<PageResp<SysDictTypeResp>> page(Long current, Long size, String dictName, String dictType, String status, String dictRemark) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<List<SysDictTypeResp>> list(String dictName, String dictType, String status, String dictRemark) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<SysDictTypeResp> query(Integer id) {
 				return Result.onFallbackError();

@@ -2,7 +2,7 @@ package com.company.openapi;
 
 import java.util.Map;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.openapi.req.CreateOrderReq;
 import com.company.openapi.util.SignUtil;
 import com.google.common.collect.Maps;

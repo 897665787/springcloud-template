@@ -1,6 +1,6 @@
 package com.company.framework.trace;
 
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.trace.provider.RandomProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

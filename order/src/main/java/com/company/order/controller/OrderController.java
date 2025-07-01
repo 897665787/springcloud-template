@@ -30,8 +30,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;

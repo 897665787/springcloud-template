@@ -15,7 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 import com.company.admin.exception.ExceptionConsts;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
 
 /**
@@ -52,7 +52,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
             code = ExceptionConsts.SEC_STAFF_CONCURRENT_BEYOND.getCode();
             msg = ExceptionConsts.SEC_STAFF_CONCURRENT_BEYOND.getMessage();
         }
-        
+
         Map<String, Object> errorMap = Maps.newHashMap();
         errorMap.put("status", false);
         errorMap.put("code", code);

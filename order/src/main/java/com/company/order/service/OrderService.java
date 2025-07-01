@@ -14,7 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.entity.Order;
 import com.company.order.mapper.OrderMapper;
@@ -61,7 +61,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 订单取消
-	 * 
+	 *
 	 * @param orderCode
 	 * @param cancelTime
 	 * @return
@@ -77,7 +77,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 订单支付成功(支付后订单还没推给商家，为该状态)
-	 * 
+	 *
 	 * @param orderCode
 	 * @param payAmount
 	 * @param payTime
@@ -95,7 +95,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 待发货 (订单已推给商家，为该状态)
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */
@@ -109,7 +109,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 发货
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */
@@ -124,7 +124,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 确认收货
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */
@@ -142,7 +142,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 订单完成
-	 * 
+	 *
 	 * @param orderCode
 	 * @param finishTime
 	 * @return
@@ -161,7 +161,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 退款申请
-	 * 
+	 *
 	 * @param orderCode
 	 * @param refundApplyTime
 	 * @return
@@ -180,7 +180,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 退款失败
-	 * 
+	 *
 	 * @param orderCode
 	 * @param oldSubStatus
 	 * @param failReason
@@ -199,7 +199,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 退款完成
-	 * 
+	 *
 	 * @param orderCode
 	 * @param refundFinishTime
 	 * @param totalRefundAmount
@@ -227,7 +227,7 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> implements ISe
 
 	/**
 	 * 更新状态
-	 * 
+	 *
 	 * @param orderCode
 	 *            订单号
 	 * @param order4Update

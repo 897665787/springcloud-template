@@ -1,7 +1,7 @@
 package com.company.user.messagedriven.strategy;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.user.mapper.user.UserDeviceMapper;
 import lombok.extern.slf4j.Slf4j;

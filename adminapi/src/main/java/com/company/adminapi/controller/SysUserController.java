@@ -8,9 +8,9 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserExcel;
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.system.api.feign.SysUserFeign;
@@ -94,7 +94,7 @@ public class SysUserController {
 
     /**
      * 获取用户信息
-     * 
+     *
      * @return 用户信息
      */
 	@GetMapping(value = "/getInfo")

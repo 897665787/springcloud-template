@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.nav.NavShowCondition;
 import com.company.tool.nav.ShowParam;
 
@@ -28,11 +28,11 @@ public class WeekDayCondition implements NavShowCondition {
 		int dayOfWeek = DateUtil.dayOfWeek(new Date());
 
 		String showConditionValue = showParam.getShowConditionValue();
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> showConditionValueMap = JsonUtil.toEntity(showConditionValue, Map.class);
 		String weekDays = showConditionValueMap.get("weekDays");
-		
+
 		List<String> weekDayList = Arrays.stream(weekDays.split(",")).collect(Collectors.toList());
 
 		boolean canShow = weekDayList.contains(String.valueOf(dayOfWeek));

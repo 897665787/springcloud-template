@@ -2,7 +2,7 @@ package com.company.admin.controller.article;
 
 
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.admin.service.article.ArticleCategoryService;
 import com.company.admin.service.article.ArticleService;
 import com.company.admin.annotation.Pagination;
@@ -12,7 +12,6 @@ import com.company.admin.entity.article.ArticleCategory;
 import com.company.common.exception.BusinessException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;

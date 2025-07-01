@@ -3,9 +3,9 @@ package com.company.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.SysMenuFeign;
 import com.company.system.api.request.SysMenuReq;
@@ -64,33 +64,33 @@ public class SysMenuController implements SysMenuFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysMenuResp>> page(Long current, Long size, Integer parentId, String menuName,
 											  String menuType, String status, Integer visible, String perms,
 											  String createTimeStart, String createTimeEnd) {
 		QueryWrapper<SysMenu> queryWrapper = toQueryWrapper(parentId, menuName, menuType, status, visible, perms,
 				createTimeStart, createTimeEnd);
-		
+
 		long count = sysMenuService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysMenu> list = sysMenuService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysMenuResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysMenuResp>> list(Integer parentId, String menuName, Integer orderNum, String menuType,
 										  String status, Integer visible, String perms,
 										  String createTimeStart, String createTimeEnd) {
 		QueryWrapper<SysMenu> queryWrapper = toQueryWrapper(parentId, menuName, menuType, status, visible, perms,
 				createTimeStart, createTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysMenu> list = sysMenuService.list(queryWrapper);
-		
+
 		List<SysMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysMenuResp.class);
 		return Result.success(respList);
 	}

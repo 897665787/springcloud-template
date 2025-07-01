@@ -19,9 +19,9 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.PropertyUtils;
-import com.company.common.util.RetryUtils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
+import com.company.framework.util.RetryUtils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.order.messagedriven.Constants;
 import com.company.order.messagedriven.strategy.StrategyConstants;
@@ -55,22 +55,22 @@ import lombok.extern.slf4j.Slf4j;
 public class AliActivityNotifyController implements AliActivityNotifyFeign {
 	@Autowired
 	private AliActivityNotifyMapper aliActivityNotifyMapper;
-	
+
 	@Autowired
 	private AliActivityPayMapper aliActivityPayMapper;
 
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Autowired
 	private AliActivityPayConfiguration aliActivityPayConfiguration;
-	
+
 	@Value("${aliactivitynotify.useVoucherCodeUrl:false}")
 	private Boolean useVoucherCodeUrl;
-	
+
 	@Value("${aliactivitynotify.merchantOrderUrl.page.prefix:pagesMember/myOrder/order_detail?orderId=}")
 	private String merchantOrderUrlPagePrefix;
-	
+
 	/**
 	 * <pre>
 	 * 官方文档：https://opendocs.alipay.com/pre-open/02cqrw
@@ -81,7 +81,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 	public Result<SpiOrderSendNotifyResp> spiOrderSendNotify(@RequestBody Map<String, String> aliParams) {
 		/**
 		 * <pre>
-		 * 
+		 *
 		{
 			"order_no": "2015042321001004720200028594",
 			"charset": "UTF-8",
@@ -101,11 +101,11 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		log.info("ali notify data:{}", notifyData);
 		AliActivityNotify aliActivityNotify = new AliActivityNotify().setMethod(AliActivityNotifyEnum.Method.SPIORDERSEND.getCode()).setNotifyData(notifyData);
 		aliActivityNotifyMapper.insert(aliActivityNotify);
-		
+
 		Integer payNotifyId = aliActivityNotify.getId();
-		
+
 		String appid = "2021003111112476";
-		
+
 		AliActivityPayProperties.PayConfig payConfig = aliActivityPayConfiguration.getPayConfig(appid);
 		try {
 			// 调用SDK验证签名
@@ -115,7 +115,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 				aliActivityNotifyMapper.updateRemarkById("验签失败", payNotifyId);
 
 				SpiOrderSendNotifyResp resp = new SpiOrderSendNotifyResp();
-				
+
 				SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 				response.setCode("40004");
 				response.setMsg("Business Failed");
@@ -129,7 +129,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			aliActivityNotifyMapper.updateRemarkById(e.getMessage(), payNotifyId);
-			
+
 			SpiOrderSendNotifyResp resp = new SpiOrderSendNotifyResp();
 			SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 			response.setCode("40004");
@@ -138,22 +138,22 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			response.setSubMsg("验签失败");
 			resp.setResponse(response);
 			resp.setSign(sign(response, payConfig.getPubKey()));
-			
+
 			return Result.success(resp);
 		}
-		
+
 		// 回调数据落库
 		String orderNo = aliParams.get("order_no");
 		String outOrderNo = aliParams.get("out_order_no");
 		String buyerId = aliParams.get("buyer_id");
-		
+
 		String send_activity_info_list = aliParams.get("send_activity_info_list");
 		List<SendActivityInfoList> sendActivityInfoList = JsonUtil.toList(send_activity_info_list,
 				SendActivityInfoList.class);
 		// 活动应该只有1个元素，如果有多个与响应值对不上
 		SendActivityInfoList sendActivityInfo = sendActivityInfoList.get(0);
 		String activityId = sendActivityInfo.getActivityId();
-		
+
 		AliActivityPay aliActivityPay4Update = new AliActivityPay().setTradeStatus(AliActivityConstants.TradeStatus.TRADE_SUCCESS)
 				.setOrderNo(orderNo).setGmtPayment(DateUtil.formatDateTime(new Date()));
 
@@ -165,16 +165,16 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		if (affect == 0) {
 			// 订单回调已处理完成，无需重复处理，可直接查询券码
 			aliActivityNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotifyId);
-			
+
 			// 查询券码，查到的情况下直接返回响应给支付宝（需要重试机制）
 			SpiOrderSendNotifyResp resp = new SpiOrderSendNotifyResp();
 			SpiOrderSendNotifyResp.Response response = retryToResponse(outOrderNo, orderNo, buyerId, activityId);
 			resp.setResponse(response);
 			resp.setSign(sign(response, payConfig.getPubKey()));
-			
+
 			String responseMsg = Optional.ofNullable(response.getSubMsg()).orElse(response.getMsg());
 			aliActivityNotifyMapper.updateRemarkById(responseMsg, payNotifyId);
-			
+
 			return Result.success(resp);
 		}
 
@@ -184,9 +184,9 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 
 		LocalDateTime time = LocalDateTime.now();
 		params.put("time", time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		
+
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outOrderNo);
-		
+
 		// 财务流水信息
 		params.put("amount", aliActivityPay.getTotalAmount());
 		params.put("orderPayMethod", OrderPayEnum.Method.ALIACTIVITY.getCode());
@@ -204,13 +204,13 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 
 		String responseMsg = Optional.ofNullable(response.getSubMsg()).orElse(response.getMsg());
 		aliActivityNotifyMapper.updateRemarkById(responseMsg, payNotifyId);
-		
+
 		return Result.success(resp);
 	}
 
 	/**
 	 * 生成签名
-	 * 
+	 *
 	 * @param response
 	 * @param privateKey
 	 * @return
@@ -232,7 +232,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		response.setSubMsg(subMsg);
 		return response;
 	}
-	
+
 	/**
 	 * 支付宝API超时时间：3秒，尽量保留一些时间，返回error的情况下支付宝会重试10次
 	 */
@@ -246,7 +246,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		}
 		return response;
 	}
-	
+
 	/**
 	 * <pre>
 	{
@@ -278,7 +278,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			// 查不到券码返回null进行重试
 			return null;
 		}
-		
+
 		SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 		response.setCode(AliActivityConstants.Response.CODE_SUCCESS);
 		response.setMsg(AliActivityConstants.Response.MSG_SUCCESS);
@@ -355,9 +355,9 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		log.info("ali notify data:{}", notifyData);
 		AliActivityNotify aliActivityNotify = new AliActivityNotify().setMethod(AliActivityNotifyEnum.Method.FROM.getCode()).setNotifyData(notifyData);
 		aliActivityNotifyMapper.insert(aliActivityNotify);
-		
+
 		String appid = aliParams.get("app_id");
-		
+
 		AliActivityPayProperties.PayConfig payConfig = aliActivityPayConfiguration.getPayConfig(appid);
 		try {
 			// 调用SDK验证签名
@@ -372,11 +372,11 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			aliActivityNotifyMapper.updateRemarkById(e.getMessage(), aliActivityNotify.getId());
 			return Result.success("fail");
 		}
-		
+
 		String msgMethod = aliParams.get("msg_method");
 		FromMessage fromMessage = FromMessageBeanFactory.of(msgMethod);
 		fromMessage.handle(aliActivityNotify.getId(), aliParams);
-		
+
 		return Result.success("success");
 	}
 }

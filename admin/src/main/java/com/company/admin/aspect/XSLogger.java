@@ -1,6 +1,6 @@
 package com.company.admin.aspect;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

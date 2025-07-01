@@ -1,8 +1,8 @@
 package com.company.system.api.feign;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.SysMenuFeignFallback;
 import com.company.system.api.request.SysMenuReq;
@@ -29,7 +29,7 @@ public interface SysMenuFeign {
 									   @RequestParam(value = "perms", required = false) String perms,
 									   @RequestParam(value = "createTimeStart", required = false) String createTimeStart,
 									   @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd);
-	
+
 	@GetMapping("/list")
 	Result<List<SysMenuResp>> list(@RequestParam(value = "parentId", required = false) Integer parentId,
 								   @RequestParam(value = "menuName", required = false) String menuName,

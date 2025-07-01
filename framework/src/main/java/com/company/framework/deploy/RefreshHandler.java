@@ -1,6 +1,6 @@
 package com.company.framework.deploy;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.netflix.discovery.DiscoveryClient;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * 部署相关接口
- * 
+ *
  * @author JQ棣
  *
  */

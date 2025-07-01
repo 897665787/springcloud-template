@@ -1,7 +1,7 @@
 package com.company.framework.messagedriven.rabbitmq.utils;
 
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.messagedriven.constants.HeaderConstants;
@@ -22,7 +22,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用Strategy处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param channel
 	 * @param message
@@ -33,7 +33,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用Strategy处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param channel
 	 * @param message
@@ -55,7 +55,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param channel
 	 * @param message
@@ -67,7 +67,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param channel
 	 * @param message

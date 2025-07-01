@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.company.common.api.ResultCode;
-import com.company.common.constant.CommonConstants;
-import com.company.common.util.JsonUtil;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.util.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

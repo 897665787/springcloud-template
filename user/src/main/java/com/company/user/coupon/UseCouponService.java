@@ -14,8 +14,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.user.coupon.dto.MatchResult;
 import com.company.user.coupon.dto.UserCouponCanUse;

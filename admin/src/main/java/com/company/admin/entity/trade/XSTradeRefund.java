@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Range;
 
 import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.common.jackson.annotation.FormatNumber;
+import com.company.framework.jackson.annotation.FormatNumber;
 
 import lombok.Getter;
 import lombok.Setter;

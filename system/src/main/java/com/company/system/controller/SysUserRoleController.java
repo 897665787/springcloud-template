@@ -3,9 +3,9 @@ package com.company.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.SysUserRoleFeign;
 import com.company.system.api.request.SysUserRoleReq;
@@ -61,27 +61,27 @@ public class SysUserRoleController implements SysUserRoleFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysUserRoleResp>> page(Long current, Long size, Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUserRole> queryWrapper = toQueryWrapper(userId, roleId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		long count = sysUserRoleService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysUserRole> list = sysUserRoleService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysUserRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysUserRoleResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysUserRoleResp>> list(Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUserRole> queryWrapper = toQueryWrapper(userId, roleId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysUserRole> list = sysUserRoleService.list(queryWrapper);
-		
+
 		List<SysUserRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysUserRoleResp.class);
 		return Result.success(respList);
 	}

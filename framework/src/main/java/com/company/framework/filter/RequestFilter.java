@@ -1,8 +1,8 @@
 package com.company.framework.filter;
 
-import com.company.common.constant.CommonConstants;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.RegexUtil;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.RegexUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.filter.request.BodyReaderHttpServletResponseWrapper;

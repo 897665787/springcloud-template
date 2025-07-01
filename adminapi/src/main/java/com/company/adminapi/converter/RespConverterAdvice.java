@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.company.common.api.Result;
-import com.company.common.constant.CommonConstants;
-import com.company.common.response.PageResp;
-import com.company.common.util.JsonUtil;
+import com.company.framework.constant.CommonConstants;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.JsonUtil;
 import com.company.adminapi.converter.annotation.RespConverter;
 import com.company.adminapi.converter.annotation.RespConverters;
 import com.company.adminapi.converter.ds.ConverterDataSource;
@@ -101,7 +101,7 @@ public class RespConverterAdvice implements ResponseBodyAdvice<Result<Object>> {
 
 	/**
 	 * 执行转换
-	 * 
+	 *
 	 * @param list
 	 * @param values
 	 * @return

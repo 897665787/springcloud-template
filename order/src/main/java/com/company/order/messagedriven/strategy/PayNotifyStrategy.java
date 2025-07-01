@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.request.PayNotifyReq;
@@ -68,7 +68,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		payNotifyReq.setEvent(PayNotifyReq.EVENT.PAY);
 		payNotifyReq.setOrderCode(outTradeNo);
 		payNotifyReq.setPayAmount(orderPay.getAmount());
-		
+
 		LocalDateTime time = LocalDateTime.now();
 		String timeStr = MapUtils.getString(params, "time");
 		if (StringUtils.isNotBlank(timeStr)) {

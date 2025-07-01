@@ -7,7 +7,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.system.entity.SysLogininfo;
 import com.company.system.service.SysLogininfoService;

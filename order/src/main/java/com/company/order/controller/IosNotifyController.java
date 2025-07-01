@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.order.messagedriven.Constants;
 import com.company.order.messagedriven.strategy.StrategyConstants;
@@ -39,13 +39,13 @@ import lombok.extern.slf4j.Slf4j;
 //@RestController
 @RequestMapping(value = "/iosnotify")
 public class IosNotifyController implements IosNotifyFeign {
-    
+
     private static final String SERVER_URL = "https://buy.itunes.apple.com/verifyReceipt";
     private static final String SANDBOX_SERVER_URL = "https://sandbox.itunes.apple.com/verifyReceipt";
-    
+
 	@Autowired
 	private AliPayMapper aliPayMapper;
-	
+
 	@Autowired
 	private AliPayRefundMapper aliPayRefundMapper;
 
@@ -60,7 +60,7 @@ public class IosNotifyController implements IosNotifyFeign {
 
     @Value("${iOSPay.bundleId}")
     private String bundleId;
-    
+
 	@Override
 	public Result<String> iosPayNotify(@RequestBody Map<String, String> iosParams) {
 		/**
@@ -75,7 +75,7 @@ public class IosNotifyController implements IosNotifyFeign {
 		}
 		 * </pre>
 		 */
-		
+
 		String notifyData = JsonUtil.toJsonString(iosParams);
 		// 记录原始数据
 		log.info("ios notify data:{}", notifyData);
@@ -101,7 +101,7 @@ public class IosNotifyController implements IosNotifyFeign {
         String transactionId = iosParams.get("transactionId");
         String receipt = iosParams.get("receiptData");
         String passbackParams = iosParams.get("passbackParams");
-        
+
 		String tradeStatus = iosParams.get("trade_status");
 		String outTradeNo = iosParams.get("out_trade_no");
 
@@ -134,7 +134,7 @@ public class IosNotifyController implements IosNotifyFeign {
 //                return Result.success(String.valueOf(status));
             }
         }
-        
+
 		// 回调数据落库
 //		AliPay aliPay4Update = new AliPay().setTradeStatus(tradeStatus).setTradeNo(iosParams.get("trade_no"))
 //				.setGmtPayment(iosParams.get("gmt_payment"));
@@ -154,9 +154,9 @@ public class IosNotifyController implements IosNotifyFeign {
 		// MQ异步处理
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("outTradeNo", outTradeNo);
-		
+
 		params.put("time", iosParams.get("tradeId"));
-		
+
 		// 财务流水信息
 		params.put("amount", iosParams.get("total_amount"));
 		params.put("orderPayMethod", OrderPayEnum.Method.IOS.getCode());
@@ -167,7 +167,7 @@ public class IosNotifyController implements IosNotifyFeign {
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success("success");
 	}
-	
+
 
     private Boolean checkSignature(TreeMap<String, String> paramMap) {
         String signature = paramMap.get("sign");
@@ -193,7 +193,7 @@ public class IosNotifyController implements IosNotifyFeign {
 //		}
         return SecureUtil.md5(encodeStr);
     }
-    
+
     private static String aesDecrypt(String data, String key, String iv) {
         try {
             byte[] encryptedData = hexStr2Bytes(data);
@@ -227,9 +227,9 @@ public class IosNotifyController implements IosNotifyFeign {
         requestParamMap.put("receipt-data", receipt);
         String requestParamsStr = JsonUtil.toJsonString(requestParamMap);
         String url = real.equals(1) ? SERVER_URL : SANDBOX_SERVER_URL;
-        
+
         String responseParamsStr = HttpUtil.post(url, requestParamsStr);
         return JsonUtil.toJsonNode(responseParamsStr);
     }
-    
+
 }

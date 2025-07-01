@@ -1,6 +1,6 @@
 package com.company.adminapi;
 
-import com.company.common.constant.CommonConstants;
+import com.company.framework.constant.CommonConstants;
 import com.company.framework.context.SpringContextUtil;
 import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.springframework.boot.SpringApplication;

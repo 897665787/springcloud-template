@@ -3,7 +3,7 @@ package com.company.web.controller;
 import cn.licoy.encryptbody.annotation.encrypt.EncryptBody;
 import cn.licoy.encryptbody.enums.EncryptBodyMethod;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
 import com.company.web.req.DecryptEntityReq;

@@ -3,9 +3,9 @@ package com.company.system.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.request.SysUserAssignRoleReq;
@@ -83,27 +83,27 @@ public class SysUserController implements SysUserFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysUserResp>> page(Long current, Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUser> queryWrapper = toQueryWrapper(account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		long count = sysUserService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysUser> list = sysUserService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysUserResp> respList = PropertyUtils.copyArrayProperties(list, SysUserResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysUserResp>> list(String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUser> queryWrapper = toQueryWrapper(account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysUser> list = sysUserService.list(queryWrapper);
-		
+
 		List<SysUserResp> respList = PropertyUtils.copyArrayProperties(list, SysUserResp.class);
 		return Result.success(respList);
 	}

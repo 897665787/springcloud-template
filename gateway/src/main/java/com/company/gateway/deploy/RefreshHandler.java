@@ -1,16 +1,18 @@
 package com.company.gateway.deploy;
 
-import com.company.common.util.JsonUtil;
-import com.company.gateway.context.SpringContextUtil;
-import com.netflix.discovery.DiscoveryClient;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.springframework.cache.Cache;
 import org.springframework.cloud.loadbalancer.cache.DefaultLoadBalancerCacheManager;
 import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-import java.util.List;
+import com.company.gateway.context.SpringContextUtil;
+import com.company.gateway.util.JsonUtil;
+import com.netflix.discovery.DiscoveryClient;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 部署相关接口

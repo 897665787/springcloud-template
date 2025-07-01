@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.popup.PopCondition;
 import com.company.tool.popup.PopParam;
 
@@ -28,11 +28,11 @@ public class WeekDayCondition implements PopCondition {
 		int dayOfWeek = DateUtil.dayOfWeek(new Date());
 
 		String popConditionValue = popParam.getPopConditionValue();
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> popConditionValueMap = JsonUtil.toEntity(popConditionValue, Map.class);
 		String weekDays = popConditionValueMap.get("weekDays");
-		
+
 		List<String> weekDayList = Arrays.stream(weekDays.split(",")).collect(Collectors.toList());
 
 		boolean canPop = weekDayList.contains(String.valueOf(dayOfWeek));

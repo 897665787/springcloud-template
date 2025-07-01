@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.adminapi.token.TokenService;
 import com.company.adminapi.token.jsonwebtoken.util.TokenUtil;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class JsonWebTokenService implements TokenService {
-	
+
 	@Value("${token.timeout:2592000}")
 	private Integer timeout;
-	
+
 	@Value("${token.secret:defaultsecret}")
 	private String secret;
-		  
+
 	@Override
 	public String generate(String userId, String device) {
 		Date expiration = DateUtils.addSeconds(new Date(), timeout);
@@ -33,7 +33,7 @@ public class JsonWebTokenService implements TokenService {
 	public String invalid(String token) {
 		Claims claims = TokenUtil.getClaims(token, secret);
 		log.info("claims:{}", JsonUtil.toJsonString(claims));
-		
+
 		// do nothing
 		if (claims == null) {
 			return null;
@@ -41,7 +41,7 @@ public class JsonWebTokenService implements TokenService {
 		return claims.getAudience();
 	}
 
-	
+
 	@Value("${template.enable.access-control:true}")
 	private Boolean enableAccessControl;
 
@@ -49,5 +49,5 @@ public class JsonWebTokenService implements TokenService {
 	public String checkAndGet(String token) {
 		return TokenUtil.checkTokenAndGetSubject(token, enableAccessControl, secret);
 	}
-	
+
 }

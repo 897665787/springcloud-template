@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.app.req.RefundApplyReq;
 import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
@@ -53,7 +53,7 @@ public class OrderCenterController {
 
 	/**
 	 * 分页查询订单列表
-	 * 
+	 *
 	 * @param current
 	 * @param size
 	 * @param status
@@ -68,7 +68,7 @@ public class OrderCenterController {
 
 	/**
 	 * 订单详情
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */
@@ -79,7 +79,7 @@ public class OrderCenterController {
 
 	/**
 	 * 取消订单
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */
@@ -93,7 +93,7 @@ public class OrderCenterController {
 
 	/**
 	 * 去支付（获取支付参数）
-	 * 
+	 *
 	 * @param toPayReq
 	 * @return
 	 */
@@ -115,7 +115,7 @@ public class OrderCenterController {
 
 	/**
 	 * 退款申请
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */
@@ -123,7 +123,7 @@ public class OrderCenterController {
 	public Result<Void> refundApply(@Valid @RequestBody RefundApplyReq refundApplyReq) {
 		String orderCode = refundApplyReq.getOrderCode();
 		String refundReason = refundApplyReq.getRefundReason();
-		
+
 		OrderRefundApplyReq orderRefundApplyReq = new OrderRefundApplyReq();
 		orderRefundApplyReq.setOrderCode(orderCode);
 		orderRefundApplyReq.setRefundApplyTime(LocalDateTime.now());
@@ -137,20 +137,20 @@ public class OrderCenterController {
 		payRefundApplyReq.setBusinessType(PayRefundApplyEnum.BusinessType.USER);
 		payRefundApplyReq.setVerifyStatus(PayRefundApplyEnum.VerifyStatus.WAIT_VERIFY);
 		payRefundApplyReq.setReason(refundReason);
-		
+
 		String attach = Utils.append2Json(null, "oldSubStatus",
 				String.valueOf(orderRefundApplyResp.getOldSubStatus().getStatus()));
 		attach = Utils.append2Json(attach, "attach", orderRefundApplyResp.getAttach());
 		payRefundApplyReq.setAttach(attach);
 
 		refundApplyFeign.refundApply(payRefundApplyReq);
-		
+
 		return Result.success();
 	}
-	
+
 	/**
 	 * 删除订单
-	 * 
+	 *
 	 * @param orderCode
 	 * @return
 	 */

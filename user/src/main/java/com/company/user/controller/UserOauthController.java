@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.PropertyUtils;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.request.UserOauthReq;

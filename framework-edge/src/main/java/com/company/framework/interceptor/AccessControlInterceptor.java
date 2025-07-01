@@ -1,9 +1,11 @@
 package com.company.framework.interceptor;
 
-import com.company.common.constant.HeaderConstants;
-import com.company.common.exception.UnauthorizedException;
-import com.company.framework.annotation.RequireLogin;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -11,10 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
-import java.util.Enumeration;
+import com.company.framework.annotation.RequireLogin;
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.exception.UnauthorizedException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component

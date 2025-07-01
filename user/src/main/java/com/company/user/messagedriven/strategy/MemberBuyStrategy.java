@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -43,14 +43,14 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 	private UserCouponService userCouponService;
 	@Autowired
 	private OrderFeign orderFeign;
-	
+
 	@Autowired
 	private RechargeOrderService rechargeOrderService;
 	@Autowired
 	private IWallet<MainChargeGiftWalletId, MainChargeGiftAmount, FreezeMainChargeGiftAmount, FreezeMainChargeGiftBalance> freezeMainChargeGiftWallet;
 	@Autowired
 	private WalletUseSeqService walletUseSeqService;
-	
+
 	@Override
 	public void doStrategy(Map<String, Object> params) {
 		String orderCode = MapUtils.getString(params, "orderCode");
@@ -60,7 +60,7 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 			log.info("不是购买会员订单");
 			return;
 		}
-		
+
 		// 处理会员订单逻辑
 		Boolean success = MapUtils.getBoolean(params, "success");
 		if (success) {// 退款成功
@@ -77,18 +77,18 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 				log.info("是充值的订单但是又没有退还金额给钱包，该次退款是充值订单退款，由充值订单退款逻辑处理");
 				return;
 			}
-			
+
 //			Boolean refundAll = MapUtils.getBoolean(params, "refundAll");// 如果退款需扣手续费，则需按业务的规则计算是否已全额退款
 			// TODO 可能需要扣除一些手续费
 			Order4Resp order4Resp = orderFeign.selectByOrderCode(orderCode).dataOrThrow();
 			BigDecimal needPayAmount = order4Resp.getNeedPayAmount();
-			
+
 //			BigDecimal totalRefundAmount = new BigDecimal(MapUtils.getString(params, "totalRefundAmount"));
 			BigDecimal totalRefundAmount = order4Resp.getRefundAmount().add(walletRefundAmount);
 			BigDecimal serviceAmount = memberBuyOrder.getRefundServiceAmount();
 			BigDecimal canRefundAmount = needPayAmount.subtract(serviceAmount).subtract(totalRefundAmount);
 			Boolean refundAll = canRefundAmount.compareTo(BigDecimal.ZERO) <= 0;
-			
+
 			// 修改‘订单中心’数据
 			OrderRefundFinishReq orderRefundFinishReq = new OrderRefundFinishReq();
 			orderRefundFinishReq.setOrderCode(orderCode);
@@ -101,25 +101,25 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 				log.warn("修改‘订单中心’数据失败");
 				return;
 			}
-			
+
 			// 有钱包金额退款，归还到钱包
 			if (walletRefundAmount.compareTo(BigDecimal.ZERO) > 0) {
 				String uniqueCode = MapUtils.getString(params, "refundOrderCode");
-				
+
 				// 退还bu_wallet_use_seq
 				BigDecimal returnTotalAmount = walletRefundAmount;
 				Map<WalletEnum.Type, BigDecimal> typeAmountMap = walletUseSeqService.calcAndReturn(
 						memberBuyOrder.getUserId(),
 						Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT),
 						returnTotalAmount);
-				
+
 				BigDecimal chargeAmount = typeAmountMap.get(WalletEnum.Type.TO_CHARGE);
 //				BigDecimal giftAmount = typeAmountMap.get(WalletEnum.Type.TO_GIFT);
-				
+
 				// 优先归还赠送余额
 				BigDecimal needReturnGiftAmount = returnTotalAmount.subtract(chargeAmount);
 				BigDecimal needReturnChargeAmount = returnTotalAmount.subtract(needReturnGiftAmount);
-				
+
 				Integer userId = memberBuyOrder.getUserId();
 
 				MainChargeGiftWalletId walletId = new MainChargeGiftWalletId(userId, WalletEnum.Type.TO_MAIN,
@@ -130,10 +130,10 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 				Map<String, Object> attachMap = Maps.newHashMap();
 				attachMap.put("businessType", "use_refund");
 				attachMap.put("businessId", memberBuyOrder.getId());
-				
+
 				freezeMainChargeGiftWallet.income(uniqueCode, walletId, amount, attachMap);
 			}
-			
+
 			if (refundAll) {
 				// 全额退款，才归还优惠券
 				Integer userCouponId = memberBuyOrder.getUserCouponId();

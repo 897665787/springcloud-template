@@ -1,6 +1,6 @@
 package com.company.user;
 
-import com.company.common.constant.CommonConstants;
+import com.company.framework.constant.CommonConstants;
 import com.company.framework.context.SpringContextUtil;
 import org.frameworkset.elasticsearch.boot.BBossESAutoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +13,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class UserApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run(UserApplication.class, args);
-		
+
 		SpringApplication springApplication = new SpringApplication(UserApplication.class);
 		// 初始化ApplicationContext，保证在所有bean实例化前面
 		springApplication.addInitializers(SpringContextUtil.newInstance());

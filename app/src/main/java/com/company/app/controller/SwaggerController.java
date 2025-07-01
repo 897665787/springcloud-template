@@ -3,7 +3,7 @@ package com.company.app.controller;
 import com.company.app.req.SwaggerReq;
 import com.company.app.resp.SwaggerResp;
 import com.company.common.api.Result;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.PropertyUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;

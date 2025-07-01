@@ -1,8 +1,8 @@
 package com.company.web.controller;
 
 import com.company.common.api.Result;
-import com.company.common.constant.HeaderConstants;
-import com.company.common.util.JsonUtil;
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.threadpool.ThreadPoolProperties;
 import com.company.framework.cache.ICache;

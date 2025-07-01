@@ -1,7 +1,7 @@
 package com.company.framework.filter;
 
-import com.company.common.constant.CommonConstants;
-import com.company.common.util.RegexUtil;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.util.RegexUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,13 +27,13 @@ public class SummaryAPIFilter extends OncePerRequestFilter {
 
 	@Value("${template.requestFilter.ignoreLogPatterns:}")
 	private String ignoreLogPatterns;
-	
+
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		if (StringUtils.isBlank(ignoreLogPatterns)) {
 			return false;
 		}
-		
+
 		String requestURI = request.getRequestURI();
 		String[] ignoreLogPatternss = StringUtils.split(ignoreLogPatterns, ",");
 		for (String ignoreLogPattern : ignoreLogPatternss) {

@@ -2,7 +2,7 @@ package com.company.tool.wx.miniapp.config;
 
 import org.junit.jupiter.api.Test;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.lang.Dict;

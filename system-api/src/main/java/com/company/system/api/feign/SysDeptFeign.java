@@ -2,7 +2,7 @@ package com.company.system.api.feign;
 
 import java.util.List;
 
-import com.company.common.request.RemoveReq;
+import com.company.system.api.request.RemoveReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.common.api.Result;
-import com.company.common.response.PageResp;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.SysDeptFeignFallback;
 import com.company.system.api.request.SysDeptReq;
@@ -21,7 +21,7 @@ public interface SysDeptFeign {
 
 	@GetMapping("/page")
 	Result<PageResp<SysDeptResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "parentId", required = false) Integer parentId, @RequestParam(value = "parentIds", required = false) String parentIds, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "orderNum", required = false) Integer orderNum, @RequestParam(value = "status", required = false) String status);
-	
+
 	@GetMapping("/list")
 	Result<List<SysDeptResp>> list(@RequestParam(value = "parentId", required = false) Integer parentId, @RequestParam(value = "parentIds", required = false) String parentIds, @RequestParam(value = "name", required = false) String name, @RequestParam(value = "orderNum", required = false) Integer orderNum, @RequestParam(value = "status", required = false) String status);
 

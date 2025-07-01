@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.banner.BannerShowCondition;
 import com.company.tool.banner.ShowParam;
 
@@ -39,13 +39,13 @@ public class TimeRangeCondition implements BannerShowCondition {
 
 		LocalTime beginOfTime = LocalTime.of(0, 0);
 		long seconds = beginOfTime.until(beginTime, ChronoUnit.SECONDS);
-		
+
 		beginTime = beginTime.minus(seconds, ChronoUnit.SECONDS);
 		endTime = endTime.minus(seconds, ChronoUnit.SECONDS);
-		
+
 		LocalTime now = LocalTime.now();
 		now = now.minus(seconds, ChronoUnit.SECONDS);
-		
+
 		boolean canShow = now.isAfter(beginTime) && now.isBefore(endTime);
 		if (!canShow) {
 			String beginTimeFormat = beginTime.format(pattern);

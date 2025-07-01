@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 public interface ICache {
 
@@ -42,7 +42,7 @@ public interface ICache {
 	}
 
 	long increment(String key, long delta);
-	
+
 	long increment(String key, long delta, long timeout, TimeUnit unit);
-	
+
 }

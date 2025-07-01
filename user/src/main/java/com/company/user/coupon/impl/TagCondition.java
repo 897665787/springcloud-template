@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.coupon.FilterParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;

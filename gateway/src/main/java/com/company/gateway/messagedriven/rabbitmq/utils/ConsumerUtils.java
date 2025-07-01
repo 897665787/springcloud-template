@@ -1,19 +1,21 @@
 package com.company.gateway.messagedriven.rabbitmq.utils;
 
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
-import com.company.gateway.context.SpringContextUtil;
-import com.company.gateway.messagedriven.BaseStrategy;
-import com.company.gateway.messagedriven.constants.HeaderConstants;
-import com.rabbitmq.client.Channel;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.apache.commons.collections.MapUtils;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.function.Consumer;
+import com.company.common.exception.BusinessException;
+import com.company.gateway.context.SpringContextUtil;
+import com.company.gateway.messagedriven.BaseStrategy;
+import com.company.gateway.messagedriven.constants.HeaderConstants;
+import com.company.gateway.util.JsonUtil;
+import com.rabbitmq.client.Channel;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ConsumerUtils {

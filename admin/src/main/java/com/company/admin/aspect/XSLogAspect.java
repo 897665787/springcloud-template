@@ -21,7 +21,7 @@ import com.company.admin.entity.base.XSGenericModel;
 import com.company.admin.exception.ExceptionConsts;
 import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.IpUtil;
 

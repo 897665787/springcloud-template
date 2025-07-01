@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.popup.PopCondition;
 import com.company.tool.popup.PopParam;
 
@@ -39,13 +39,13 @@ public class PopTimeRangeCondition implements PopCondition {
 
 		LocalTime beginOfTime = LocalTime.of(0, 0);
 		long seconds = beginOfTime.until(beginTime, ChronoUnit.SECONDS);
-		
+
 		beginTime = beginTime.minus(seconds, ChronoUnit.SECONDS);
 		endTime = endTime.minus(seconds, ChronoUnit.SECONDS);
-		
+
 		LocalTime now = LocalTime.now();
 		now = now.minus(seconds, ChronoUnit.SECONDS);
-		
+
 		boolean canPop = now.isAfter(beginTime) && now.isBefore(endTime);
 		if (!canPop) {
 			String beginTimeFormat = beginTime.format(pattern);

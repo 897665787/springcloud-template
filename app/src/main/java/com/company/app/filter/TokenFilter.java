@@ -2,8 +2,8 @@ package com.company.app.filter;
 
 import com.company.app.token.TokenService;
 import com.company.app.util.TokenValueUtil;
-import com.company.common.constant.CommonConstants;
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.service.WalletPreincomeService;
 import com.company.user.wallet.IWallet;
@@ -14,7 +14,7 @@ import com.company.user.wallet.dto.WalletId;
 
 /**
  * 待入账钱包
- * 
+ *
  * <pre>
  * 使用场景：金额先到待入账记录起来，一段时间后或经过一定的规则校验后再讲金额写入到钱包余额
  * </pre>

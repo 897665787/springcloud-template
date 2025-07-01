@@ -2,7 +2,7 @@ package com.company.user.canal;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.entity.UserInfo;
 
 import top.javatool.canal.client.annotation.CanalTable;

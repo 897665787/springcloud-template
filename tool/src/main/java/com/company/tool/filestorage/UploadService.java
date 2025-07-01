@@ -5,7 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
 import com.company.common.exception.BusinessException;
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.jqdi.filestorage.core.FileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 @Configuration
 public class HttpMessageConverterAutoConfiguration {

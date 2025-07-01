@@ -8,7 +8,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.popup.PopCondition;
 import com.company.tool.popup.PopParam;

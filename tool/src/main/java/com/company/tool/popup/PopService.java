@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.api.enums.PopupEnum;
 import com.company.tool.entity.Popup;

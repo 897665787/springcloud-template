@@ -1,17 +1,16 @@
 package com.company.framework.feign;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * 记录请求Feign接口耗时，打印在调用方日志
- * 
+ *
  * @author JQ棣
  */
 @Slf4j
@@ -22,7 +21,7 @@ public class FeignCostTimeAspect {
 
 	@Value("${template.requestFilter.arrMaxLength:1000}")
 	private int arrMaxLength;
-	
+
 	@Around("@within(org.springframework.cloud.openfeign.FeignClient)")
 	public Object feignCostTime(ProceedingJoinPoint joinPoint) throws Throwable {
 		long start = System.currentTimeMillis();

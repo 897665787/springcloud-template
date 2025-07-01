@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.context.SpringContextUtil;
 
@@ -17,7 +17,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用Strategy处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param strategyName
 	 * @param paramsClassName
@@ -28,7 +28,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用Strategy处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param strategyName
 	 * @param paramsClassName
@@ -47,7 +47,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param paramsClassName
 	 * @param consumer
@@ -58,7 +58,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param paramsClassName
 	 * @param consumer

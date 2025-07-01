@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.api.enums.BannerEnum;
 import com.company.tool.banner.dto.BannerCanShow;

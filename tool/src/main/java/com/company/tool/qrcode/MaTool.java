@@ -7,8 +7,8 @@ import java.io.OutputStream;
 
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.tool.qrcode.dto.LineColorParam;
 import com.company.tool.qrcode.dto.MaWxaCode;
@@ -59,7 +59,7 @@ public class MaTool {
 		try {
 			/**
 			 * 获取不限制的小程序码
-			 * 
+			 *
 			 * <pre>
 			 * 官网：https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/qrcode-link/qr-code/getUnlimitedQRCode.html
 			 * </pre>
@@ -88,7 +88,7 @@ public class MaTool {
 
         WxMaService wxMaService = new WxMaServiceImpl();
         wxMaService.setWxMaConfig(config);
-        
+
         WxMaQrcodeService qrcodeService = wxMaService.getQrcodeService();
 
 		// 默认"release" 要打开的小程序版本。正式版为 "release"，体验版为 "trial"，开发版为 "develop"
@@ -96,7 +96,7 @@ public class MaTool {
 		if (SpringContextUtil.isTestProfile()) {// 测试环境
 			envVersion = "develop";
 		}
-		
+
 //		String scene = "shareTo=1&linkId=22";
 //		String page = "pages/member/share";
 		String scene = "id=51";
@@ -112,7 +112,7 @@ public class MaTool {
 			System.out.println(bytes);
 			String extraSuffix = Utils.extraSuffix(bytes);
 			System.out.println("extraSuffix:" + extraSuffix);
-			
+
 			try {
 				OutputStream out = new FileOutputStream(new File("D:/WxaCodeUnlimit." + extraSuffix));
 				boolean isCloseOut = true;
@@ -121,7 +121,7 @@ public class MaTool {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		} catch (WxErrorException e) {
 			log.error("createWxaCodeUnlimit error", e);
 		}

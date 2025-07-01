@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.tool.messagedriven.Constants;
 import com.company.tool.messagedriven.strategy.StrategyConstants;

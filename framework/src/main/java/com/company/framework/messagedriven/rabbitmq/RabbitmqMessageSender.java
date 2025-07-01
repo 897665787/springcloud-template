@@ -1,7 +1,7 @@
 package com.company.framework.messagedriven.rabbitmq;
 
 import cn.hutool.core.util.RandomUtil;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.trace.TraceManager;

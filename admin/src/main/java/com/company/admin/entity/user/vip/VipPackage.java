@@ -1,7 +1,7 @@
 package com.company.admin.entity.user.vip;
 
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.common.jackson.annotation.FormatNumber;
+import com.company.framework.jackson.annotation.FormatNumber;
 import com.company.admin.entity.base.BaseModel;
 import lombok.Getter;
 import lombok.Setter;

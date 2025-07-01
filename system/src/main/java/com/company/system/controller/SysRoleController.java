@@ -13,9 +13,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.google.common.collect.Sets;
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysRoleFeign;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
@@ -67,27 +67,27 @@ public class SysRoleController implements SysRoleFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysRoleResp>> page(Long current, Long size, String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRole> queryWrapper = toQueryWrapper(roleName, roleKey, roleSort, dataScope, status, roleRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		long count = sysRoleService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysRole> list = sysRoleService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysRoleResp>> list(String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRole> queryWrapper = toQueryWrapper(roleName, roleKey, roleSort, dataScope, status, roleRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysRole> list = sysRoleService.list(queryWrapper);
-		
+
 		List<SysRoleResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleResp.class);
 		return Result.success(respList);
 	}

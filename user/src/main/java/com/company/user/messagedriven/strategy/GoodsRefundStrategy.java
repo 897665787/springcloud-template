@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class GoodsRefundStrategy implements BaseStrategy<Map<String, Object>> {
 			log.info("不是商品订单");
 			return;
 		}
-		
+
 		// 处理商品订单逻辑
 		Boolean success = MapUtils.getBoolean(params, "success");
 		String message = MapUtils.getString(params, "message");

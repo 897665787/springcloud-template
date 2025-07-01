@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 
 import com.company.admin.entity.base.BaseModel;
-import com.company.common.jackson.annotation.FormatNumber;
+import com.company.framework.jackson.annotation.FormatNumber;
 
 /**
  * 用户收货地址

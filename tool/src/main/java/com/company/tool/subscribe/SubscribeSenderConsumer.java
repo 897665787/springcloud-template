@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.tool.entity.SubscribeTask;
 import com.company.tool.entity.SubscribeTaskDetail;
 import com.company.tool.entity.SubscribeTemplate;
@@ -51,10 +51,10 @@ public class SubscribeSenderConsumer {
 	private SubscribeTemplateGrantService subscribeTemplateGrantService;
 	@Autowired
 	private IMaTool maTool;
-	
+
 	@Value("${appid.wx.miniapp:wxeb6ffb1ebd72a4fd1}")
 	private String appid;
-	
+
 	public void consumer(Integer subscribeTaskDetailId) {
 		SubscribeTaskDetail subscribeTaskDetail = subscribeTaskDetailService.getById(subscribeTaskDetailId);
 		SubscribeTask subscribeTask = subscribeTaskService.getById(subscribeTaskDetail.getTaskId());
@@ -122,7 +122,7 @@ public class SubscribeSenderConsumer {
 		}
 
 		String priTmplId = subscribeTemplate.getPriTmplId();
-		
+
 		/* 这里判断是否有授权次数似乎没有意义，微信拒绝订阅消息后可能会重置授权次数，系统中记录的跟微信官方记录的不一致，所以不校验，无脑发 */
 //		// 判断是否有授权次数
 //		boolean hasGrant = subscribeTemplateGrantService.hasGrantByOpenidTemplateCode(openid, priTmplId);
@@ -144,7 +144,7 @@ public class SubscribeSenderConsumer {
 		if (response.isSuccess()) {
 			// 成功了增加使用次数
 			subscribeTemplateGrantService.incrUseNum(openid, priTmplId);
-			
+
 			remark = Utils.rightRemark(remark, SubscribeTaskDetailEnum.Status.REQ_SUCCESS.getDesc());
 			subscribeTaskDetailService.updateSendSuccessStatus(SubscribeTaskDetailEnum.Status.REQ_SUCCESS, remark,
 					subscribeTaskDetailId);
@@ -156,7 +156,7 @@ public class SubscribeSenderConsumer {
 //			else {// 其他失败就归还授权次数
 //				subscribeTemplateGrantService.returnUseNum(openid, priTmplId);
 //			}
-			
+
 			remark = Utils.rightRemark(remark, response.getMessage());
 			subscribeTaskDetailService.updateStatusRemark(SubscribeTaskDetailEnum.Status.REQ_FAIL, remark,
 					subscribeTaskDetailId);
@@ -165,7 +165,7 @@ public class SubscribeSenderConsumer {
 
 	/**
 	 * 参数与模板匹配
-	 * 
+	 *
 	 * @param valueList
 	 * @param content
 	 * @param paramIndex
@@ -206,10 +206,10 @@ public class SubscribeSenderConsumer {
 		}
 		return dataList;
 	}
-	
+
 	/**
 	 * 参数与模板结合
-	 * 
+	 *
 	 * @param dataList
 	 * @param content
 	 * @return
@@ -222,7 +222,7 @@ public class SubscribeSenderConsumer {
 		}
 		return tmpContent;
 	}
-	
+
 	/**
 	 * <pre>
 	 * 订阅消息参数值内容限制说明
@@ -277,7 +277,7 @@ public class SubscribeSenderConsumer {
 		}
 		return value;
 	}
-	
+
 	public static void main(String[] args) {
 		List<String> valueList = Lists.newArrayList(
 				"新人券包32元",
@@ -288,14 +288,14 @@ public class SubscribeSenderConsumer {
 				);
 		String content = "优惠券名称:{{thing1.DATA}}优惠券金额:{{amount5.DATA}}数量:{{number7.DATA}}有效期:{{time8.DATA}}温馨提示:{{thing3.DATA}}";
 		String paramIndex = null;
-		
+
 //		String content = "优惠券名称:{{thing1.DATA}}优惠券金额:{{amount5.DATA}}温馨提示:{{thing3.DATA}}有效期:{{time8.DATA}}";
 //		String paramIndex = "0,2,4,3";
-		
+
 		List<SubscribeMsgData> subscribeMsgDataList = toSubscribeMsgData(valueList, content, paramIndex);
 		System.out.println(JsonUtil.toJsonString(subscribeMsgDataList));
-		
+
 		System.out.println(toSubscribeContent(subscribeMsgDataList, content));
-		
+
 	}
 }

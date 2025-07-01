@@ -34,7 +34,7 @@ import com.company.admin.mapper.security.SecResourceDao;
 import com.company.admin.springsecurity.UpdateAuthorityFilter;
 import com.company.admin.util.ModelValidateUtil;
 import com.company.admin.util.XSTreeUtil;
-import com.company.common.constant.CommonConstants;
+import com.company.framework.constant.CommonConstants;
 import com.company.common.exception.BusinessException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -419,7 +419,7 @@ public class SecResourceService {
         secResource.setAssign(1);
         secResource.setLog(0);
         save(secResource);
-        
+
 		SecStaff currentSecStaff = secStaffService.getByUsername(new SecStaff(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
 		if (Objects.equals(currentSecStaff.getType(), 10)) {
 			// 超级管理员，把新增资源修改到当前登录用户
@@ -430,7 +430,7 @@ public class SecResourceService {
     public void removeDynamicResource(String key) {
         SecResource existentRes = secResourceDao.getByKey("dynamic_config_" + key);
         remove(existentRes);
-        
+
         SecStaff currentSecStaff = secStaffService.getByUsername(new SecStaff(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
 		if (Objects.equals(currentSecStaff.getType(), 10)) {
 			// 超级管理员，把删除资源修改到当前登录用户
@@ -449,7 +449,7 @@ public class SecResourceService {
 
     public void updateDynamicResource(String name, String newKey, String key) {
         secResourceDao.updateByKey(name, "dynamic_config_" + newKey, "dynamic_config_" + key);
-        
+
         SecStaff currentSecStaff = secStaffService.getByUsername(new SecStaff(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
 		if (Objects.equals(currentSecStaff.getType(), 10)) {
 			// 超级管理员，把修改资源修改到当前登录用户

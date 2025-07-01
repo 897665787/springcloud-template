@@ -6,8 +6,8 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.feign.SysUserRoleFeign;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.system.api.response.SysUserRoleResp;
@@ -25,12 +25,12 @@ public class SysUserRoleFeignFallback implements FallbackFactory<SysUserRoleFeig
 			public Result<PageResp<SysUserRoleResp>> page(Long current, Long size, Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<List<SysUserRoleResp>> list(Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<SysUserRoleResp> query(Integer id) {
 				return Result.onFallbackError();

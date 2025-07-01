@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.URL;
 
 import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.common.jackson.annotation.FormatNumber;
+import com.company.framework.jackson.annotation.FormatNumber;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -197,17 +197,17 @@ public class User extends BaseModel {
      * 绑定微信时间
      */
     private Date bindWeChatTime;
-    
+
     /**
      * 经验值
      */
     private Long exp;
-    
+
     /**
      * 积分
      */
     private Long credit;
-    
+
     /**
      * 等级
      */

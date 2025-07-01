@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;

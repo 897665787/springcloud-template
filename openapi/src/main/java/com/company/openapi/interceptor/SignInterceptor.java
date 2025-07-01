@@ -1,7 +1,7 @@
 package com.company.openapi.interceptor;
 
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.cache.ICache;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
 import com.company.framework.util.WebUtil;
@@ -26,12 +26,12 @@ import java.util.stream.Collectors;
 @Component
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
 public class SignInterceptor extends HandlerInterceptorAdapter {
-	
+
 	@Autowired
 	private SignConfiguration signConfiguration;
 	@Autowired
 	private ICache cache;
-	
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -43,14 +43,14 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		HandlerMethod handlerMethod = (HandlerMethod) handler;
 
 		Method method = handlerMethod.getMethod();
-		
+
 		NoSign methodAnnotation = AnnotationUtils.findAnnotation(method, NoSign.class);
 		NoSign classAnnotation = AnnotationUtils.findAnnotation(method.getDeclaringClass(), NoSign.class);
 		if (methodAnnotation != null || classAnnotation != null) {
 			// 方法或类上打注解NoSign
 			return true;
 		}
-		
+
 		// 检查时效性
 		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），10分钟内数据有效
 		if (StringUtils.isBlank(timestamp)) {
@@ -67,7 +67,7 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		if (StringUtils.isBlank(appid)) {
 			throw new BusinessException("appid错误");
 		}
-		
+
 		String appsecret = signConfiguration.getAppsecret(appid);
 //		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid).dataOrThrow();// appsecret也可以保存到数据库
 		if (StringUtils.isBlank(appsecret)) {
@@ -94,7 +94,7 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		Map<String, String> reqParam = WebUtil.getReqParam(request);
 		Map<String, Object> reqParamObject = reqParam.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		
+
 		String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, reqParamObject , bodyStr, appsecret);
 		if (!sign4md5.equals(sign)) {
 			throw new BusinessException("签名错误");

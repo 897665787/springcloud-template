@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.company.common.annotation.Idempotent;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.cache.ICache;
 import com.company.framework.lock.LockClient;
 
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * 幂等切面
- * 
+ *
  * @author JQ棣
  */
 @Slf4j
@@ -36,10 +36,10 @@ public class IdempotentAspect implements InitializingBean {
 	private ICache cache;
 	@Autowired
 	private LockClient lockClient;
-	
+
 	/**
 	 * 发起feign请求的服务
-	 * 
+	 *
 	 * @param joinPoint
 	 * @param idempotent
 	 * @return
@@ -59,7 +59,7 @@ public class IdempotentAspect implements InitializingBean {
 
 	/**
 	 * 接收feign请求的服务
-	 * 
+	 *
 	 * @param joinPoint
 	 * @param idempotent
 	 * @return

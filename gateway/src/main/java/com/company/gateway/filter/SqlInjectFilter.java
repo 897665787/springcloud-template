@@ -25,8 +25,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.company.common.api.Result;
-import com.company.common.constant.CommonConstants;
-import com.company.common.util.JsonUtil;
+import com.company.gateway.constant.CommonConstants;
+import com.company.gateway.util.JsonUtil;
 import com.company.gateway.util.WebUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 

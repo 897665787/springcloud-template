@@ -3,7 +3,7 @@ package com.company.admin.controller.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.admin.service.security.SecResourceService;
 import com.company.common.api.Result;
 import com.company.admin.entity.security.SecResource;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class SecResourceController {
-    
+
     @Autowired
     private SecResourceService secResourceService;
 
