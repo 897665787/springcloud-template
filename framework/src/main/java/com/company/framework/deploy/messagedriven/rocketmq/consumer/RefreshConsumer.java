@@ -3,7 +3,7 @@ package com.company.framework.deploy.messagedriven.rocketmq.consumer;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
-import com.company.framework.autoconfigure.RocketMQAutoConfiguration;
+import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.framework.deploy.messagedriven.strategy.StrategyConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;

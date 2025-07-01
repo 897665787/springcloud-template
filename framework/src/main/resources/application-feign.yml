@@ -1,0 +1,12 @@
+# Feign 配置
+feign:
+#  httpclient: # 使用Apache HttpClient作为http客户端，默认HttpURLConnection
+#    enabled: true
+#  okhttp: # 使用okhttp作为http客户端  ，默认HttpURLConnection
+#    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 1000 # 连接超时时间，默认1000ms
+        readTimeout: 5000 # 读取超时时间（单次请求），默认1000ms
+

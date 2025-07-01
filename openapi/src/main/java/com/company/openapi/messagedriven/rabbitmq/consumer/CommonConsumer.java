@@ -1,7 +1,7 @@
 package com.company.openapi.messagedriven.rabbitmq.consumer;
 
 import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
-import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import com.company.openapi.messagedriven.Constants;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;

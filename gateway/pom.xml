@@ -50,11 +50,18 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 		<!-- eureka客户端 -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+		<!-- nacos客户端 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 		<!-- config客户端 -->
@@ -72,7 +79,6 @@
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-			<version>2021.0.6.2</version>
 		</dependency>
 		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 
@@ -96,6 +102,24 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
+
+		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
+		<!-- Resilience4J -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+		</dependency>
+		<!-- Sentinel：https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel，相比于Resilience4J优点在于有控制台可以来配置熔断规则 -->
+		<!-- 如果使用 Sentinel，需额外部署 Sentinel Dashboard -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+		</dependency>
+		<!-- 熔断器，Resilience4J、Sentinel选其中一个就行 -->
 
 		<!-- skywalking日志追踪 -->
 		<dependency>

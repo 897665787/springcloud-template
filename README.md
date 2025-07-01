@@ -106,7 +106,7 @@ springcloud-template
 
 | 服务                | 端口   | 功能说明               |
 |-------------------|------|--------------------|
-| template-eureka   | 7001 | 注册中心               |
+| template-eureka   | 7001 | 注册中心（可替换为nacos） |
 | template-gateway  | 5001 | 网关                 |
 | template-config   | 4001 | 配置中心（可替换为nacos）    |
 | template-monitor  | 3001 | 监控                 |
@@ -128,12 +128,17 @@ springcloud-template
 
 ### 本地开发 运行
 
-- dev环境下默认关闭了eureka注册，如开启请修改framework下bootstrap-eureka.yml的dev环境配置
+- dev环境下默认关闭了注册中心，如开启请修改framework下bootstrap-eureka.yml或bootstrap-nacos-discovery.yml的dev环境配置
 ```yaml
 eureka:
   client:
-    register-with-eureka: true # 注册到Eureka Server，默认true
-    fetch-registry: true # 从Eureka Server获取注册信息，默认true
+    enabled: true # Eureka注册中心开关
+# or
+spring:
+  cloud:
+    nacos:
+      discovery:
+        enabled: true # nacos注册中心开关
 ```
 
 - 每个微服务都可以单独启动、单独调试（如果需要预览API内没有依赖内部微服务，也可不启动），就可以请求相关API进行效果预览了（建议使用postman等工具）

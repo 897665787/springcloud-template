@@ -1,7 +1,7 @@
 package com.company.framework.deploy.messagedriven.rabbitmq.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
-import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -25,7 +25,7 @@ public class RefreshConsumer {
 	 * 临时队列名由fanout.deploy-${spring.application.name}-${spring.cloud.client.ip-address}-${server.port}构成
 	 * 每个服务（包括同个服务的集群部署）都要有单独的队列来监听fanout exchange的消息（用于监听其他服务下线或上线事件，重新拉取注册信息）
 	 * </pre>
-	 * 
+	 *
 	 * @param msg
 	 */
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.DEPLOY.EXCHANGE

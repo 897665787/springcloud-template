@@ -1,6 +1,6 @@
 package com.company.system.messagedriven.rabbitmq.consumer;
 
-import com.company.framework.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;

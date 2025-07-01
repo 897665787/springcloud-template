@@ -21,11 +21,18 @@
 			<version>2.7.16</version>
 		</dependency>
 
+		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 		<!-- eureka客户端 -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+		<!-- nacos客户端 -->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 	</dependencies>
 	<build>
 		<plugins>

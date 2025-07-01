@@ -1,8 +1,6 @@
-package com.company.framework.autoconfigure;
+package com.company.framework.trace;
 
 import com.company.common.constant.HeaderConstants;
-import com.company.framework.trace.TraceIdProvider;
-import com.company.framework.trace.TraceManager;
 import com.company.framework.trace.provider.RandomProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

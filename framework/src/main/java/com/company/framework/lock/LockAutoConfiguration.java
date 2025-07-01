@@ -1,4 +1,4 @@
-package com.company.framework.autoconfigure;
+package com.company.framework.lock;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import com.company.framework.lock.LockClient;
 import com.company.framework.lock.impl.JvmLockClient;
 import com.company.framework.lock.impl.RedissonLockClient;
 

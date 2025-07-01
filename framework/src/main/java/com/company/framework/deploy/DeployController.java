@@ -1,59 +1,35 @@
 package com.company.framework.deploy;
 
 import com.company.common.api.Result;
-import com.company.common.exception.BusinessException;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.SpringContextUtil;
-import com.google.common.collect.Maps;
-import com.netflix.discovery.DiscoveryClient;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 
 /**
  * 部署相关接口（用于优雅发版）
  *
  * @author JQ棣
- *
  */
 @RestController
 public class DeployController {
 
-	@Autowired(required = false)
-	private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
+    @Autowired(required = false)
+    private List<ConsumerComponent> consumerComponentList; // 优雅停机
 
-	@Autowired
-	private MessageSender messageSender;
-
-	/**
-	 * 服务下线
-	 *
-	 * @return
-	 */
-	@RequestMapping(value = "/offline", method = RequestMethod.GET)
-	public void offline() {
-		try {
-			DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
-			client.shutdown();
-
-			// 通知其他服务刷新服务列表，即时中断请求流量
-			Map<String, Object> params = Maps.newHashMap();
-			params.put("application", SpringContextUtil.getProperty("spring.application.name"));
-			params.put("type", "offline");
-			messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
-
-			// 下线MQ消费者
-			Optional.ofNullable(rabbitListenerEndpointRegistry).ifPresent(RabbitListenerEndpointRegistry::stop);
-		} catch (Exception e) {
-			throw new BusinessException(ExceptionUtils.getMessage(e));
-		}
-	}
+    /**
+     * 下线
+     *
+     * @return
+     */
+    @GetMapping("/offline")
+    public Result<?> offline() {
+        if (consumerComponentList == null) {
+            return Result.success();
+        }
+        consumerComponentList.forEach(ConsumerComponent::offline);
+        return Result.success();
+    }
 
 }
