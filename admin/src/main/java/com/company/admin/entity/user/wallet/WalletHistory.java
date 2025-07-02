@@ -14,7 +14,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.framework.jackson.annotation.FormatNumber;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
