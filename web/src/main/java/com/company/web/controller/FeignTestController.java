@@ -1,6 +1,7 @@
 package com.company.web.controller;
 
 import com.company.common.api.Result;
+import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -20,17 +21,23 @@ public class FeignTestController {
     private FeignTestFeign feignTestFeign;
 
     @GetMapping(value = "/getnoparam")
-    public Result<OrderDetailResp> getnoparam() {
-        return feignTestFeign.getnoparam();
+    public Result<com.company.web.resp.OrderDetailResp> getnoparam() {
+		OrderDetailResp orderDetailResp = feignTestFeign.getnoparam().dataOrThrow();
+		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
+		return Result.success(resp);
     }
 
     @GetMapping(value = "/getparam")
-    public Result<OrderDetailResp> getparam(String orderCode) {
-        return feignTestFeign.getparam(orderCode);
+    public Result<com.company.web.resp.OrderDetailResp> getparam(String orderCode) {
+		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode).dataOrThrow();
+		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
+		return Result.success(resp);
     }
 
     @GetMapping(value = "/postbody")
-    public Result<OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
-        return feignTestFeign.postbody(registerOrderReq);
+    public Result<com.company.web.resp.OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
+		OrderDetailResp orderDetailResp = feignTestFeign.postbody(registerOrderReq).dataOrThrow();
+		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
+		return Result.success(resp);
     }
 }

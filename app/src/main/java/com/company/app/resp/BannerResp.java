@@ -1,6 +1,7 @@
-package com.company.tool.api.response;
+package com.company.app.resp;
 
-import com.company.tool.api.enums.NavItemEnum;
+import com.company.framework.jackson.annotation.AutoDesc;
+import com.company.tool.api.enums.BannerEnum;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,29 +9,25 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class NavResp {
+public class BannerResp {
 	/**
 	 * 标题
 	 */
 	String title;
 
 	/**
-	 * LOGO图
+	 * 图
 	 */
-	String logo;
+	String image;
 
 	/**
 	 * 跳转类型
 	 */
-	NavItemEnum.Type type;
+	@AutoDesc(value = BannerEnum.Type.class)
+	BannerEnum.Type type;
 
 	/**
 	 * 跳转值
 	 */
 	String value;
-
-	/**
-	 * 附加json对象（透传）
-	 */
-	Object attach = new Object();
 }

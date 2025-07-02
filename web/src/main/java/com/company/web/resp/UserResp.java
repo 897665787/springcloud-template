@@ -1,6 +1,9 @@
-package com.company.user.api.response;
+package com.company.web.resp;
 
 import java.time.LocalDateTime;
+
+import com.company.framework.jackson.annotation.AutoDesc;
+import com.company.user.api.enums.UserStatus;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -15,6 +18,7 @@ public class UserResp {
 	private Integer deleted;
 	private String avatar;
 	
+	@AutoDesc(UserStatus.class)
 	private Integer status;
 	private String creator;
 	private LocalDateTime createTime;

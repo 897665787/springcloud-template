@@ -1,7 +1,10 @@
-package com.company.order.api.response;
+package com.company.web.resp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.company.framework.jackson.annotation.FormatNumber;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +12,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class OrderDetailResp {
+public class OrderResp {
 	/**
 	 * 订单号
 	 */
@@ -31,40 +34,68 @@ public class OrderDetailResp {
     /**
      * 实付金额
      */
+    @FormatNumber(pattern = "0.0#")
     private BigDecimal payAmount;
+
+	/**
+	 * 时间文案
+	 */
+	private String timeText;
 	
 	/**
-	 * 是否展示取消订单按钮
+	 * 时间
+	 */
+	private LocalDateTime time;
+	
+	/**
+	 * 是否展示‘删除订单’按钮
+	 */
+	private Boolean deleteBtn;
+	
+	/**
+	 * 是否展示‘取消订单’按钮
 	 */
 	private Boolean cancelBtn;
-	/**
-	 * 是否展示去付款按钮
-	 */
-	private Boolean toPayBtn;// 去付款信息通过单独的接口获取
 
+	/**
+	 * 按钮列表(超过n个按钮则放入更多，前端控制)
+	 */
+	private List<BottonResp> bottonList;
+
+	@Data
+	@AllArgsConstructor
+	public static class BottonResp {
+		/**
+		 * 文案
+		 */
+		private String text;
+		
+		/**
+		 * 点击后重定向页面(前端根据该key做路径映射)
+		 */
+		private String key;
+		
+		/**
+		 * 参数
+		 */
+		private String params;
+		
+		/**
+		 * 排序（从右到左，值小到大）
+		 */
+		private Integer sort;
+	}
+	
 	/**
 	 * 商品列表
 	 */
 	private List<ProductResp> productList;
-
-	// 订单信息（数组维度展示信息）
-	private List<TextValueResp> textValueList;
-
-	@Data
-	@AllArgsConstructor
-	public static class TextValueResp {
-		private String text;// 文本
-		private String value;// 值
-	}
-
+	
 	/**
 	 * 子订单
 	 */
 	private Object subOrder;
 
-	/**
-	 * 订单表
-	 */
 	@Data
 	public static class ProductResp {
 		/**
@@ -75,16 +106,19 @@ public class OrderDetailResp {
 		/**
 		 * 原价
 		 */
+		@FormatNumber(pattern = "0.0#")
 		private BigDecimal originAmount;
 
 		/**
 		 * 售价
 		 */
+		@FormatNumber(pattern = "0.0#")
 		private BigDecimal salesAmount;
 
 		/**
 		 * 总额(售价*数量)
 		 */
+		@FormatNumber(pattern = "0.0#")
 		private BigDecimal amount;
 
 		/**

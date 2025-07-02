@@ -1,5 +1,6 @@
-package com.company.tool.api.response;
+package com.company.app.resp;
 
+import com.company.framework.jackson.annotation.AutoDesc;
 import com.company.tool.api.enums.NavItemEnum;
 
 import lombok.AccessLevel;
@@ -22,6 +23,7 @@ public class NavResp {
 	/**
 	 * 跳转类型
 	 */
+	@AutoDesc(value = NavItemEnum.Type.class)
 	NavItemEnum.Type type;
 
 	/**

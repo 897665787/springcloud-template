@@ -1,7 +1,19 @@
 package com.company.app.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.company.common.api.Result;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.BannerFeign;
 import com.company.tool.api.feign.NavFeign;
@@ -12,15 +24,6 @@ import com.company.tool.api.response.NavResp;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 导航栏API
@@ -42,7 +45,7 @@ public class NavigationController {
 	 * 金刚位列表
 	 */
 	@GetMapping("/nav")
-	public Result<List<NavResp>> nav(HttpServletRequest request) {
+	public Result<List<com.company.app.resp.NavResp>> nav(HttpServletRequest request) {
 		
 		NavReq navReq = new NavReq();
 		
@@ -74,14 +77,16 @@ public class NavigationController {
 		navReq.setRuntimeAttach(runtimeAttach);
 		navReq.setMaxSize(4);
 
-		return navFeign.list(navReq);
+		List<NavResp> navRespList = navFeign.list(navReq).dataOrThrow();
+		List<com.company.app.resp.NavResp> respList = PropertyUtils.copyArrayProperties(navRespList, com.company.app.resp.NavResp.class);
+		return Result.success(respList);
 	}
 	
 	/**
 	 * 轮播图列表
 	 */
 	@GetMapping("/banner")
-	public Result<List<BannerResp>> banner(HttpServletRequest request) {
+	public Result<List<com.company.app.resp.BannerResp>> banner(HttpServletRequest request) {
 		
 		BannerReq bannerReq = new BannerReq();
 		
@@ -112,6 +117,8 @@ public class NavigationController {
 		
 		bannerReq.setRuntimeAttach(runtimeAttach);
 		
-		return bannerFeign.list(bannerReq);
+		List<BannerResp> bannerRespList = bannerFeign.list(bannerReq).dataOrThrow();
+		List<com.company.app.resp.BannerResp> respList = PropertyUtils.copyArrayProperties(bannerRespList, com.company.app.resp.BannerResp.class);
+		return Result.success(respList);
 	}
 }

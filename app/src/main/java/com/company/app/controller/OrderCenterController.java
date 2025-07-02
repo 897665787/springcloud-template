@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.app.req.RefundApplyReq;
 import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
-import com.company.framework.util.Utils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
+import com.company.framework.util.PropertyUtils;
+import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -60,10 +61,12 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/page")
-	public Result<List<OrderResp>> page(
+	public Result<List<com.company.app.resp.OrderResp>> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size, OrderEnum.StatusEnum status) {
-		return orderFeign.page(current, size, status);
+		List<OrderResp> orderRespList = orderFeign.page(current, size, status).dataOrThrow();
+		List<com.company.app.resp.OrderResp> respList = PropertyUtils.copyArrayProperties(orderRespList, com.company.app.resp.OrderResp.class);
+		return Result.success(respList);
 	}
 
 	/**
@@ -73,8 +76,10 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/detail")
-	public Result<OrderDetailResp> detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
-		return orderFeign.detail(orderCode);
+	public Result<com.company.app.resp.OrderDetailResp> detail(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+		OrderDetailResp orderDetailResp = orderFeign.detail(orderCode).dataOrThrow();
+		com.company.app.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.app.resp.OrderDetailResp.class);
+		return Result.success(resp);
 	}
 
 	/**
@@ -84,11 +89,13 @@ public class OrderCenterController {
 	 * @return
 	 */
 	@GetMapping("/cancel")
-	public Result<OrderDetailResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
+	public Result<com.company.app.resp.OrderDetailResp> cancel(@Valid @NotNull(message = "订单号不能为空") String orderCode) {
 		OrderCancelReq orderCancelReq = new OrderCancelReq();
 		orderCancelReq.setOrderCode(orderCode);
 		orderCancelReq.setCancelTime(LocalDateTime.now());
-		return orderFeign.cancelByUser(orderCancelReq);
+		OrderDetailResp orderDetailResp = orderFeign.cancelByUser(orderCancelReq).dataOrThrow();
+		com.company.app.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.app.resp.OrderDetailResp.class);
+		return Result.success(resp);
 	}
 
 	/**

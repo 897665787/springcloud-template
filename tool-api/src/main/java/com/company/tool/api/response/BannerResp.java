@@ -1,6 +1,5 @@
 package com.company.tool.api.response;
 
-import com.company.common.jackson.annotation.AutoDesc;
 import com.company.tool.api.enums.BannerEnum;
 
 import lombok.AccessLevel;
@@ -23,7 +22,6 @@ public class BannerResp {
 	/**
 	 * 跳转类型
 	 */
-	@AutoDesc(value = BannerEnum.Type.class)
 	BannerEnum.Type type;
 
 	/**

@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import com.company.common.jackson.annotation.FormatNumber;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -32,11 +30,9 @@ public class DistributeSubOrderResp {
 	private String mealCode;
 
 	// 配送费
-	@FormatNumber(pattern = "0.0#")
 	BigDecimal distributeAmount;
 
 	// 保温费
-	@FormatNumber(pattern = "0.0#")
 	BigDecimal baowenAmount;
 
 	/**
