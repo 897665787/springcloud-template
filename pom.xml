@@ -40,7 +40,7 @@
 		<module>framework-edge</module>
 		<!-- 内部微服务 -->
 		<module>tool</module>
-		<module>tool-api</module>
+		<module>tool-api</module><!-- 尽量保持feign-api的依赖简单，不要依赖无用依赖，因为该代码会作为SDK提供给客户端 -->
 		<module>user</module>
 		<module>user-api</module>
 		<module>system</module>
@@ -82,12 +82,6 @@
 				<version>${spring-boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-			    <groupId>org.apache.commons</groupId>
-			    <artifactId>commons-lang3</artifactId>
-			    <version>3.10</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

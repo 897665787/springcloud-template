@@ -14,6 +14,19 @@
 	<description>框架代码</description>
 
 	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-collections4</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>commons-beanutils</groupId>
+		    <artifactId>commons-beanutils</artifactId>
+		    <version>1.9.4</version>
+		</dependency>
         <dependency>
 			<groupId>com.company</groupId>
 			<artifactId>template-common</artifactId>
@@ -38,7 +51,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-client</artifactId>
         </dependency>
-        <!--apollo客户端 -->
+		<!--apollo客户端 -->
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-client</artifactId>
@@ -49,7 +62,7 @@
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
     	</dependency>
-    	<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
+		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 		<!-- actuator端点 -->
@@ -129,7 +142,7 @@
 		<!-- skywalking日志追踪 -->
 
 		<!-- MQ -->
-        <!-- rabbitMQ -->
+		<!-- rabbitMQ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
@@ -152,8 +165,8 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
-        <!-- redisson -->
-        <!--
+		<!-- redisson -->
+		<!--
         	引入该配置会使用redission作为redis的连接工具
         <dependency>
 		     <groupId>org.redisson</groupId>
@@ -196,7 +209,7 @@
             <artifactId>guava</artifactId>
             <version>21.0</version>
         </dependency>
-        <!-- guava重试 -->
+		<!-- guava重试 -->
         <dependency>
             <groupId>com.github.rholder</groupId>
             <artifactId>guava-retrying</artifactId>
