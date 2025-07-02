@@ -4,13 +4,12 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import javax.validation.constraints.NotBlank;
 
 import com.company.admin.entity.base.BaseModel;
-import com.company.framework.jackson.annotation.FormatNumber;
 
 /**
  * 用户收货地址
@@ -95,7 +94,6 @@ public class UserAddress extends BaseModel {
      */
     @DecimalMin(value = "0", message = "经度范围为0-9999.999999999999，至多12位小数", groups = {Save.class, Update.class})
     @Digits(integer = 16, fraction = 12, message = "经度范围为0-9999.999999999999，至多12位小数", groups = {Save.class, Update.class})
-    @FormatNumber(pattern = "0.############")
     private BigDecimal lng;
 
     /**
@@ -103,7 +101,6 @@ public class UserAddress extends BaseModel {
      */
     @DecimalMin(value = "0", message = "纬度范围为0-9999.999999999999，至多12位小数", groups = {Save.class, Update.class})
     @Digits(integer = 16, fraction = 12, message = "纬度范围为0-9999.999999999999，至多12位小数", groups = {Save.class, Update.class})
-    @FormatNumber(pattern = "0.############")
     private BigDecimal lat;
 
     /**

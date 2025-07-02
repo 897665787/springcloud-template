@@ -12,7 +12,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.framework.jackson.annotation.FormatNumber;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Getter;
@@ -59,7 +58,6 @@ public class Withdrawal extends BaseModel {
 	@NotNull(message = "金额不能为空", groups = Save.class)
 	@DecimalMin(value = "0.01", message = "金额范围为0.01-9999999.99，至多2位小数", groups = {Save.class, Update.class})
 	@Digits(integer = 7, fraction = 2, message = "金额范围为0.01-9999999.99，至多2位小数", groups = {Save.class, Update.class})
-	@FormatNumber(pattern = "0.##")
 	private BigDecimal fee;
 
 	/**

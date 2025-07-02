@@ -7,16 +7,15 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
 
 import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.framework.jackson.annotation.FormatNumber;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -240,7 +239,6 @@ public class User extends BaseModel {
     @NotNull(message = "金额（元）不能为空", groups = UpdateWallet.class)
     @DecimalMin(value = "-9999999.99", message = "金额（元）范围为-9999999.99-9999999.99", groups = UpdateWallet.class)
     @Digits(integer = 7, fraction = 2, message = "金额（元）范围为-9999999.99-9999999.99，至多两位小数", groups = UpdateWallet.class)
-    @FormatNumber(pattern = "0.##")
     private BigDecimal changeFee;
 
     /**

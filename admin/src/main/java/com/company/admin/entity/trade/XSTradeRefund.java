@@ -47,7 +47,6 @@ public class XSTradeRefund extends BaseModel {
 	@NotNull(message = "退款金额不能为空", groups = Save.class)
 	@DecimalMin(value = "0.01", message = "退款金额范围为0.01-9999999.99，至多2位小数", groups = {Save.class, Update.class})
 	@Digits(integer = 7, fraction = 2, message = "退款金额范围为0.01-9999999.99，至多2位小数", groups = {Save.class, Update.class})
-	@FormatNumber(pattern = "0.##")
 	private BigDecimal fee;
 
 	/**
