@@ -19,12 +19,10 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
+import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.framework.util.RetryUtils;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliActivityNotifyFeign;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
@@ -35,6 +33,8 @@ import com.company.order.entity.AliActivityPay;
 import com.company.order.enums.AliActivityNotifyEnum;
 import com.company.order.mapper.AliActivityNotifyMapper;
 import com.company.order.mapper.AliActivityPayMapper;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.aliactivity.AliActivityConstants;
 import com.company.order.pay.aliactivity.config.AliActivityPayConfiguration;
 import com.company.order.pay.aliactivity.config.AliActivityPayProperties;
@@ -119,8 +119,8 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 				SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 				response.setCode("40004");
 				response.setMsg("Business Failed");
-				response.setSubCode("ISV-VERIFICATION-FAILED");
-				response.setSubMsg("验签失败");
+				response.setSub_code("ISV-VERIFICATION-FAILED");
+				response.setSub_msg("验签失败");
 				resp.setResponse(response);
 				resp.setSign(sign(response, payConfig.getPrivateKey()));
 
@@ -134,8 +134,8 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 			response.setCode("40004");
 			response.setMsg("Business Failed");
-			response.setSubCode("ISV-VERIFICATION-FAILED");
-			response.setSubMsg("验签失败");
+			response.setSub_code("ISV-VERIFICATION-FAILED");
+			response.setSub_msg("验签失败");
 			resp.setResponse(response);
 			resp.setSign(sign(response, payConfig.getPubKey()));
 
@@ -172,7 +172,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			resp.setResponse(response);
 			resp.setSign(sign(response, payConfig.getPubKey()));
 
-			String responseMsg = Optional.ofNullable(response.getSubMsg()).orElse(response.getMsg());
+			String responseMsg = Optional.ofNullable(response.getSub_msg()).orElse(response.getMsg());
 			aliActivityNotifyMapper.updateRemarkById(responseMsg, payNotifyId);
 
 			return Result.success(resp);
@@ -202,7 +202,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		resp.setResponse(response);
 		resp.setSign(sign(response, payConfig.getPubKey()));
 
-		String responseMsg = Optional.ofNullable(response.getSubMsg()).orElse(response.getMsg());
+		String responseMsg = Optional.ofNullable(response.getSub_msg()).orElse(response.getMsg());
 		aliActivityNotifyMapper.updateRemarkById(responseMsg, payNotifyId);
 
 		return Result.success(resp);
@@ -219,7 +219,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 	private static String sign(SpiOrderSendNotifyResp.Response response, String privateKey) {
 		@SuppressWarnings("unchecked")
 		Map<String, String> responseMap = PropertyUtils.copyProperties(response, Map.class);
-		responseMap.put("send_activity_info_result_list", JsonUtil.toJsonString(response.getSendActivityInfoResultList()));
+		responseMap.put("send_activity_info_result_list", JsonUtil.toJsonString(response.getSend_activity_info_result_list()));
 		String sign = AlipaySignature.sign(responseMap, privateKey, AliActivityConstants.CHARSET, AliActivityConstants.SIGNTYPE);
 		return sign;
 	}
@@ -228,8 +228,8 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 		response.setCode(AliActivityConstants.Response.CODE_40004);
 		response.setMsg(AliActivityConstants.Response.MSG_BUSINESS_FAILED);
-		response.setSubCode(subCode);
-		response.setSubMsg(subMsg);
+		response.setSub_code(subCode);
+		response.setSub_msg(subMsg);
 		return response;
 	}
 
@@ -282,16 +282,16 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		SpiOrderSendNotifyResp.Response response = new SpiOrderSendNotifyResp.Response();
 		response.setCode(AliActivityConstants.Response.CODE_SUCCESS);
 		response.setMsg(AliActivityConstants.Response.MSG_SUCCESS);
-		response.setOrderNo(orderNo);
-		response.setBuyerId(buyerId);
-		response.setCustomSendTime(DateUtil.formatDateTime(new Date()));
+		response.setOrder_no(orderNo);
+		response.setBuyer_id(buyerId);
+		response.setCustom_send_time(DateUtil.formatDateTime(new Date()));
 
 		SendActivityInfoResultList sendActivityInfoResultList = new SendActivityInfoResultList();
-		sendActivityInfoResultList.setActivityId(activityId);
+		sendActivityInfoResultList.setActivity_id(activityId);
 
 		List<SendVoucherInfoResult> sendVoucherInfoResultList = aliActivityVoucherCodeList.stream().map(v -> {
 			SendVoucherInfoResult sendVoucherInfoResult = new SendVoucherInfoResult();
-			sendVoucherInfoResult.setVoucherCode(v);
+			sendVoucherInfoResult.setVoucher_code(v);
 			if (useVoucherCodeUrl) {
 				/**
 				 * <pre>
@@ -299,7 +299,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 				 * 不传的情况下支付宝会使用VoucherCode去生成二维码
 				 * </pre>
 				 */
-				sendVoucherInfoResult.setVoucherCodeUrl("填写券码对应的二维码");
+				sendVoucherInfoResult.setVoucher_code_url("填写券码对应的二维码");
 			}
 			String appid = "2021003111112476";
 			/**
@@ -311,13 +311,13 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 			 */
 			String merchantOrderUrl = "alipays://platformapi/startapp?appId=" + appid + "&page="
 					+ URLUtil.encodeAll(merchantOrderUrlPagePrefix) + v;
-			sendVoucherInfoResult.setMerchantOrderUrl(merchantOrderUrl);
+			sendVoucherInfoResult.setMerchant_order_url(merchantOrderUrl);
 			return sendVoucherInfoResult;
 		}).collect(Collectors.toList());
 
-		sendActivityInfoResultList.setSendVoucherInfoResultList(sendVoucherInfoResultList);
+		sendActivityInfoResultList.setSend_voucher_info_result_list(sendVoucherInfoResultList);
 
-		response.setSendActivityInfoResultList(sendActivityInfoResultList);
+		response.setSend_activity_info_result_list(sendActivityInfoResultList);
 		return response;
 	}
 
