@@ -103,7 +103,12 @@ public class ApiController {
 
 	@GetMapping(value = "/getUserById")
 	public Result<com.company.web.resp.UserResp> getUserById(Long id) {
-		Result<UserResp> byId = userFeign.getById(1L);
+//		Result<UserResp> byId = userFeign.getById(1L);
+
+		UserResp userResp = new UserResp();
+		userResp.setId(1L);
+		userResp.setStatus(1);
+		Result<UserResp> byId = Result.success(userResp);
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
 		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId.dataOrThrow(), com.company.web.resp.UserResp.class);
 		return Result.success(resp);

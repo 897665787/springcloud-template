@@ -9,25 +9,10 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BannerResp {
-	/**
-	 * 标题
-	 */
-	String title;
-
-	/**
-	 * 图
-	 */
-	String image;
-
-	/**
-	 * 跳转类型
-	 */
-	@AutoDesc(value = BannerEnum.Type.class)
-	BannerEnum.Type type;
-
-	/**
-	 * 跳转值
-	 */
-	String value;
+public class BannerResp extends com.company.tool.api.response.BannerResp {
+    /**
+     * 跳转类型
+     */
+    @AutoDesc(value = BannerEnum.Type.class)
+    BannerEnum.Type type;
 }

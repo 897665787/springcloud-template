@@ -9,6 +9,7 @@ import com.company.common.exception.BusinessException;
  * @author JQ棣
  */
 public class UnauthorizedException extends BusinessException {
+	private static final long serialVersionUID = 1L;
 
     public UnauthorizedException() {
         super(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getMessage());
