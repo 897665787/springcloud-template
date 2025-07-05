@@ -15,12 +15,6 @@ public class Result<T> {
 	private T data;// 数据
 	private String traceId = null;// 日志追踪ID
 
-//	public Result of(Integer code, String message) {
-//		this.code = code;
-//		this.message = message;
-//		return this;
-//	}
-	
 	public Result<T> setResultCode(ResultCode resultCode) {
 		this.code = resultCode.getCode();
 		this.message = resultCode.getMessage();

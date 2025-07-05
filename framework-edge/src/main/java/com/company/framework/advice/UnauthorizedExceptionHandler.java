@@ -1,10 +1,8 @@
 package com.company.framework.advice;
 
-import java.lang.reflect.Method;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.common.api.Result;
+import com.company.framework.exception.UnauthorizedException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,17 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
 
-import com.company.common.api.Result;
-import com.company.framework.exception.UnauthorizedException;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 /**
  * 全局异常处理器
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class UnauthorizedExceptionHandler {
 
 	/**
 	 * 未授权异常
