@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.annotation.Idempotent;
 import com.company.common.api.Result;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
@@ -80,20 +79,6 @@ public class UserController implements UserFeign {
 	}
 
 	@Override
-	@Idempotent
-	public Result<UserResp> idempotent(@RequestBody UserReq userReq) {
-		String value = System.currentTimeMillis() + "";
-		System.out.println("value:" + value);
-		try {
-			Thread.sleep(new Random().nextInt(2) == 0 ? 500 : 1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return Result.success(new UserResp().setUsername(value));
-	}
-
-	@Override
-	@Idempotent
 	public Result<Void> noreturn() {
 		String value = System.currentTimeMillis() + "";
 		System.out.println(" value:" + value);

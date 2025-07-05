@@ -7,4 +7,3 @@ template:
   enable:
     redis: false
     redisson: false
-    idempotent: false
