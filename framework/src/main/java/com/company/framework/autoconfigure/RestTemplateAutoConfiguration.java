@@ -1,6 +1,7 @@
 package com.company.framework.autoconfigure;
 
-import com.alibaba.cloud.sentinel.annotation.SentinelRestTemplate;
+import com.company.framework.feign.TraceRestTemplate;
+import com.company.framework.trace.TraceManager;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -29,8 +30,8 @@ public class RestTemplateAutoConfiguration {
 	@LoadBalanced
 //	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
-	public RestTemplate restTemplate() {
-		return new RestTemplate(httpRequestFactory());
+	public RestTemplate restTemplate(TraceManager traceManager) {
+		return new TraceRestTemplate(httpRequestFactory(), traceManager);
 	}
 
 	@Bean
