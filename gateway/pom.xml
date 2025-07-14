@@ -39,13 +39,12 @@
 		</dependency>
 		 -->
 		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-collections4</artifactId>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-common</artifactId>
-		    <version>1.0.0</version>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-collections4</artifactId>
 		</dependency>
 		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 		<!-- eureka客户端 -->

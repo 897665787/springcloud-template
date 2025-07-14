@@ -47,9 +47,9 @@ public class CanalConsumer {
 			MessageProperties messageProperties = message.getMessageProperties();
 			log.info("jsonStrMsg:{}", jsonStrMsg);
 			consumer.accept(jsonStrMsg);
-		} catch (BusinessException e) {
+		} catch (RuntimeException e) {
 			// 业务异常一般是校验不通过，可以当做成功处理
-			log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
+			log.warn("RuntimeException", e);
 		} catch (Exception e) {
 			log.error("accept error", e);
 		} finally {
