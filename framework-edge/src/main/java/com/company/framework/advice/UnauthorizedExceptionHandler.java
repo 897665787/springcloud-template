@@ -27,9 +27,9 @@ public class UnauthorizedExceptionHandler {
 	@ExceptionHandler(UnauthorizedException.class)
 	public Result<?> unauthorized(UnauthorizedException e, HttpServletRequest request, HttpServletResponse response,
 								  HandlerMethod handler) {
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 如果不想设置http状态码，注释该行即可
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(e);
+		return Result.fail(e.getCode(), e.getMessage());
 	}
 
 	private boolean isReturnJson(HandlerMethod handler) {

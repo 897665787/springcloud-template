@@ -1,6 +1,5 @@
 package com.company.user.messagedriven.rabbitmq.consumer;
 
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.rabbitmq.client.Channel;

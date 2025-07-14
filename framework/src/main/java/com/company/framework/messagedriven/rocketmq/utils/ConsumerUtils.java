@@ -1,6 +1,5 @@
 package com.company.framework.messagedriven.rocketmq.utils;
 
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.messagedriven.BaseStrategy;

@@ -3,7 +3,6 @@ package com.company.framework.messagedriven.springevent.utils;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.context.SpringContextUtil;

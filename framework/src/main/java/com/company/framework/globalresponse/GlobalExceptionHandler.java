@@ -1,4 +1,4 @@
-package com.company.framework.advice;
+package com.company.framework.globalresponse;
 
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -141,7 +141,7 @@ public class GlobalExceptionHandler {
 		}
 		log.warn("业务异常:{}", message);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(e);
+		return Result.fail(e.getCode(), e.getMessage());
 	}
 
 	// 各种运行时异常单独处理可以在这里添加,例如
