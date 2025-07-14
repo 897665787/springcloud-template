@@ -51,10 +51,10 @@
 		<module>framework-edge</module><!-- 框架代码 -->
 		<module>web</module>
 		<module>app</module>
-		<module>openapi</module>
 		<module>admin</module><!-- 管理后台，前后端一体，与adminapi二选一 -->
 		<module>adminapi</module><!-- 管理后台，前后端分离，与admin二选一 -->
-		<module>job</module>
+		<module>openapi</module>
+		<module>job</module><!-- 流量来自xxl-job-admin -->
 	</modules>
 
 	<dependencyManagement>
