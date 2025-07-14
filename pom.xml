@@ -30,17 +30,15 @@
 
 	<modules>
 		<!-- 基础组件 -->
-		<module>eureka</module>
+		<module>eureka</module><!-- 替代组件：nacos -->
 		<module>gateway</module>
-		<module>config</module>
+		<module>config</module><!-- 替代组件：nacos、apollo -->
 		<module>monitor</module>
-		<!-- 公共代码 -->
-		<module>common</module>
-		<module>framework</module>
-		<module>framework-edge</module>
 		<!-- 内部微服务 -->
+		<module>common</module><!-- 公共代码 -->
+		<module>framework</module><!-- 框架代码 -->
 		<module>tool</module>
-		<module>tool-api</module><!-- 尽量保持feign-api的依赖简单，不要依赖无用依赖，因为该代码会作为SDK提供给客户端 -->
+		<module>tool-api</module>
 		<module>user</module>
 		<module>user-api</module>
 		<module>system</module>
@@ -50,7 +48,8 @@
 		<module>im</module>
 		<module>im-api</module>
 		<module>job</module>
-		<!-- 聚合微服务 -->
+		<!-- 边缘微服务 -->
+		<module>framework-edge</module><!-- 框架代码 -->
 		<module>web</module>
 		<module>app</module>
 		<module>openapi</module>
