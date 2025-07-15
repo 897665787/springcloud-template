@@ -121,10 +121,11 @@ springcloud-template
 | template-job      | 7002 | 定时任务               |
 | template-adminapi | 5001 | 管理后台端 |
 
-[详细请查看ProcessOn图表](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
-
 [![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 
+### 项目架构
+
+[![模块说明截图](./doc/架构图.jpg)](https://www.processon.com/view/link/68713ad7c67d8579a95c07d2?cid=686fc6f7352e7c324d1b6bdf)
 
 ### 本地开发 运行
 
