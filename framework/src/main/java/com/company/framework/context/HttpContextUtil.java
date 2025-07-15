@@ -1,12 +1,7 @@
 package com.company.framework.context;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -140,7 +135,7 @@ public class HttpContextUtil {
 
 		Map<String, List<String>> headers = Maps.newHashMap();
 		for (Entry<String, String> entry : entrySet) {
-			headers.put(entry.getKey(), Arrays.asList(entry.getValue()));
+			headers.put(entry.getKey(), Collections.singletonList(entry.getValue()));
 		}
 		return headers;
 	}

@@ -1,22 +1,5 @@
 package com.company.framework.feign;
 
-import com.company.framework.context.HttpContextUtil;
-import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
-import com.company.framework.util.JsonUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequest;
-import org.springframework.http.client.ClientHttpRequestFactory;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.converter.GenericHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
-import org.springframework.web.client.*;
-
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -27,13 +10,39 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.converter.GenericHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+
+import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.SpringContextUtil;
+import com.company.framework.trace.TraceManager;
+import com.company.framework.util.JsonUtil;
+import com.google.common.collect.Maps;
+
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * copy from RestTemplate
  * 增加了日志打印和公共请求头传递
  */
 @Slf4j
 public class TraceRestTemplate extends RestTemplate {
-    private TraceManager traceManager;
+    private final TraceManager traceManager;
 
     public TraceRestTemplate(ClientHttpRequestFactory requestFactory, TraceManager traceManager) {
         super(requestFactory);
@@ -84,10 +93,8 @@ public class TraceRestTemplate extends RestTemplate {
             headers.putAll(HttpContextUtil.httpContextHeaders());
             // 日志追踪ID
             headers.putAll(traceManager.headers());
-            // 其他headers
-            // headers.putAll();
             HttpHeaders httpHeaders = request.getHeaders();
-            if (!headers.isEmpty()) {// 如果集合为空，template.headers会清空header
+            if (!headers.isEmpty()) {
                 httpHeaders.putAll(headers);
             }
 
