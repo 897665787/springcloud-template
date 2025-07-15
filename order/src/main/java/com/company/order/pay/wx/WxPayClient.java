@@ -1,24 +1,8 @@
 package com.company.order.pay.wx;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.exception.BusinessException;
-import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
+import com.company.framework.util.Utils;
 import com.company.order.api.response.PayOrderQueryResp;
 import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.WxPay;
@@ -32,18 +16,9 @@ import com.company.order.pay.wx.config.WxPayConfiguration;
 import com.company.order.pay.wx.config.WxPayProperties;
 import com.company.order.pay.wx.config.WxPayProperties.PayConfig;
 import com.company.order.pay.wx.mock.NotifyMock;
-import com.github.binarywang.wxpay.bean.request.WxPayOrderCloseRequest;
-import com.github.binarywang.wxpay.bean.request.WxPayOrderQueryRequest;
-import com.github.binarywang.wxpay.bean.request.WxPayRefundQueryRequest;
-import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
-import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
-import com.github.binarywang.wxpay.bean.result.BaseWxPayResult;
-import com.github.binarywang.wxpay.bean.result.WxPayOrderCloseResult;
-import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
-import com.github.binarywang.wxpay.bean.result.WxPayRefundQueryResult;
+import com.github.binarywang.wxpay.bean.request.*;
+import com.github.binarywang.wxpay.bean.result.*;
 import com.github.binarywang.wxpay.bean.result.WxPayRefundQueryResult.RefundRecord;
-import com.github.binarywang.wxpay.bean.result.WxPayRefundResult;
-import com.github.binarywang.wxpay.bean.result.WxPayUnifiedOrderResult;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
@@ -52,8 +27,21 @@ import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
 import com.google.common.base.Objects;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 微信支付
@@ -141,12 +129,12 @@ public class WxPayClient extends BasePayClient {
 
 			String returnCode = unifiedOrderResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(unifiedOrderResult.getReturnMsg());
+				throw new RuntimeException(unifiedOrderResult.getReturnMsg());
 			}
 
 			String resultCode = unifiedOrderResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(unifiedOrderResult.getErrCodeDes());
+				throw new RuntimeException(unifiedOrderResult.getErrCodeDes());
 			}
 
 			OrderResultTransfer orderResultTransfer = SpringContextUtil
@@ -176,7 +164,7 @@ public class WxPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2WxPay(wxPayId, appid, mchid, request, result, remark);
 
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -321,7 +309,7 @@ public class WxPayClient extends BasePayClient {
 				resp.setPaySuccess(false);
 				return resp;
 			}
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -381,12 +369,12 @@ public class WxPayClient extends BasePayClient {
 
 			String returnCode = refundResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(refundResult.getReturnMsg());
+				throw new RuntimeException(refundResult.getReturnMsg());
 			}
 
 			String resultCode = refundResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(refundResult.getErrCodeDes());
+				throw new RuntimeException(refundResult.getErrCodeDes());
 			}
 		} catch (WxPayException e) {
 			// 退款异常
@@ -404,7 +392,7 @@ public class WxPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, "请求异常");
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, result, remark);
 
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -472,7 +460,7 @@ public class WxPayClient extends BasePayClient {
 			WxPayOrderCloseResult orderCloseResult = wxPayService.closeOrder(orderCloseRequest);
 			String returnCode = orderCloseResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(orderCloseResult.getReturnMsg());
+				throw new RuntimeException(orderCloseResult.getReturnMsg());
 			}
 
 			String resultCode = orderCloseResult.getResultCode();
@@ -480,12 +468,12 @@ public class WxPayClient extends BasePayClient {
 				return;
 			}
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(orderCloseResult.getErrCodeDes());
+				throw new RuntimeException(orderCloseResult.getErrCodeDes());
 			}
 
 		} catch (WxPayException e) {
 			log.error("Wx pay close order error.", e);
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -600,7 +588,7 @@ public class WxPayClient extends BasePayClient {
 				resp.setRefundSuccess(false);
 				return resp;
 			}
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 

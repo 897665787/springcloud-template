@@ -1,41 +1,17 @@
 package com.company.order.pay.ali;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.domain.AlipayTradeAppPayModel;
-import com.alipay.api.domain.AlipayTradeCloseModel;
-import com.alipay.api.domain.AlipayTradeFastpayRefundQueryModel;
-import com.alipay.api.domain.AlipayTradeQueryModel;
-import com.alipay.api.domain.AlipayTradeRefundModel;
-import com.alipay.api.request.AlipayTradeAppPayRequest;
-import com.alipay.api.request.AlipayTradeCloseRequest;
-import com.alipay.api.request.AlipayTradeFastpayRefundQueryRequest;
-import com.alipay.api.request.AlipayTradeQueryRequest;
-import com.alipay.api.request.AlipayTradeRefundRequest;
-import com.alipay.api.response.AlipayTradeAppPayResponse;
-import com.alipay.api.response.AlipayTradeCloseResponse;
-import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
-import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.alipay.api.domain.*;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.exception.BusinessException;
+import com.company.framework.context.SpringContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
-import com.company.framework.context.SpringContextUtil;
 import com.company.order.api.response.PayOrderQueryResp;
 import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.AliPay;
@@ -49,10 +25,19 @@ import com.company.order.pay.ali.config.AliPayProperties.PayConfig;
 import com.company.order.pay.ali.mock.NotifyMock;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
-
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * 支付宝APP支付
@@ -138,7 +123,7 @@ public class AliPayClient extends BasePayClient {
 			requestResult2AliPay(aliPayId, payParams, request, response, remark);
 
 			if (!response.isSuccess()) {
-				throw new BusinessException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
+				throw new RuntimeException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 			}
 
 			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
@@ -161,14 +146,14 @@ public class AliPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, timeExpire);
 			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2AliPay(aliPayId, payParams, request, null, remark);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
         } catch (Exception e) {
         	// 支付异常
 			log.error("AliPay error", e);
 			remark = Utils.rightRemark(remark, timeExpire);
 			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2AliPay(aliPayId, payParams, request, null, remark);
-			throw new BusinessException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -284,7 +269,7 @@ public class AliPayClient extends BasePayClient {
         } catch (AlipayApiException e) {
         	// 支付异常
 			log.error("AliPay orderQuery error", e);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
         }
 	}
 
@@ -346,20 +331,20 @@ public class AliPayClient extends BasePayClient {
 			updateRefundResult(outRefundNo, response);
 
 			if (!response.isSuccess()) {
-				throw new BusinessException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
+				throw new RuntimeException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 			}
 		} catch (AlipayApiException e) {
 			// 退款异常
 			log.error("AliPayRefund error", e);
 			remark = Utils.rightRemark(remark, "请求异常");
 			refundResult2AliPayRefund(aliPayRefundId, aliPay, outRefundNo, refundAmount, remark);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
 		} catch (Exception e) {
 			// 退款异常
 			log.error("AliPay error", e);
 			remark = Utils.rightRemark(remark, "请求异常");
 			refundResult2AliPayRefund(aliPayRefundId, aliPay, outRefundNo, refundAmount, remark);
-			throw new BusinessException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
         }
 	}
 
@@ -435,12 +420,12 @@ public class AliPayClient extends BasePayClient {
 				return;
 			}
 			if (!response.isSuccess()) {
-				throw new BusinessException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
+				throw new RuntimeException(StringUtils.getIfBlank(response.getSubMsg(), () -> response.getMsg()));
 			}
 		} catch (AlipayApiException e) {
 			// 关闭异常
 			log.error("AliPayCloseOrder error", e);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
 		}
 	}
 
@@ -521,7 +506,7 @@ public class AliPayClient extends BasePayClient {
         } catch (AlipayApiException e) {
         	// 支付异常
 			log.error("AliPay refundQuery error", e);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
         }
 	}
 
