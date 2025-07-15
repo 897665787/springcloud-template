@@ -1,19 +1,20 @@
 package com.company.gateway.messagedriven.rabbitmq.utils;
 
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
-import com.company.gateway.context.SpringContextUtil;
-import com.company.gateway.messagedriven.BaseStrategy;
-import com.company.gateway.messagedriven.constants.HeaderConstants;
-import com.rabbitmq.client.Channel;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.apache.commons.collections.MapUtils;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.function.Consumer;
+import com.company.gateway.context.SpringContextUtil;
+import com.company.gateway.messagedriven.BaseStrategy;
+import com.company.gateway.messagedriven.constants.HeaderConstants;
+import com.company.gateway.util.JsonUtil;
+import com.rabbitmq.client.Channel;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ConsumerUtils {
@@ -105,9 +106,9 @@ public class ConsumerUtils {
 			}
 			Object entity = JsonUtil.toEntity(jsonStrMsg, paramsClass);
 			consumer.accept(entity);
-		} catch (BusinessException e) {
+		} catch (RuntimeException e) {
 			// 业务异常一般是校验不通过，可以当做成功处理
-			log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
+			log.warn("RuntimeException", e);
 		} catch (Exception e) {
 			log.error("accept error", e);
 			if (unAckIfException) {

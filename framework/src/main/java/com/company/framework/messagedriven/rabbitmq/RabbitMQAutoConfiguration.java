@@ -1,7 +1,7 @@
 package com.company.framework.messagedriven.rabbitmq;
 
-import com.company.common.util.HostUtil;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.HostUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;

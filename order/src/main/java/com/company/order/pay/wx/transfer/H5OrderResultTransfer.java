@@ -1,11 +1,9 @@
 package com.company.order.pay.wx.transfer;
 
-import org.springframework.stereotype.Component;
-
-import com.company.common.exception.BusinessException;
 import com.company.order.pay.wx.OrderResultTransfer;
 import com.company.order.pay.wx.result.WxPayMwebOrderResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
+import org.springframework.stereotype.Component;
 
 /**
  * 微信H5支付
@@ -17,7 +15,7 @@ public class H5OrderResultTransfer implements OrderResultTransfer {
 	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,
 			String mwebUrl) {
 		if (mwebUrl == null) {
-			throw new BusinessException(4015, "未获取到必要的支付参数");
+			throw new RuntimeException("未获取到必要的支付参数");
 		}
 		WxPayMwebOrderResult payResult = new WxPayMwebOrderResult(mwebUrl);
 		return payResult;

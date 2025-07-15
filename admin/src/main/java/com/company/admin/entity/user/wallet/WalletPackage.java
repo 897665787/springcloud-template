@@ -4,15 +4,14 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
-import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Range;
 
 import com.company.admin.entity.base.BaseModel;
 import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.common.jackson.annotation.FormatNumber;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +45,6 @@ public class WalletPackage extends BaseModel {
 	 */
 	@DecimalMin(value = "0", message = "金额范围为0-9999999.99，至多2位小数", groups = {Save.class, Update.class})
 	@Digits(integer = 7, fraction = 2, message = "金额范围为0-9999999.99，至多2位小数", groups = {Save.class, Update.class})
-	@FormatNumber(pattern = "0.##")
 	private BigDecimal fee;
 
 	/**

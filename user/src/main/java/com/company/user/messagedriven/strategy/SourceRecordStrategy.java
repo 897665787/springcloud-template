@@ -5,13 +5,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.cache.ICache;
+import com.company.framework.messagedriven.BaseStrategy;
 import com.company.user.entity.UserSource;
 import com.company.user.mapper.user.UserSourceMapper;
 

@@ -3,7 +3,7 @@ package com.company.app.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.company.common.constant.CommonConstants;
+import com.company.framework.constant.CommonConstants;
 import com.company.framework.context.SpringContextUtil;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 
@@ -30,7 +30,7 @@ public class Knife4jConfig {
 				.version("v1.0.0")
 				.title(applicationName + " API文档")
                 .build();
-        
+
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .apiInfo(apiInfo)

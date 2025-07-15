@@ -8,14 +8,14 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import com.company.framework.trace.TraceManager;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
-import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
+import com.company.framework.trace.TraceManager;
+import com.company.framework.util.Utils;
 import com.company.tool.api.enums.BannerEnum;
 import com.company.tool.banner.dto.BannerCanShow;
 import com.company.tool.entity.Banner;

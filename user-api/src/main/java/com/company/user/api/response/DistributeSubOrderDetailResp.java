@@ -3,8 +3,6 @@ package com.company.user.api.response;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.company.common.jackson.annotation.FormatNumber;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -14,11 +12,9 @@ import lombok.experimental.Accessors;
 public class DistributeSubOrderDetailResp {
 	/* 与前端约定添加子订单特有的字段 */
 	// 配送费
-	@FormatNumber(pattern = "0.0#")
 	BigDecimal distributeAmount;
 
 	// 保温费
-	@FormatNumber(pattern = "0.0#")
 	BigDecimal baowenAmount;
 	
 	/**

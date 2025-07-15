@@ -14,8 +14,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import com.company.framework.trace.TraceManager;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +29,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.PropertyUtils;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.trace.TraceManager;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -99,7 +99,7 @@ public class OrderController implements OrderFeign {
 		List<OrderProduct> orderProductList = orderProductService.selectByOrderCode(orderCode);
 		if (orderProductList.isEmpty()) {
 			List<RegisterOrderReq.OrderProductReq> orderProductReqList = registerOrderReq.getProductList();
-			if (CollectionUtils.isNotEmpty(orderProductReqList)) {
+			if (!CollectionUtils.isEmpty(orderProductReqList)) {
 				List<OrderProduct> orderProductList4Insert = orderProductReqList.stream().map(v -> {
 					OrderProduct orderProduct = new OrderProduct();
 					orderProduct.setOrderCode(orderCode);

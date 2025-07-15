@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.BestPopupReq;
@@ -40,17 +40,17 @@ public class PopupController implements PopupFeign {
 	public Result<BestPopupResp> bestPopup(@RequestBody BestPopupReq bestPopupReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		String deviceid = HttpContextUtil.deviceid();
-		
+
 		Map<String, String> runtimeAttach = bestPopupReq.getRuntimeAttach();
 
 		// 补充一些请求头参数
 		runtimeAttach.putAll(HttpContextUtil.httpContextHeader());
-		
+
 		PopupCanPop popupCanPop = popService.bestPop(userId, deviceid, runtimeAttach);
 		if (popupCanPop == null) {
 			return Result.success();
 		}
-		
+
 		// 转换为前端方便开发的格式
 		BestPopupResp resp = toBestPopupResp(popupCanPop, popupCanPop.getBgImg());
 		return Result.success(resp);
@@ -59,7 +59,7 @@ public class PopupController implements PopupFeign {
 
 	/**
 	 * 递归组装数据(转换为前端方便开发的格式)
-	 * 
+	 *
 	 * @param popupCanPop
 	 * @param bgImgPop
 	 * @return
@@ -94,7 +94,7 @@ public class PopupController implements PopupFeign {
 		resp.setNext(toBestPopupResp(popupCanPop, bgImgPop.getNext()));
 		return resp;
 	}
-	
+
 	/**
 	 * 创建用户弹窗（只弹1次）
 	 */
@@ -106,7 +106,7 @@ public class PopupController implements PopupFeign {
 		Integer priority = createUserPopupReq.getPriority();
 		String title = createUserPopupReq.getTitle();
 		String text = createUserPopupReq.getText();
-		
+
 		PopImage bgImg = Optional.ofNullable(createUserPopupReq.getBgImg()).map(v -> {
 			PopImage convert = new PopImage();
 			convert.setImgUrl(v.getImgUrl());
@@ -122,12 +122,12 @@ public class PopupController implements PopupFeign {
 			convert.setValue(v.getValue());
 			return convert;
 		}).orElse(null);
-		
+
 		userPopupService.createUserPopup(userId, beginTime, endTime, priority, title, text, bgImg, closeBtn);
-		
+
 		return Result.success();
 	}
-	
+
 	/**
 	 * 取消用户弹窗（只弹1次）
 	 */
@@ -136,12 +136,12 @@ public class PopupController implements PopupFeign {
 		Integer userId = cancelUserPopupReq.getUserId();
 		String title = cancelUserPopupReq.getTitle();
 		String remark = cancelUserPopupReq.getRemark();
-		
+
 		userPopupService.cancelUserPopup(userId, title, remark);
-		
+
 		return Result.success();
 	}
-	
+
 	/**
 	 * 前端确认展示了弹窗
 	 */

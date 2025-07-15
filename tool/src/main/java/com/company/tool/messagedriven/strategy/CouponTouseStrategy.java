@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.api.enums.SubscribeEnum;
 import com.company.tool.entity.SubscribeTemplateGrant;
 import com.company.tool.service.SubscribeTemplateGrantService;
@@ -33,7 +33,7 @@ public class CouponTouseStrategy implements BaseStrategy<Map<String, Object>> {
 	private SubscribeTemplateGrantService subscribeTemplateGrantService;
 	@Autowired
 	private CouponFeign couponFeign;
-	
+
 	@Override
 	public void doStrategy(Map<String, Object> params) {
 		Integer userCouponId = MapUtils.getInteger(params, "userCouponId");
@@ -41,10 +41,10 @@ public class CouponTouseStrategy implements BaseStrategy<Map<String, Object>> {
 		// 读取授权表，获取业务参数
 		SubscribeTemplateGrant subscribeTemplateGrant = subscribeTemplateGrantService.getById(1);
 		String remark = subscribeTemplateGrant.getRemark();
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> paramMap = JsonUtil.toEntity(remark, Map.class);
-		
+
 		Integer _userCouponId = MapUtils.getInteger(paramMap, "userCouponId");
 		if (_userCouponId != null) {// 使用用户的优惠券判断
 			if (!_userCouponId.equals(userCouponId)) {
@@ -61,11 +61,11 @@ public class CouponTouseStrategy implements BaseStrategy<Map<String, Object>> {
 		}
 
 		UserCouponResp userCouponResp = couponFeign.getUserCouponById(userCouponId).dataOrThrow();
-		
+
 		Integer userId = MapUtils.getInteger(params, "userId");
 		String openid = userOauthFeign.selectIdentifier(userId, UserOauthEnum.IdentityType.WX_OPENID_MINIAPP)
 				.dataOrThrow();
-		
+
 		// 优惠券过期前3天
 		LocalDateTime planSendTime = userCouponResp.getEndTime().minusDays(3);
 		String page = "";

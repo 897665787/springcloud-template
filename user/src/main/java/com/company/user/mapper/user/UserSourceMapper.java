@@ -2,7 +2,6 @@ package com.company.user.mapper.user;
 
 import java.time.LocalDateTime;
 
-import org.apache.commons.collections4.MapUtils;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

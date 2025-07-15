@@ -18,7 +18,7 @@ import com.company.admin.entity.security.SecStaff;
 import com.company.admin.entity.security.SecStaffLog;
 import com.company.admin.mapper.security.SecStaffLogDao;
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 /**
  * 系统用户日志ServiceImpl
@@ -34,7 +34,7 @@ public class SecStaffLogService implements XSLogHandler {
 
     @Autowired
     private SecResourceService secResourceService;
-    
+
     @Autowired
     private SecStaffService secStaffService;
 

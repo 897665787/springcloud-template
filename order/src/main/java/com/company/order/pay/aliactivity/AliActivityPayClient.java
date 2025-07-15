@@ -23,9 +23,8 @@ import com.alipay.api.request.AlipayMarketingActivityOrderCreateRequest;
 import com.alipay.api.request.AlipayMarketingActivityOrderRefundRequest;
 import com.alipay.api.response.AlipayMarketingActivityOrderCreateResponse;
 import com.alipay.api.response.AlipayMarketingActivityOrderRefundResponse;
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.context.SpringContextUtil;
 import com.company.order.api.response.PayOrderQueryResp;
 import com.company.order.api.response.PayRefundQueryResp;
@@ -152,7 +151,7 @@ public class AliActivityPayClient extends BasePayClient {
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, response, remark);
 
 			if (!response.isSuccess()) {
-				throw new BusinessException(response.getMsg());
+				throw new RuntimeException(response.getMsg());
 			}
 
 			if (mockNotify && !SpringContextUtil.isProduceProfile()) {
@@ -180,13 +179,13 @@ public class AliActivityPayClient extends BasePayClient {
 			log.error("AliActivityPay error", e);
 			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
         } catch (Exception e) {
         	// 支付异常
 			log.error("AliActivityPay error", e);
 			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2AliActivityPay(aliActivityPayId, payParams, request, null, remark);
-			throw new BusinessException(e.getMessage());
+			throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -326,14 +325,14 @@ public class AliActivityPayClient extends BasePayClient {
 			updateRefundResult(outRefundNo, response);
 
 			if (!response.isSuccess()) {
-				throw new BusinessException(response.getMsg());
+				throw new RuntimeException(response.getMsg());
 			}
 		} catch (AlipayApiException e) {
 			// 退款异常
 			log.error("AliActivityPayRefund error", e);
 			String remark = Utils.rightRemark(aliActivityPayRefund.getRemark(), "请求异常");
 			refundResult2AliActivityPayRefund(aliActivityPayRefundId, aliActivityPay, outRefundNo, refundActivityInfoListStr, remark);
-			throw new BusinessException(e.getErrMsg());
+			throw new RuntimeException(e.getErrMsg());
 		}
 	}
 
@@ -379,7 +378,7 @@ public class AliActivityPayClient extends BasePayClient {
 	protected void requestPayCloseOrder(String outTradeNo) {
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outTradeNo);
 		if (aliActivityPay != null && StringUtils.isNotBlank(aliActivityPay.getTradeStatus())) {
-			throw new BusinessException("已支付订单不允许关闭");
+			throw new RuntimeException("已支付订单不允许关闭");
 		}
 	}
 

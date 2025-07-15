@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.order.mapper.AliActivityNotifyMapper;
 import com.company.order.pay.aliactivity.dto.OrderCreateBizContent;
 
@@ -22,7 +22,7 @@ public class AlipayMarketingActivityOrderCreateMessage implements FromMessage {
 
 	@Autowired
 	private AliActivityNotifyMapper aliActivityNotifyMapper;
-	
+
 	@Override
 	public void handle(Integer payNotifyId, Map<String, String> aliParams) {
 		/**
@@ -46,7 +46,7 @@ public class AlipayMarketingActivityOrderCreateMessage implements FromMessage {
 		 * </pre>
 		 */
 		String bizContent = aliParams.get("biz_content");
-		
+
 		/**
 		 * <pre>
 		{
@@ -62,7 +62,7 @@ public class AlipayMarketingActivityOrderCreateMessage implements FromMessage {
 		log.info("bizContentObj:{}", JsonUtil.toJsonString(bizContentObj));
 
 		// TODO
-		
+
 		// 暂无处理逻辑
 		aliActivityNotifyMapper.updateRemarkById("暂无处理逻辑", payNotifyId);
 	}

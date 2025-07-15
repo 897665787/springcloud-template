@@ -14,7 +14,7 @@ import org.tio.websocket.common.WsRequest;
 import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.im.websocket.dto.WsMsg;
 
 import lombok.extern.slf4j.Slf4j;

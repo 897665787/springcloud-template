@@ -39,16 +39,8 @@
 		</dependency>
 		 -->
 		<dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-common</artifactId>
-		    <version>1.0.0</version>
-			<exclusions>
-				<!-- 一定要排除掉 javafaker 依赖，否则启动报错 -->
-				<exclusion>
-		            <groupId>com.github.javafaker</groupId>
-		            <artifactId>javafaker</artifactId>
-				</exclusion>
-			</exclusions>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
 		</dependency>
 		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 		<!-- eureka客户端 -->

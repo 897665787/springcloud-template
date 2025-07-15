@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.popup.PopCondition;
 import com.company.tool.popup.PopParam;
 
@@ -28,13 +28,13 @@ public class SpecifyUserCondition implements PopCondition {
 			log.info("{}条件不满足,userId:{}", popParam.getPopupId(), userId);
 			return false;
 		}
-		
+
 		String popConditionValue = popParam.getPopConditionValue();
-		
+
 		@SuppressWarnings("unchecked")
 		Map<String, String> popConditionValueMap = JsonUtil.toEntity(popConditionValue, Map.class);
 		String userIds = popConditionValueMap.get("userIds");
-		
+
 		List<String> userIdList = Arrays.asList(StringUtils.split(userIds, ","));
 
 		boolean canPop = userIdList.contains(userId.toString());

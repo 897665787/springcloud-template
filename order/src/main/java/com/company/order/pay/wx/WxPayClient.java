@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.exception.BusinessException;
-import com.company.common.util.Utils;
 import com.company.framework.context.SpringContextUtil;
+import com.company.framework.util.Utils;
 import com.company.order.api.response.PayOrderQueryResp;
 import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.WxPay;
@@ -141,12 +140,12 @@ public class WxPayClient extends BasePayClient {
 
 			String returnCode = unifiedOrderResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(unifiedOrderResult.getReturnMsg());
+				throw new RuntimeException(unifiedOrderResult.getReturnMsg());
 			}
 
 			String resultCode = unifiedOrderResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(unifiedOrderResult.getErrCodeDes());
+				throw new RuntimeException(unifiedOrderResult.getErrCodeDes());
 			}
 
 			OrderResultTransfer orderResultTransfer = SpringContextUtil
@@ -176,7 +175,7 @@ public class WxPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, "请求异常");
 			requestResult2WxPay(wxPayId, appid, mchid, request, result, remark);
 
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -321,7 +320,7 @@ public class WxPayClient extends BasePayClient {
 				resp.setPaySuccess(false);
 				return resp;
 			}
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -381,12 +380,12 @@ public class WxPayClient extends BasePayClient {
 
 			String returnCode = refundResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(refundResult.getReturnMsg());
+				throw new RuntimeException(refundResult.getReturnMsg());
 			}
 
 			String resultCode = refundResult.getResultCode();
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(refundResult.getErrCodeDes());
+				throw new RuntimeException(refundResult.getErrCodeDes());
 			}
 		} catch (WxPayException e) {
 			// 退款异常
@@ -404,7 +403,7 @@ public class WxPayClient extends BasePayClient {
 			remark = Utils.rightRemark(remark, "请求异常");
 			refundResult2WxPayRefund(wxPayRefundId, wxPayConfig, request, result, remark);
 
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -472,7 +471,7 @@ public class WxPayClient extends BasePayClient {
 			WxPayOrderCloseResult orderCloseResult = wxPayService.closeOrder(orderCloseRequest);
 			String returnCode = orderCloseResult.getReturnCode();
 			if (!Objects.equal(returnCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(orderCloseResult.getReturnMsg());
+				throw new RuntimeException(orderCloseResult.getReturnMsg());
 			}
 
 			String resultCode = orderCloseResult.getResultCode();
@@ -480,12 +479,12 @@ public class WxPayClient extends BasePayClient {
 				return;
 			}
 			if (!Objects.equal(resultCode, WxPayConstants.ResultCode.SUCCESS)) {
-				throw new BusinessException(orderCloseResult.getErrCodeDes());
+				throw new RuntimeException(orderCloseResult.getErrCodeDes());
 			}
 
 		} catch (WxPayException e) {
 			log.error("Wx pay close order error.", e);
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 
@@ -600,7 +599,7 @@ public class WxPayClient extends BasePayClient {
 				resp.setRefundSuccess(false);
 				return resp;
 			}
-			throw new BusinessException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
+			throw new RuntimeException(StringUtils.getIfBlank(e.getErrCodeDes(), () -> e.getReturnMsg()));
 		}
 	}
 

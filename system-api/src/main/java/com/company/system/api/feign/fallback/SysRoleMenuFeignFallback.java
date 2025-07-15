@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.feign.SysRoleMenuFeign;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.system.api.response.SysRoleMenuResp;
@@ -24,12 +24,12 @@ public class SysRoleMenuFeignFallback implements FallbackFactory<SysRoleMenuFeig
 			public Result<PageResp<SysRoleMenuResp>> page(Long current, Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<List<SysRoleMenuResp>> list(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<SysRoleMenuResp> query(Integer id) {
 				return Result.onFallbackError();

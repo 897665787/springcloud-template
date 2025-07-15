@@ -1,6 +1,6 @@
 package com.company.framework.feign;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import feign.Client;

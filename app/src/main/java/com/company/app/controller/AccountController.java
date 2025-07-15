@@ -26,7 +26,7 @@ import com.company.app.resp.LoginResp;
 import com.company.app.token.TokenService;
 import com.company.app.util.TokenValueUtil;
 import com.company.common.api.Result;
-import com.company.common.util.RegexUtil;
+import com.company.framework.util.RegexUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.annotation.RequireLogin;

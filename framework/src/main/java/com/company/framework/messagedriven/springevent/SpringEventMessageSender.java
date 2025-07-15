@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.springevent.delay.DelayQueueComponent;
 import com.company.framework.messagedriven.springevent.delay.DelayedConsumer;

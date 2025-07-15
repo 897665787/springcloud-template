@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.feign.SysRoleDeptFeign;
 import com.company.system.api.request.SysRoleDeptReq;
 import com.company.system.api.response.SysRoleDeptResp;
@@ -24,12 +24,12 @@ public class SysRoleDeptFeignFallback implements FallbackFactory<SysRoleDeptFeig
 			public Result<PageResp<SysRoleDeptResp>> page(Long current, Long size, Integer roleId, Integer deptId) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<List<SysRoleDeptResp>> list(Integer roleId, Integer deptId) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<SysRoleDeptResp> query(Integer id) {
 				return Result.onFallbackError();

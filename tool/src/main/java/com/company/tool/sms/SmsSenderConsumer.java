@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.tool.entity.SmsTask;
 import com.company.tool.entity.SmsTaskDetail;
 import com.company.tool.entity.SmsTemplate;
@@ -87,7 +87,7 @@ public class SmsSenderConsumer {
 			return;
 		}
 		String templateCode = smsTypeTemplateConfig.getTemplateCode();
-		
+
 		String content = null;
 		SmsTemplate smsTemplate = smsTemplateService.selectByChannelTemplateCode(channel, templateCode);
 		if (smsTemplate != null) {
@@ -110,10 +110,10 @@ public class SmsSenderConsumer {
 			smsTaskDetailService.updateStatusRemark(SmsTaskDetailEnum.Status.REQ_FAIL, remark, smsTaskDetailId);
 		}
 	}
-	
+
 	/**
 	 * 填充模板内容
-	 * 
+	 *
 	 * @param templateContent
 	 * @param map
 	 * @return

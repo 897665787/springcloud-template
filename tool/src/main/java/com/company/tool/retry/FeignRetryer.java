@@ -19,8 +19,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.tool.api.enums.RetryerEnum;
 import com.company.tool.entity.RetryTask;
 import com.company.tool.enums.RetryTaskEnum;

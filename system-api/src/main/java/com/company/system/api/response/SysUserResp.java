@@ -2,9 +2,6 @@ package com.company.system.api.response;
 
 import java.time.LocalDateTime;
 
-import com.company.common.enums.DesensitizedType;
-import com.company.common.jackson.annotation.Sensitive;
-
 import lombok.Data;
 
 /**
@@ -34,13 +31,11 @@ public class SysUserResp {
 	/**
 	 * 用户邮箱
 	 */
-	@Sensitive(DesensitizedType.EMAIL)
 	private String email;
 
 	/**
 	 * 手机号码
 	 */
-	@Sensitive(DesensitizedType.MOBILE)
 	private String phonenumber;
 
 	/**

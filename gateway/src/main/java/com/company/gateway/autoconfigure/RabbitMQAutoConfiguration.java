@@ -1,9 +1,5 @@
 package com.company.gateway.autoconfigure;
 
-import com.company.common.util.HostUtil;
-import com.company.common.util.JsonUtil;
-import com.company.gateway.messagedriven.constants.FanoutConstants;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Message;
@@ -22,6 +18,12 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+
+import com.company.gateway.messagedriven.constants.FanoutConstants;
+import com.company.gateway.util.HostUtil;
+import com.company.gateway.util.JsonUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration

@@ -1,12 +1,5 @@
 package com.company.framework.developer;
 
-import java.util.List;
-
-import com.company.framework.developer.policy.ServicePriorityPolicy;
-import com.company.framework.developer.policy.ServicePriorityPolicyManager;
-import com.company.framework.developer.policy.impl.DeveloperSelfPriorityPolicy;
-import com.company.framework.developer.policy.impl.OnLineServicePriorityPolicy;
-import com.company.framework.developer.policy.impl.OtherDeveloperPriorityPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.client.ConditionalOnDiscoveryEnabled;
@@ -17,6 +10,8 @@ import org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+
+import com.company.framework.developer.policy.ServicePriorityPolicyManager;
 
 @Order(DeveloperLoadBalancerConfiguration.DYNAMIC_ROUTE_ORDER - 1)
 @ConditionalOnDiscoveryEnabled

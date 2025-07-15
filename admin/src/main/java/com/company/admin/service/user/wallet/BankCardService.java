@@ -14,7 +14,7 @@ import com.company.admin.entity.user.wallet.BankCard;
 import com.company.common.exception.BusinessException;
 import com.company.admin.mapper.user.wallet.BankCardDao;
 import com.company.admin.service.system.ConfigService;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -59,7 +59,7 @@ public class BankCardService {
 		existedCard.setMobile(bankCard.getMobile());
 		existedCard.setBankName(bankCard.getBankName());
 		existedCard.setBankInfo(bankCard.getBankInfo());
-		
+
 		String verityType = configService.findByKey("verifyBankCard", "1");
 		verify(bankCard, verityType);
 		if (!verityType.equals("1")) {

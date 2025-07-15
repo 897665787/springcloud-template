@@ -9,7 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.sequence.SequenceGenerator;
@@ -56,7 +56,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
 	@Autowired
@@ -125,14 +125,14 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 
 		// 回调数据落库
 		AliActivityPay aliActivityPay = aliActivityPayMapper.selectByOutOrderNo(outOrderNo);
-	
+
 		AliActivityPayRefund aliActivityPayRefund = aliActivityPayRefundMapper.selectByOutOrderNo(outOrderNo);
 		if (aliActivityPayRefund == null) {// 查不到数据，说明是‘支付宝主动退款’
 			// -> 模拟用户申请退款操作，补全退款流程相关的表数据
 			if (StringUtils.isBlank(outBizNo)) {
 				outBizNo = String.valueOf(sequenceGenerator.nextId());
 			}
-			
+
 			AliActivityPayRefund aliActivityPay4Insert = new AliActivityPayRefund()
 					.setAppid(aliActivityPay.getAppid())
 					.setOutOrderNo(outOrderNo)
@@ -150,7 +150,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 				aliActivityNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotifyId);
 				return;
 			}
-			
+
 			// 创建退款申请（补数据）
 			PayRefundApply payRefundApply = new PayRefundApply();
 			payRefundApply.setOrderCode(outBizNo);
@@ -162,7 +162,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			payRefundApply.setReason("支付宝主动退款");
 			payRefundApply.setRemark("支付宝主动退款");
 			payRefundApplyMapper.insert(payRefundApply);
-			
+
 			// 创建退款订单（补数据）
 			OrderPayRefund refundOrderPay = new OrderPayRefund();
 			OrderPay orderPay = orderPayService.selectByOrderCode(outOrderNo);
@@ -176,9 +176,9 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			refundOrderPay.setStatus(OrderPayRefundEnum.Status.REFUND_SUCCESS.getCode());
 			refundOrderPay.setRemark("支付宝主动退款");
 			orderPayRefundService.save(refundOrderPay);
-			
+
 			financialFlow(orderNo, aliActivityPay.getTotalAmount(), outOrderNo, outBizNo);
-			
+
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("success", true);
 			params.put("message", "支付宝主动退款");
@@ -188,7 +188,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			params.put("thisRefundAmount", aliActivityPay.getTotalAmount());
 			params.put("totalRefundAmount", aliActivityPay.getTotalAmount());
 			params.put("refundAll", true);
-			
+
 			messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
 		} else {// 用户主动退款
 			AliActivityPayRefund aliActivityPay4Update = new AliActivityPayRefund()
@@ -197,7 +197,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 					.setOrderNo(orderNo)
 					.setRefundType(refundType)
 					;
-			
+
 			UpdateWrapper<AliActivityPayRefund> wrapper = new UpdateWrapper<AliActivityPayRefund>();
 			wrapper.and(i -> i.isNull("refund_status")
 					.or(i2 -> i2.ne("refund_status", AliActivityConstants.RefundStatus.REFUND_SUCCESS)));
@@ -207,24 +207,24 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 				aliActivityNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotifyId);
 				return;
 			}
-			
+
 			// MQ异步处理
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("outTradeNo", outOrderNo);
 			params.put("outRefundNo", outBizNo);
 			params.put("success", true);
-			
+
 			//财务流水信息
 			params.put("amount", aliActivityPay.getTotalAmount());
 			params.put("orderPayMethod", OrderPayEnum.Method.ALIACTIVITY.getCode());
 			params.put("merchantNo", "未配置");
 			params.put("tradeNo", aliActivityPay.getTradeNo());
-			
+
 			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
 					Constants.QUEUE.COMMON.KEY);
 		}
 	}
-	
+
 	private void financialFlow(String orderNo, BigDecimal amount, String outTradeNo, String outRefundNo) {
 		//数据落库, 生成财务流水(出账)
 		try {

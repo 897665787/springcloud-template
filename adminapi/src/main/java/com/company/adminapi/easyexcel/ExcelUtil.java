@@ -1,16 +1,17 @@
 package com.company.adminapi.easyexcel;
 
-import cn.hutool.core.net.URLEncodeUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
-import com.company.common.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
+
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+
+import cn.hutool.core.net.URLEncodeUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * excel工具
@@ -25,7 +26,7 @@ public class ExcelUtil {
 			outputStream = response.getOutputStream();
 		} catch (IOException e) {
 			log.error("导出失败", e);
-			throw new BusinessException("导出失败");
+			throw new RuntimeException("导出失败");
 		}
 
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

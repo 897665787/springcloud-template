@@ -13,7 +13,7 @@ import com.company.admin.entity.image.Image;
 import com.company.admin.entity.image.ImageCategory;
 import com.company.admin.service.image.ImageCategoryService;
 import com.company.admin.service.image.ImageService;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 /**
  * 图片Controller

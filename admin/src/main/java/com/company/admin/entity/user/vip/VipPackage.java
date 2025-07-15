@@ -1,19 +1,21 @@
 package com.company.admin.entity.user.vip;
 
-import com.company.admin.jackson.annotation.AutoDesc;
-import com.company.common.jackson.annotation.FormatNumber;
-import com.company.admin.entity.base.BaseModel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.hibernate.validator.constraints.Length;
-import javax.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Range;
+import java.math.BigDecimal;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+
+import com.company.admin.entity.base.BaseModel;
+import com.company.admin.jackson.annotation.AutoDesc;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 /**
  * 会员套餐
@@ -44,7 +46,6 @@ public class VipPackage extends BaseModel {
 	@NotNull(message = "金额不能为空", groups = Save.class)
 	@DecimalMin(value = "0", message = "金额范围为0-9999999.99，至多2位小数", groups = {Save.class, Update.class})
 	@Digits(integer = 7, fraction = 2, message = "金额范围为0-9999999.99，至多2位小数", groups = {Save.class, Update.class})
-	@FormatNumber(pattern = "0.##")
 	private BigDecimal fee;
 
 	/**

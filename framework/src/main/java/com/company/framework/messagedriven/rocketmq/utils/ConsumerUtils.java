@@ -1,7 +1,6 @@
 package com.company.framework.messagedriven.rocketmq.utils;
 
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.messagedriven.constants.HeaderConstants;
@@ -92,9 +91,9 @@ public class ConsumerUtils {
 			}
 			Object entity = JsonUtil.toEntity(jsonStrMsg, paramsClass);
 			consumer.accept(entity);
-		} catch (BusinessException e) {
+		} catch (RuntimeException e) {
 			// 业务异常一般是校验不通过，可以当做成功处理
-			log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
+			log.warn("RuntimeException", e);
 		} catch (Exception e) {
 			log.error("accept error", e);
 			if (unAckIfException) {

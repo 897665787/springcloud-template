@@ -1,6 +1,5 @@
 package com.company.gateway.deploy.messagedriven.rabbitmq.consumer;
 
-import com.company.gateway.autoconfigure.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -10,10 +9,11 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
+import com.company.gateway.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.gateway.deploy.messagedriven.strategy.StrategyConstants;
 import com.company.gateway.messagedriven.constants.FanoutConstants;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.messagedriven.rabbitmq.utils.ConsumerUtils;
-import com.company.gateway.deploy.messagedriven.strategy.StrategyConstants;
 import com.rabbitmq.client.Channel;
 
 @Component

@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.PropertyUtils;
 import com.company.user.api.feign.CouponFeign;
 import com.company.user.api.response.UserCouponResp;
 import com.company.user.entity.UserCoupon;
@@ -32,7 +32,7 @@ public class CouponController implements CouponFeign {
 		}
 		return Result.success(userCoupon.getCouponTemplateId().equals(couponTemplateId));
 	}
-	
+
 //	@Override
 	public Result<UserCouponResp> select4Expire(Integer days) {
 		// days天后即将过期的优惠券

@@ -1,6 +1,6 @@
 package com.company.tool.webhook;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 import cn.felord.WeComException;
 import cn.felord.api.WorkWeChatApi;

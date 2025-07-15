@@ -12,8 +12,8 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.tool.entity.EmailTask;
 import com.company.tool.entity.EmailTaskDetail;
 import com.company.tool.entity.EmailTemplate;
@@ -40,10 +40,10 @@ public class EmailSenderConsumer {
 	private EmailTemplateService emailTemplateService;
 	@Autowired
 	private MailSender mailSender;
-	
+
 	@Value("${template.enable.closeSendEmail:false}")
 	private Boolean closeSendEmail;// 关闭发送邮件
-	
+
 	public void consumer(Integer emailTaskDetailId) {
 		EmailTaskDetail emailTaskDetail = emailTaskDetailService.getById(emailTaskDetailId);
 		EmailTask emailTask = emailTaskService.getById(emailTaskDetail.getTaskId());
@@ -88,7 +88,7 @@ public class EmailSenderConsumer {
 					emailTaskDetailId);
 			return;
 		}
-		
+
 		String title = emailTemplate.getTemplateTitle();
 		String templateContent = emailTemplate.getTemplateContent();
 		String content = fillTemplateContent(templateContent, templateParamMap);
@@ -119,7 +119,7 @@ public class EmailSenderConsumer {
 
 	/**
 	 * 填充模板内容
-	 * 
+	 *
 	 * @param templateContent
 	 * @param map
 	 * @return

@@ -2,13 +2,13 @@ package com.company.im.websocket.concept;
 
 import java.util.Map;
 
-import com.company.framework.trace.TraceManager;
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.trace.TraceManager;
+import com.company.framework.util.JsonUtil;
 import com.company.im.websocket.dto.WsMsg;
 import com.github.linyuzai.connection.loadbalance.core.concept.Connection;
 import com.github.linyuzai.connection.loadbalance.core.concept.ConnectionLoadBalanceConcept;

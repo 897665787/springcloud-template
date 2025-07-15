@@ -1,20 +1,22 @@
 package com.company.user.messagedriven.strategy;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
-import com.company.framework.cache.ICache;
-import com.company.framework.messagedriven.BaseStrategy;
-import com.company.user.entity.DeviceInfo;
-import com.company.user.mapper.user.DeviceInfoMapper;
-import org.apache.commons.collections4.MapUtils;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.company.framework.cache.ICache;
+import com.company.framework.messagedriven.BaseStrategy;
+import com.company.user.entity.DeviceInfo;
+import com.company.user.mapper.user.DeviceInfoMapper;
+
+import cn.hutool.core.date.LocalDateTimeUtil;
 
 /**
  * 记录设备信息（使用场景：推送）

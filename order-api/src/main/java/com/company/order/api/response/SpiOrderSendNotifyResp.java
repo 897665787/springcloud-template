@@ -2,8 +2,6 @@ package com.company.order.api.response;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -43,44 +41,33 @@ public class SpiOrderSendNotifyResp {
 		private String code;
 		private String msg;
 
-		@JsonProperty("sub_code")
-		private String subCode;
+		private String sub_code;
 		
-		@JsonProperty("sub_msg")
-		private String subMsg;
+		private String sub_msg;
 
-		@JsonProperty("order_no")
-		private String orderNo;
+		private String order_no;
 
-		@JsonProperty("buyer_id")
-		private String buyerId;
+		private String buyer_id;
 
-		@JsonProperty("custom_send_time")
-		private String customSendTime;
+		private String custom_send_time;
 
-		@JsonProperty("send_activity_info_result_list")
-		private SendActivityInfoResultList sendActivityInfoResultList;
+		private SendActivityInfoResultList send_activity_info_result_list;
 
 		@Data
 		@Accessors(chain = true)
 		public static class SendActivityInfoResultList {
-			@JsonProperty("activity_id")
-			private String activityId;
+			private String activity_id;
 
-			@JsonProperty("send_voucher_info_result_list")
-			private List<SendVoucherInfoResult> sendVoucherInfoResultList;
+			private List<SendVoucherInfoResult> send_voucher_info_result_list;
 
 			@Data
 			@Accessors(chain = true)
 			public static class SendVoucherInfoResult {
-				@JsonProperty("merchant_order_url")
-				private String merchantOrderUrl;
+				private String merchant_order_url;
 				
-				@JsonProperty("voucher_code")
-				private String voucherCode;
+				private String voucher_code;
 
-				@JsonProperty("voucher_code_url")
-				private String voucherCodeUrl;
+				private String voucher_code_url;
 
 			}
 		}

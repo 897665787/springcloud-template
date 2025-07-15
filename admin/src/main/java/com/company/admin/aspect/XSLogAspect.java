@@ -21,7 +21,7 @@ import com.company.admin.entity.base.XSGenericModel;
 import com.company.admin.exception.ExceptionConsts;
 import com.company.common.api.Result;
 import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.IpUtil;
 
@@ -65,13 +65,14 @@ public class XSLogAspect {
             xsLogger.setStatus(false);
             if (t instanceof BusinessException) {
             	BusinessException e = (BusinessException) t;
-				result = Result.fail(e);
+				result = Result.fail(e.getCode(), e.getMessage());
             }
             else if (t instanceof DuplicateKeyException) {
-                result = Result.fail(ExceptionConsts.SQL_DUPLICATE_KEY);
+                result = Result.fail(ExceptionConsts.SQL_DUPLICATE_KEY.getCode(),
+                        ExceptionConsts.SQL_DUPLICATE_KEY.getMessage());
             }
             else {
-                result = Result.fail(ExceptionConsts.FAILURE);
+                result = Result.fail(ExceptionConsts.FAILURE.getCode(), ExceptionConsts.FAILURE.getMessage());
             }
             throw t;
         } finally {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
 
 @Controller

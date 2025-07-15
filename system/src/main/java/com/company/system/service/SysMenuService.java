@@ -2,7 +2,7 @@ package com.company.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.dto.MenuTreeNode;
 import com.company.system.entity.SysMenu;
 import com.company.system.mapper.SysMenuMapper;

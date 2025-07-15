@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.tool.entity.SmsRecord;
 import com.company.tool.service.SmsRecordService;
 import com.jqdi.smssender.core.SendPostProcessor;

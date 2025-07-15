@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.feign.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
@@ -24,12 +24,12 @@ public class SysConfigFeignFallback implements FallbackFactory<SysConfigFeign> {
 			public Result<PageResp<SysConfigResp>> page(Long current, Long size, String name, String code, String value, String configRemark) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<List<SysConfigResp>> list(String name, String code, String value, String configRemark) {
 				return Result.onFallbackError();
 			}
-			
+
 			@Override
 			public Result<SysConfigResp> query(Integer id) {
 				return Result.onFallbackError();

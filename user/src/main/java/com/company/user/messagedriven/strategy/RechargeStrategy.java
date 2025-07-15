@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.sequence.SequenceGenerator;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -44,7 +44,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 	private MemberBuyOrderService memberBuyOrderService;
 	@Autowired
 	private OrderFeign orderFeign;
-	
+
 	@Autowired
 	private RechargeOrderService rechargeOrderService;
 	@Autowired
@@ -55,7 +55,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 	private RefundApplyFeign refundApplyFeign;
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
-	
+
 	@Override
 	public void doStrategy(Map<String, Object> params) {
 		String orderCode = MapUtils.getString(params, "orderCode");
@@ -70,7 +70,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 		Boolean success = MapUtils.getBoolean(params, "success");
 		if (success) {// 退款成功
 			Boolean refundAll = MapUtils.getBoolean(params, "refundAll");
-			
+
 			// 修改‘订单中心’数据
 			OrderRefundFinishReq orderRefundFinishReq = new OrderRefundFinishReq();
 			orderRefundFinishReq.setOrderCode(orderCode);
@@ -112,7 +112,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 				MainChargeGiftAmount amount = new MainChargeGiftAmount(mainAmount, chargeAmount, giftAmount);
 
 				String uniqueCode = MapUtils.getString(params, "refundOrderCode");
-				
+
 				Map<String, Object> attachMap = Maps.newHashMap();
 				attachMap.put("businessType", "recharge_refund");
 				attachMap.put("businessId", rechargeOrder.getId());
@@ -123,17 +123,17 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 					log.warn("{}充值订单退款扣减余额失败,balance:{},amount:{}", JsonUtil.toJsonString(walletId),
 							JsonUtil.toJsonString(balance), JsonUtil.toJsonString(amount));
 				}
-				
+
 				// 扣回bu_wallet_use_seq
 				walletUseSeqService.calcAndUse(rechargeOrder.getUserId(),
 						Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT),
 						rechargeOrder.getAmount().add(rechargeOrder.getGiftAmount()));
-				
+
 				// TODO 根据业务需求，充值订单全退的情况下，决定是否要退回业务订单
 				MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 				if (memberBuyOrder != null) {
 					Order4Resp order4Resp = orderFeign.selectByOrderCode(orderCode).dataOrThrow();
-					// TODO 这里可以加订单状态、时间等逻辑来判断业务订单是否要退 
+					// TODO 这里可以加订单状态、时间等逻辑来判断业务订单是否要退
 					BigDecimal needPayAmount = order4Resp.getNeedPayAmount();
 					BigDecimal refundAmount = order4Resp.getRefundAmount();
 					BigDecimal leftAmount = needPayAmount.subtract(refundAmount);

@@ -38,7 +38,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-client</artifactId>
         </dependency>
-        <!--apollo客户端 -->
+		<!--apollo客户端 -->
 		<dependency>
 			<groupId>com.ctrip.framework.apollo</groupId>
 			<artifactId>apollo-client</artifactId>
@@ -49,7 +49,7 @@
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
     	</dependency>
-    	<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
+		<!-- 配置中心，config、apollo、nacos选其中一个就行 -->
 
 		<!-- 监控，SpringBootAdmin、Prometheus选其中一个就行 -->
 		<!-- actuator端点 -->
@@ -129,7 +129,7 @@
 		<!-- skywalking日志追踪 -->
 
 		<!-- MQ -->
-        <!-- rabbitMQ -->
+		<!-- rabbitMQ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
@@ -152,8 +152,8 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
-        <!-- redisson -->
-        <!--
+		<!-- redisson -->
+		<!--
         	引入该配置会使用redission作为redis的连接工具
         <dependency>
 		     <groupId>org.redisson</groupId>
@@ -190,6 +190,26 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+		<!-- guava重试 -->
+        <dependency>
+            <groupId>com.github.rholder</groupId>
+            <artifactId>guava-retrying</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        
+        <dependency>
+			<groupId>cn.hutool</groupId>
+			<artifactId>hutool-all</artifactId>
+			<version>5.8.5</version>
+		</dependency>
+
+		<!-- 对象属性差异比较工具 -->
+		<dependency>
+			<groupId>org.javers</groupId>
+			<artifactId>javers-core</artifactId>
+			<version>6.12.0</version>
+		</dependency>
 
 	</dependencies>
 

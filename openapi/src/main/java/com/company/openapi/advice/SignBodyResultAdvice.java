@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.company.common.api.Result;
-import com.company.common.constant.CommonConstants;
+import com.company.framework.constant.CommonConstants;
 import com.company.openapi.annotation.NoSign;
 import com.company.openapi.config.SignConfiguration;
 import com.company.openapi.util.SignUtil;
@@ -107,7 +107,7 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 
 	/**
 	 * 判断是否是bean格式对象
-	 * 
+	 *
 	 * @param obj
 	 * @return
 	 */

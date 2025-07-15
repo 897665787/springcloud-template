@@ -1,8 +1,8 @@
 package com.company.adminapi.interceptor;
 
 import com.company.adminapi.annotation.RequirePermissions;
-import com.company.common.constant.CommonConstants.InterceptorOrdered;
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.CommonConstants.InterceptorOrdered;
+import com.company.framework.constant.HeaderConstants;
 import com.company.common.exception.BusinessException;
 import com.company.system.api.feign.SysUserRoleFeign;
 import lombok.extern.slf4j.Slf4j;

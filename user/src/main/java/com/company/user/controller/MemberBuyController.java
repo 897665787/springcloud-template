@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -74,7 +74,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/memberBuy")
 public class MemberBuyController implements MemberBuyFeign {
-	
+
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
 
@@ -83,24 +83,24 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	@Autowired
 	private PayFeign payFeign;
-	
+
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Autowired
 	private UseCouponService useCouponService;
-	
+
 	@Autowired
 	private UserCouponService userCouponService;
-	
+
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-	
+
 	@Autowired
 	private MemberService memberService;
 	@Autowired
 	private MemberBuyOrderService memberBuyOrderService;
-	
+
 	@Autowired
 	private IWallet<MainChargeGiftWalletId, MainChargeGiftAmount, FreezeMainChargeGiftAmount, FreezeMainChargeGiftBalance> freezeMainChargeGiftWallet;
 	@Autowired
@@ -111,10 +111,10 @@ public class MemberBuyController implements MemberBuyFeign {
 	private RechargeOrderService rechargeOrderService;
 	@Autowired
 	private ChargeConfigService chargeConfigService;
-	
+
 	/**
 	 * 购买
-	 * 
+	 *
 	 * @param memberBuyOrderReq
 	 * @return
 	 */
@@ -123,7 +123,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
 		Integer number = memberBuyOrderReq.getNumber();
-		
+
 		String productCode = memberBuyOrderReq.getProductCode();
 		MemberData memberData = memberService.selectByProductCode(productCode);
 		if (memberData == null) {
@@ -153,7 +153,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		BigDecimal needPayAmount = orderNeedPayAmount;
 
 		String payAttach = "{}";
-		
+
 		String rechargeCode = memberBuyOrderReq.getRechargeCode();
 		BigDecimal walletPayAmount = memberBuyOrderReq.getWalletPayAmount();
 		BigDecimal sumChargeGiftAmount = BigDecimal.ZERO;
@@ -171,12 +171,12 @@ public class MemberBuyController implements MemberBuyFeign {
 		} else {// 未选择充值的情况
 			needPayAmount = needPayAmount.subtract(walletPayAmount);
 		}
-		
+
 		BigDecimal payAmount = memberBuyOrderReq.getPayAmount();
 		if (payAmount.compareTo(needPayAmount) != 0) {
 			return Result.fail("支付金额不匹配");
 		}
-		
+
 		BigDecimal needUseChargeAmount = BigDecimal.ZERO;
 		BigDecimal needUseGiftAmount = BigDecimal.ZERO;
 		// 检验钱包余额
@@ -191,7 +191,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				return Result.fail("钱包余额不足");
 			}
 			payAttach = Utils.append2Json(payAttach, "walletPayAmount", walletPayAmount.toPlainString());
-			
+
 			// 2.充值、赠送余额校验
 			// 优先使用充值的金额，充值金额用完后在使用赠送金额，根据充值记录，查询出充值金额和赠送金额应该各扣取多少
 			Map<WalletEnum.Type, BigDecimal> typeAmountMap = walletUseSeqService.calcAndUse(userId,
@@ -199,11 +199,11 @@ public class MemberBuyController implements MemberBuyFeign {
 
 			BigDecimal walletUseSeqChargeAmount = typeAmountMap.get(WalletEnum.Type.TO_CHARGE);
 			BigDecimal walletUseSeqGiftAmount = typeAmountMap.get(WalletEnum.Type.TO_GIFT);
-			
+
 			BigDecimal sumWalletUseSeqChargeGiftAmount = walletUseSeqChargeAmount.add(walletUseSeqGiftAmount);
 			// 记录修改的金额，取消订单或退款时归还
 			payAttach = Utils.append2Json(payAttach, "calcUseFma", sumWalletUseSeqChargeGiftAmount.toPlainString());
-			
+
 			// 优先使用充值金额，再使用赠送金额
 			FreezeBalance chargeBalance = freezeMainChargeGiftBalance.getChargeBalance();
 			FreezeBalance giftBalance = freezeMainChargeGiftBalance.getGiftBalance();
@@ -216,7 +216,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			if (needUseGiftAmount.compareTo(giftBalance.getBalance()) > 0) {
 				needUseGiftAmount = giftBalance.getBalance();
 			}
-			
+
 			BigDecimal sumNeedUseChargeGiftAmount = needUseChargeAmount.add(needUseGiftAmount);
 			BigDecimal balance2 = sumNeedUseChargeGiftAmount.add(sumChargeGiftAmount);
 			if (balance2.compareTo(walletPayAmount) < 0) {
@@ -233,11 +233,11 @@ public class MemberBuyController implements MemberBuyFeign {
 				return Result.fail("优惠券不可用");
 			}
 		}
-		
+
 		// TODO 条件校验（下单限制、风控）
 
 		String orderCode = String.valueOf(sequenceGenerator.nextId());
-		
+
 		OrderPayEnum.BusinessType payBusinessType = OrderPayEnum.BusinessType.MEMBER;
 		String payBody = "购买会员";
 		if (StringUtils.isNotBlank(rechargeCode)) {
@@ -253,11 +253,11 @@ public class MemberBuyController implements MemberBuyFeign {
 			rechargeOrder.setAmount(rechargeAmount);
 			rechargeOrder.setGiftAmount(giftAmount);
 			rechargeOrderService.save(rechargeOrder);
-			
+
 			payBusinessType = OrderPayEnum.BusinessType.RECHARGE;
 			payBody = "充值";
 		}
-		
+
 		// 创建业务订单（订单中心子订单）
 		MemberBuyOrder memberBuyOrder = new MemberBuyOrder();
 		memberBuyOrder.setUserId(userId);
@@ -270,7 +270,7 @@ public class MemberBuyController implements MemberBuyFeign {
 
 		if (walletPayAmount.compareTo(BigDecimal.ZERO) > 0) {
 			String uniqueCode = orderCode;
-			
+
 			MainChargeGiftWalletId walletId = new MainChargeGiftWalletId(userId, WalletEnum.Type.TO_MAIN,
 					WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT);
 
@@ -278,7 +278,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			BigDecimal freezeGiftAmount = needUseGiftAmount;
 			BigDecimal freezeMainAmount = freezeChargeAmount.add(freezeGiftAmount);
 			FreezeMainChargeGiftAmount amount = new FreezeMainChargeGiftAmount(uniqueCode, freezeMainAmount, freezeChargeAmount, freezeGiftAmount, true);
-			
+
 			Map<String, Object> attachMap = Maps.newHashMap();
 			attachMap.put("businessType", "use_freeze");
 			attachMap.put("businessId", memberBuyOrder.getId());
@@ -295,7 +295,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				payAttach = Utils.append2Json(payAttach, "freezeMainAmount", BigDecimal.ZERO.toPlainString());
 			}
 		}
-		
+
 		// 注册到‘订单中心’
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
 		registerOrderReq.setUserId(userId);
@@ -328,7 +328,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		registerOrderReq.setProductList(orderProductReqList);
 
 		orderFeign.registerOrder(registerOrderReq).dataOrThrow();
-		
+
 		if (needPayAmount.compareTo(BigDecimal.ZERO) == 0) {
 			BigDecimal finalNeedPayAmount = needPayAmount;
 			String finalPayAttach = payAttach;
@@ -370,7 +370,7 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	/**
 	 * 购买回调(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param payNotifyReq
 	 * @return
 	 */
@@ -378,7 +378,7 @@ public class MemberBuyController implements MemberBuyFeign {
 	public Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
-		
+
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
@@ -395,7 +395,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			if (StringUtils.isNotBlank(freezeMainAmountStr)) {// 有冻结的钱包金额
 				walletFreezeService.update2Return(orderCode);
 			}
-			
+
 			// 还原bu_wallet_use_seq
 			String calcUseFmaStr = Utils.getByJson(payNotifyReq.getAttach(), "calcUseFma");
 			if (StringUtils.isNotBlank(calcUseFmaStr)) {// 有冻结的钱包金额
@@ -403,18 +403,18 @@ public class MemberBuyController implements MemberBuyFeign {
 				walletUseSeqService.calcAndReturn(memberBuyOrder.getUserId(),
 						Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT), calcUseFma);
 			}
-			
+
 			Integer userCouponId = memberBuyOrder.getUserCouponId();
 			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
-			
+
 			return Result.success();
 		}
-		
+
 		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 		// 支付成功
-		
+
 		// 修改‘订单中心’数据
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
 		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
@@ -424,7 +424,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
 			return Result.success();
 		}
-		
+
 		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
 		Integer userCouponId = memberBuyOrder.getUserCouponId();
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，使用优惠券
@@ -435,13 +435,13 @@ public class MemberBuyController implements MemberBuyFeign {
 		String rechargeAmountStr = Utils.getByJson(payNotifyReq.getAttach(), "rechargeAmount");
 		if (StringUtils.isNotBlank(rechargeAmountStr)) {// 钱包有充值
 			RechargeOrder rechargeOrder = rechargeOrderService.selectByOrderCode(orderCode);
-			
+
 			BigDecimal chargeAmount = rechargeOrder.getAmount();
 			BigDecimal giftAmount = rechargeOrder.getGiftAmount();
 			BigDecimal mainAmount = chargeAmount.add(giftAmount);
 
 			MainChargeGiftAmount amount = new MainChargeGiftAmount(mainAmount, chargeAmount, giftAmount);
-			
+
 			String uniqueCode = orderCode;
 
 			MainChargeGiftWalletId walletId = new MainChargeGiftWalletId(userId, WalletEnum.Type.TO_MAIN,
@@ -452,7 +452,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			attachMap.put("businessId", memberBuyOrder.getId());
 
 			freezeMainChargeGiftWallet.income(uniqueCode, walletId, amount, attachMap);
-			
+
 			// TODO 记录入账顺序，后续消耗余额的时候需要通过顺序计算充值余额和赠送余额的扣减
 			walletUseSeqService.save("charge-" + uniqueCode, userId, Type.TO_CHARGE, chargeAmount);
 			walletUseSeqService.save("gift-" + uniqueCode, userId, Type.TO_GIFT, giftAmount);
@@ -461,7 +461,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		String walletPayAmountStr = Utils.getByJson(payNotifyReq.getAttach(), "walletPayAmount");
 		if (StringUtils.isNotBlank(walletPayAmountStr)) {// 有钱包支付的金额
 			BigDecimal walletPayAmount = new BigDecimal(walletPayAmountStr);
-			
+
 			String freezeMainAmountStr = Utils.getByJson(payNotifyReq.getAttach(), "freezeMainAmount");
 			BigDecimal freezeMainAmount = new BigDecimal(freezeMainAmountStr);
 //			String freezeChargeAmountStr = Utils.getByJson(payNotifyReq.getAttach(), "freezeChargeAmount");
@@ -470,7 +470,7 @@ public class MemberBuyController implements MemberBuyFeign {
 //			BigDecimal freezeGiftAmount = new BigDecimal(freezeGiftAmountStr);
 
 			BigDecimal leftMainAmount = walletPayAmount.subtract(freezeMainAmount);
-			
+
 			// 优先使用充值的金额，充值金额用完后在使用赠送金额，根据充值记录，查询出充值金额和赠送金额应该各扣取多少
 			Map<WalletEnum.Type, BigDecimal> typeAmountMap = walletUseSeqService.calcAndUse(userId,
 					Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT), leftMainAmount);
@@ -482,7 +482,7 @@ public class MemberBuyController implements MemberBuyFeign {
 					WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT);
 			FreezeMainChargeGiftBalance freezeMainChargeGiftBalance = freezeMainChargeGiftWallet.balance(walletId);
 //			FreezeBalance mainBalance = freezeMainChargeGiftBalance.getMainBalance();
-			
+
 			// 优先使用充值金额，再使用赠送金额
 			FreezeBalance chargeBalance = freezeMainChargeGiftBalance.getChargeBalance();
 			FreezeBalance giftBalance = freezeMainChargeGiftBalance.getGiftBalance();
@@ -502,7 +502,7 @@ public class MemberBuyController implements MemberBuyFeign {
 						sumNeedUseChargeGiftAmount);
 				return Result.success();
 			}
-			
+
 			String uniqueCode = orderCode;
 
 			FreezeMainChargeGiftAmount amount = new FreezeMainChargeGiftAmount(uniqueCode, sumNeedUseChargeGiftAmount,
@@ -518,24 +518,24 @@ public class MemberBuyController implements MemberBuyFeign {
 				return Result.success();
 			}
 		}
-		
+
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
 		messageSender.sendFanoutMessage(params, FanoutConstants.MEMBER_BUY_PAY_SUCCESS.EXCHANGE);
-    	
+
 		// TODO 会员过期时间续期，根据业务订单获得‘续期时间长’
 //		Integer addDays = memberBuyOrder.getAddDays();
-		
+
 		// 修改‘订单中心’数据
 		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
-		
+
 		return Result.success();
 	}
 
 	/**
 	 * 根据订单号执行/查询子订单(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param orderReq
 	 * @return
 	 */
@@ -557,13 +557,13 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	private void userCancel(OrderReq orderReq) {
 		String orderCode = orderReq.getOrderCode();
-		
+
 		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 		String freezeAmountStr = Utils.getByJson(orderReq.getAttach(), "freezeAmount");
 		if (StringUtils.isNotBlank(freezeAmountStr)) {// 有冻结的钱包金额
 			walletFreezeService.update2Return(orderCode);
 		}
-		
+
 		// 还原bu_wallet_use_seq
 		String calcUseFmaStr = Utils.getByJson(orderReq.getAttach(), "calcUseFma");
 		if (StringUtils.isNotBlank(calcUseFmaStr)) {// 有冻结的钱包金额
@@ -571,12 +571,12 @@ public class MemberBuyController implements MemberBuyFeign {
 			walletUseSeqService.calcAndReturn(memberBuyOrder.getUserId(),
 					Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT), calcUseFma);
 		}
-		
+
 		Integer userCouponId = memberBuyOrder.getUserCouponId();
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
 			userCouponService.updateStatus(userCouponId, "used", "nouse");
 		}
-		
+
 		if (orderReq.getNeedPayAmount().compareTo(BigDecimal.ZERO) > 0) {
 			// 关闭支付订单，不关心结果
 			PayCloseReq payCloseReq = new PayCloseReq();
@@ -588,18 +588,18 @@ public class MemberBuyController implements MemberBuyFeign {
 
 	private MemberBuySubOrderResp item(OrderReq orderReq) {
 		MemberBuySubOrderResp resp = new MemberBuySubOrderResp();
-		
+
 		String orderCode = orderReq.getOrderCode();
 		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 		Integer addDays = memberBuyOrder.getAddDays();
 		resp.setAddDays(addDays);
-		
+
 		return resp;
 	}
-	
+
 	private MemberBuySubOrderDetailResp detail(OrderReq orderReq) {
 		MemberBuySubOrderDetailResp resp = new MemberBuySubOrderDetailResp();
-		
+
 		String orderCode = orderReq.getOrderCode();
 		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
 		Integer addDays = memberBuyOrder.getAddDays();

@@ -1,18 +1,20 @@
 package com.company.user.messagedriven.strategy;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
-import com.company.common.constant.HeaderConstants;
-import com.company.framework.messagedriven.BaseStrategy;
-import com.company.user.mapper.user.UserDeviceMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.messagedriven.BaseStrategy;
+import com.company.user.mapper.user.UserDeviceMapper;
+
+import cn.hutool.core.date.LocalDateTimeUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 绑定用户与设备关系（使用场景：记录登录时间、推送）

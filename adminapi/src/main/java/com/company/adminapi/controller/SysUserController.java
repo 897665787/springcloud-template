@@ -8,9 +8,9 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserExcel;
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HttpContextUtil;
 import com.company.system.api.feign.SysUserFeign;
@@ -41,16 +41,20 @@ public class SysUserController {
 	@RespConverter(field = "updateBy", newField = "updateByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysUser:query")
 	@GetMapping("/page")
-	public Result<PageResp<SysUserResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
-		return sysUserFeign.page(current, size, account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
+	public Result<PageResp<com.company.adminapi.resp.SysUserResp>> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
+		PageResp<SysUserResp> pageResp = sysUserFeign.page(current, size, account, nickname, email, phonenumber, sex, avatar, status, deptId, userRemark, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd).dataOrThrow();
+		List<com.company.adminapi.resp.SysUserResp> respList = PropertyUtils.copyArrayProperties(pageResp.getList(), com.company.adminapi.resp.SysUserResp.class);
+		return Result.success(PageResp.of(pageResp.getTotal(), respList));
 	}
 
 	@RespConverter(field = "createBy", newField = "createByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RespConverter(field = "updateBy", newField = "updateByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysUser:query")
 	@GetMapping("/query")
-	public Result<SysUserResp> query(@NotNull Integer id) {
-		return sysUserFeign.query(id);
+	public Result<com.company.adminapi.resp.SysUserResp> query(@NotNull Integer id) {
+		SysUserResp sysUserResp = sysUserFeign.query(id).dataOrThrow();
+		com.company.adminapi.resp.SysUserResp resp = PropertyUtils.copyProperties(sysUserResp, com.company.adminapi.resp.SysUserResp.class);
+		return Result.success(resp);
 	}
 
 	@OperationLog(title = "用户信息保存", businessType = BusinessType.INSERT)
@@ -94,7 +98,7 @@ public class SysUserController {
 
     /**
      * 获取用户信息
-     * 
+     *
      * @return 用户信息
      */
 	@GetMapping(value = "/getInfo")

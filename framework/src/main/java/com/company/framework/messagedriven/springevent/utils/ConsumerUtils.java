@@ -3,8 +3,7 @@ package com.company.framework.messagedriven.springevent.utils;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.context.SpringContextUtil;
 
@@ -17,7 +16,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用Strategy处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param strategyName
 	 * @param paramsClassName
@@ -28,7 +27,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用Strategy处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param strategyName
 	 * @param paramsClassName
@@ -47,7 +46,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param paramsClassName
 	 * @param consumer
@@ -58,7 +57,7 @@ public class ConsumerUtils {
 
 	/**
 	 * 使用自定义Consumer函数处理逻辑
-	 * 
+	 *
 	 * @param jsonStrMsg
 	 * @param paramsClassName
 	 * @param consumer
@@ -91,9 +90,9 @@ public class ConsumerUtils {
 			}
 			Object entity = JsonUtil.toEntity(jsonStrMsg, paramsClass);
 			consumer.accept(entity);
-		} catch (BusinessException e) {
+		} catch (RuntimeException e) {
 			// 业务异常一般是校验不通过，可以当做成功处理
-			log.warn("BusinessException code:{},message:{}", e.getCode(), e.getMessage());
+			log.warn("RuntimeException", e);
 		} catch (Exception e) {
 			log.error("accept error", e);
 			if (unAckIfException) {

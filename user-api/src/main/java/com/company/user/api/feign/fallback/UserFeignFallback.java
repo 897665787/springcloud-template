@@ -1,5 +1,6 @@
 package com.company.user.api.feign.fallback;
 
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import com.company.common.api.Result;
@@ -7,7 +8,6 @@ import com.company.user.api.feign.UserFeign;
 import com.company.user.api.request.UserReq;
 import com.company.user.api.response.UserResp;
 
-import org.springframework.cloud.openfeign.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,12 +31,6 @@ public class UserFeignFallback implements FallbackFactory<UserFeign> {
 			@Override
 			public Result<UserResp> retryPost(UserReq userReq) {
 				log.error("retryPost error", e);
-				return Result.onFallbackError();
-			}
-
-			@Override
-			public Result<UserResp> idempotent(UserReq userReq) {
-				log.error("idempotent error", e);
 				return Result.onFallbackError();
 			}
 

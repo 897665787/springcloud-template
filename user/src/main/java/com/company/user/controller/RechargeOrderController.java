@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -85,7 +85,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 
 	/**
 	 * 购买
-	 * 
+	 *
 	 * @param rechargeOrderReq
 	 * @return
 	 */
@@ -186,7 +186,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 
 	/**
 	 * 购买回调(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param payNotifyReq
 	 * @return
 	 */
@@ -236,7 +236,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 				giftAmount);
 
 		String uniqueCode = orderCode;
-		
+
 		Map<String, Object> attachMap = Maps.newHashMap();
 		attachMap.put("businessType", "recharge");
 		attachMap.put("businessId", rechargeOrder.getId());
@@ -255,7 +255,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 
 	/**
 	 * 根据订单号执行/查询子订单(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param orderReq
 	 * @return
 	 */

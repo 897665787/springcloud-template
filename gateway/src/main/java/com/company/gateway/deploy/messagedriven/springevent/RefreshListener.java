@@ -2,15 +2,15 @@ package com.company.gateway.deploy.messagedriven.springevent;
 
 import java.util.Map;
 
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import com.company.gateway.deploy.messagedriven.strategy.StrategyConstants;
 import com.company.gateway.messagedriven.constants.FanoutConstants;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.messagedriven.springevent.event.MessageEvent;
 import com.company.gateway.messagedriven.springevent.utils.ConsumerUtils;
-import com.company.gateway.deploy.messagedriven.strategy.StrategyConstants;
 
 
 @Component

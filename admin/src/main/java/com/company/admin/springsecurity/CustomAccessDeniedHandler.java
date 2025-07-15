@@ -12,7 +12,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import com.company.admin.exception.ExceptionConsts;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
 
 /**
@@ -45,7 +45,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             errorMap.put("code", ExceptionConsts.SEC_STAFF_ACCESS_DENY.getCode());
             errorMap.put("message", ExceptionConsts.SEC_STAFF_ACCESS_DENY.getMessage());
             String errorMsg = JsonUtil.toJsonString(errorMap);
-            
+
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=utf-8");
             try {

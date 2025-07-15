@@ -1,18 +1,15 @@
 package com.company.order.pay.wx.transfer;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.company.common.exception.BusinessException;
+import cn.hutool.crypto.SecureUtil;
 import com.company.order.pay.wx.OrderResultTransfer;
 import com.company.order.pay.wx.config.WxPayConfiguration;
 import com.company.order.pay.wx.config.WxPayProperties;
 import com.company.order.pay.wx.result.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants.SignType;
 import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
-
-import cn.hutool.crypto.SecureUtil;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 微信小程序支付
@@ -27,7 +24,7 @@ public class JSAPIOrderResultTransfer implements OrderResultTransfer {
 	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,
 			String mwebUrl) {
 		if (prepayId == null) {
-			throw new BusinessException(4015, "未获取到必要的支付参数");
+			throw new RuntimeException("未获取到必要的支付参数");
 		}
 		
 		String timestamp = String.valueOf(System.currentTimeMillis() / 1000);

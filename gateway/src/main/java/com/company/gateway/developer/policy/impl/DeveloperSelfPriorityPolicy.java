@@ -1,13 +1,13 @@
 package com.company.gateway.developer.policy.impl;
 
-import com.company.gateway.developer.policy.ServicePriorityPolicy;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
+import org.springframework.util.CollectionUtils;
 
-import java.util.List;
-import java.util.Objects;
+import com.company.gateway.developer.policy.ServicePriorityPolicy;
 
 public class DeveloperSelfPriorityPolicy implements ServicePriorityPolicy {
     public DeveloperSelfPriorityPolicy() {

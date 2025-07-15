@@ -2,15 +2,15 @@ package com.company.framework.deploy.messagedriven.springevent;
 
 import java.util.Map;
 
-import com.company.framework.messagedriven.constants.HeaderConstants;
-import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import com.company.framework.deploy.messagedriven.strategy.StrategyConstants;
 import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.springevent.event.MessageEvent;
 import com.company.framework.messagedriven.springevent.utils.ConsumerUtils;
-import com.company.framework.deploy.messagedriven.strategy.StrategyConstants;
 
 @Component
 public class RefreshListener {

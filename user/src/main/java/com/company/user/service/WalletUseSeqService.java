@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.company.common.util.Utils;
+import com.company.framework.util.Utils;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.entity.WalletUseSeq;
 import com.company.user.mapper.wallet.WalletUseSeqMapper;
@@ -42,7 +42,7 @@ public class WalletUseSeqService extends ServiceImpl<WalletUseSeqMapper, WalletU
 
 	/**
 	 * 计算不同类型的钱包应该使用多少钱（建议按此方案，不一定要完全按照方案执行）
-	 * 
+	 *
 	 * @param userId
 	 * @param typeList
 	 * @param totalReduceAmount
@@ -84,7 +84,7 @@ public class WalletUseSeqService extends ServiceImpl<WalletUseSeqMapper, WalletU
 
 	/**
 	 * 计算归还金额（建议按此方案，不一定要完全按照方案执行）
-	 * 
+	 *
 	 * @param orderCode
 	 * @param returnTotalAmount
 	 * @return
@@ -107,7 +107,7 @@ public class WalletUseSeqService extends ServiceImpl<WalletUseSeqMapper, WalletU
 			if (returnAmount.compareTo(canReturnAmount) >= 0) {
 				returnAmount = canReturnAmount;
 			}
-			
+
 			String remark = Utils.rightRemark(walletUseSeq.getRemark(), "归还" + returnAmount.toPlainString());
 			Integer affect = baseMapper.returnLeftAmount(id, returnAmount, remark);
 			if (affect == 0) {

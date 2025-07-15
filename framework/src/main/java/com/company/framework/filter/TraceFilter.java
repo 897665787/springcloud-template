@@ -1,7 +1,7 @@
 package com.company.framework.filter;
 
-import com.company.common.constant.CommonConstants;
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.StringUtils;

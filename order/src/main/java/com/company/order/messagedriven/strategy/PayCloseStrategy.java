@@ -6,7 +6,7 @@ import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.response.PayCloseResp;

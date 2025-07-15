@@ -1,8 +1,8 @@
 package com.company.system.api.feign;
 
 import com.company.common.api.Result;
-import com.company.common.request.RemoveReq;
-import com.company.common.response.PageResp;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.constant.Constants;
 import com.company.system.api.feign.fallback.SysUserFeignFallback;
 import com.company.system.api.request.SysUserAssignRoleReq;
@@ -21,7 +21,7 @@ public interface SysUserFeign {
 
 	@GetMapping("/page")
 	Result<PageResp<SysUserResp>> page(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam(value = "account", required = false) String account, @RequestParam(value = "nickname", required = false) String nickname, @RequestParam(value = "email", required = false) String email, @RequestParam(value = "phonenumber", required = false) String phonenumber, @RequestParam(value = "sex", required = false) String sex, @RequestParam(value = "avatar", required = false) String avatar, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "deptId", required = false) Integer deptId, @RequestParam(value = "userRemark", required = false) String userRemark, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
-	
+
 	@GetMapping("/list")
 	Result<List<SysUserResp>> list(@RequestParam(value = "account", required = false) String account, @RequestParam(value = "nickname", required = false) String nickname, @RequestParam(value = "email", required = false) String email, @RequestParam(value = "phonenumber", required = false) String phonenumber, @RequestParam(value = "sex", required = false) String sex, @RequestParam(value = "avatar", required = false) String avatar, @RequestParam(value = "status", required = false) String status, @RequestParam(value = "deptId", required = false) Integer deptId, @RequestParam(value = "userRemark", required = false) String userRemark, @RequestParam(value = "createTimeStart", required = false) String createTimeStart, @RequestParam(value = "createTimeEnd", required = false) String createTimeEnd, @RequestParam(value = "updateTimeStart", required = false) String updateTimeStart, @RequestParam(value = "updateTimeEnd", required = false) String updateTimeEnd);
 
@@ -39,7 +39,7 @@ public interface SysUserFeign {
 
 	@GetMapping("/getByAccount")
 	Result<SysUserResp> getByAccount(@RequestParam("account") String account);
-	
+
 	@GetMapping("/getById")
 	Result<SysUserResp> getById(@RequestParam("id") Integer id);
 

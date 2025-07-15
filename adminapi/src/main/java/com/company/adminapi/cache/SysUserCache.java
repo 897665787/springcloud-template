@@ -1,6 +1,6 @@
 package com.company.adminapi.cache;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.cache.ICache;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.response.SysUserResp;

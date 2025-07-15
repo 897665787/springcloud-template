@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.company.common.jackson.annotation.FormatNumber;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -34,7 +32,6 @@ public class OrderResp {
     /**
      * 实付金额
      */
-    @FormatNumber(pattern = "0.0#")
     private BigDecimal payAmount;
 
 	/**
@@ -106,19 +103,16 @@ public class OrderResp {
 		/**
 		 * 原价
 		 */
-		@FormatNumber(pattern = "0.0#")
 		private BigDecimal originAmount;
 
 		/**
 		 * 售价
 		 */
-		@FormatNumber(pattern = "0.0#")
 		private BigDecimal salesAmount;
 
 		/**
 		 * 总额(售价*数量)
 		 */
-		@FormatNumber(pattern = "0.0#")
 		private BigDecimal amount;
 
 		/**

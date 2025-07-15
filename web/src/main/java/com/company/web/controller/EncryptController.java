@@ -3,7 +3,8 @@ package com.company.web.controller;
 import cn.licoy.encryptbody.annotation.encrypt.EncryptBody;
 import cn.licoy.encryptbody.enums.EncryptBodyMethod;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
 import com.company.web.req.DecryptEntityReq;
@@ -26,14 +27,15 @@ public class EncryptController {
 	private UserFeign userFeign;
 
 	@PostMapping(value = "/post-body-row")
-	public Result<UserResp> postbodyrow(@RequestBody Map<String, Object> param) {
+	public Result<com.company.web.resp.UserResp> postbodyrow(@RequestBody Map<String, Object> param) {
 //		if(true){
 //			throw new BusinessException("asdasd");
 //		}
 
 		Result<UserResp> byId = userFeign.getById(1L);
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
-		return byId;
+		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId.dataOrThrow(), com.company.web.resp.UserResp.class);
+		return Result.success(resp);
 	}
 
 	@PostMapping(value = "/post-body-row-result")

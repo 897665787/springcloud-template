@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.coupon.SeeParam;
 import com.company.user.coupon.UseCondition;
 import com.company.user.coupon.UseParam;
@@ -28,7 +28,7 @@ public class YouxuanCondition implements UseCondition {
 			// 无值代表不过滤
 			return true;
 		}
-		
+
 		boolean canSee = "youxuan".equals(business);
 		if (!canSee) {
 			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", seeParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
@@ -36,7 +36,7 @@ public class YouxuanCondition implements UseCondition {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public MatchResult canUse(UseParam useParam) {
 		Map<String, String> runtimeAttach = useParam.getRuntimeAttach();
@@ -47,7 +47,7 @@ public class YouxuanCondition implements UseCondition {
 			log.info("{}条件不满足,当前不是优选套餐货架下单:{}", useParam.getUserCouponId(), JsonUtil.toJsonString(runtimeAttach));
 			return MatchResult.builder().canUse(false).reason("该商品不符合此优惠券使用的条件").build();
 		}
-		
+
 		String productCode = runtimeAttach.get("productCode");
 		if (StringUtils.isBlank(productCode)) {
 			log.info("{}条件不满足,优选套餐货架不包含商品‘{}’", useParam.getUserCouponId(), productCode);

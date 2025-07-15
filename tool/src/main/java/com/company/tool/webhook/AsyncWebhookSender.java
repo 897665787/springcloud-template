@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.tool.messagedriven.Constants;
 import com.company.tool.messagedriven.strategy.StrategyConstants;
@@ -32,7 +32,7 @@ public class AsyncWebhookSender {
 
 	/**
 	 * 发送
-	 * 
+	 *
 	 * @param type             WebhookEnum.Type
 	 * @param templateParamMap 建议添加参数：时间（time）、主机（host）、日志ID（traceid）、应用（application），方便快速定位
 	 */
@@ -41,7 +41,7 @@ public class AsyncWebhookSender {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param type             WebhookEnum.Type
 	 * @param templateParamMap 建议添加参数：时间（time）、主机（host）、日志ID（traceid）、应用（application），方便快速定位
 	 * @param planSendTime     计划发送时间

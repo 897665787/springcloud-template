@@ -2,7 +2,6 @@ package com.company.order.pay.core;
 
 import java.math.BigDecimal;
 
-import com.company.common.exception.BusinessException;
 import com.company.order.api.response.PayCloseResp;
 import com.company.order.api.response.PayRefundResp;
 import com.company.order.api.response.PayResp;
@@ -25,7 +24,7 @@ public abstract class BasePayClient implements PayClient {
 			payResp.setSuccess(true);
 			payResp.setMessage("成功");
 			payResp.setPayInfo(payInfo);
-		} catch (BusinessException e) {
+		} catch (Exception e) {
 			payResp.setSuccess(false);
 			payResp.setMessage(e.getMessage());
 		}
@@ -39,7 +38,7 @@ public abstract class BasePayClient implements PayClient {
 			requestRefund(outTradeNo, outRefundNo, refundAmount);
 			payRefundResp.setSuccess(true);
 			payRefundResp.setMessage("成功");
-		} catch (BusinessException e) {
+		} catch (Exception e) {
 			payRefundResp.setSuccess(false);
 			payRefundResp.setMessage(e.getMessage());
 		}
@@ -54,7 +53,7 @@ public abstract class BasePayClient implements PayClient {
 			requestPayCloseOrder(outTradeNo);
 			payCloseResp.setSuccess(true);
 			payCloseResp.setMessage("成功");
-		} catch (BusinessException e) {
+		} catch (Exception e) {
 			payCloseResp.setSuccess(false);
 			payCloseResp.setMessage(e.getMessage());
 		}

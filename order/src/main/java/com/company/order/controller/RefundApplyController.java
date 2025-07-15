@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.order.api.constant.Constants;
@@ -46,18 +46,18 @@ public class RefundApplyController implements RefundApplyFeign {
 
 	@Autowired
 	private PayFeign payFeign;
-	
+
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-	
+
 	/**
 	 * 退款申请
-	 * 
+	 *
 	 * <pre>
 	 * 如果需要获得退款结果，请订阅 FanoutConstants.REFUND_APPLY_RESULT 的广播消息
 	 * 参考：RefundApplyResultConsumer
 	 * </pre>
-	 * 
+	 *
 	 * @param payRefundApplyReq
 	 * @return
 	 */
@@ -77,7 +77,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundApplyMapper.insert(payRefundApply);
 		return Result.success(payRefundApply.getId());
 	}
-	
+
 	@Override
 	public Result<List<Integer>> selectId4Deal() {
 		List<Integer> idList = payRefundApplyMapper.selectId4Deal(PayRefundApplyEnum.RefundStatus.NO_REFUND,
@@ -87,11 +87,11 @@ public class RefundApplyController implements RefundApplyFeign {
 
 	/**
 	 * 处理退款申请
-	 * 
+	 *
 	 * <pre>
 	 * 申请结果或退款结果会以广播方式通知到各业务
 	 * </pre>
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -103,7 +103,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			// ‘待审核’的数据不处理
 			return Result.fail("‘待审核’的数据不处理");
 		}
-		
+
 		if (PayRefundApplyEnum.RefundStatus
 				.of(payRefundApply.getRefundStatus()) == PayRefundApplyEnum.RefundStatus.REJECT
 				|| PayRefundApplyEnum.RefundStatus
@@ -126,7 +126,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.DEALING.getDesc());
 			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.REJECT, remark,
 					payRefundApply.getId());
-			
+
 			orderRefundApplyEventMessage(false, "审核驳回", payRefundApply.getOldOrderCode(),
 					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
 			return Result.success(Boolean.TRUE);
@@ -138,7 +138,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS.getDesc());
 			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS, remark,
 					payRefundApply.getId());
-			
+
 			executor.submit(() -> {
 				RefundNotifyReq refundNotifyReq = new RefundNotifyReq();
 				refundNotifyReq.setSuccess(true);
@@ -159,7 +159,7 @@ public class RefundApplyController implements RefundApplyFeign {
 
 				refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 				refundNotifyReq.setRefundAll(true);
-				
+
 				Result<Void> refundNotifyResult = this.refundNotify(refundNotifyReq);
 				log.info("refundNotify:{}", JsonUtil.toJsonString(refundNotifyResult));
 				// 后续逻辑 ----------> refundNotify
@@ -196,7 +196,7 @@ public class RefundApplyController implements RefundApplyFeign {
 
 	/**
 	 * 退款回调(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param refundNotifyReq
 	 * @return
 	 */
@@ -225,7 +225,7 @@ public class RefundApplyController implements RefundApplyFeign {
 				refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
 		return Result.success();
 	}
-	
+
     /**
 	 * 订单退款申请结果事件发布消息
 	 */
@@ -241,7 +241,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		params.put("thisRefundAmount", thisRefundAmount);
 		params.put("totalRefundAmount", totalRefundAmount);
 		params.put("refundAll", refundAll);
-		
+
 		messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
 	}
 }

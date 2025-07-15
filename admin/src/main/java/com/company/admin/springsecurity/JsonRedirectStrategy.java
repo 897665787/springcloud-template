@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.web.RedirectStrategy;
 
 import com.company.common.api.ResultCode;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
 
 public class JsonRedirectStrategy implements RedirectStrategy {
-    
+
 	@Override
 	public void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url) throws IOException {
 		Map<String, Object> successMap = Maps.newHashMap();

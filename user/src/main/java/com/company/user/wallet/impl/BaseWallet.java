@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.entity.Wallet;
 import com.company.user.service.WalletRecordService;
@@ -17,7 +17,7 @@ import com.company.user.wallet.dto.WalletId;
 
 /**
  * 基础钱包
- * 
+ *
  * <pre>
  * 使用场景：出入账修改钱包余额Wallet.balance和新增WalletRecord.amount不一致时使用，比如冻结业务钱包余额分2次出账
  * </pre>

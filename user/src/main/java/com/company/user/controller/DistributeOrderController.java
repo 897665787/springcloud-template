@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.Utils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.context.HttpContextUtil;
@@ -67,7 +67,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/distributeOrder")
 public class DistributeOrderController implements DistributeOrderFeign {
-	
+
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
 
@@ -76,29 +76,29 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 	@Autowired
 	private PayFeign payFeign;
-	
+
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Autowired
 	private UseCouponService useCouponService;
-	
+
 	@Autowired
 	private UserCouponService userCouponService;
-	
+
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
-	
+
 	@Autowired
 	private ShopCartService shopCartService;
 	@Autowired
 	private ShopService shopService;
 	@Autowired
 	private ShopProductService shopProductService;
-	
+
 	/**
 	 * 购买
-	 * 
+	 *
 	 * @param distributeBuyOrderReq
 	 * @return
 	 */
@@ -106,13 +106,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	public Result<DistributeBuyOrderResp> buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq) {
 		Integer userId = HttpContextUtil.currentUserIdInt();
 		// 参数校验
-		
+
 		// TODO 从购物车获取商品数据
 		List<ShopCart> shopCartList = shopCartService.selectByUserId(userId);
 		if (shopCartList.isEmpty()) {
 			return Result.fail("购物车未找到商品");
 		}
-		
+
 		BigDecimal productAmount = BigDecimal.ZERO;
 		for (ShopCart shopCart : shopCartList) {
 			BigDecimal salesAmount = shopCart.getSalesAmount();
@@ -122,10 +122,10 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 		// TODO 计算配送费
 		BigDecimal distributeAmount = new BigDecimal("2");
-		
+
 		// TODO 计算保温费
 		BigDecimal baowenAmount = new BigDecimal("1");
-		
+
 		// 订单总金额
 		BigDecimal orderAmount = productAmount.add(distributeAmount).add(baowenAmount);
 
@@ -145,7 +145,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		}
 
 		BigDecimal needPayAmount = orderAmount.subtract(reduceAmount);
-		
+
 		BigDecimal payAmount = distributeBuyOrderReq.getPayAmount();
 		if (payAmount.compareTo(needPayAmount) != 0) {
 			return Result.fail("支付金额不匹配");
@@ -157,13 +157,13 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				return Result.fail("优惠券不可用");
 			}
 		}
-		
+
 		// TODO 条件校验（下单限制、风控）
 
 		String orderCode = String.valueOf(sequenceGenerator.nextId());
 		// TODO 创建业务订单（订单中心子订单）
 		// userId、orderCode、userCouponId、门店
-		
+
 		// 注册到‘订单中心’
 		RegisterOrderReq registerOrderReq = new RegisterOrderReq();
 		registerOrderReq.setUserId(userId);
@@ -196,7 +196,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			String shopCode = shop.getShopCode();
 			String shopName = shop.getShopName();
 			String shopLogo = shop.getShopLogo();
-			
+
 			String payAttach = "{}";
 			payAttach = Utils.append2Json(payAttach, "specContent", shopCart.getSpecContent());
 			payAttach = Utils.append2Json(payAttach, "userRemark", productCodeUserRemarkMap.get(productCode));
@@ -204,7 +204,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			payAttach = Utils.append2Json(payAttach, "shopName", shopName);
 			payAttach = Utils.append2Json(payAttach, "shopLogo", shopLogo);
 			orderProductReq.setAttach(payAttach);
-			
+
 			orderProductReqList.add(orderProductReq);
 		}
 
@@ -246,7 +246,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 	/**
 	 * 购买回调(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param payNotifyReq
 	 * @return
 	 */
@@ -254,7 +254,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	public Result<Void> buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
-		
+
 		if (Objects.equals(payNotifyReq.getEvent(), PayNotifyReq.EVENT.CLOSE)) { // 超时未支付关闭订单回调
 			log.info("超时未支付关闭订单回调");
 			// 修改‘订单中心’数据
@@ -264,10 +264,10 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
-			
+
 			return Result.success();
 		}
-		
+
 		// 支付成功
 
 		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
@@ -275,7 +275,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，使用优惠券
 			userCouponService.updateStatus(userCouponId, "nouse", "used");
 		}
-		
+
 		// 修改‘订单中心’数据
 		BigDecimal payAmount = payNotifyReq.getPayAmount();
 		OrderPaySuccessReq orderPaySuccessReq = new OrderPaySuccessReq().setOrderCode(orderCode).setPayAmount(payAmount)
@@ -285,18 +285,18 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
 			return Result.success();
 		}
-		
+
     	// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
 		messageSender.sendFanoutMessage(params, FanoutConstants.DISTRIBUTE_PAY_SUCCESS.EXCHANGE);
-		
+
 		return Result.success();
 	}
 
 	/**
 	 * 根据订单号查询子订单详情(使用restTemplate的方式调用)
-	 * 
+	 *
 	 * @param orderReq
 	 * @return
 	 */
@@ -316,12 +316,12 @@ public class DistributeOrderController implements DistributeOrderFeign {
 
 	private void userCancel(OrderReq orderReq) {
 		String orderCode = orderReq.getOrderCode();
-		
+
 		Integer userCouponId = 0;// TODO 根据业务订单获得
 		if (userCouponId != null && userCouponId > 0) {// 有选用优惠券，释放优惠券
 			userCouponService.updateStatus(userCouponId, "used", "nouse");
 		}
-		
+
 		if (orderReq.getNeedPayAmount().compareTo(BigDecimal.ZERO) > 0) {
 			// 关闭支付订单，不关心结果
 			PayCloseReq payCloseReq = new PayCloseReq();
@@ -335,7 +335,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		DistributeSubOrderResp resp = new DistributeSubOrderResp();
 		resp.setDistributeAmount(new BigDecimal("2"));
 		resp.setBaowenAmount(new BigDecimal("1"));
-		
+
 		// 只有发货之后才有取餐码
 		StatusEnum statusEnum = orderReq.getStatus();
 		if (statusEnum == StatusEnum.WAIT_RECEIVE || statusEnum == StatusEnum.COMPLETE || statusEnum == StatusEnum.REFUND) {
@@ -352,15 +352,15 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		resp.setProductImage(productReq.getProductImage());
 
 		String attach = productReq.getAttach();
-		
+
 		String shopCode = Utils.getByJson(attach, "shopCode");
 		String shopName = Utils.getByJson(attach, "shopName");
 		String shopLogo = Utils.getByJson(attach, "shopLogo");
-		
+
 		resp.setShopCode(shopCode);
 		resp.setShopName(shopName);
 		resp.setShopLogo(shopLogo);
-		
+
 		List<DistributeSubOrderResp.BottonResp> bottonList = Lists.newArrayList();
 		if (OrderEnum.StatusEnum.WAIT_RECEIVE == statusEnum || OrderEnum.StatusEnum.COMPLETE == statusEnum
 				|| OrderEnum.StatusEnum.REFUND == statusEnum) { // 发货成功之后才有物流信息
@@ -375,7 +375,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		DistributeSubOrderDetailResp resp = new DistributeSubOrderDetailResp();
 		resp.setDistributeAmount(new BigDecimal("2"));
 		resp.setBaowenAmount(new BigDecimal("1"));
-		
+
 		// 只有发货之后才有取餐码
 		StatusEnum statusEnum = orderReq.getStatus();
 		if (statusEnum == StatusEnum.WAIT_RECEIVE || statusEnum == StatusEnum.COMPLETE || statusEnum == StatusEnum.REFUND) {
@@ -386,7 +386,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		Map<DistributeSubOrderDetailResp.ShopResp, List<OrderReq.ProductReq>> shopCodeProductListMap = productList
 				.stream().collect(Collectors.groupingBy(v -> {
 					String attach = v.getAttach();
-					
+
 					String shopCode = Utils.getByJson(attach, "shopCode");
 					String shopName = Utils.getByJson(attach, "shopName");
 					String shopLogo = Utils.getByJson(attach, "shopLogo");
@@ -420,7 +420,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 						if (StringUtils.isNotBlank(attach)) {
 							String specContent = Utils.getByJson(attach, "specContent");
 							String userRemark = Utils.getByJson(attach, "userRemark");
-							
+
 							productDetailResp.setSpecContent(specContent);
 							productDetailResp.setUserRemark(userRemark);
 						}

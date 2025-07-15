@@ -1,17 +1,15 @@
 package com.company.order.pay.ios;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.company.common.exception.BusinessException;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component(PayFactory.IOS_PAYCLIENT)
 public class IOSPayClient extends BasePayClient {
@@ -35,11 +33,11 @@ public class IOSPayClient extends BasePayClient {
 
 	@Override
 	protected void requestRefund(String outTradeNo, String outRefundNo, BigDecimal refundAmount) {
-		throw new BusinessException("iOS不支持退款");
+		throw new RuntimeException("iOS不支持退款");
 	}
 
 	@Override
 	protected void requestPayCloseOrder(String outTradeNo) {
-		throw new BusinessException("iOS不支持关闭订单");
+		throw new RuntimeException("iOS不支持关闭订单");
 	}
 }

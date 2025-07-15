@@ -12,7 +12,7 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.order.messagedriven.Constants;
 import com.company.order.messagedriven.strategy.StrategyConstants;
@@ -38,7 +38,7 @@ public class AliNotifyController implements AliNotifyFeign {
 
 	@Autowired
 	private AliPayMapper aliPayMapper;
-	
+
 	@Autowired
 	private AliPayRefundMapper aliPayRefundMapper;
 
@@ -47,7 +47,7 @@ public class AliNotifyController implements AliNotifyFeign {
 
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Autowired
 	private AliPayConfiguration aliPayConfiguration;
 
@@ -223,7 +223,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			// MQ异步处理
 			Map<String, Object> params = Maps.newHashMap();
 			params.put("outTradeNo", outTradeNo);
-			
+
 			params.put("time", aliParams.get("gmt_payment"));
 
 			//财务流水信息

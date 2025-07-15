@@ -1,12 +1,7 @@
 package com.company.framework.context;
 
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 
@@ -140,7 +135,7 @@ public class HttpContextUtil {
 
 		Map<String, List<String>> headers = Maps.newHashMap();
 		for (Entry<String, String> entry : entrySet) {
-			headers.put(entry.getKey(), Arrays.asList(entry.getValue()));
+			headers.put(entry.getKey(), Collections.singletonList(entry.getValue()));
 		}
 		return headers;
 	}

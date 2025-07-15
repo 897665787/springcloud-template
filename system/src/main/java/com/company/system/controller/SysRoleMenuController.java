@@ -2,7 +2,7 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.common.request.RemoveReq;
+import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysRoleMenuFeign;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.system.api.response.SysRoleMenuResp;
@@ -49,27 +49,27 @@ public class SysRoleMenuController implements SysRoleMenuFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysRoleMenuResp>> page(Long current, Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRoleMenu> queryWrapper = toQueryWrapper(roleId, menuId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		long count = sysRoleMenuService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysRoleMenu> list = sysRoleMenuService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysRoleMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleMenuResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysRoleMenuResp>> list(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRoleMenu> queryWrapper = toQueryWrapper(roleId, menuId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysRoleMenu> list = sysRoleMenuService.list(queryWrapper);
-		
+
 		List<SysRoleMenuResp> respList = PropertyUtils.copyArrayProperties(list, SysRoleMenuResp.class);
 		return Result.success(respList);
 	}

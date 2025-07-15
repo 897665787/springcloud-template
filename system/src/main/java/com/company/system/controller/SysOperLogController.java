@@ -2,7 +2,7 @@ package com.company.system.controller;
 
 import java.util.List;
 
-import com.company.common.request.RemoveReq;
+import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
 import com.company.common.api.Result;
-import com.company.common.response.PageResp;
-import com.company.common.util.PropertyUtils;
+import com.company.system.api.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 import com.company.system.api.response.SysOperLogResp;
@@ -88,27 +88,27 @@ public class SysOperLogController implements SysOperLogFeign {
         }
 		return queryWrapper;
 	}
-	
+
 	@Override
 	public Result<PageResp<SysOperLogResp>> page(Long current, Long size, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysOperLog> queryWrapper = toQueryWrapper(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		long count = sysOperLogService.count(queryWrapper);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysOperLog> list = sysOperLogService.list(PageDTO.of(current, size), queryWrapper);
 
 		List<SysOperLogResp> respList = PropertyUtils.copyArrayProperties(list, SysOperLogResp.class);
 		return Result.success(PageResp.of(count, respList));
 	}
-	
+
 	@Override
 	public Result<List<SysOperLogResp>> list(Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysOperLog> queryWrapper = toQueryWrapper(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
-		
+
 		queryWrapper.orderByDesc("id");
 		List<SysOperLog> list = sysOperLogService.list(queryWrapper);
-		
+
 		List<SysOperLogResp> respList = PropertyUtils.copyArrayProperties(list, SysOperLogResp.class);
 		return Result.success(respList);
 	}

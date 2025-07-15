@@ -1,8 +1,9 @@
 package com.company.web.controller;
 
 import com.company.common.api.Result;
-import com.company.common.constant.HeaderConstants;
-import com.company.common.util.JsonUtil;
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.threadpool.ThreadPoolProperties;
 import com.company.framework.cache.ICache;
@@ -101,10 +102,16 @@ public class ApiController {
 	}
 
 	@GetMapping(value = "/getUserById")
-	public Result<UserResp> getUserById(Long id) {
-		Result<UserResp> byId = userFeign.getById(1L);
+	public Result<com.company.web.resp.UserResp> getUserById(Long id) {
+//		Result<UserResp> byId = userFeign.getById(1L);
+
+		UserResp userResp = new UserResp();
+		userResp.setId(1L);
+		userResp.setStatus(1);
+		Result<UserResp> byId = Result.success(userResp);
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
-		return byId;
+		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId.dataOrThrow(), com.company.web.resp.UserResp.class);
+		return Result.success(resp);
 	}
 
 	@GetMapping(value = "/getInt")

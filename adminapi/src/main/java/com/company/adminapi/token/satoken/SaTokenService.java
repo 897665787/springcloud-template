@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.company.adminapi.token.TokenService;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.stp.SaTokenInfo;
@@ -30,16 +30,16 @@ public class SaTokenService implements TokenService {
 	public String invalid(String token) {
 		SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
 		log.info("tokenInfo:{}", JsonUtil.toJsonString(tokenInfo));
-		
+
 		StpUtil.logoutByTokenValue(token);
 
 		return tokenInfo.getLoginDevice();
 	}
 
-	
+
 	@Value("${template.enable.access-control:true}")
 	private Boolean enableAccessControl;
-	
+
 	@Override
 	public String checkAndGet(String token) {
 		if (StringUtils.isBlank(token)) {
@@ -50,7 +50,7 @@ public class SaTokenService implements TokenService {
 			Object loginId = StpUtil.getLoginIdByToken(token);
 			return loginId == null ? null : String.valueOf(loginId);
 		}
-		
+
 		try {
 			return StpUtil.getLoginIdAsString();
 		} catch (NotLoginException e) {

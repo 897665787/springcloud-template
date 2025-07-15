@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.enums.SubscribeEnum;
 import com.company.tool.api.feign.SubscribeFeign;
@@ -56,10 +56,10 @@ public class SubscribeController implements SubscribeFeign {
 	private UserOauthFeign userOauthFeign;
 	@Autowired
 	private IMaTool maTool;
-	
+
 	@Value("${appid.wx.miniapp:1111}")
 	private String appid;
-	
+
 	// 'accept'表示用户同意订阅该条id对应的模板消息，'reject'表示用户拒绝订阅该条id对应的模板消息，'ban'表示已被后台封禁，'filter'表示该模板因为模板标题同名被后台过滤
 	private static final String SUBSCRIBEMESSAGE_TEMPLATE_ACCEPT = "accept";
 
@@ -76,7 +76,7 @@ public class SubscribeController implements SubscribeFeign {
 
 		return Result.success(templateCodeList);
 	}
-	
+
 	@Override
 	public Result<Void> grant(@RequestBody SubscribeGrantReq subscribeGrantReq) {
 		String openid = subscribeGrantReq.getOpenid();
@@ -107,10 +107,10 @@ public class SubscribeController implements SubscribeFeign {
 					.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid).dataOrThrow();
 			userId = Optional.ofNullable(userOauthResp).map(UserOauthResp::getUserId).orElse(null);
 		}
-		
+
 		String group = subscribeGrantReq.getGroup();
 		Map<String, String> runtimeAttach = subscribeGrantReq.getRuntimeAttach();
-		
+
 		// 即时创建订阅消息发送任务
 		for (String templateCode : templateCodeList) {
 			SubscribeEnum.Type type = subscribeGroupTypeService.selectTypeByGroupTemplateCode(group, templateCode);
@@ -140,7 +140,7 @@ public class SubscribeController implements SubscribeFeign {
 
 		return Result.success();
 	}
-	
+
 	@Override
 	public Result<Void> send(@RequestBody SubscribeSendReq subscribeSendReq) {
 		String openid = subscribeSendReq.getOpenid();
@@ -156,13 +156,13 @@ public class SubscribeController implements SubscribeFeign {
 
 		return Result.success();
 	}
-	
+
 	@Override
 	public Result<List<Integer>> select4PreTimeSend(Integer limit) {
 		List<Integer> idList = asyncSubscribeSender.select4PreTimeSend(limit);
 		return Result.success(idList);
 	}
-	
+
 	@Override
 	public Result<Void> exePreTimeSend(Integer id) {
 		asyncSubscribeSender.exePreTimeSend(id);
@@ -171,7 +171,7 @@ public class SubscribeController implements SubscribeFeign {
 
 	/**
 	 * 同步模板数据并保存到数据库
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

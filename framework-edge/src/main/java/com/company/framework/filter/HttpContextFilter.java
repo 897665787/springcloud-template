@@ -1,7 +1,7 @@
 package com.company.framework.filter;
 
-import com.company.common.constant.CommonConstants;
-import com.company.common.constant.HeaderConstants;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.constant.HeaderConstants;
 import com.company.framework.context.UserAgentContext;
 import com.company.framework.context.UserAgentUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;

@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.common.util.JsonUtil;
-import com.company.common.util.PropertyUtils;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.order.es.dto.EsTestDto;
 import com.github.javafaker.Faker;
 import com.google.common.collect.Maps;
@@ -30,7 +30,7 @@ import cn.hutool.json.JSONUtil;
 
 /**
  * 查看索引：http://172.20.33.24:8705/_cat/indices?v
- * 
+ *
  * @author JQ棣
  */
 @RestController
@@ -42,7 +42,7 @@ public class ESController {
 
 	/**
 	 * 获取客户端
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/clientUtil")
@@ -63,11 +63,11 @@ public class ESController {
 
 	/**
 	 * 创建索引（不一定要用）
-	 * 
+	 *
 	 * <pre>
 	 * 使用场景：默认生成的索引字段配置，不是想要的字段属性的情况下使用
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/createIndiceMappingByDSL")
@@ -77,10 +77,10 @@ public class ESController {
 		// 查看索引结构：http://172.20.33.24:8705/lsq.candi_test_v2/_mapping?pretty
 		return Result.success(createIndiceMapping);
 	}
-	
+
 	/**
 	 * 添加或修改索引属性
-	 * 
+	 *
 	 * @param indexName
 	 * @return
 	 */
@@ -91,10 +91,10 @@ public class ESController {
 				"mapping4lsq.candi_test_v2");
 		return Result.success(updateIndiceMapping);
 	}
-	
+
 	/**
 	 * 删除索引（没有权限）
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/dropIndice")
@@ -106,7 +106,7 @@ public class ESController {
 
 	/**
 	 * 判断索引是否存在
-	 * 
+	 *
 	 * @return
 	 */
 	@GetMapping(value = "/existIndice")
@@ -139,7 +139,7 @@ public class ESController {
 		String addDocument = clientUtil.addDocument(indexName, estestdto);
 		return Result.success(addDocument);
 	}
-	
+
 	@GetMapping(value = "/getDocumentById")
 	public Object getDocumentById(String indexName, String id) {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
@@ -171,7 +171,7 @@ public class ESController {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
 		ESDatas<EsTestDto> searchList = clientUtil.searchList(indexName + "/_search", queryAll, EsTestDto.class);
 		List<EsTestDto> datas = searchList.getDatas();
-		
+
 		System.out.println(JSONUtil.toJsonPrettyStr(datas));
 		return datas;
 	}
@@ -199,7 +199,7 @@ public class ESController {
 			esShopInfoDto.setDistance(distance);
 			return esShopInfoDto;
 		}).collect(Collectors.toList());
-		
+
 		System.out.println(JSONUtil.toJsonPrettyStr(datas));
 		return datas;
 	}
