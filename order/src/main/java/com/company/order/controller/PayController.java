@@ -389,7 +389,7 @@ public class PayController implements PayFeign {
 		PayClient tradeClient = PayFactory.of(method);
 		PayResp payResp = tradeClient.pay(payParams);
 		if (!payResp.getSuccess()) {
-			throw new BusinessException(payResp.getMessage());
+			return Result.fail(payResp.getMessage());
 		}
 
 		return Result.success(payResp);
