@@ -12,9 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import com.company.common.exception.I18nBusinessException;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
@@ -49,6 +52,8 @@ public class GlobalExceptionHandler {
 
 	@Autowired
 	private TraceManager traceManager;
+	@Autowired
+	private MessageSource messageSource;
 
 	/**
 	 * 拦截异常
@@ -136,12 +141,34 @@ public class GlobalExceptionHandler {
 	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handler) {
 		String message = e.getMessage();
+		if (StringUtils.isNotBlank(message)) {
+			message = messageSource.getMessage(message, null, message, LocaleContextHolder.getLocale());
+		}
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
 		}
 		log.warn("业务异常:{}", message);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(e.getCode(), e.getMessage());
+		return Result.fail(e.getCode(), message);
+	}
+
+	/**
+	 * 业务异常
+	 */
+	@ExceptionHandler(I18nBusinessException.class)
+	public Result<?> i18nBusinessException(I18nBusinessException e, HttpServletRequest request,
+										   HttpServletResponse response,
+							  HandlerMethod handler) {
+		String message = e.getMessage();
+		if (StringUtils.isNotBlank(message)) {
+			message = messageSource.getMessage(message, e.getArgs(), message, LocaleContextHolder.getLocale());
+		}
+		if (StringUtils.isBlank(message)) {
+			message = ExceptionUtils.getStackTrace(e);
+		}
+		log.warn("业务异常:{}", message);
+		sendErrorIfPage(request, response, handler);
+		return Result.fail(e.getCode(), message);
 	}
 
 	// 各种运行时异常单独处理可以在这里添加,例如
