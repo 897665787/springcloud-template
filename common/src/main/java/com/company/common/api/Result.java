@@ -12,7 +12,6 @@ public class Result<T> {
     private Integer code;// 响应码
     private String message;// 响应信息
     private T data;// 数据
-    private String traceId = null;// 日志追踪ID
 
     public Result<T> setResultCode(ResultCode resultCode) {
         this.code = resultCode.getCode();

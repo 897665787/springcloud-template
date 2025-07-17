@@ -4,13 +4,10 @@ import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.ResultException;
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
@@ -45,9 +42,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-	@Autowired
-	private TraceManager traceManager;
-
 	/**
 	 * 拦截异常
 	 */
@@ -56,7 +50,7 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("未知异常:", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(traceManager.get());
+		return Result.fail(ResultCode.SYSTEM_ERROR);
 	}
 
 	/**
@@ -124,7 +118,7 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("未处理运行时异常", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(traceManager.get());
+		return Result.fail(ResultCode.SYSTEM_ERROR);
 	}
 
 	/**
