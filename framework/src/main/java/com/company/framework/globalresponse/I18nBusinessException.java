@@ -6,6 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
 /**
  * 国际化参数业务异常（建议交由全局异常处理器 GlobalExceptionHandler 处理抛出该异常，否则直接抛出RuntimeException或者对应含义的异常就好）
  *
@@ -38,6 +41,9 @@ class I18nBusinessException extends BusinessException {
         if (messageSource == null) {
             return message;
         }
-        return messageSource.getMessage(message, args, message, LocaleContextHolder.getLocale());
+        Locale locale = LocaleContextHolder.getLocale();
+        MessageFormat messageFormat = new MessageFormat(message, locale);
+        String defaultMessage = messageFormat.format(args);
+        return messageSource.getMessage(message, args, defaultMessage, locale);
     }
 }
