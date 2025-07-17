@@ -35,6 +35,7 @@ public class Result<T> {
     public static <T> Result<T> fail(Integer code, String message) {
         return new Result<T>().setCode(code).setMessage(message);
     }
+
     public static <T> Result<T> fail(String message) {
         return new Result<T>().setResultCode(ResultCode.FAIL).setMessage(message);
     }
@@ -55,8 +56,7 @@ public class Result<T> {
     }
 
     public T dataOrThrow() {
-        if (code == null || ResultCode.of(code) != ResultCode.SUCCESS) {
-//            ExceptionUtil.throwException(code, message);
+        if (!successCode()) {
             throw new ResultException(code, message);
         }
         return data;
