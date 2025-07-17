@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -19,7 +20,6 @@ import com.company.admin.util.ExcelUtil;
 import com.company.admin.util.InviteCodeUtil;
 import com.company.admin.util.XSMd5Util;
 import com.company.admin.util.XSUuidUtil;
-import com.company.common.exception.BusinessException;
 import com.company.framework.context.HttpContextUtil;
 
 /**
@@ -35,7 +35,7 @@ public class UserService {
 	public void save(User user) {
 		User existent = userDao.getByMobile(user.getMobile());
 		if (existent != null) {
-			throw new BusinessException("手机号已被注册");
+			ExceptionUtil.throwException("手机号已被注册");
 		}
 		user.setId(XSUuidUtil.generate());
 		user.setType(0);
@@ -55,7 +55,7 @@ public class UserService {
 	public User get(User user) {
 		User existedUser = userDao.get(user);
 		if (existedUser == null) {
-			throw new BusinessException("用户不存在");
+			ExceptionUtil.throwException("用户不存在");
 		}
 		existedUser.setPassword(null);
 		return existedUser;
@@ -64,7 +64,7 @@ public class UserService {
 	public void update(User user) {
 		User existedUser = userDao.get(user);
 		if (existedUser == null) {
-			throw new BusinessException("用户不存在");
+			ExceptionUtil.throwException("用户不存在");
 		}
 		if (StringUtils.isNotBlank(user.getPassword())) {
 			user.setPassword(XSMd5Util.encode(user.getPassword()));

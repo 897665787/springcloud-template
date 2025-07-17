@@ -1,7 +1,6 @@
 package com.company.common.api;
 
-import com.company.common.exception.BusinessException;
-
+import com.company.common.exception.ResultException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -57,7 +56,8 @@ public class Result<T> {
 
     public T dataOrThrow() {
         if (code == null || ResultCode.of(code) != ResultCode.SUCCESS) {
-            throw new BusinessException(code, message);
+//            ExceptionUtil.throwException(code, message);
+            throw new ResultException(code, message);
         }
         return data;
     }

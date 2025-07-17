@@ -4,7 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.http.HttpUtil;
-import com.company.common.exception.BusinessException;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.util.Utils;
 import com.jqdi.filestorage.core.FileStorage;
 import lombok.extern.slf4j.Slf4j;
@@ -65,8 +65,9 @@ public class UploadService {
             return upload(inputStream, basePath, fileName);
         } catch (IOException e) {
             log.error("IOException", e);
-            throw new BusinessException("上传失败");
+            ExceptionUtil.throwException("上传失败");
         }
+        return null;
     }
 
     /**

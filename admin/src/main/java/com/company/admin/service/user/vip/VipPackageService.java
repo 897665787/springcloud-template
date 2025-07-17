@@ -1,12 +1,12 @@
 package com.company.admin.service.user.vip;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.vip.VipPackage;
 import com.company.admin.mapper.user.vip.VipPackageDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 会员套餐Service
@@ -21,7 +21,7 @@ public class VipPackageService {
 	public void save(VipPackage vipPackage) {
 		VipPackage existent = vipPackageDao.get(vipPackage);
 		if (existent != null) {
-			throw new BusinessException("Vip套餐已存在");
+			ExceptionUtil.throwException("Vip套餐已存在");
 		}
 		vipPackageDao.save(vipPackage);
 	}
@@ -39,7 +39,7 @@ public class VipPackageService {
 	public VipPackage get(VipPackage vipPackage) {
 		VipPackage existent = vipPackageDao.get(vipPackage);
 		if (existent == null) {
-			throw new BusinessException("Vip套餐不存在");
+			ExceptionUtil.throwException("Vip套餐不存在");
 		}
 		return existent;
 	}

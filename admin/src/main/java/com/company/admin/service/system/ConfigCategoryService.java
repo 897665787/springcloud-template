@@ -3,6 +3,7 @@ package com.company.admin.service.system;
 import java.util.List;
 import java.util.Map;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,6 @@ import com.company.admin.mapper.system.ConfigCategoryDao;
 import com.company.admin.mapper.system.ConfigDao;
 import com.company.admin.service.security.SecResourceService;
 import com.company.admin.util.XSTreeUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * @author JQ棣
@@ -35,7 +35,7 @@ public class ConfigCategoryService {
     public ConfigCategory findById(Long id) {
         ConfigCategory existedConfigCategory = configCategoryDao.findById(id);
         if (existedConfigCategory == null) {
-            throw new BusinessException("配置分类不存在");
+            ExceptionUtil.throwException("配置分类不存在");
         }
         return existedConfigCategory;
     }
@@ -46,7 +46,7 @@ public class ConfigCategoryService {
         boolean used = configCategoryDao.existByParent(id) ||
                 configDao.existByCategory(existedConfigCategory.getKey());
         if (used) {
-            throw new BusinessException("配置分类被使用");
+            ExceptionUtil.throwException("配置分类被使用");
         }
         configCategoryDao.deleteById(id);
         if (existedConfigCategory.getParentId() == null) {
@@ -58,7 +58,7 @@ public class ConfigCategoryService {
     public void save(ConfigCategory configCategory) {
         boolean existedKey = configCategoryDao.existByKey(configCategory.getKey());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         configCategoryDao.save(configCategory);
         if (configCategory.getParentId() == null) {
@@ -71,7 +71,7 @@ public class ConfigCategoryService {
         ConfigCategory existedConfigCategory = findById(configCategory.getId());
         boolean existedKey = configCategoryDao.existByKeyExcludeSelf(configCategory.getKey(), configCategory.getId());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         boolean changeKey = StringUtils.isNotBlank(configCategory.getKey()) &&
                 !StringUtils.equals(configCategory.getKey(), existedConfigCategory.getKey());

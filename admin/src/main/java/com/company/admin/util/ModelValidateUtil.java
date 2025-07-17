@@ -1,11 +1,12 @@
 package com.company.admin.util;
 
+import com.company.framework.globalresponse.ExceptionUtil;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import com.company.common.exception.BusinessException;
 
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class ModelValidateUtil {
     public static <T> boolean validate(T object, Class<?> rule) {
         Set<ConstraintViolation<T>> constraintViolations = validatorFactory.getValidator().validate(object, rule);
         if (org.apache.commons.collections4.CollectionUtils.isNotEmpty(constraintViolations)) {
-            throw new BusinessException(constraintViolations.iterator().next().getMessage());
+            ExceptionUtil.throwException(constraintViolations.iterator().next().getMessage());
         }
         return true;
     }

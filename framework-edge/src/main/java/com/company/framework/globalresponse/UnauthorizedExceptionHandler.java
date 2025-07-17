@@ -1,7 +1,7 @@
 package com.company.framework.globalresponse;
 
 import com.company.common.api.Result;
-import com.company.framework.exception.UnauthorizedException;
+import com.company.common.api.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,7 +29,8 @@ public class UnauthorizedExceptionHandler {
 								  HandlerMethod handler) {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 如果不想设置http状态码，注释该行即可
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(e.getCode(), e.getMessage());
+		ResultCode unauthorized = ResultCode.UNAUTHORIZED;
+		return Result.fail(unauthorized.getCode(), unauthorized.getMessage());
 	}
 
 	private boolean isReturnJson(HandlerMethod handler) {

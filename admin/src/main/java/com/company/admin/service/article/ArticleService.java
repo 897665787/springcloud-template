@@ -11,7 +11,6 @@ import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.article.ArticleDao;
 import com.company.admin.util.XSUuidUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * 文章ServiceImpl
@@ -59,13 +58,9 @@ public class ArticleService {
         }
 
         if (article.getCategory() != null && article.getCategory().getKey() != null) {
-            try {
-                ArticleCategory c = articleCategoryService.getByKey(article.getCategory().getKey());
-                List<String> cateList = articleCategoryService.listSubTree(c.getId());
-                article.setCateList(cateList);
-            } catch (BusinessException e) {
-                e.printStackTrace();
-            }
+            ArticleCategory c = articleCategoryService.getByKey(article.getCategory().getKey());
+            List<String> cateList = articleCategoryService.listSubTree(c.getId());
+            article.setCateList(cateList);
         }
         return XSPageModel.build(articleDao.list(article), articleDao.count(article));
     }

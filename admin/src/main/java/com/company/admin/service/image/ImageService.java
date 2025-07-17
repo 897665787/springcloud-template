@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import com.company.admin.mapper.image.ImageCategoryDao;
 import com.company.admin.mapper.image.ImageDao;
 import com.company.admin.service.system.DictionaryService;
 import com.company.admin.util.XSUuidUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * 图片ServiceImpl
@@ -45,11 +45,11 @@ public class ImageService {
         image.setId(XSUuidUtil.generate());
         if (image.getJumpType().equals(0)) {//网页链接
             if (StringUtils.isBlank(image.getWebLink())) {
-                throw new BusinessException("网页链接不能为空");
+                ExceptionUtil.throwException("网页链接不能为空");
             }
         } else if (image.getJumpType().equals(1)){//APP内页
 			if (image.getAppInnerPageDict() == null) {
-				throw new BusinessException("App内页字典不能为空");
+                ExceptionUtil.throwException("App内页字典不能为空");
 			}
         }
         imageDao.save(image);
@@ -65,11 +65,11 @@ public class ImageService {
         if(image.getJumpType()!=null){
             if (image.getJumpType().equals(0)) {//网页链接
             	if (StringUtils.isBlank(image.getWebLink())) {
-                    throw new BusinessException("网页链接不能为空");
+                    ExceptionUtil.throwException("网页链接不能为空");
                 }
             } else if (image.getJumpType().equals(1)){//APP内页
 				if (image.getAppInnerPageDict() == null) {
-					throw new BusinessException("App内页字典不能为空");
+					ExceptionUtil.throwException("App内页字典不能为空");
 				}
             }
         }
@@ -79,7 +79,7 @@ public class ImageService {
     public Image get(Image image) {
         Image existent = imageDao.get(image);
         if (existent == null) {
-            throw new BusinessException("图片不存在");
+            ExceptionUtil.throwException("图片不存在");
         }
 
         List<Dictionary> ownedJumpType = imageCategoryDao.listJumpType(existent.getCategory());
@@ -115,13 +115,9 @@ public class ImageService {
         }
 
         if (image.getCategory() != null && image.getCategory().getKey() != null) {
-            try {
-                ImageCategory c = imageCategoryService.getByKey(image.getCategory().getKey());
-                List<String> categoryList = imageCategoryService.listSubTree(c.getId());
-                image.setCategoryList(categoryList);
-            } catch (BusinessException e) {
-                logger.error("error : ", e);
-            }
+            ImageCategory c = imageCategoryService.getByKey(image.getCategory().getKey());
+            List<String> categoryList = imageCategoryService.listSubTree(c.getId());
+            image.setCategoryList(categoryList);
         }
 
         return XSPageModel.build(imageDao.list(image), imageDao.count(image));

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,6 @@ import com.company.admin.mapper.user.vip.VipHistoryDao;
 import com.company.admin.service.security.SecStaffService;
 import com.company.admin.util.DateUtils;
 import com.company.admin.util.XSUuidUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * @author JQ棣
@@ -39,11 +39,11 @@ public class VipService {
     @Transactional
     public void update(String userId, Integer duration) {
         User user = userDao.getAndLock(userId);
-        Date changeAfter;
-        boolean isVip;
+        Date changeAfter = null;
+        boolean isVip = false;
         if (duration <= 0) {
             if (user.getVipExpire() == null) {
-                throw new BusinessException("用户不是会员");
+                ExceptionUtil.throwException("用户不是会员");
             }
             else {
                 long restDays = LocalDate.now().until(DateUtils.dateToLocalDate(user.getVipExpire()), ChronoUnit.DAYS) + 1;

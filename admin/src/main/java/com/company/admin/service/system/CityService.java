@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,6 @@ import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.City;
 import com.company.admin.entity.system.Province;
 import com.company.admin.mapper.system.CityDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 城市ServiceImpl
@@ -28,14 +28,14 @@ public class CityService {
         criteria.setId(city.getId());
         Long count = cityDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("城市已存在");
+            ExceptionUtil.throwException("城市已存在");
         }
         criteria = new City();
         criteria.setName(city.getName());
         criteria.setProvince(city.getProvince());
         count = cityDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("城市已存在");
+            ExceptionUtil.throwException("城市已存在");
         }
         city.setStatus(0);
         cityDao.save(city);
@@ -55,7 +55,7 @@ public class CityService {
         if (existents.size() > 0) {
             boolean isSelf = existents.get(0).getId().equals(existent.getId());
             if (!isSelf) {
-                throw new BusinessException("城市已存在");
+                ExceptionUtil.throwException("城市已存在");
             }
         }
         cityDao.update(city);
@@ -73,7 +73,7 @@ public class CityService {
     public City get(City city) {
         City existent = cityDao.get(city);
         if (existent == null) {
-            throw new BusinessException("城市不存在");
+            ExceptionUtil.throwException("城市不存在");
         }
         return existent;
     }

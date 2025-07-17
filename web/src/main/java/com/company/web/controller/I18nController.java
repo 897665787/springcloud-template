@@ -1,7 +1,7 @@
 package com.company.web.controller;
 
 import com.company.common.api.Result;
-import com.company.common.exception.BusinessException;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -43,7 +43,10 @@ public class I18nController {
     @GetMapping(value = "/exception")
     public Result<Map<String, String>> exception() {
         if (true) {
-            throw new BusinessException("ID不能为空");
+//            ExceptionUtil.throwArgsException("ID不能为空");
+            ExceptionUtil.throwException("ID{0}不能为空", 1);
+//            ExceptionUtil.throwException("ID，不能为空");
+//            ExceptionUtil.throwException("ID 不能为空");// 带空格不起效果
         }
         Map<String, String> result = Maps.newHashMap();
         return Result.success(result);

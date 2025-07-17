@@ -1,22 +1,15 @@
 package com.company.framework.globalresponse;
 
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
-import com.company.common.exception.I18nBusinessException;
+import com.company.common.api.Result;
+import com.company.common.api.ResultCode;
+import com.company.common.exception.ResultException;
+import com.company.framework.context.SpringContextUtil;
+import com.company.framework.trace.TraceManager;
+import com.company.framework.util.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
@@ -34,14 +27,16 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
-import com.company.common.exception.BusinessException;
-import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
-import com.company.framework.util.JsonUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 全局异常处理器
@@ -52,8 +47,6 @@ public class GlobalExceptionHandler {
 
 	@Autowired
 	private TraceManager traceManager;
-	@Autowired
-	private MessageSource messageSource;
 
 	/**
 	 * 拦截异常
@@ -135,34 +128,12 @@ public class GlobalExceptionHandler {
 	}
 
 	/**
-	 * 业务异常
+	 * 结果异常、业务异常
 	 */
-	@ExceptionHandler(BusinessException.class)
-	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response,
+	@ExceptionHandler({ResultException.class, BusinessException.class, ArgsBusinessException.class, I18nBusinessException.class})
+	public Result<?> result(ResultException e, HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handler) {
 		String message = e.getMessage();
-		if (StringUtils.isNotBlank(message)) {
-			message = messageSource.getMessage(message, null, message, LocaleContextHolder.getLocale());
-		}
-		if (StringUtils.isBlank(message)) {
-			message = ExceptionUtils.getStackTrace(e);
-		}
-		log.warn("业务异常:{}", message);
-		sendErrorIfPage(request, response, handler);
-		return Result.fail(e.getCode(), message);
-	}
-
-	/**
-	 * 业务异常
-	 */
-	@ExceptionHandler(I18nBusinessException.class)
-	public Result<?> i18nBusinessException(I18nBusinessException e, HttpServletRequest request,
-										   HttpServletResponse response,
-							  HandlerMethod handler) {
-		String message = e.getMessage();
-		if (StringUtils.isNotBlank(message)) {
-			message = messageSource.getMessage(message, e.getArgs(), message, LocaleContextHolder.getLocale());
-		}
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
 		}

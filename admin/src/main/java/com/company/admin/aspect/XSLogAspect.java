@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.company.framework.globalresponse.BusinessException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.company.admin.entity.base.XSGenericModel;
 import com.company.admin.exception.ExceptionConsts;
 import com.company.common.api.Result;
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.IpUtil;

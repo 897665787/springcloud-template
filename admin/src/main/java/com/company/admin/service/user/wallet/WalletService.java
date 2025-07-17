@@ -3,6 +3,7 @@ package com.company.admin.service.user.wallet;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import com.company.admin.mapper.user.wallet.WalletHistoryDao;
 import com.company.admin.service.security.SecStaffService;
 import com.company.admin.util.DescriptionUtils;
 import com.company.admin.util.XSUuidUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * @author JQ棣
@@ -41,7 +41,7 @@ public class WalletService {
         Integer type = fee.compareTo(new BigDecimal(0)) >= 0 ? 1 : 2;
         BigDecimal changeBefore = platform == 1 ? user.getIosWallet() : user.getAndroidWallet();
         if (type == 2 && changeBefore.compareTo(fee.abs()) < 0) {
-            throw new BusinessException("余额不足");
+            ExceptionUtil.throwException("余额不足");
         }
         SecStaff secStaff = secStaffService.getByUsername(new SecStaff(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()));
         WalletHistory history = new WalletHistory()

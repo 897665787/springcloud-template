@@ -5,8 +5,8 @@ package com.company.admin.controller.stats;
 import com.company.admin.service.stats.UserStatsService;
 import com.company.common.api.Result;
 import com.company.admin.entity.stats.StatsCond;
-import com.company.common.exception.BusinessException;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -117,14 +117,14 @@ public class UserStatsController {
 		}else{
 			//查询开始日期不能晚于结束日期
 			if(sdf.parse(statsCond.getStartTime()).after(sdf.parse(statsCond.getEndTime()))){
-				throw new BusinessException("查询开始日期不能大于结束日期");
+				ExceptionUtil.throwException("查询开始日期不能大于结束日期");
 			}
 	
 			//时间跨度不能超过36个月或366天
 			if(statsCond.getFreq()==1){
 				long duration = (sdf.parse(statsCond.getEndTime()).getTime() - sdf.parse(statsCond.getStartTime()).getTime()) / (24 * 60 * 60 * 1000);
 				if(Math.abs(duration) > 366L){
-					throw new BusinessException("日查询跨度不能超过1年");
+					ExceptionUtil.throwException("日查询跨度不能超过1年");
 				}
 			}else{
 				Calendar startDate = Calendar.getInstance();
@@ -133,7 +133,7 @@ public class UserStatsController {
 				endDate.setTime(sdf.parse(statsCond.getEndTime()));
 				int duration = (endDate.get(Calendar.YEAR) - startDate.get(Calendar.YEAR)) * 12 + endDate.get(Calendar.MONTH) - startDate.get(Calendar.MONTH);
 				if(Math.abs(duration) > 36){
-					throw new BusinessException("月查询跨度不能超过3年");
+					ExceptionUtil.throwException("月查询跨度不能超过3年");
 				}
 			}
 		}

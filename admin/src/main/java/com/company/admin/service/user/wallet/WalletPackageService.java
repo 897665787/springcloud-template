@@ -1,12 +1,12 @@
 package com.company.admin.service.user.wallet;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.wallet.WalletPackage;
 import com.company.admin.mapper.user.wallet.WalletPackageDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 钱包套餐Service
@@ -21,7 +21,7 @@ public class WalletPackageService {
 	public void save(WalletPackage walletPackage) {
 		WalletPackage existedPackage = walletPackageDao.get(walletPackage);
 		if (existedPackage != null) {
-			throw new BusinessException("钱包套餐已存在");
+			ExceptionUtil.throwException("钱包套餐已存在");
 		}
 		walletPackageDao.save(walletPackage);
 	}
@@ -39,7 +39,7 @@ public class WalletPackageService {
 	public WalletPackage get(WalletPackage walletPackage) {
 		WalletPackage existent = walletPackageDao.get(walletPackage);
 		if (existent == null) {
-			throw new BusinessException("钱包套餐不存在");
+			ExceptionUtil.throwException("钱包套餐不存在");
 		}
 		return existent;
 	}

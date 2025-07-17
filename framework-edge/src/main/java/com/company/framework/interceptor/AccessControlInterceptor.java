@@ -15,7 +15,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.constant.HeaderConstants;
-import com.company.framework.exception.UnauthorizedException;
+import com.company.framework.globalresponse.UnauthorizedException;
 
 import lombok.extern.slf4j.Slf4j;
 

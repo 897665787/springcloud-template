@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -34,7 +35,6 @@ import com.company.admin.mapper.security.SecResourceDao;
 import com.company.admin.springsecurity.UpdateAuthorityFilter;
 import com.company.admin.util.ModelValidateUtil;
 import com.company.admin.util.XSTreeUtil;
-import com.company.common.exception.BusinessException;
 import com.company.framework.constant.CommonConstants;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -321,16 +321,16 @@ public class SecResourceService {
                 Set<ConstraintViolation<SecResourceFromXml>> constraintViolations = ModelValidateUtil.getValidator().validate(item);
                 for (ConstraintViolation<SecResourceFromXml> constraintViolation : constraintViolations) {
                     String errorMsg = "数据" + item.toString() + "出错，" + constraintViolation.getMessage();
-                    throw new BusinessException(errorMsg);
+                    ExceptionUtil.throwException(errorMsg);
                 }
                 if (item.getType().equals(2)) {
                     if (StringUtils.isBlank(item.getUrl())) {
                         String errorMsg = "数据" + item.toString() + "出错，接口地址不能为空";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                     if (StringUtils.isBlank(item.getMethod())) {
                         String errorMsg = "数据" + item.toString() + "出错，接口请求方式不能为空";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                 }
             }
@@ -343,13 +343,13 @@ public class SecResourceService {
                     }
                     if (secResourceFromXml.getKey().equals(secResource.getKey())) {
                         String errorMsg = "数据" + secResourceFromXml.toString() + "出错，键重复";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                     if (secResourceFromXml.getType().equals(2) && secResource.getType().equals(2)
                             && secResourceFromXml.getUrl().equals(secResource.getUrl())
                             && secResourceFromXml.getMethod().equals(secResource.getMethod())) {
                         String errorMsg = "数据" + secResourceFromXml.toString() + "出错，接口地址和接口请求方式重复";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                 }
             }
@@ -388,7 +388,7 @@ public class SecResourceService {
                     }
                     if (!pkeyExist) {
                         String errorMsg = "数据" + secResourceFromXml.toString() + "出错，pkey不存在";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                 }
             }

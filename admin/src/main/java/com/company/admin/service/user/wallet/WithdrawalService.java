@@ -3,6 +3,7 @@ package com.company.admin.service.user.wallet;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -14,7 +15,6 @@ import com.company.admin.entity.security.SecStaff;
 import com.company.admin.entity.user.wallet.Withdrawal;
 import com.company.admin.mapper.user.wallet.WithdrawalDao;
 import com.company.admin.service.security.SecStaffService;
-import com.company.common.exception.BusinessException;
 
 /**
  * 提现Service
@@ -55,7 +55,7 @@ public class WithdrawalService {
 	public Withdrawal get(Withdrawal withdrawal) {
 		Withdrawal existent = withdrawalDao.get(withdrawal);
 		if (existent == null) {
-			throw new BusinessException("提现申请不存在");
+			ExceptionUtil.throwException("提现申请不存在");
 		}
 		return existent;
 	}

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -27,7 +28,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.admin.exception.ExceptionConsts;
-import com.company.common.exception.BusinessException;
 
 /**
  * Excel相关工具类
@@ -59,7 +59,7 @@ public class ExcelUtil {
         } else if (excel2007U.equals(suffix)) {
             wb = new XSSFWorkbook(file.getInputStream());  //2007+
         } else {
-            throw new BusinessException("EXCEL的文件格式有,只支持.xls和.xlsx");
+            ExceptionUtil.throwException("EXCEL的文件格式有,只支持.xls和.xlsx");
         }
         return wb;
     }

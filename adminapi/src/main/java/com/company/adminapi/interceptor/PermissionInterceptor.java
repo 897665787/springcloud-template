@@ -3,7 +3,7 @@ package com.company.adminapi.interceptor;
 import com.company.adminapi.annotation.RequirePermissions;
 import com.company.framework.constant.CommonConstants.InterceptorOrdered;
 import com.company.framework.constant.HeaderConstants;
-import com.company.common.exception.BusinessException;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.system.api.feign.SysUserRoleFeign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +70,7 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 		}
 
 		log.warn("无访问权限:{}.{}", method.getDeclaringClass().getName(), method.getName());
-		throw new BusinessException("未授权");
+		ExceptionUtil.throwException("未授权");
+		return false;
 	}
 }

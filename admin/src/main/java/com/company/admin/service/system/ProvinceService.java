@@ -2,13 +2,13 @@ package com.company.admin.service.system;
 
 import java.util.List;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.Province;
 import com.company.admin.mapper.system.ProvinceDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 省份ServiceImpl
@@ -25,13 +25,13 @@ public class ProvinceService {
         criteria.setId(province.getId());
         Long count = provinceDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("省份已存在");
+            ExceptionUtil.throwException("省份已存在");
         }
         criteria = new Province();
         criteria.setName(province.getName());
         count = provinceDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("省份已存在");
+            ExceptionUtil.throwException("省份已存在");
         }
         province.setStatus(0);
         provinceDao.save(province);
@@ -41,7 +41,7 @@ public class ProvinceService {
         Province existent = get(province);
         Long cityCount = provinceDao.countCity(existent);
         if (cityCount.compareTo(0L) > 0) {
-            throw new BusinessException("省份被使用");
+            ExceptionUtil.throwException("省份被使用");
         }
         provinceDao.remove(existent);
     }
@@ -54,7 +54,7 @@ public class ProvinceService {
         if (existents.size() > 0) {
             boolean isSelf = existents.get(0).getId().equals(existent.getId());
             if (!isSelf) {
-                throw new BusinessException("省份已存在");
+                ExceptionUtil.throwException("省份已存在");
             }
         }
         provinceDao.update(province);
@@ -72,7 +72,7 @@ public class ProvinceService {
     public Province get(Province province) {
         Province existent = provinceDao.get(province);
         if (existent == null) {
-            throw new BusinessException("省份不存在");
+            ExceptionUtil.throwException("省份不存在");
         }
         return existent;
     }
