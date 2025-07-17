@@ -39,14 +39,15 @@ public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public Object beforeBodyWrite(Object data, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        String dataStr = null;
-        if (data instanceof String) {
-            dataStr = (String) data;
-        } else {
-            dataStr = JsonUtil.toJsonString(data);
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+    	if (body == null) {
+			return null;
+		}
+        if (body instanceof String) {
+            return body;
         }
-        JsonNode resultNode = JsonUtil.toJsonNode(dataStr);
+        String bodyStr = JsonUtil.toJsonString(body);
+        JsonNode resultNode = JsonUtil.toJsonNode(bodyStr);
         ObjectNode putResultNode = (ObjectNode) resultNode;
         putResultNode.put("traceId", traceManager.get());// 日志追踪ID
         return putResultNode;
