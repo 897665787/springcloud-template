@@ -15,33 +15,20 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<!-- gateway -->
+		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
-			<exclusions>
-				<!-- 一定要排除掉 spring-boot-starter-web 依赖，否则启动报错 -->
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-web</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-		<!-- aop -->
+		<!-- aop：TraceAspect用到 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
-		<!-- 网关用到template-framework的功能比较少，没必要引用，把少部分功能copy过去即可
-		<dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-framework</artifactId>
-		    <version>1.0.0</version>
-		</dependency>
-		 -->
-		<dependency>
-		    <groupId>org.projectlombok</groupId>
-		    <artifactId>lombok</artifactId>
-		</dependency>
 		<!-- 注册中心，eureka、nacos选其中一个就行 -->
 		<!-- eureka客户端 -->
 		<dependency>
