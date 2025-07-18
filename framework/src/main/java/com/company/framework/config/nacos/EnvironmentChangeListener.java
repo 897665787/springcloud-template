@@ -1,4 +1,4 @@
-package com.company.gateway.nacos;
+package com.company.framework.config.nacos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

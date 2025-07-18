@@ -1,4 +1,4 @@
-package com.company.framework.nacos;
+package com.company.framework.config.nacos;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;

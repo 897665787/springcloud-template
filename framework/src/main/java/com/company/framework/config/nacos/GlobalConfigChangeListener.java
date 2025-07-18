@@ -1,4 +1,4 @@
-package com.company.gateway.nacos;
+package com.company.framework.config.nacos;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.cloud.nacos.NacosConfigProperties;

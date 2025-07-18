@@ -1,4 +1,4 @@
-package com.company.framework.apollo;
+package com.company.framework.config.apollo;
 
 import java.util.Set;
 

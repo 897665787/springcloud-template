@@ -21,19 +21,6 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateAutoConfiguration {
 
 	@Bean
-	public ClientHttpRequestFactory httpRequestFactory() {
-		return new HttpComponentsClientHttpRequestFactory(httpClient());
-	}
-
-	// 启用负载，注册在eureka服务上的实例有效 需要 通过服务名访问
-	@LoadBalanced
-//	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
-	@Bean("restTemplate")
-	public RestTemplate restTemplate(TraceManager traceManager) {
-		return new TraceRestTemplate(httpRequestFactory(), traceManager);
-	}
-
-	@Bean
 	public HttpClient httpClient() {
 		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory> create()
 				.register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -52,4 +39,17 @@ public class RestTemplateAutoConfiguration {
 				// .setRetryHandler(new DefaultHttpRequestRetryHandler(3, true))
 				.build();
 	}
+
+	@Bean
+	public ClientHttpRequestFactory httpRequestFactory() {
+		return new HttpComponentsClientHttpRequestFactory(httpClient());
+	}
+
+	@LoadBalanced // 启用负载，注册在注册中心上的实例有效 需要 通过服务名访问
+//	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
+	@Bean("restTemplate")
+	public RestTemplate restTemplate(TraceManager traceManager) {
+		return new TraceRestTemplate(httpRequestFactory(), traceManager);
+	}
+
 }

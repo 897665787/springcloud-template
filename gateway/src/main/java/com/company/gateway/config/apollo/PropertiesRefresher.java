@@ -1,4 +1,4 @@
-package com.company.gateway.apollo;
+package com.company.gateway.config.apollo;
 
 import java.util.Set;
 

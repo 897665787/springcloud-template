@@ -1,4 +1,4 @@
-package com.company.framework.context;
+package com.company.framework.constant;
 
 import java.util.List;
 

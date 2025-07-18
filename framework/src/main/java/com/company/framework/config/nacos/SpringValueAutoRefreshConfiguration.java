@@ -1,4 +1,4 @@
-package com.company.gateway.nacos;
+package com.company.framework.config.nacos;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
