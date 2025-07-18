@@ -1,4 +1,4 @@
-package com.company.gateway.autoconfigure;
+package com.company.gateway.messagedriven.rabbitmq;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.amqp.core.AcknowledgeMode;

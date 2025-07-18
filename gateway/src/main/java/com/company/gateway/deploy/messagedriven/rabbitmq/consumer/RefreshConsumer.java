@@ -9,7 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.company.gateway.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.gateway.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import com.company.gateway.deploy.messagedriven.strategy.StrategyConstants;
 import com.company.gateway.messagedriven.constants.FanoutConstants;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
