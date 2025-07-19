@@ -3,11 +3,11 @@ package com.company.tool.service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.company.common.exception.BusinessException;
 import com.company.tool.entity.VerifyCode;
 import com.company.tool.enums.VerifyCodeEnum;
 import com.company.tool.mapper.VerifyCodeMapper;
@@ -43,10 +43,10 @@ public class VerifyCodeService extends ServiceImpl<VerifyCodeMapper, VerifyCode>
 	public boolean verify(String type, String certificate, String inputcode) {
 		VerifyCode verifyCode = baseMapper.selectLastByCertificateType(certificate, type);
 		if (verifyCode == null) {
-			throw new BusinessException("验证码不正确");
+			ExceptionUtil.throwException("验证码不正确");
 		}
 		if (VerifyCodeEnum.Status.UN_USE != VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
-			throw new BusinessException("验证码不可用，请重新获取");
+			ExceptionUtil.throwException("验证码不可用，请重新获取");
 		}
 		LocalDateTime validTime = verifyCode.getValidTime();
 		LocalDateTime now = LocalDateTime.now();
@@ -56,18 +56,18 @@ public class VerifyCodeService extends ServiceImpl<VerifyCodeMapper, VerifyCode>
 			if (minutes > 10) {// 过时10分钟以上提示不同的提示语
 				message = "请获取验证码";
 			}
-			throw new BusinessException(message);
+			ExceptionUtil.throwException(message);
 		}
 		Integer maxErrCount = verifyCode.getMaxErrCount();
 		Integer errCount = verifyCode.getErrCount();
 		if (errCount > maxErrCount) {
-			throw new BusinessException("失败次数过多，验证码已失效");
+			ExceptionUtil.throwException("失败次数过多，验证码已失效");
 		}
 		String code = verifyCode.getCode();
 		if (!closeVerify && !code.equalsIgnoreCase(inputcode)) {
 			log.info("closeVerify:{}", closeVerify);
 			baseMapper.incrErrCount(verifyCode.getId());
-			throw new BusinessException("验证码错误");
+			ExceptionUtil.throwException("验证码错误");
 		}
 		baseMapper.updateStatus(verifyCode.getId(), VerifyCodeEnum.Status.USED);
 		return true;

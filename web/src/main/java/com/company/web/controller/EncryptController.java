@@ -29,7 +29,7 @@ public class EncryptController {
 	@PostMapping(value = "/post-body-row")
 	public Result<com.company.web.resp.UserResp> postbodyrow(@RequestBody Map<String, Object> param) {
 //		if(true){
-//			throw new BusinessException("asdasd");
+//			ExceptionUtil.throwException("asdasd");
 //		}
 
 		Result<UserResp> byId = userFeign.getById(1L);

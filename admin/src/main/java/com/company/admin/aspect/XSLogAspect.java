@@ -1,11 +1,11 @@
 package com.company.admin.aspect;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.company.admin.entity.base.XSGenericModel;
+import com.company.common.api.Result;
+import com.company.framework.context.HttpContextUtil;
+import com.company.framework.globalresponse.BusinessException;
+import com.company.framework.util.IpUtil;
+import com.company.framework.util.JsonUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -17,13 +17,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.company.admin.entity.base.XSGenericModel;
-import com.company.admin.exception.ExceptionConsts;
-import com.company.common.api.Result;
-import com.company.common.exception.BusinessException;
-import com.company.framework.util.JsonUtil;
-import com.company.framework.context.HttpContextUtil;
-import com.company.framework.util.IpUtil;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 日志切面
@@ -68,11 +65,10 @@ public class XSLogAspect {
 				result = Result.fail(e.getCode(), e.getMessage());
             }
             else if (t instanceof DuplicateKeyException) {
-                result = Result.fail(ExceptionConsts.SQL_DUPLICATE_KEY.getCode(),
-                        ExceptionConsts.SQL_DUPLICATE_KEY.getMessage());
+                result = Result.fail("数据已存在");
             }
             else {
-                result = Result.fail(ExceptionConsts.FAILURE.getCode(), ExceptionConsts.FAILURE.getMessage());
+                result = Result.fail("系统错误");
             }
             throw t;
         } finally {

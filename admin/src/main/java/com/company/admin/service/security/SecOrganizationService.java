@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,6 @@ import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
 import com.company.admin.mapper.security.SecOrganizationDao;
 import com.company.admin.util.XSTreeUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * 系统组织ServiceImpl
@@ -31,7 +31,7 @@ public class SecOrganizationService {
         criteria.setParent(secOrganization.getParent());
         Long count = secOrganizationDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("组织已存在");
+            ExceptionUtil.throwException("组织已存在");
         }
         //父级禁用则子级禁用
         if (secOrganization.getParent() != null && secOrganization.getParent().getId() != null
@@ -53,12 +53,12 @@ public class SecOrganizationService {
         children.setParent(secOrganization);
         Long childrenCount = secOrganizationDao.count(children);
         if (childrenCount.compareTo(0L) > 0) {
-            throw new BusinessException("组织被使用");
+            ExceptionUtil.throwException("组织被使用");
         }
         //校验是否存在员工属于该组织
         Long staffCount = secOrganizationDao.countStaff(existent);
         if (staffCount.compareTo(0L) > 0) {
-            throw new BusinessException("组织被使用");
+            ExceptionUtil.throwException("组织被使用");
         }
         secOrganizationDao.removeOrganizationRole(existent);
         secOrganizationDao.remove(existent);
@@ -75,7 +75,7 @@ public class SecOrganizationService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(existent.getId());
                 if (!isSelf) {
-                    throw new BusinessException("组织已存在");
+                    ExceptionUtil.throwException("组织已存在");
                 }
             }
         }
@@ -103,7 +103,7 @@ public class SecOrganizationService {
     public SecOrganization get(SecOrganization secOrganization) {
         SecOrganization existent = secOrganizationDao.get(secOrganization);
         if (existent == null) {
-            throw new BusinessException("组织不存在");
+            ExceptionUtil.throwException("组织不存在");
         }
         return existent;
     }

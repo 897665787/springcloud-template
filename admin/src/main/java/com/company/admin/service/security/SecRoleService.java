@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,6 @@ import com.company.admin.entity.security.SecStaff;
 import com.company.admin.mapper.security.SecRoleDao;
 import com.company.admin.springsecurity.UpdateAuthorityFilter;
 import com.company.admin.util.XSTreeUtil;
-import com.company.common.exception.BusinessException;
 
 /**
  * 系统角色ServiceImpl
@@ -37,7 +37,7 @@ public class SecRoleService {
         criteria.setName(secRole.getName());
         Long count = secRoleDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("角色已存在");
+            ExceptionUtil.throwException("角色已存在");
         }
         secRoleDao.save(secRole);
     }
@@ -48,12 +48,12 @@ public class SecRoleService {
         //校验是否存在员工拥有该角色
         Long staffCount = secRoleDao.countStaff(existent);
         if (staffCount.compareTo(0L) > 0) {
-            throw new BusinessException("角色被使用");
+            ExceptionUtil.throwException("角色被使用");
         }
         //校验是否存在组织拥有该角色
         Long organizationCount = secRoleDao.countOrganization(existent);
         if (organizationCount.compareTo(0L) > 0) {
-            throw new BusinessException("角色被使用");
+            ExceptionUtil.throwException("角色被使用");
         }
         secRoleDao.removeRoleRes(existent);
         secRoleDao.remove(existent);
@@ -69,7 +69,7 @@ public class SecRoleService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(secRole.getId());
                 if (!isSelf) {
-                    throw new BusinessException("角色已存在");
+                    ExceptionUtil.throwException("角色已存在");
                 }
             }
         }
@@ -80,7 +80,7 @@ public class SecRoleService {
     public SecRole get(SecRole secRole) {
         SecRole existent = secRoleDao.get(secRole);
         if (existent == null) {
-            throw new BusinessException("角色不存在");
+            ExceptionUtil.throwException("角色不存在");
         }
         return existent;
     }

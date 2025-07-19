@@ -2,11 +2,11 @@ package com.company.tool.qrcode;
 
 import java.util.Optional;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.company.common.exception.BusinessException;
 import com.company.tool.qrcode.dto.LineColorParam;
 import com.company.tool.qrcode.dto.MaWxaCode;
 
@@ -83,7 +83,7 @@ public class WxaCodeService {
 				lineColorParam, isHyaline);
 
 		if (!maWxaCode.isSuccess()) {
-			throw new BusinessException(maWxaCode.getMessage());
+			ExceptionUtil.throwException(maWxaCode.getMessage());
 		}
 
 		byte[] bytes = maWxaCode.getBytes();

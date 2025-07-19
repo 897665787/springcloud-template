@@ -1,15 +1,14 @@
 package com.company.admin.service.system;
 
-import java.util.List;
-
+import com.company.admin.entity.base.XSPageModel;
+import com.company.admin.entity.system.AppInit;
+import com.company.admin.mapper.system.AppInitDao;
+import com.company.admin.util.XSUuidUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.admin.entity.base.XSPageModel;
-import com.company.admin.entity.system.AppInit;
-import com.company.admin.exception.ExceptionConsts;
-import com.company.admin.mapper.system.AppInitDao;
-import com.company.admin.util.XSUuidUtil;
+import java.util.List;
 
 /**
  * App初始化ServiceImpl
@@ -26,7 +25,7 @@ public class AppInitService {
         criteria.setKey(appInit.getKey());
         Long count = appInitDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw ExceptionConsts.APPINIT_EXIST;
+            ExceptionUtil.throwException("App初始化已存在");
         }
         appInit.setId(XSUuidUtil.generate());
         appInitDao.save(appInit);
@@ -46,7 +45,7 @@ public class AppInitService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(existent.getId());
                 if (!isSelf) {
-                    throw ExceptionConsts.APPINIT_EXIST;
+                    ExceptionUtil.throwException("App初始化已存在");
                 }
             }
         }
@@ -56,7 +55,7 @@ public class AppInitService {
     public AppInit get(AppInit appInit) {
         AppInit existent = appInitDao.get(appInit);
         if (existent == null) {
-            throw ExceptionConsts.APPINIT_NOT_EXIST;
+            ExceptionUtil.throwException("App初始化不存在");
         }
         return existent;
     }

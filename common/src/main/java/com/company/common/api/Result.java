@@ -1,7 +1,6 @@
 package com.company.common.api;
 
-import com.company.common.exception.BusinessException;
-
+import com.company.common.exception.ResultException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -13,7 +12,6 @@ public class Result<T> {
     private Integer code;// 响应码
     private String message;// 响应信息
     private T data;// 数据
-    private String traceId = null;// 日志追踪ID
 
     public Result<T> setResultCode(ResultCode resultCode) {
         this.code = resultCode.getCode();
@@ -36,16 +34,9 @@ public class Result<T> {
     public static <T> Result<T> fail(Integer code, String message) {
         return new Result<T>().setCode(code).setMessage(message);
     }
+
     public static <T> Result<T> fail(String message) {
         return new Result<T>().setResultCode(ResultCode.FAIL).setMessage(message);
-    }
-
-    public static <T> Result<T> fail(ResultCode resultCode) {
-        return new Result<T>().setResultCode(resultCode);
-    }
-
-    public static <T> Result<T> fail(ResultCode resultCode, T data) {
-        return new Result<T>().setResultCode(resultCode).setData(data);
     }
 
     public boolean successCode() {
@@ -56,8 +47,8 @@ public class Result<T> {
     }
 
     public T dataOrThrow() {
-        if (code == null || ResultCode.of(code) != ResultCode.SUCCESS) {
-            throw new BusinessException(code, message);
+        if (!successCode()) {
+            throw new ResultException(code, message);
         }
         return data;
     }

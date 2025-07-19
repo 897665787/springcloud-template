@@ -43,26 +43,6 @@ public class SpringContextUtil implements ApplicationContextInitializer<Configur
 		return profile;
 	}
 
-	/**
-	 * 测试环境
-	 * 
-	 * @return
-	 */
-	public static Boolean isTestProfile() {
-		String profile = getActiveProfile();
-		return Environment.TEST_ENVIRONMENT.contains(profile);
-	}
-
-	/**
-	 * 生产环境
-	 * 
-	 * @return
-	 */
-	public static Boolean isProduceProfile() {
-		String profile = getActiveProfile();
-		return Environment.PRODUCE_ENVIRONMENT.contains(profile);
-	}
-
 	@SuppressWarnings("unchecked")
 	public static <T> T getBean(String name) {
 		return (T) context.getBean(name);

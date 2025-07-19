@@ -1,7 +1,5 @@
 package com.company.admin.springsecurity;
 
-import java.util.Collection;
-
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -10,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.company.admin.exception.ExceptionConsts;
+import java.util.Collection;
 
 /**
  * 系统用户请求权限校验Service
@@ -28,7 +26,7 @@ public class CustomAccessDecisionManager implements AccessDecisionManager {
                 }
             }
         }
-        throw new AccessDeniedException(ExceptionConsts.SEC_STAFF_ACCESS_DENY.getMessage());
+        throw new AccessDeniedException("您的访问被拒绝");
     }
 
     @Override

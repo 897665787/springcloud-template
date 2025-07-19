@@ -1,33 +1,19 @@
 package com.company.admin.util;
 
+import com.company.framework.globalresponse.ExceptionUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.company.admin.exception.ExceptionConsts;
-import com.company.common.exception.BusinessException;
 
 /**
  * Excel相关工具类
@@ -59,7 +45,7 @@ public class ExcelUtil {
         } else if (excel2007U.equals(suffix)) {
             wb = new XSSFWorkbook(file.getInputStream());  //2007+
         } else {
-            throw new BusinessException("EXCEL的文件格式有,只支持.xls和.xlsx");
+            ExceptionUtil.throwException("EXCEL的文件格式有,只支持.xls和.xlsx");
         }
         return wb;
     }
@@ -74,11 +60,11 @@ public class ExcelUtil {
         for (int i = 0; i < header.length; i++) {
             Cell cell = r.getCell(i);
             if (cell == null) {
-                throw ExceptionConsts.EXCEL_TEMPLATE_FORMAT_WRONG;
+                ExceptionUtil.throwException("模板格式错误，请检查");
             }
             String v = cell.getStringCellValue().replace("*", "");
             if (!v.trim().equals(header[i])) {
-                throw ExceptionConsts.EXCEL_TEMPLATE_FORMAT_WRONG;
+                ExceptionUtil.throwException("模板格式错误，请检查");
             }
 
         }

@@ -1,18 +1,16 @@
 package com.company.framework.globalresponse;
 
 import com.company.common.api.Result;
-import com.company.framework.exception.UnauthorizedException;
+import com.company.common.api.ResultCode;
+import com.company.framework.message.IMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.HandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
 
 /**
  * 全局异常处理器
@@ -20,6 +18,8 @@ import java.lang.reflect.Method;
 @Slf4j
 @RestControllerAdvice
 public class UnauthorizedExceptionHandler {
+	@Autowired
+	private IMessage imessage;
 
 	/**
 	 * 未授权异常
@@ -27,38 +27,8 @@ public class UnauthorizedExceptionHandler {
 	@ExceptionHandler(UnauthorizedException.class)
 	public Result<?> unauthorized(UnauthorizedException e, HttpServletRequest request, HttpServletResponse response,
 								  HandlerMethod handler) {
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 如果不想设置http状态码，注释该行即可
-		sendErrorIfPage(request, response, handler);
-		return Result.fail(e.getCode(), e.getMessage());
-	}
-
-	private boolean isReturnJson(HandlerMethod handler) {
-		if (handler.getBeanType().isAnnotationPresent(RestController.class)) {
-			return true;
-		}
-		Method method = handler.getMethod();
-		if (method.isAnnotationPresent(ResponseBody.class)) {
-			return true;
-		}
-		return false;
-	}
-
-	private void sendErrorIfPage(HttpServletRequest request, HttpServletResponse response, HandlerMethod handler) {
-		String accept = request.getHeader("Accept");
-		if (StringUtils.isNotBlank(accept) && accept.contains("application/json")) {
-			return;
-		}
-		String contentType = response.getContentType();
-		if (StringUtils.isNotBlank(contentType) && contentType.contains("application/json")) {
-			return;
-		}
-		if (isReturnJson(handler)) {
-			return;
-		}
-		try {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		} catch (Exception e) {
-			log.error("sendError error", e);
-		}
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 可根据前端需求看是否使用http状态码来表示未登录，如果要使用状态码200，则注释掉该行代码
+		ResultCode resultCode = ResultCode.UNAUTHORIZED;
+		return Result.fail(resultCode.getCode(), imessage.getMessage(resultCode.getMessage()));
 	}
 }

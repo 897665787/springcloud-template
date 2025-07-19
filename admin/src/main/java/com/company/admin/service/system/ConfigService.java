@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +20,6 @@ import com.company.admin.entity.system.Config;
 import com.company.admin.entity.system.ConfigCategory;
 import com.company.admin.mapper.system.ConfigDao;
 import com.company.admin.service.security.SecStaffService;
-import com.company.common.exception.BusinessException;
 
 /**
  * @author JQ棣
@@ -40,7 +40,7 @@ public class ConfigService {
     public Config findById(Long id) {
         Config existedConfig = configDao.findById(id);
         if (existedConfig == null) {
-            throw new BusinessException("配置不存在");
+            ExceptionUtil.throwException("配置不存在");
         }
         return existedConfig;
     }
@@ -52,7 +52,7 @@ public class ConfigService {
     public void save(Config config) {
         boolean existedKey = configDao.existByKey(config.getKey());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         ConfigCategory configCategory = configCategoryService.findById(config.getCategoryId());
         config.setCategoryKey(configCategory.getKey());
@@ -63,7 +63,7 @@ public class ConfigService {
         Config existedConfig = findById(config.getId());
         boolean existedKey = configDao.existByKeyExcludeSelf(config.getKey(), config.getId());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         ConfigCategory configCategory = configCategoryService.findById(config.getCategoryId());
         config.setCategoryKey(configCategory.getKey());

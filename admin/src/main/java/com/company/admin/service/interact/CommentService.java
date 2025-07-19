@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,6 @@ import com.company.admin.entity.interact.Comment;
 import com.company.admin.entity.interact.CommentNum;
 import com.company.admin.mapper.interact.CommentDao;
 import com.company.admin.mapper.interact.CommentNumDao;
-import com.company.common.exception.BusinessException;
 import com.google.common.collect.Maps;
 
 /**
@@ -44,7 +44,7 @@ public class CommentService {
 	public Comment get(Comment comment) {
 		Comment existent = commentDao.get(comment.getId());
 		if (existent == null) {
-			throw new BusinessException("评论不存在");
+			ExceptionUtil.throwException("评论不存在");
 		}
 		return existent;
 	}

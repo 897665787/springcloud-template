@@ -1,17 +1,12 @@
 package com.company.framework.globalresponse;
 
-import java.lang.reflect.Method;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
+import com.company.common.api.Result;
+import com.company.common.api.ResultCode;
+import com.company.common.exception.ResultException;
+import com.company.framework.context.SpringContextUtil;
+import com.company.framework.message.IMessage;
+import com.company.framework.util.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +26,15 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import com.company.common.api.Result;
-import com.company.common.api.ResultCode;
-import com.company.common.exception.BusinessException;
-import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
-import com.company.framework.util.JsonUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 全局异常处理器
@@ -48,7 +44,52 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
 	@Autowired
-	private TraceManager traceManager;
+	private IMessage imessage;
+
+	/**
+	 * 参数业务异常
+	 */
+	@ExceptionHandler(ArgsBusinessException.class)
+	public Result<?> business(ArgsBusinessException e, HttpServletRequest request, HttpServletResponse response,
+							  HandlerMethod handler) {
+		String message = e.getMessage();
+		if (StringUtils.isBlank(message)) {
+			message = ExceptionUtils.getStackTrace(e);
+		}
+		log.warn("业务异常:{}", message);
+		sendErrorIfPage(request, response, handler);
+		return Result.fail(e.getCode(), imessage.getMessage(message, e.getArgs()));
+	}
+
+	/**
+	 * 业务异常
+	 */
+	@ExceptionHandler(BusinessException.class)
+	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response,
+							  HandlerMethod handler) {
+		String message = e.getMessage();
+		if (StringUtils.isBlank(message)) {
+			message = ExceptionUtils.getStackTrace(e);
+		}
+		log.warn("业务异常:{}", message);
+		sendErrorIfPage(request, response, handler);
+		return Result.fail(e.getCode(), imessage.getMessage(message));
+	}
+
+	/**
+	 * 结果异常
+	 */
+	@ExceptionHandler(ResultException.class)
+	public Result<?> result(ResultException e, HttpServletRequest request, HttpServletResponse response,
+							HandlerMethod handler) {
+		String message = e.getMessage();
+		if (StringUtils.isBlank(message)) {
+			message = ExceptionUtils.getStackTrace(e);
+		}
+		log.warn("业务异常:{}", message);
+		sendErrorIfPage(request, response, handler);
+		return Result.fail(e.getCode(), imessage.getMessage(message));
+	}
 
 	/**
 	 * 拦截异常
@@ -58,7 +99,8 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("未知异常:", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(traceManager.get());
+		ResultCode resultCode = ResultCode.SYSTEM_ERROR;
+		return Result.fail(resultCode.getCode(), imessage.getMessage(resultCode.getMessage()));
 	}
 
 	/**
@@ -67,7 +109,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
 	public Result<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e,
 			HttpServletRequest request, HttpServletResponse response) {
-		String message = MessageFormat.format("不支持{0}请求", e.getMethod());
+		String message = imessage.getMessage("不支持{0}请求", new Object[]{e.getMethod()});
 //		log.warn(message, e);
 		return Result.fail(message);
 	}
@@ -78,7 +120,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
 	public Result<?> httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e,
 			HttpServletRequest request, HttpServletResponse response) {
-		String message = MessageFormat.format("仅支持{0}媒体类型", JsonUtil.toJsonString(e.getSupportedMediaTypes()));
+		String message = imessage.getMessage("仅支持{0}媒体类型", JsonUtil.toJsonString(e.getSupportedMediaTypes()));
 		log.warn(message, e);
 		return Result.fail(message);
 	}
@@ -89,7 +131,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public Result<?> missingServletRequestParameter(MissingServletRequestParameterException e,
 			HttpServletRequest request, HttpServletResponse response) {
-		String message = MessageFormat.format("参数{0}({1})缺失", e.getParameterName(), e.getParameterType());
+		String message = imessage.getMessage("参数{0}({1})缺失", e.getParameterName(), e.getParameterType());
 //		log.warn(message, e);
 		return Result.fail(message);
 	}
@@ -100,7 +142,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public Result<?> methodArgumentTypeMismatch(MethodArgumentTypeMismatchException e, HttpServletRequest request,
 			HttpServletResponse response) {
-		String message = MessageFormat.format("参数{0}({1})不匹配{2}类型", e.getName(), e.getValue(),
+		String message = imessage.getMessage("参数{0}({1})不匹配{2}类型", e.getName(), e.getValue(),
 				Optional.ofNullable(e.getRequiredType()).map(Class::getName).orElse(null));
 //		log.warn(message, e);
 		return Result.fail(message);
@@ -113,7 +155,7 @@ public class GlobalExceptionHandler {
 	public Result<?> maxUploadSizeExceededException(MaxUploadSizeExceededException e,
 			HttpServletRequest request, HttpServletResponse response) {
 		String maxFileSize = SpringContextUtil.getProperty("spring.servlet.multipart.max-file-size", "1M");
-		String message = MessageFormat.format("文件大小需小于{0}", maxFileSize);
+		String message = imessage.getMessage("文件大小需小于{0}", maxFileSize);
 		log.warn(message, e);
 		return Result.fail(message);
 	}
@@ -126,22 +168,8 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("未处理运行时异常", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail(ResultCode.SYSTEM_ERROR).setTraceId(traceManager.get());
-	}
-
-	/**
-	 * 业务异常
-	 */
-	@ExceptionHandler(BusinessException.class)
-	public Result<?> business(BusinessException e, HttpServletRequest request, HttpServletResponse response,
-			HandlerMethod handler) {
-		String message = e.getMessage();
-		if (StringUtils.isBlank(message)) {
-			message = ExceptionUtils.getStackTrace(e);
-		}
-		log.warn("业务异常:{}", message);
-		sendErrorIfPage(request, response, handler);
-		return Result.fail(e.getCode(), e.getMessage());
+		ResultCode resultCode = ResultCode.SYSTEM_ERROR;
+		return Result.fail(resultCode.getCode(), imessage.getMessage(resultCode.getMessage()));
 	}
 
 	// 各种运行时异常单独处理可以在这里添加,例如
@@ -201,7 +229,7 @@ public class GlobalExceptionHandler {
 			HandlerMethod handler) {
 		log.error("数据重复异常", e);
 		sendErrorIfPage(request, response, handler);
-		return Result.fail("数据重复");
+		return Result.fail(imessage.getMessage("数据重复"));
 	}
 
 	private boolean isReturnJson(HandlerMethod handler) {

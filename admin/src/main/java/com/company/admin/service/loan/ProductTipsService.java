@@ -1,12 +1,12 @@
 package com.company.admin.service.loan;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.loan.ProductTips;
 import com.company.admin.mapper.loan.ProductTipsDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 产品提示Service
@@ -35,7 +35,7 @@ public class ProductTipsService {
     public ProductTips get(ProductTips productTips) {
         ProductTips existent = productTipsDao.get(productTips);
         if (existent == null) {
-            throw new BusinessException("产品提示不存在");
+            ExceptionUtil.throwException("产品提示不存在");
         }
         return existent;
     }

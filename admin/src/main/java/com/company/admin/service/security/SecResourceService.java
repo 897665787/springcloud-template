@@ -1,19 +1,18 @@
 package com.company.admin.service.security;
 
-import java.io.File;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.PostConstruct;
-import javax.validation.ConstraintViolation;
-
+import com.company.admin.entity.base.XSPageModel;
+import com.company.admin.entity.security.SecResource;
+import com.company.admin.entity.security.SecResourceFromXml;
+import com.company.admin.entity.security.SecRole;
+import com.company.admin.entity.security.SecStaff;
+import com.company.admin.mapper.security.SecResourceDao;
+import com.company.admin.springsecurity.UpdateAuthorityFilter;
+import com.company.admin.util.ModelValidateUtil;
+import com.company.admin.util.XSTreeUtil;
+import com.company.framework.constant.CommonConstants;
+import com.company.framework.globalresponse.ExceptionUtil;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,20 +23,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.company.admin.entity.base.XSPageModel;
-import com.company.admin.entity.security.SecResource;
-import com.company.admin.entity.security.SecResourceFromXml;
-import com.company.admin.entity.security.SecRole;
-import com.company.admin.entity.security.SecStaff;
-import com.company.admin.exception.ExceptionConsts;
-import com.company.admin.mapper.security.SecResourceDao;
-import com.company.admin.springsecurity.UpdateAuthorityFilter;
-import com.company.admin.util.ModelValidateUtil;
-import com.company.admin.util.XSTreeUtil;
-import com.company.common.exception.BusinessException;
-import com.company.framework.constant.CommonConstants;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 系统资源ServiceImpl
@@ -70,7 +62,7 @@ public class SecResourceService {
         criteria.setKey(secResource.getKey());
         Long count = secResourceDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw ExceptionConsts.SEC_RESOURCE_EXIST;
+            ExceptionUtil.throwException("资源已存在");
         }
         if (!secResource.getType().equals(2)) {
             //如果不是url资源则置空url和method
@@ -83,7 +75,7 @@ public class SecResourceService {
             criteria.setMethod(secResource.getMethod());
             count = secResourceDao.count(criteria);
             if (count.compareTo(0L) > 0) {
-                throw ExceptionConsts.SEC_RESOURCE_EXIST;
+                ExceptionUtil.throwException("资源已存在");
             }
         }
         //父级不可分配则子级不可分配
@@ -112,12 +104,12 @@ public class SecResourceService {
         children.setParent(existent);
         Long childrenCount = secResourceDao.count(children);
         if (childrenCount.compareTo(0L) > 0) {
-            throw ExceptionConsts.SEC_RESOURCE_USED;
+            ExceptionUtil.throwException("资源被使用");
         }
         //校验是否存在角色拥有该资源
         Long roleCount = secResourceDao.countRole(existent);
         if (roleCount.compareTo(0L) > 0) {
-            throw ExceptionConsts.SEC_RESOURCE_USED;
+            ExceptionUtil.throwException("资源被使用");
         }
         secResourceDao.removeSuperiorRes(existent);
         secResourceDao.remove(existent);
@@ -134,7 +126,7 @@ public class SecResourceService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(existent.getId());
                 if (!isSelf) {
-                    throw ExceptionConsts.SEC_RESOURCE_EXIST;
+                    ExceptionUtil.throwException("资源已存在");
                 }
             }
         }
@@ -146,7 +138,7 @@ public class SecResourceService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(existent.getId());
                 if (!isSelf) {
-                    throw ExceptionConsts.SEC_RESOURCE_EXIST;
+                    ExceptionUtil.throwException("资源已存在");
                 }
             }
         }
@@ -182,9 +174,6 @@ public class SecResourceService {
 
     public SecResource get(SecResource secResource) {
         SecResource existent = secResourceDao.get(secResource);
-        if (existent == null) {
-            throw ExceptionConsts.SEC_RESOURCE_NOT_EXIST;
-        }
         return existent;
     }
 
@@ -321,16 +310,16 @@ public class SecResourceService {
                 Set<ConstraintViolation<SecResourceFromXml>> constraintViolations = ModelValidateUtil.getValidator().validate(item);
                 for (ConstraintViolation<SecResourceFromXml> constraintViolation : constraintViolations) {
                     String errorMsg = "数据" + item.toString() + "出错，" + constraintViolation.getMessage();
-                    throw new BusinessException(errorMsg);
+                    ExceptionUtil.throwException(errorMsg);
                 }
                 if (item.getType().equals(2)) {
                     if (StringUtils.isBlank(item.getUrl())) {
                         String errorMsg = "数据" + item.toString() + "出错，接口地址不能为空";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                     if (StringUtils.isBlank(item.getMethod())) {
                         String errorMsg = "数据" + item.toString() + "出错，接口请求方式不能为空";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                 }
             }
@@ -343,13 +332,13 @@ public class SecResourceService {
                     }
                     if (secResourceFromXml.getKey().equals(secResource.getKey())) {
                         String errorMsg = "数据" + secResourceFromXml.toString() + "出错，键重复";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                     if (secResourceFromXml.getType().equals(2) && secResource.getType().equals(2)
                             && secResourceFromXml.getUrl().equals(secResource.getUrl())
                             && secResourceFromXml.getMethod().equals(secResource.getMethod())) {
                         String errorMsg = "数据" + secResourceFromXml.toString() + "出错，接口地址和接口请求方式重复";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                 }
             }
@@ -388,7 +377,7 @@ public class SecResourceService {
                     }
                     if (!pkeyExist) {
                         String errorMsg = "数据" + secResourceFromXml.toString() + "出错，pkey不存在";
-                        throw new BusinessException(errorMsg);
+                        ExceptionUtil.throwException(errorMsg);
                     }
                 }
             }

@@ -1,23 +1,22 @@
 package com.company.admin.service.security;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
 import com.company.admin.entity.security.SecStaff;
-import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.security.SecResourceDao;
 import com.company.admin.mapper.security.SecStaffDao;
 import com.company.admin.util.XSMd5Util;
 import com.company.admin.util.XSTreeUtil;
 import com.company.admin.util.XSUuidUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 系统用户ServiceImpl
@@ -35,11 +34,11 @@ public class SecStaffService {
     public void save(SecStaff secStaff) {
         SecStaff existent = secStaffDao.getByUsernameWithoutType(secStaff.getUsername());
         if (existent != null) {
-            throw ExceptionConsts.SEC_STAFF_USERNAME_EXIST;
+            ExceptionUtil.throwException("用户名已被使用");
         }
         existent = secStaffDao.getByMobileWithoutType(secStaff.getMobile());
         if (existent != null) {
-            throw ExceptionConsts.SEC_STAFF_MOBILE_EXIST;
+            ExceptionUtil.throwException("手机号已被注册");
         }
         secStaff.setType(11);
         secStaff.setId(XSUuidUtil.generate());
@@ -61,13 +60,13 @@ public class SecStaffService {
         if (secStaff.getUsername() != null) {
             existent = secStaffDao.getByUsernameWithoutType(secStaff.getUsername());
             if (existent != null && !existent.getId().equals(secStaff.getId())) {
-                throw ExceptionConsts.SEC_STAFF_USERNAME_EXIST;
+                ExceptionUtil.throwException("用户名已被使用");
             }
         }
         if (secStaff.getMobile() != null) {
             existent = secStaffDao.getByMobileWithoutType(secStaff.getMobile());
             if (existent != null && !existent.getId().equals(secStaff.getId())) {
-                throw ExceptionConsts.SEC_STAFF_MOBILE_EXIST;
+                ExceptionUtil.throwException("手机号已被注册");
             }
         }
         if (secStaff.getPassword() != null) {
@@ -78,9 +77,6 @@ public class SecStaffService {
 
     public SecStaff get(SecStaff secStaff) {
         SecStaff existent = secStaffDao.get(secStaff);
-        if (existent == null) {
-            throw ExceptionConsts.SEC_STAFF_NOT_EXIST;
-        }
         existent.setPassword(null);
         return existent;
     }

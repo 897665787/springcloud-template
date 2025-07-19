@@ -2,13 +2,13 @@ package com.company.admin.service.system;
 
 import java.util.List;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.District;
 import com.company.admin.mapper.system.DistrictDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 区县ServiceImpl
@@ -22,19 +22,19 @@ public class DistrictService {
 
     public void save(District district) {
         if (null == district.getCity() || null == district.getCity().getId()) {
-            throw new BusinessException("请选择区县所属城市");
+            ExceptionUtil.throwException("请选择区县所属城市");
         }
         District dist = new District(district.getId());
         Long count = districtDao.count(dist);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("区县已存在");
+            ExceptionUtil.throwException("区县已存在");
         }
         dist = new District();
         dist.setName(district.getName());
         dist.setCity(district.getCity());
         count = districtDao.count(dist);
         if (count.compareTo(0L) > 0) {
-            throw new BusinessException("区县已存在");
+            ExceptionUtil.throwException("区县已存在");
         }
         dist.setStatus(0);
         districtDao.save(district);
@@ -47,7 +47,7 @@ public class DistrictService {
 
     public void update(District district) {
         if (null == district.getCity() || null == district.getCity().getId()) {
-            throw new BusinessException("请选择区县所属城市");
+            ExceptionUtil.throwException("请选择区县所属城市");
         }
         District existent = get(district);
         District dist = new District();
@@ -57,7 +57,7 @@ public class DistrictService {
         if (existents.size() > 0) {
             boolean isSelf = existents.get(0).getId().equals(existent.getId());
             if (!isSelf) {
-                throw new BusinessException("区县已存在");
+                ExceptionUtil.throwException("区县已存在");
             }
         }
         districtDao.update(district);
@@ -70,7 +70,7 @@ public class DistrictService {
     public District get(District district) {
         District existent = districtDao.get(district);
         if (existent == null) {
-            throw new BusinessException("区县不存在");
+            ExceptionUtil.throwException("区县不存在");
         }
         return existent;
     }

@@ -1,14 +1,13 @@
 package com.company.admin.service.user;
 
-import java.util.List;
-
+import com.company.admin.entity.base.XSPageModel;
+import com.company.admin.entity.user.Level;
+import com.company.admin.mapper.user.LevelDao;
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.company.admin.entity.base.XSPageModel;
-import com.company.admin.entity.user.Level;
-import com.company.admin.exception.ExceptionConsts;
-import com.company.admin.mapper.user.LevelDao;
+import java.util.List;
 
 /**
  * 等级称号Service
@@ -23,7 +22,9 @@ public class LevelService {
 
     public void save(Level level) {
         List<Level> levelExisted = levelDao.findLevelExisted(level);
-        if (levelExisted.size() > 0) throw ExceptionConsts.LEVEL_TITLE_EXISTED;
+        if (levelExisted.size() > 0) {
+            ExceptionUtil.throwException("已存在相同等级或相同名称或相同经验值的的等级称号");
+        }
         levelDao.save(level);
     }
 
@@ -39,7 +40,7 @@ public class LevelService {
         List<Level> levelExisted = levelDao.findLevelExisted(level);
         levelExisted.forEach(lt -> {
             if (!lt.getId().equals(existent.getId())) {
-                throw ExceptionConsts.LEVEL_TITLE_EXISTED;
+                ExceptionUtil.throwException("已存在相同等级或相同名称或相同经验值的的等级称号");
             }
         });
         levelDao.update(level);
@@ -49,7 +50,7 @@ public class LevelService {
     public Level get(Level level) {
         Level existent = levelDao.get(level);
         if (existent == null) {
-            throw ExceptionConsts.LEVEL_TITLE_NOT_EXIST;
+            ExceptionUtil.throwException("等级称号不存在");
         }
         return existent;
     }

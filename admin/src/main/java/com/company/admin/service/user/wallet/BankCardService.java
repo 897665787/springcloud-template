@@ -3,6 +3,7 @@ package com.company.admin.service.user.wallet;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.wallet.BankCard;
-import com.company.common.exception.BusinessException;
 import com.company.admin.mapper.user.wallet.BankCardDao;
 import com.company.admin.service.system.ConfigService;
 import com.company.framework.util.JsonUtil;
@@ -76,7 +76,7 @@ public class BankCardService {
 	public BankCard get(BankCard bankCard) {
 		BankCard existent = bankCardDao.get(bankCard);
 		if (existent == null) {
-			throw new BusinessException("银行卡不存在");
+			ExceptionUtil.throwException("银行卡不存在");
 		}
 		return existent;
 	}
@@ -88,26 +88,26 @@ public class BankCardService {
 	private void verify(BankCard bankCard, String verifyType) {
 		if (verifyType.equals("2")) {
 			if (StringUtils.isBlank(bankCard.getOwner())) {
-				throw new BusinessException("开户人不能为空");
+				ExceptionUtil.throwException("开户人不能为空");
 			}
 		}
 		else if (verifyType.equals("3")) {
 			if (StringUtils.isBlank(bankCard.getOwner())) {
-				throw new BusinessException("开户人不能为空");
+				ExceptionUtil.throwException("开户人不能为空");
 			}
 			if (StringUtils.isBlank(bankCard.getIdentityNumber())) {
-				throw new BusinessException("身份证不能为空");
+				ExceptionUtil.throwException("身份证不能为空");
 			}
 		}
 		else if (verifyType.equals("4")) {
 			if (StringUtils.isBlank(bankCard.getOwner())) {
-				throw new BusinessException("开户人不能为空");
+				ExceptionUtil.throwException("开户人不能为空");
 			}
 			if (StringUtils.isBlank(bankCard.getIdentityNumber())) {
-				throw new BusinessException("身份证不能为空");
+				ExceptionUtil.throwException("身份证不能为空");
 			}
 			if (StringUtils.isBlank(bankCard.getMobile())) {
-				throw new BusinessException("手机号不能为空");
+				ExceptionUtil.throwException("手机号不能为空");
 			}
 		}
 		else {
@@ -129,7 +129,7 @@ public class BankCardService {
 		JsonNode info = JsonUtil.toJsonNode(responseStr);
 		if (info.get("error_code").asInt() != 0) {
 			logger.error("验证银行卡信息失败：{}", responseStr);
-			throw new BusinessException(info.get("reason").asText());
+			ExceptionUtil.throwException(info.get("reason").asText());
 		}
 		return info;
 	}

@@ -94,7 +94,7 @@ public class ApiController {
 	@GetMapping(value = "/getOrderById")
 	public Result<OrderResp> getOrderById(Long id) {
 //		if (true)
-//			throw new BusinessException(1, "aaaaaaaaaaa");
+//			ExceptionUtil.throwException(1, "aaaaaaaaaaa");
 //		Result<OrderResp> byId = orderFeign.getById(id);
 		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 //		return byId;

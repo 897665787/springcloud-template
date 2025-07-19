@@ -1,12 +1,10 @@
 package com.company.admin.service.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.UserMapPosition;
-import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.user.UserMapPositionDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 定位Service
@@ -34,9 +32,6 @@ public class UserMapPositionService {
 
     public UserMapPosition get(UserMapPosition userMapPosition) {
         UserMapPosition existent = userMapPositionDao.get(userMapPosition);
-        if (existent == null) {
-            throw ExceptionConsts.DATA_NOT_EXISTED;
-        }
         return existent;
     }
 

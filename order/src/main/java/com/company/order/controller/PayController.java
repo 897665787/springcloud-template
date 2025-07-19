@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.lock.LockClient;
 import com.company.framework.messagedriven.MessageSender;
@@ -137,7 +137,7 @@ public class PayController implements PayFeign {
 			PayClient tradeClient = PayFactory.of(payReq.getMethod());
 			PayResp payResp = tradeClient.pay(payParams);
 			if (!payResp.getSuccess()) {
-				throw new BusinessException(payResp.getMessage());
+				ExceptionUtil.throwException(payResp.getMessage());
 			}
 
 			payResult(orderCode);// 主动查询支付结果

@@ -1,19 +1,17 @@
 package com.company.admin.springsecurity;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.common.api.ResultCode;
+import com.company.framework.util.JsonUtil;
+import com.google.common.collect.Maps;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import com.company.admin.exception.ExceptionConsts;
-import com.company.framework.util.JsonUtil;
-import com.google.common.collect.Maps;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 系统用户访问拒绝处理器
@@ -42,8 +40,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         else {
         	Map<String, Object> errorMap = Maps.newHashMap();
             errorMap.put("status", false);
-            errorMap.put("code", ExceptionConsts.SEC_STAFF_ACCESS_DENY.getCode());
-            errorMap.put("message", ExceptionConsts.SEC_STAFF_ACCESS_DENY.getMessage());
+            errorMap.put("code", ResultCode.FAIL.getCode());
+            errorMap.put("message", "您的访问被拒绝");
             String errorMsg = JsonUtil.toJsonString(errorMap);
 
             response.setCharacterEncoding("UTF-8");

@@ -1,20 +1,19 @@
 package com.company.admin.service.article;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.company.admin.entity.article.Article;
 import com.company.admin.entity.article.ArticleCategory;
-import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.article.ArticleCategoryDao;
 import com.company.admin.mapper.article.ArticleDao;
 import com.company.admin.util.XSTreeUtil;
 import com.company.admin.util.XSUuidUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 文章分类ServiceImpl
@@ -34,7 +33,7 @@ public class ArticleCategoryService {
         existent.setKey(articleCategory.getKey());
         Long count = articleCategoryDao.count(existent);
         if (count.compareTo(0L) > 0) {
-            throw ExceptionConsts.ARTICLE_CATEGORY_EXIST;
+            ExceptionUtil.throwException("数据已存在");
         }
         //展示及锁定状态必须与父级一致
         if (articleCategory.getParent() != null) {
@@ -54,14 +53,14 @@ public class ArticleCategoryService {
     public void remove(ArticleCategory articleCategory) {
         ArticleCategory existent = get(articleCategory);
         if (existent.getLock().equals(1)) {
-            throw ExceptionConsts.ARTICLE_CATEGORY_LOCKED;
+            ExceptionUtil.throwException("数据已锁定");
         }
         //校验该分类下是否存在子级
         existent = new ArticleCategory();
         existent.setParent(articleCategory);
         Long count = articleCategoryDao.count(existent);
         if (count.compareTo(0L) > 0) {
-            throw ExceptionConsts.ARTICLE_CATEGORY_USED;
+            ExceptionUtil.throwException("数据已被使用");
         }
         //校验该分类下是否存在图片
         Article article = new Article();
@@ -69,7 +68,7 @@ public class ArticleCategoryService {
         article.setCateList(cateList);
         Long count1 = articleDao.count(article);
         if (count1.compareTo(0L) > 0) {
-            throw ExceptionConsts.ARTICLE_CATEGORY_USED;
+            ExceptionUtil.throwException("数据已被使用");
         }
         articleCategoryDao.remove(articleCategory);
     }
@@ -84,7 +83,7 @@ public class ArticleCategoryService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(existent.getId());
                 if (!isSelf) {
-                    throw ExceptionConsts.ARTICLE_CATEGORY_EXIST;
+                    ExceptionUtil.throwException("数据已存在");
                 }
             }
         }
@@ -95,7 +94,7 @@ public class ArticleCategoryService {
         if(articleCategory.getParent().getId() != null){
             boolean isSelfSub = subList.stream().anyMatch(s -> s.getId().equals(articleCategory.getParent().getId()));
             if(isSelfSub){
-                throw ExceptionConsts.ARTICLE_CATEGORY_NOT_SELF_OR_SUB;
+                ExceptionUtil.throwException("不能选择自己或自己的下级作为父级");
             }
         }
         articleCategoryDao.update(articleCategory);
@@ -138,9 +137,6 @@ public class ArticleCategoryService {
 
     public ArticleCategory get(ArticleCategory articleCategory) {
         ArticleCategory existent = articleCategoryDao.get(articleCategory);
-        if (existent == null) {
-            throw ExceptionConsts.ARTICLE_CATEGORY_NOT_EXIST;
-        }
         return existent;
     }
 
@@ -161,9 +157,6 @@ public class ArticleCategoryService {
 
     public ArticleCategory getByKey(String key) {
         ArticleCategory existent = articleCategoryDao.getByKey(key);
-        if (existent == null) {
-            throw ExceptionConsts.ARTICLE_CATEGORY_NOT_EXIST;
-        }
         return existent;
     }
 }

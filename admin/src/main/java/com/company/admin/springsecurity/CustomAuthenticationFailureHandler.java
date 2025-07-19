@@ -1,12 +1,8 @@
 package com.company.admin.springsecurity;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.common.api.ResultCode;
+import com.company.framework.util.JsonUtil;
+import com.google.common.collect.Maps;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
@@ -14,9 +10,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import com.company.admin.exception.ExceptionConsts;
-import com.company.framework.util.JsonUtil;
-import com.google.common.collect.Maps;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 系统用户登录失败处理器
@@ -27,30 +25,30 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         String exceptionMsg = exception.getMessage();
-        Integer code = ExceptionConsts.FAILURE.getCode();
-        String msg = ExceptionConsts.FAILURE.getMessage();
+        Integer code = ResultCode.FAIL.getCode();
+        String msg = ResultCode.FAIL.getMessage();
 
         if (exception instanceof UsernameNotFoundException) {
-            if (exception.getMessage().equals(ExceptionConsts.FAILURE.getMessage())) {
-                code = ExceptionConsts.FAILURE.getCode();
-                msg = ExceptionConsts.FAILURE.getMessage();
+            if (exception.getMessage().equals(ResultCode.FAIL.getMessage())) {
+                code = ResultCode.FAIL.getCode();
+                msg = ResultCode.FAIL.getMessage();
             }
             else {
-                code = ExceptionConsts.SEC_STAFF_NOT_EXIST.getCode();
-                msg = ExceptionConsts.SEC_STAFF_NOT_EXIST.getMessage();
+                code = ResultCode.FAIL.getCode();
+                msg = "员工不存在";
             }
         }
         else if (exception instanceof BadCredentialsException) {
-            code = ExceptionConsts.SEC_STAFF_PASSWORD_ERROR.getCode();
-            msg = ExceptionConsts.SEC_STAFF_PASSWORD_ERROR.getMessage();
+            code = ResultCode.FAIL.getCode();
+            msg = "密码错误";
         }
         else if (exception instanceof InternalAuthenticationServiceException) {
-            code = ExceptionConsts.SEC_STAFF_NOT_ENABLE.getCode();
-            msg = ExceptionConsts.SEC_STAFF_NOT_ENABLE.getMessage();
+            code = ResultCode.FAIL.getCode();
+            msg = "员工被禁用";
         }
         else if (exceptionMsg.contains("principal exceeded")) {
-            code = ExceptionConsts.SEC_STAFF_CONCURRENT_BEYOND.getCode();
-            msg = ExceptionConsts.SEC_STAFF_CONCURRENT_BEYOND.getMessage();
+            code = ResultCode.FAIL.getCode();
+            msg = "该账号超出最大登录人数限制";
         }
 
         Map<String, Object> errorMap = Maps.newHashMap();

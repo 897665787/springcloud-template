@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import com.company.framework.context.Environment;
+import com.company.framework.constant.Environment;
 import com.company.web.service.TimeService;
 
 @Service("mockSuningTimeService")

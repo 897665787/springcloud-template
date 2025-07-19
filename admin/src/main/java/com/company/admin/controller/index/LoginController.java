@@ -1,5 +1,6 @@
 package com.company.admin.controller.index;
 
+import com.company.common.api.ResultCode;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,8 +9,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-
-import com.company.admin.exception.ExceptionConsts;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -40,8 +39,8 @@ public class LoginController {
             MappingJackson2JsonView view = new MappingJackson2JsonView();
             Map<String, Object> result = new HashMap<>();
             result.put("status", false);
-            result.put("code", ExceptionConsts.SEC_STAFF_SESSION_TIMEOUT.getCode());
-            result.put("message", ExceptionConsts.SEC_STAFF_SESSION_TIMEOUT.getMessage());
+            result.put("code", ResultCode.FAIL.getCode());
+            result.put("message", "会话超时，请重新登录");
             view.setAttributesMap(result);
             return new ModelAndView(view);
         }

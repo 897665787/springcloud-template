@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.company.common.api.Result;
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.RetryerEnum;
@@ -92,7 +92,7 @@ public class FeignRetryer {
 		LocalDateTime createTime = retryTask.getCreateTime();
 		long days = LocalDateTimeUtil.between(createTime, LocalDateTime.now(), ChronoUnit.DAYS);
 		if (days > maxDays) {
-			throw new BusinessException(id + "创建" + days + "天，超过" + maxDays + "天，不允许执行");
+			ExceptionUtil.throwException(id + "创建" + days + "天，超过" + maxDays + "天，不允许执行");
 		}
 
 		RetryTask retryTask4Update = new RetryTask();

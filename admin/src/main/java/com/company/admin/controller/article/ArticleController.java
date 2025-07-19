@@ -9,7 +9,6 @@ import com.company.admin.annotation.Pagination;
 import com.company.common.api.Result;
 import com.company.admin.entity.article.Article;
 import com.company.admin.entity.article.ArticleCategory;
-import com.company.common.exception.BusinessException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,11 +48,7 @@ public class ArticleController {
 
     @RequestMapping(value = "/update", method = RequestMethod.GET)
     public String update(Model model,Article article) throws Exception {
-        try {
-            model.addAttribute("article", articleService.get(article));
-        } catch (BusinessException e) {
-            model.addAttribute("article", null);
-        }
+        model.addAttribute("article", articleService.get(article));
         model.addAttribute("categoryTree", JsonUtil.toJsonString(articleCategoryService.tree(new ArticleCategory())));
         return "content/articleUpdate";
     }

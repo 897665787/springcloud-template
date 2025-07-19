@@ -1,17 +1,14 @@
 package com.company.admin.service.article;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.company.admin.entity.article.Article;
 import com.company.admin.entity.article.ArticleCategory;
 import com.company.admin.entity.base.XSPageModel;
-import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.article.ArticleDao;
 import com.company.admin.util.XSUuidUtil;
-import com.company.common.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 文章ServiceImpl
@@ -41,9 +38,6 @@ public class ArticleService {
 
     public Article get(Article article) {
         Article existent = articleDao.get(article);
-        if (existent == null) {
-            throw ExceptionConsts.ARTICLE_NOT_EXIST;
-        }
         return existent;
     }
 
@@ -59,13 +53,9 @@ public class ArticleService {
         }
 
         if (article.getCategory() != null && article.getCategory().getKey() != null) {
-            try {
-                ArticleCategory c = articleCategoryService.getByKey(article.getCategory().getKey());
-                List<String> cateList = articleCategoryService.listSubTree(c.getId());
-                article.setCateList(cateList);
-            } catch (BusinessException e) {
-                e.printStackTrace();
-            }
+            ArticleCategory c = articleCategoryService.getByKey(article.getCategory().getKey());
+            List<String> cateList = articleCategoryService.listSubTree(c.getId());
+            article.setCateList(cateList);
         }
         return XSPageModel.build(articleDao.list(article), articleDao.count(article));
     }

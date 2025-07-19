@@ -1,6 +1,6 @@
 package com.company.openapi.interceptor;
 
-import com.company.common.exception.BusinessException;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.cache.ICache;
 import com.company.framework.filter.request.BodyReaderHttpServletRequestWrapper;
@@ -54,32 +54,32 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 		// 检查时效性
 		String timestamp = request.getHeader("timestamp");// 加入timestamp（时间戳），10分钟内数据有效
 		if (StringUtils.isBlank(timestamp)) {
-			throw new BusinessException("请求已过期");
+			ExceptionUtil.throwException("请求已过期");
 		}
 		long timestampLong = Long.parseLong(timestamp);
 		long now = System.currentTimeMillis();
 		if (now - timestampLong > signConfiguration.getReqValidSeconds() * 1000) {
-			throw new BusinessException("请求已过期");
+			ExceptionUtil.throwException("请求已过期");
 		}
 
 		// 检查appid是否正确
 		String appid = request.getHeader("appid");// 线下分配appid和appsecret，针对不同的调用方分配不同的appid和appsecret
 		if (StringUtils.isBlank(appid)) {
-			throw new BusinessException("appid错误");
+			ExceptionUtil.throwException("appid错误");
 		}
 
 		String appsecret = signConfiguration.getAppsecret(appid);
 //		String appsecret = openAccessAccountFeign.getAppKeyByAppid(appid).dataOrThrow();// appsecret也可以保存到数据库
 		if (StringUtils.isBlank(appsecret)) {
-			throw new BusinessException("appid错误");
+			ExceptionUtil.throwException("appid错误");
 		}
 
 		String noncestr = request.getHeader("noncestr");// 加入流水号noncestr（防止重复提交），至少为10位。针对查询接口，流水号只用于日志落地，便于后期日志核查。针对办理类接口需校验流水号在有效期内的唯一性，以避免重复请求。
 		if (StringUtils.isBlank(noncestr)) {
-			throw new BusinessException("noncestr错误");
+			ExceptionUtil.throwException("noncestr错误");
 		}
 		if (noncestr.length() < 10) {
-			throw new BusinessException("noncestr至少为10位");
+			ExceptionUtil.throwException("noncestr至少为10位");
 		}
 
 		String sign = request.getHeader("sign"); // 签名
@@ -97,14 +97,14 @@ public class SignInterceptor extends HandlerInterceptorAdapter {
 
 		String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, reqParamObject , bodyStr, appsecret);
 		if (!sign4md5.equals(sign)) {
-			throw new BusinessException("签名错误");
+			ExceptionUtil.throwException("签名错误");
 		}
 
 		if (signConfiguration.nonceValid()) {
 			String key = String.format("nonce:%s", noncestr);
 			String value = cache.get(key);
 			if (StringUtils.isNotBlank(value)) {
-				throw new BusinessException("请求重复");
+				ExceptionUtil.throwException("请求重复");
 			}
 			cache.set(key, "1", signConfiguration.getReqValidSeconds(), TimeUnit.SECONDS);
 		}

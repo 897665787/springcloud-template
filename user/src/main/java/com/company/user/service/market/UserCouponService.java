@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.company.common.exception.BusinessException;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.user.entity.CouponTemplate;
@@ -34,7 +34,7 @@ public class UserCouponService extends ServiceImpl<UserCouponMapper, UserCoupon>
 	public void sendCoupon(Integer userId, Integer couponTemplateId) {
 		CouponTemplate couponTemplate = couponTemplateService.getById(couponTemplateId);
 		if (couponTemplate.getEndTime().isBefore(LocalDateTime.now())) {
-			throw new BusinessException("优惠券模板已过期");
+			ExceptionUtil.throwException("优惠券模板已过期");
 		}
 
 		UserCoupon userCoupon = new UserCoupon();

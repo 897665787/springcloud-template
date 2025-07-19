@@ -2,6 +2,7 @@ package com.company.admin.service.system;
 
 import java.util.List;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.DictionaryCategory;
 import com.company.admin.mapper.system.DictionaryCategoryDao;
 import com.company.admin.mapper.system.DictionaryDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * @author JQ棣
@@ -29,7 +29,7 @@ public class DictionaryCategoryService {
     public DictionaryCategory findById(Long id) {
         DictionaryCategory existedDictionaryCategory = dictionaryCategoryDao.findById(id);
         if (existedDictionaryCategory == null) {
-            throw new BusinessException("字典分类不存在");
+            ExceptionUtil.throwException("字典分类不存在");
         }
         return existedDictionaryCategory;
     }
@@ -37,11 +37,11 @@ public class DictionaryCategoryService {
     public void deleteById(Long id) {
         DictionaryCategory existedDictionaryCategory = findById(id);
         if (existedDictionaryCategory.getLock() == 1) {
-            throw new BusinessException("字典分类被锁定");
+            ExceptionUtil.throwException("字典分类被锁定");
         }
         boolean used = dictionaryDao.existByCategory(existedDictionaryCategory.getKey());
         if (used) {
-            throw new BusinessException("字典分类被使用");
+            ExceptionUtil.throwException("字典分类被使用");
         }
         dictionaryCategoryDao.deleteById(id);
     }
@@ -49,7 +49,7 @@ public class DictionaryCategoryService {
     public void save(DictionaryCategory dictionaryCategory) {
         boolean existedKey = dictionaryCategoryDao.existByKey(dictionaryCategory.getKey());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         dictionaryCategoryDao.save(dictionaryCategory);
     }
@@ -60,7 +60,7 @@ public class DictionaryCategoryService {
         boolean existedKey = dictionaryCategoryDao.existByKeyExcludeSelf(dictionaryCategory.getKey(),
                 dictionaryCategory.getId());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         boolean changeKey = StringUtils.isNotBlank(dictionaryCategory.getKey()) &&
                 !StringUtils.equals(dictionaryCategory.getKey(), existedDictionaryCategory.getKey());
@@ -89,7 +89,7 @@ public class DictionaryCategoryService {
     public void updateLock(Long id) {
         DictionaryCategory existedDictionaryCategory = dictionaryCategoryDao.findAndLockById(id);
         if (existedDictionaryCategory == null) {
-            throw new BusinessException("字典分类不存在");
+            ExceptionUtil.throwException("字典分类不存在");
         }
         Integer lock = 1 - existedDictionaryCategory.getLock();
         dictionaryCategoryDao.updateLock(id, lock);

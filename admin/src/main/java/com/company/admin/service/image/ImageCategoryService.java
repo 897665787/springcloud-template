@@ -1,24 +1,23 @@
 package com.company.admin.service.image;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.company.admin.entity.image.Image;
 import com.company.admin.entity.image.ImageCategory;
 import com.company.admin.entity.system.Dictionary;
-import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.image.ImageCategoryDao;
 import com.company.admin.mapper.image.ImageDao;
 import com.company.admin.service.system.DictionaryService;
 import com.company.admin.util.XSTreeUtil;
 import com.company.admin.util.XSUuidUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 图片分类ServiceImpl
@@ -42,7 +41,7 @@ public class ImageCategoryService {
         criteria.setKey(imageCategory.getKey());
         Long count = imageCategoryDao.count(criteria);
         if (count.compareTo(0L) > 0) {
-            throw ExceptionConsts.IMAGE_CATEGORY_EXIST;
+            ExceptionUtil.throwException("图片分类已存在");
         }
         //父级隐藏则子级必须隐藏，父级锁定则子级必须锁定
         if (imageCategory.getParent() != null) {
@@ -72,14 +71,14 @@ public class ImageCategoryService {
     public void remove(ImageCategory imageCategory) {
         ImageCategory existent = get(imageCategory);
         if (existent.getLock().equals(1)) {
-            throw ExceptionConsts.IMAGE_CATEGORY_LOCKED;
+            ExceptionUtil.throwException("图片分类已锁定");
         }
         //校验该分类下是否存在子级
         ImageCategory children = new ImageCategory();
         children.setParent(existent);
         Long childrenCount = imageCategoryDao.count(children);
         if (childrenCount.compareTo(0L) > 0) {
-            throw ExceptionConsts.IMAGE_CATEGORY_USED;
+            ExceptionUtil.throwException("数据已被使用");
         }
         //校验该分类下是否存在图片
         Image image = new Image();
@@ -87,7 +86,7 @@ public class ImageCategoryService {
         image.setCategoryList(cateList);
         Long count1 = imageDao.count(image);
         if (count1.compareTo(0L) > 0) {
-            throw ExceptionConsts.IMAGE_CATEGORY_USED;
+            ExceptionUtil.throwException("数据已被使用");
         }
         imageCategoryDao.remove(existent);
         imageCategoryDao.removeImageCategoryJumpType(imageCategory);
@@ -103,7 +102,7 @@ public class ImageCategoryService {
             if (existents.size() > 0) {
                 boolean isSelf = existents.get(0).getId().equals(existent.getId());
                 if (!isSelf) {
-                    throw ExceptionConsts.IMAGE_CATEGORY_EXIST;
+                    ExceptionUtil.throwException("图片分类已存在");
                 }
             }
         }
@@ -114,7 +113,7 @@ public class ImageCategoryService {
         if(imageCategory.getParent().getId() != null){
             boolean isSelfSub = subList.stream().anyMatch(s -> s.getId().equals(imageCategory.getParent().getId()));
             if(isSelfSub){
-                throw ExceptionConsts.IMAGE_CATEGORY_NOT_SELF_OR_SUB;
+                ExceptionUtil.throwException("不能选择自己或自己的下级作为父级");
             }
         }
         if (imageCategory.getParent() == null || imageCategory.getParent().getId() == null) {
@@ -170,9 +169,6 @@ public class ImageCategoryService {
 
     public ImageCategory get(ImageCategory imageCategory) {
         ImageCategory existent = imageCategoryDao.get(imageCategory);
-        if (existent == null) {
-            throw ExceptionConsts.IMAGE_CATEGORY_NOT_EXIST;
-        }
         List<Dictionary> ownedJumpType = imageCategoryDao.listJumpType(imageCategory);
         Map<String, String> jumpTypeDict = dictionaryService.mapByCategory("imageJumpType");
         List<Dictionary> dictDataList = new ArrayList<>();
@@ -210,9 +206,6 @@ public class ImageCategoryService {
 
     public ImageCategory getByKey(String key) {
         ImageCategory existent = imageCategoryDao.getByKey(key);
-        if (existent == null) {
-            throw ExceptionConsts.IMAGE_CATEGORY_NOT_EXIST;
-        }
         return existent;
     }
 

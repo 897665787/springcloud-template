@@ -2,6 +2,7 @@ package com.company.admin.service.system;
 
 import java.util.List;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.Country;
 import com.company.admin.mapper.system.CountryDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 国家ServiceImpl
@@ -25,7 +25,7 @@ public class CountryService {
         try {
             countryDao.save(country);
         } catch (DuplicateKeyException e) {
-            throw new BusinessException("国家已存在");
+            ExceptionUtil.throwException("国家已存在");
         }
     }
 
@@ -38,7 +38,7 @@ public class CountryService {
         try {
             countryDao.update(country);
         } catch (DuplicateKeyException e) {
-            throw new BusinessException("国家已存在");
+            ExceptionUtil.throwException("国家已存在");
         }
     }
 
@@ -49,7 +49,7 @@ public class CountryService {
     public Country get(Country country) {
         Country existent = countryDao.get(country);
         if (existent == null) {
-            throw new BusinessException("国家不存在");
+            ExceptionUtil.throwException("国家不存在");
         }
         return existent;
     }

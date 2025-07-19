@@ -1,12 +1,12 @@
 package com.company.admin.service.marketing;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.marketing.HotWord;
 import com.company.admin.mapper.marketing.HotWordDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 热搜词Service
@@ -35,7 +35,7 @@ public class HotWordService {
     public HotWord get(HotWord hotWord) {
         HotWord existent = hotWordDao.get(hotWord);
         if (existent == null) {
-            throw new BusinessException("热搜词不存在");
+            ExceptionUtil.throwException("热搜词不存在");
         }
         return existent;
     }

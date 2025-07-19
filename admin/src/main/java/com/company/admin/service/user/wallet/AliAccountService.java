@@ -1,12 +1,12 @@
 package com.company.admin.service.user.wallet;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.wallet.AliAccount;
 import com.company.admin.mapper.user.wallet.AliAccountDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 支付宝Service
@@ -35,7 +35,7 @@ public class AliAccountService {
 	public AliAccount get(AliAccount aliAccount) {
 		AliAccount existent = aliAccountDao.get(aliAccount);
 		if (existent == null) {
-			throw new BusinessException("支付宝账号不存在");
+			ExceptionUtil.throwException("支付宝账号不存在");
 		}
 		return existent;
 	}

@@ -1,12 +1,12 @@
 package com.company.admin.service.marketing;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.marketing.Feedback;
 import com.company.admin.mapper.marketing.FeedbackDao;
-import com.company.common.exception.BusinessException;
 
 /**
  * 用户反馈ServiceImpl
@@ -26,7 +26,7 @@ public class FeedbackService {
     public Feedback get(Feedback feedback) {
         Feedback existent = feedbackDao.get(feedback.getId());
         if (existent == null) {
-            throw new BusinessException("反馈不存在");
+            ExceptionUtil.throwException("反馈不存在");
         }
         return existent;
     }

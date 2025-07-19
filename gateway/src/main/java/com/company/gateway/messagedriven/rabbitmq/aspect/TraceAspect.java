@@ -1,6 +1,6 @@
 package com.company.gateway.messagedriven.rabbitmq.aspect;
 
-import com.company.gateway.autoconfigure.RabbitMQAutoConfiguration;
+import com.company.gateway.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import com.company.gateway.trace.TraceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

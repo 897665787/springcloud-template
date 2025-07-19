@@ -2,6 +2,7 @@ package com.company.admin.service.security;
 
 import java.util.HashMap;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import com.company.admin.entity.security.SecResource;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.entity.security.SecStaffLog;
 import com.company.admin.mapper.security.SecStaffLogDao;
-import com.company.common.exception.BusinessException;
 import com.company.framework.util.JsonUtil;
 
 /**
@@ -50,7 +50,7 @@ public class SecStaffLogService implements XSLogHandler {
     public SecStaffLog get(SecStaffLog secStaffLog) {
         SecStaffLog existent = secStaffLogDao.get(secStaffLog);
         if (existent == null) {
-            throw new BusinessException("日志不存在");
+            ExceptionUtil.throwException("日志不存在");
         }
         return existent;
     }

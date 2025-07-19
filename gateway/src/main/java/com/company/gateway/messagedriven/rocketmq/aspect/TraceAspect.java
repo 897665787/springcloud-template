@@ -1,6 +1,6 @@
 package com.company.gateway.messagedriven.rocketmq.aspect;
 
-import com.company.gateway.autoconfigure.RocketMQAutoConfiguration;
+import com.company.gateway.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.trace.TraceManager;
 import lombok.extern.slf4j.Slf4j;

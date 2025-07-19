@@ -1,12 +1,10 @@
 package com.company.admin.service.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.UserContactBook;
-import com.company.admin.exception.ExceptionConsts;
 import com.company.admin.mapper.user.UserContactBookDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * 通讯录Service
@@ -34,9 +32,6 @@ public class UserContactBookService {
 
     public UserContactBook get(UserContactBook userContactBook) {
         UserContactBook existent = userContactBookDao.get(userContactBook);
-        if (existent == null) {
-            throw ExceptionConsts.DATA_NOT_EXISTED;
-        }
         return existent;
     }
 

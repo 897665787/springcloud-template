@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.system.Dictionary;
 import com.company.admin.entity.system.DictionaryCategory;
 import com.company.admin.mapper.system.DictionaryDao;
-import com.company.common.exception.BusinessException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
@@ -49,7 +49,7 @@ public class DictionaryService {
     public Dictionary findById(Long id) {
         Dictionary existedDictionary = dictionaryDao.findById(id);
         if (existedDictionary == null) {
-            throw new BusinessException("字典不存在");
+            ExceptionUtil.throwException("字典不存在");
         }
         return existedDictionary;
     }
@@ -57,7 +57,7 @@ public class DictionaryService {
     public void deleteById(Long id) {
         Dictionary existedDictionary = findById(id);
         if (existedDictionary.getLock() == 1) {
-            throw new BusinessException("字典被锁定");
+            ExceptionUtil.throwException("字典被锁定");
         }
         dictionaryDao.deleteById(id);
         //清除该数据所属字典的缓存
@@ -69,7 +69,7 @@ public class DictionaryService {
         dictionary.setCategoryKey(dictionaryCategory.getKey());
         boolean existedKey = dictionaryDao.existByCategoryAndKey(dictionary.getCategoryKey(), dictionary.getKey());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         dictionaryDao.save(dictionary);
         //清除该数据所属字典的缓存
@@ -83,7 +83,7 @@ public class DictionaryService {
         boolean existedKey = dictionaryDao.existByCategoryAndKeyExcludeSelf(dictionary.getCategoryKey(),
                 dictionary.getKey(), dictionary.getId());
         if (existedKey) {
-            throw new BusinessException("键已存在");
+            ExceptionUtil.throwException("键已存在");
         }
         
         existedDictionary.setKey(dictionary.getKey());
@@ -113,7 +113,7 @@ public class DictionaryService {
     public void updateLock(Long id) {
         Dictionary existedDictionary = dictionaryDao.findAndLockById(id);
         if (existedDictionary == null) {
-            throw new BusinessException("字典不存在");
+            ExceptionUtil.throwException("字典不存在");
         }
         Integer lock = 1 - existedDictionary.getLock();
         dictionaryDao.updateLock(id, lock);
