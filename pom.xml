@@ -38,15 +38,10 @@
 		<module>common</module><!-- 公共代码 -->
 		<module>framework</module><!-- 框架代码 -->
 		<module>tool</module>
-		<module>tool-api</module>
 		<module>user</module>
-		<module>user-api</module>
 		<module>system</module>
-		<module>system-api</module>
 		<module>order</module>
-		<module>order-api</module>
 		<module>im</module>
-		<module>im-api</module>
 		<!-- 边缘微服务 -->
 		<module>framework-edge</module><!-- 框架代码 -->
 		<module>web</module>

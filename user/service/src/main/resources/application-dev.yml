@@ -1,0 +1,19 @@
+canal:
+  mode: close # simple,cluster,zookeeper,kafka,rocketMQ，默认：simple 可以使用一个不存在的选项关闭canal
+  server: 127.0.0.1:11111 # canal的地址
+  destination: example # 数据同步的目的地，默认：example
+  
+template:
+  domain: http://d-domain.com
+  enable:
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
+    lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
+    message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
+  sqllimit:
+    max: 9999
+
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: ublp45r318fr4xr7
+  type: default

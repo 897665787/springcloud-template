@@ -28,60 +28,97 @@
 
 ### 核心依赖
 
-| 依赖                  | 版本       |
+| 依赖                  | 版本      |
 |----------------------|------------|
-| Spring Cloud Netflix | 2021.0.9   |
+| Spring Cloud         | 2021.0.9   |
+| Spring Cloud Alibaba | 2021.0.6.2   |
 | Spring Boot          | 2.7.18     |
-| Mybatis Plus         | 3.5.7   |
+| Eureka               | 跟随Spring Cloud  |
+| Nacos                | 跟随Spring Cloud Alibaba  |
+| Apollo               | 2.4.0  |
+| Gateway              | 跟随Spring Cloud  |
+| Open Feign           | 跟随Spring Cloud  |
+| Resilience4J         | 跟随Spring Cloud  |
+| Sentinel             | 跟随Spring Cloud Alibaba  |
 | RocketMQ             | 2.2.3  |
+| RabbitMQ             | 跟随Spring Boot |
+| Skywalking           | 9.3.0  |
+| Prometheus           | 跟随Spring Cloud  |
+| Xxl Job              | 2.3.0  |
+| Elasticsearch        | 6.1.8  |
+| Canal                | 1.2.1-RELEASE  |
+| Druid                | 1.2.8   |
+| Mybatis Plus         | 3.5.7   |
+| Dynamic Datasource   | 3.6.1   |
+| Database Encrypt     | 1.0.10  |
+| Sa Token             | 1.40.0  |
+| Knife4j              | 4.5.0  |
+| Redis                | 跟随Spring Boot |
+| Redisson             | 3.12.0  |
+| Hutool               | 5.8.5  |
 
 ### 模块说明
 
 ```lua
 springcloud-template
-├── template-common -- 公共模块
+├── template-common -- 公共代码(所有模块都依赖它)
 └── template-framework -- 框架代码(内部微服务)
-     └── advice -- 统一异常处理、响应日志统一打印
-     └── apollo -- apollo属性刷新配置（分享：https://www.toutiao.com/article/7258567779102917139）
      └── autoconfigure -- 自动配置
+     └── cache -- 缓存
+     └── config -- 动态刷新配置中心配置（分享：https://www.toutiao.com/article/7258567779102917139）
      └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
      └── developer -- 环境流量路由到本机，调试神器（分享：https://www.toutiao.com/article/7514716979333268008）
-     └── interceptor -- Feign请求头数据在微服务间传递（分享：https://www.toutiao.com/article/7126056949267268108）
+     └── feign -- Feign请求头数据在微服务间传递（分享：https://www.toutiao.com/article/7126056949267268108）
+     └── globalresponse -- 统一异常处理、响应日志统一打印
+     └── lock -- 锁设计
+     └── message -- 文案国际化
+     └── messagedriven -- 消息驱动，实现异步处理生产者
+     └── sequence -- 生成唯一ID
      └── threadpool -- 自定义线程池（JDK和Tomcat）
+     └── trace -- 日志追踪（分享：https://www.toutiao.com/article/7126056949267268108）
 └── template-framework-edge -- 框架代码(边缘微服务)
+     └── encryptbody -- 请求/响应加解密
      └── filter -- http公共请求参数设置到请求头在微服务内传递
+     └── globalresponse -- 统一异常处理、响应日志统一打印
      └── interceptor -- 访问控制(结合@RequireLogin使用)
+	 └── jackson -- json响应值自定义序列化
 ├── template-eureka -- 注册中心
 ├── template-gateway -- 网关(分享：https://www.toutiao.com/article/7271926711678321215)
 ├── template-zuul -- 网关（版本升级后已移除）
 ├── template-config -- 配置中心（建议使用Nacos/Apollo）
 └── template-order -- 订单服务(内部微服务)
      └── template-order-api -- 被依赖开放api
-└── template-order -- 订单服务(内部微服务)
-     └── template-order-api -- 被依赖开放api
+     └── template-order-service -- 微服务
 └── template-system -- 系统服务(内部微服务)
      └── template-system-api -- 被依赖开放api
+     └── template-system-service -- 微服务
 └── template-tool -- 工具服务(内部微服务)
      └── template-tool-api -- 被依赖开放api
-     └── controller
-          └── FileController -- 文件存储使用demo（支持阿里OSS、腾讯云COS、MinIO、本地磁盘等多种方式）
-     └── popup -- 弹窗设计demo（分享：https://www.toutiao.com/article/7287587310307738146）
-          └── condition -- 弹窗条件实现类
-          └── PopCondition -- 抽象定义弹窗条件
-          └── PopService -- 弹窗查询的核心代码
-          └── ReplaceParam -- 参数替换接口
-     └── sms -- 短信设计demo（分享：https://www.toutiao.com/article/7248173282141291047）
-          └── AsyncSmsSender -- 短信发送器（异步）
-          └── MysqlSendPostProcessor -- 短信发送记录
-          └── SmsSenderConsumer -- 短信发送处理器（消费者逻辑）
-     └── subscribe -- 微信订阅消息设计demo
-          └── AsyncSubscribeSender -- 订阅消息发送器（异步）
-          └── SubscribeSenderConsumer -- 订阅消息发送处理器（消费者逻辑）
+     └── template-tool-service -- 微服务
+          └── controller
+               └── FileController -- 文件存储使用demo（支持阿里OSS、腾讯云COS、MinIO、本地磁盘等多种方式）
+          └── popup -- 弹窗设计demo（分享：https://www.toutiao.com/article/7287587310307738146）
+               └── condition -- 弹窗条件实现类
+               └── PopCondition -- 抽象定义弹窗条件
+               └── PopService -- 弹窗查询的核心代码
+               └── ReplaceParam -- 参数替换接口
+          └── sms -- 短信设计demo（分享：https://www.toutiao.com/article/7248173282141291047）
+               └── AsyncSmsSender -- 短信发送器（异步）
+               └── MysqlSendPostProcessor -- 短信发送记录
+               └── SmsSenderConsumer -- 短信发送处理器（消费者逻辑）
+          └── subscribe -- 微信订阅消息设计demo
+               └── AsyncSubscribeSender -- 订阅消息发送器（异步）
+               └── SubscribeSenderConsumer -- 订阅消息发送处理器（消费者逻辑）
 └── template-user -- 用户服务(内部微服务)
-     └── canal-- canal使用demo
-     └── coupon -- 优惠券设计demo（分享：https://www.toutiao.com/article/7228973418354475572）
-          └── UseCouponService -- 优惠券核心类
-     └── wallet -- 钱包设计demo
+     └── template-system-api -- 被依赖开放api
+     └── template-system-service -- 微服务
+          └── canal-- canal使用demo
+          └── coupon -- 优惠券设计demo（分享：https://www.toutiao.com/article/7228973418354475572）
+               └── UseCouponService -- 优惠券核心类
+          └── wallet -- 钱包设计demo
+└── template-im -- 即时通讯服务(内部微服务)
+     └── template-im-api -- 被依赖开放api
+     └── template-im-service -- 微服务
 ├── template-app -- app端接入层(边缘微服务)
 ├── template-web -- web端接入层(边缘微服务)
      └── easylogin -- 登录方式（分享：https://www.toutiao.com/article/7144259146018406948）
@@ -99,6 +136,7 @@ springcloud-template
           └── sa-token的应用
 ├── template-admin -- 管理后台端(前后端一体)
 ├── template-adminapi -- 管理后台端(前后端分离)
+├── template-openapi -- 开放平台接入层(边缘微服务)
 ├── sql -- 项目中的表结构设计
 ```
 

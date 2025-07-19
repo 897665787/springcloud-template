@@ -1,0 +1,61 @@
+spring:
+  resources:
+    #用于告诉springboot应该在何处寻找静态资源，springboot默认的位置和优先级：spring.resources.static-locations=classpath:/static,classpath:/public,classpath:/resources,classpath:/META-INF/resources
+    static-locations: file:D:/home/data/oss/buket-template-dev/
+
+template:
+  domain: http://d-domain.com
+  enable:
+    cache: guava # guava:本地缓存,redis:redis缓存,combination:组合缓存
+    lock: jvm # jvm:jvm锁,redisson:redisson分布式锁
+    message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列
+    closeSendEmail: true # 关闭发送邮件，默认false
+  sqllimit:
+    max: 9999
+
+filestorage:
+  active: local
+  local:
+    endpoint: D:/home/data/oss
+    bucketName: buket-template-dev
+    domain: http://localhost:4001 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
+  minio:
+    endpoint: http://127.0.0.1:9000
+    accessKey: pRYo5fCm9ZyVNKLA
+    secretKey: Lv5yFUrBOXrNsZJVZ93XxSVl7JiNA99J
+    bucketName: buket-template-dev
+    domain: http://192.168.28.158:9000 # 访问域名，例如：“https://image.d-domain.com”
+
+smssender:
+  active: log
+  # 打印日志（用于测试环境不想发送真实短信）
+  log:
+    signName: 测试
+  # 阿里云短信
+  ali:
+    regionId: cn-hangzhou
+    accessKey: LTAI5tRK8vFDnEijSRxNyDEs
+    secretKey: ZIIW2Gt71FU8l48JyCIe4gzXmMYESe
+    signName: XXX公司1
+  # 腾讯短信
+  tencent:
+    appId: 1400006666
+    regionId: ap-guangzhou
+    accessKey: LTAIkcl1bVhsEpGf
+    secretKey: D9hwgRigRI1Q6rIE4PBU1lmKsqTpUm
+    signName: XXX公司2
+
+wx:
+  miniapp:
+    configs:
+      - appid: 1111 #微信小程序的appid
+        secret: 1111 #微信小程序的Secret
+        token: 1111 #微信小程序消息服务器配置的token
+        aesKey: 1111 #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
+
+# 数据库表字段加密
+encrypt:
+  enable: true
+  key: ublp45r318fr4xr7
+  type: default

@@ -9,101 +9,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>template-user</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<description>用户服务</description>
 
-	<dependencies>
-		<!-- 单元测试，因为加了scope=test，所以不能在公共包引用 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-        <dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-framework</artifactId>
-		    <version>1.0.0</version>
-		</dependency>
-        <dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-order-api</artifactId>
-		    <version>1.0.0</version>
-		</dependency>
-        <dependency>
-		    <groupId>com.company</groupId>
-		    <artifactId>template-user-api</artifactId>
-		    <version>1.0.0</version>
-		</dependency>
-        
-		<!-- 数据库 -->
-		<!-- mysql -->
-        <dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- druid -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.8</version>
-        </dependency>
-        
-        <!-- 引入了mybatis-plus-boot-starter，就不需要引入mybatis-spring-boot-starter -->
-		<!-- 
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		 -->
-		
-		<!-- mybatis-plus -->
-		<dependency>
-        	<groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.7</version>
-        </dependency>
-        
-        <!-- mybatis-plus动态数据源，可用于（主/从切换、多主库） -->
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-			<version>3.6.1</version>
-		</dependency>
-		
-		<!-- mybatis-plus字段加密（https://github.com/panlicun/mybatisplus-database-encrypt-spring-boot-starter） -->
-		<dependency>
-		    <groupId>io.github.panlicun</groupId>
-		    <artifactId>mybatisplus-database-encrypt-spring-boot-starter</artifactId>
-		    <version>1.0.10</version>
-		</dependency>
-        <!-- 数据库 -->
-        
-        <!-- Canal 依赖 -->
-		<dependency>
-			<groupId>top.javatool</groupId>
-			<artifactId>canal-spring-boot-starter</artifactId>
-			<version>1.2.1-RELEASE</version>
-		</dependency>
-        
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot.version}</version>
-				<executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-			</plugin>
-		</plugins>
-	</build>
+	<modules>
+		<module>service</module>
+		<module>api</module>
+	</modules>
 </project>
