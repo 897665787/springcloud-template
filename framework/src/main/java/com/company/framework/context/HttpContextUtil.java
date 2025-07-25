@@ -51,10 +51,12 @@ public class HttpContextUtil {
 		return lastHeader;
 	}
 
+	@Deprecated // 推荐使用UserContextUtil.currentUserIdInt()
 	public static Integer currentUserIdInt() {
 		return Optional.ofNullable(currentUserId()).map(Integer::valueOf).orElse(null);
 	}
 
+	@Deprecated // 推荐使用UserContextUtil.currentUserId()
 	public static String currentUserId() {
 		return lastHead(HeaderConstants.HEADER_CURRENT_USER_ID);
 	}
