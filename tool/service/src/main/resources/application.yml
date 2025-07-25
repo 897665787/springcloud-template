@@ -8,13 +8,11 @@ spring:
   mail:
     host: smtp.qq.com
     port: 465
-    username: 888888888@qq.com # 发件人
+    username: 897665787@qq.com # 发件人
     password: 111111111 # 发件人密码
     properties:
-      mail:
-        smtp:
-          ssl:
-            enable: true
+      mail.smtp.ssl.enable: false # 使用ssl连接
+      mail.smtp.ssl.trust: '*' # 信任所有主机
 
 logging:
   #为了避免日志目录生成{APP_NAME}_IS_UNDEFINED目录，不能使用默认配置logback.xml或logback-spring.xml命名，详细参考：http://www.itersblog.com/archives/5.html

@@ -2,6 +2,7 @@ package com.company.web.filter;
 
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
+import com.company.framework.context.UserContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 import com.company.web.token.TokenService;
 import com.company.web.util.TokenValueUtil;
@@ -54,6 +55,8 @@ public class TokenFilter extends OncePerRequestFilter {
 			}
 		}
 		headerRequest.addHeader(HeaderConstants.HEADER_CURRENT_USER_ID, userId);
+		UserContextUtil.setCurrentUserId(userId);
 		chain.doFilter(headerRequest, response);
+		UserContextUtil.remove();
 	}
 }
