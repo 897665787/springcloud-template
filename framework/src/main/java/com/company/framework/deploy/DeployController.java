@@ -32,4 +32,18 @@ public class DeployController {
         return Result.success();
     }
 
+    @Autowired(required = false)
+    private RefreshHandler refreshHandler; // 优雅停机
+
+    /**
+     * 下线
+     *
+     * @return
+     */
+    @GetMapping("/refresh")
+    public Result<?> refresh() {
+        refreshHandler.refresh("template-order");
+        return Result.success();
+    }
+
 }
