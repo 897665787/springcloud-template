@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.company.framework.context.UserContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -277,7 +278,7 @@ public class AccountController {
 		// 发布登出事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("device", device);
-		params.put("userId", HttpContextUtil.currentUserId());
+		params.put("userId", UserContextUtil.currentUserId());
 		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
 		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGOUT.EXCHANGE);
 

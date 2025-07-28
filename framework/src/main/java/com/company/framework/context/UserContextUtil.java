@@ -1,5 +1,6 @@
 package com.company.framework.context;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -8,7 +9,14 @@ import java.util.Optional;
  * 当前登录用户上下文
  */
 public class UserContextUtil {
-    private static final ThreadLocal<String> CURRENT_USER = new InheritableThreadLocal<>();
+    // 有问题：父子线程不能传递
+    // private static final ThreadLocal<String> CURRENT_USER = new ThreadLocal<>();
+
+    // 有问题：子线程初始化后不能修改值
+    // private static final ThreadLocal<String> CURRENT_USER = new InheritableThreadLocal<>();
+
+    // 启动参数加上：-javaagent:path/to/transmittable-thread-local-2.14.5.jar，否则问题同InheritableThreadLocal
+    private static final ThreadLocal<String> CURRENT_USER = new TransmittableThreadLocal<>();
 
     public static void setCurrentUserId(String currentUserId) {
         CURRENT_USER.set(currentUserId);

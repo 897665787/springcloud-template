@@ -1,18 +1,16 @@
 package com.company.framework.context;
 
-import java.util.*;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.util.IpUtil;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.company.framework.constant.HeaderConstants;
-import com.company.framework.util.IpUtil;
-import com.google.common.collect.Maps;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class HttpContextUtil {
 

@@ -2,6 +2,7 @@ package com.company.web.controller;
 
 import com.company.common.api.Result;
 import com.company.framework.constant.HeaderConstants;
+import com.company.framework.context.UserContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
@@ -96,7 +97,21 @@ public class ApiController {
 //		if (true)
 //			ExceptionUtil.throwException(1, "aaaaaaaaaaa");
 //		Result<OrderResp> byId = orderFeign.getById(id);
-		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
+		System.out.println("currentUserId:" + UserContextUtil.currentUserId());
+
+		System.out.println("threadPoolExecutor:"+threadPoolExecutor);
+		for (int i = 0; i < 5; i++) {
+			int n = i;
+			threadPoolExecutor.submit(() -> {
+				System.out.println("execute:" + n + " " + Thread.currentThread().getName() + " userid：" + UserContextUtil.currentUserId());
+				try {
+					Thread.sleep(new Random().nextInt(1000));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+			System.out.println("submit:"+n);
+		}
 //		return byId;
 		return Result.success();
 	}

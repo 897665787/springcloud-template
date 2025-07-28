@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.company.framework.context.UserContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ import com.company.user.api.response.UserOauthResp;
 
 /**
  * 导航栏API
- * 
+ *
  * @author JQ棣
  */
 @RestController
@@ -46,9 +47,9 @@ public class NavigationController {
 	 */
 	@GetMapping("/nav")
 	public Result<List<com.company.app.resp.NavResp>> nav(HttpServletRequest request) {
-		
+
 		NavReq navReq = new NavReq();
-		
+
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
 		/* 补充一些系统可自动获取的参数 */
@@ -57,11 +58,11 @@ public class NavigationController {
 		// String token = HttpContextUtil.head("x-token");
 		// runtimeAttach.put("token", token);
 		// }
-		
+
 		/* 补充一些展示替换的参数 */
-		
+
 		// 补充用户id
-		String userId = HttpContextUtil.currentUserId();
+		String userId = UserContextUtil.currentUserId();
 		if (StringUtils.isBlank(userId)) {
 			String deviceid = HttpContextUtil.deviceid();
 			if (StringUtils.isNotBlank(deviceid)) {
@@ -73,7 +74,7 @@ public class NavigationController {
 			}
 		}
 		runtimeAttach.put("userId", userId);
-		
+
 		navReq.setRuntimeAttach(runtimeAttach);
 		navReq.setMaxSize(4);
 
@@ -81,15 +82,15 @@ public class NavigationController {
 		List<com.company.app.resp.NavResp> respList = PropertyUtils.copyArrayProperties(navRespList, com.company.app.resp.NavResp.class);
 		return Result.success(respList);
 	}
-	
+
 	/**
 	 * 轮播图列表
 	 */
 	@GetMapping("/banner")
 	public Result<List<com.company.app.resp.BannerResp>> banner(HttpServletRequest request) {
-		
+
 		BannerReq bannerReq = new BannerReq();
-		
+
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
 
 		/* 补充一些系统可自动获取的参数 */
@@ -98,11 +99,11 @@ public class NavigationController {
 		// String token = HttpContextUtil.head("x-token");
 		// runtimeAttach.put("token", token);
 		// }
-		
+
 		/* 补充一些展示替换的参数 */
-		
+
 		// 补充用户id
-		String userId = HttpContextUtil.currentUserId();
+		String userId = UserContextUtil.currentUserId();
 		if (StringUtils.isBlank(userId)) {
 			String deviceid = HttpContextUtil.deviceid();
 			if (StringUtils.isNotBlank(deviceid)) {
@@ -114,9 +115,9 @@ public class NavigationController {
 			}
 		}
 		runtimeAttach.put("userId", userId);
-		
+
 		bannerReq.setRuntimeAttach(runtimeAttach);
-		
+
 		List<BannerResp> bannerRespList = bannerFeign.list(bannerReq).dataOrThrow();
 		List<com.company.app.resp.BannerResp> respList = PropertyUtils.copyArrayProperties(bannerRespList, com.company.app.resp.BannerResp.class);
 		return Result.success(respList);

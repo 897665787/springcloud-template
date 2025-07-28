@@ -69,21 +69,6 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
 		super.execute(new TraceRunnable(command, traceManager.get()));
 	}
 
-	@Override
-	public Future<?> submit(Runnable task) {
-		return super.submit(task);
-	}
-
-	@Override
-	public <T> Future<T> submit(Runnable task, T result) {
-		return super.submit(task, result);
-	}
-
-	@Override
-	public <T> Future<T> submit(Callable<T> task) {
-		return super.submit(task);
-	}
-
 	private static class TraceRunnable implements Runnable {
 		private final Runnable target;
 		@Getter
