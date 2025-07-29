@@ -45,18 +45,18 @@ public class RefreshHandler {
 //		List<ServiceInstance> instances = client.getInstances(application);
 //		log.info("{},instances:{}", application, JsonUtil.toJsonString(instances));
 
-		NacosServiceManager nacosServiceManager = SpringContextUtil.getBean(NacosServiceManager.class);
-		NamingService namingService = nacosServiceManager.getNamingService();
-        try {
-			String group = SpringContextUtil.getProperty("spring.cloud.nacos.discovery.group");
-            List<Instance> allInstances = namingService.getAllInstances(application, group, true);
-			log.info("aaaaaa:{},instances:{}", application, JsonUtil.toJsonString(allInstances));
-        } catch (NacosException e) {
-            throw new RuntimeException(e);
-        }
+//		NacosServiceManager nacosServiceManager = SpringContextUtil.getBean(NacosServiceManager.class);
+//		NamingService namingService = nacosServiceManager.getNamingService();
+//        try {
+//			String group = SpringContextUtil.getProperty("spring.cloud.nacos.discovery.group");
+//            List<Instance> allInstances = namingService.getAllInstances(application, group, true);
+//			log.info("aaaaaa:{},instances:{}", application, JsonUtil.toJsonString(allInstances));
+//        } catch (NacosException e) {
+//            throw new RuntimeException(e);
+//        }
 
-		ApplicationContext context = SpringContextUtil.getContext();
-		context.publishEvent(new HeartbeatEvent(this, System.currentTimeMillis()));
+//		ApplicationContext context = SpringContextUtil.getContext();
+//		context.publishEvent(new HeartbeatEvent(this, System.currentTimeMillis()));
 
 //        String group = SpringContextUtil.getProperty("spring.cloud.nacos.discovery.group");
 //		try {
