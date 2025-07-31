@@ -24,6 +24,7 @@ public class NacosRefresher implements ServerListRefresher {
 
     @Override
     public void refresh(String application) {
+        // TODO nacos还无法实时刷新服务列表
         this.refreshServerList(application);
     }
 
