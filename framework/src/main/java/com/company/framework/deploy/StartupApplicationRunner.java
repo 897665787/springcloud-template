@@ -33,6 +33,12 @@ public class StartupApplicationRunner implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		traceManager.put();
+		boolean registryEnabled = SpringContextUtil.getBooleanProperty("eureka.client.enabled", true) || SpringContextUtil.getBooleanProperty("spring.cloud.nacos.discovery.enabled", true);
+		if (!registryEnabled) {
+			log.info("registry not enabled, skip refresh service list");
+			return;
+		}
+
 		String application = SpringContextUtil.getProperty("spring.application.name");
 		log.info("{} startup", application);
 

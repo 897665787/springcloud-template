@@ -1,7 +1,7 @@
 package com.company.framework.deploy;
 
 /**
- * 消费型组件（比如注册中心、MQ、xxljob等会消费数据的组件）
+ * 消费型组件（比如注册中心、MQ、xxljob等会主动拉取数据的）
  *
  * @author JQ棣
  */

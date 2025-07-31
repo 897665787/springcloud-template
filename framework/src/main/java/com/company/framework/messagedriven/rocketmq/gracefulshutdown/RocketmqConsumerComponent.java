@@ -2,7 +2,7 @@
 package com.company.framework.messagedriven.rocketmq.gracefulshutdown;
 
 import com.company.framework.deploy.ConsumerComponent;
-import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
+import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
+@Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
 public class RocketmqConsumerComponent implements ConsumerComponent {
 
     @Autowired
