@@ -1,26 +1,28 @@
 package com.company.framework.deploy.messagedriven.strategy;
 
-import java.util.Map;
-
+import com.company.framework.deploy.ServerListRefresher;
+import com.company.framework.messagedriven.BaseStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.deploy.RefreshHandler;
-import com.company.framework.messagedriven.BaseStrategy;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Map;
 
 @Slf4j
 @Component(StrategyConstants.REFRESH_STRATEGY)
 public class RefreshStrategy implements BaseStrategy<Map<String, Object>> {
-	@Autowired
-	private RefreshHandler refreshHandler;
+    @Autowired(required = false)
+    private ServerListRefresher serverListRefresher;
 
-	@Override
-	public void doStrategy(Map<String, Object> params) {
-		String application = MapUtils.getString(params, "application");
-		refreshHandler.refresh(application);
-		log.info("#### refresh success");
-	}
+    @Override
+    public void doStrategy(Map<String, Object> params) {
+        if (serverListRefresher == null) {
+            log.warn("This service is not connected to the registry, no need to refresh the service list");
+            return;
+        }
+        String application = MapUtils.getString(params, "application");
+        serverListRefresher.refresh(application);
+        log.info("#### refresh success");
+    }
 }
