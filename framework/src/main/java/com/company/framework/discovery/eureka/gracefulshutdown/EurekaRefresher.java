@@ -1,7 +1,7 @@
 package com.company.framework.discovery.eureka.gracefulshutdown;
 
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.deploy.ServerListRefresher;
+import com.company.framework.gracefulshutdown.ServerListRefresher;
 import com.company.framework.util.JsonUtil;
 import com.netflix.discovery.DiscoveryClient;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import java.util.List;
 public class EurekaRefresher implements ServerListRefresher {
 
     @Override
-    public void refresh(String application) {
+    public void refresh(String type, String application, String ip, int port) {
         this.refreshRegistry(application);
         this.refreshServerList(application);
     }

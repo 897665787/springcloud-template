@@ -1,35 +1,36 @@
-package com.company.framework.deploy;
+package com.company.framework.gracefulshutdown;
 
-import com.company.common.api.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 /**
- * 部署相关接口（用于优雅发版）
+ * 优雅停机端点
  *
  * @author JQ棣
  */
 @RestController
-public class DeployController {
+@RequestMapping("/gracefulshutdown")
+public class GracefulShutdownEndpoint {
 
     @Autowired(required = false)
     private List<ConsumerComponent> consumerComponentList; // 优雅停机
 
     /**
-     * 下线
+     * 预停机
      *
      * @return
      */
-    @GetMapping("/offline")
-    public Result<?> offline() {
+    @GetMapping("/prestop")
+    public String preStop() {
         if (consumerComponentList == null) {
-            return Result.success();
+            return "OK";
         }
-        consumerComponentList.forEach(ConsumerComponent::offline);
-        return Result.success();
+        consumerComponentList.forEach(ConsumerComponent::preStop);
+        return "OK";
     }
 
 }

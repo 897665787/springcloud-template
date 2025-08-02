@@ -1,6 +1,6 @@
 package com.company.job.gracefulshutdown;
 
-import com.company.framework.deploy.ConsumerComponent;
+import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class XxlJobConsumerComponent implements ConsumerComponent {
     private XxlJobSpringExecutor xxlJobExecutor;
 
     @Override
-    public void offline() {
+    public void preStop() {
         // 下线job执行器
         xxlJobExecutor.destroy();
         log.info("job执行器已下线");

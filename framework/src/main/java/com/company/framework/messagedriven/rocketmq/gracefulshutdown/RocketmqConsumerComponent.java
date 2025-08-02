@@ -1,7 +1,7 @@
 
 package com.company.framework.messagedriven.rocketmq.gracefulshutdown;
 
-import com.company.framework.deploy.ConsumerComponent;
+import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer;
@@ -25,7 +25,7 @@ public class RocketmqConsumerComponent implements ConsumerComponent {
     private List<DefaultRocketMQListenerContainer> defaultRocketMQListenerContainerList;
 
     @Override
-    public void offline() {
+    public void preStop() {
         if (defaultRocketMQListenerContainerList == null) {
             return;
         }
