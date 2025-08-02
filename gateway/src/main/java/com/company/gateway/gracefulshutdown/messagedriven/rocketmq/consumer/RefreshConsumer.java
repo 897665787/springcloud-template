@@ -1,10 +1,10 @@
-package com.company.gateway.deploy.messagedriven.rocketmq.consumer;
+package com.company.gateway.gracefulshutdown.messagedriven.rocketmq.consumer;
 
 import com.company.gateway.messagedriven.constants.FanoutConstants;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.messagedriven.rocketmq.utils.ConsumerUtils;
 import com.company.gateway.messagedriven.rocketmq.RocketMQAutoConfiguration;
-import com.company.gateway.deploy.messagedriven.strategy.StrategyConstants;
+import com.company.gateway.gracefulshutdown.messagedriven.strategy.StrategyConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.MessageModel;
