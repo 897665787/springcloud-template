@@ -1,4 +1,4 @@
-package com.company.framework.deploy;
+package com.company.framework.gracefulshutdown;
 
 /**
  * 消费型组件（比如注册中心、MQ、xxljob等会主动拉取数据的）
@@ -7,7 +7,7 @@ package com.company.framework.deploy;
  */
 public interface ConsumerComponent {
     /**
-     * 下线（用于实现优雅关闭）
+     * 预停机
      */
-    void offline();
+    void preStop();
 }

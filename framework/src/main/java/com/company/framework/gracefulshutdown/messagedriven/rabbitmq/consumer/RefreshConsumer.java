@@ -1,4 +1,4 @@
-package com.company.framework.deploy.messagedriven.rabbitmq.consumer;
+package com.company.framework.gracefulshutdown.messagedriven.rabbitmq.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
-import com.company.framework.deploy.messagedriven.strategy.StrategyConstants;
+import com.company.framework.gracefulshutdown.messagedriven.strategy.StrategyConstants;
 import com.rabbitmq.client.Channel;
 
 @Component

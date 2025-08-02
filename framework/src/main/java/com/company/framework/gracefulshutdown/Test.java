@@ -1,18 +1,6 @@
-package com.company.framework.deploy;
+package com.company.framework.gracefulshutdown;
 
 import cn.hutool.http.HttpUtil;
-import com.company.framework.context.SpringContextUtil;
-import com.company.framework.util.JsonUtil;
-import com.google.common.collect.Maps;
-import com.netflix.discovery.DiscoveryClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
-import org.springframework.cloud.loadbalancer.cache.DefaultLoadBalancerCacheManager;
-import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
-import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
@@ -25,7 +13,7 @@ public class Test {
             if ((min + (min + max) / 10 <= i && flag)) {
                 flag = false;
                 new Thread(() -> {
-                    String url2 = "http://localhost:8002/offline";
+                    String url2 = "http://localhost:8002/preStop";
                     String s2 = HttpUtil.get(url2);
 //                    String url2 = "http://localhost:8002/actuator/shutdown";
 //                    String s2 = HttpUtil.post(url2, Maps.newHashMap());

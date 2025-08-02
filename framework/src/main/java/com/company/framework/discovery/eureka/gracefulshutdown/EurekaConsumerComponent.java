@@ -1,7 +1,7 @@
 package com.company.framework.discovery.eureka.gracefulshutdown;
 
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.deploy.ConsumerComponent;
+import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.google.common.collect.Maps;
@@ -33,7 +33,7 @@ public class EurekaConsumerComponent implements ConsumerComponent {
     private MessageSender messageSender;
 
     @Override
-    public void offline() {
+    public void preStop() {
         serviceRegistry.deregister(registration);
 
         // 通知其他服务刷新服务列表，即时中断请求流量

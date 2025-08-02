@@ -1,7 +1,7 @@
 
 package com.company.framework.messagedriven.rabbitmq.gracefulshutdown;
 
-import com.company.framework.deploy.ConsumerComponent;
+import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
@@ -23,7 +23,7 @@ public class RabbitmqConsumerComponent implements ConsumerComponent {
     private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
     @Override
-    public void offline() {
+    public void preStop() {
         // 下线RabbitMQ消费者
         rabbitListenerEndpointRegistry.stop();
         log.info("RabbitMQ消费者已下线");
