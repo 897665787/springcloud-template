@@ -1,8 +1,8 @@
 package com.company.framework.gracefulshutdown;
 
-import com.company.common.api.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -13,6 +13,7 @@ import java.util.List;
  * @author JQ棣
  */
 @RestController
+@RequestMapping("/gracefulshutdown")
 public class GracefulShutdownEndpoint {
 
     @Autowired(required = false)
@@ -24,12 +25,12 @@ public class GracefulShutdownEndpoint {
      * @return
      */
     @GetMapping("/prestop")
-    public Result<?> preStop() {
+    public String preStop() {
         if (consumerComponentList == null) {
-            return Result.success();
+            return "OK";
         }
         consumerComponentList.forEach(ConsumerComponent::preStop);
-        return Result.success();
+        return "OK";
     }
 
 }

@@ -13,7 +13,7 @@ public class Test {
             if ((min + (min + max) / 10 <= i && flag)) {
                 flag = false;
                 new Thread(() -> {
-                    String url2 = "http://localhost:8002/preStop";
+                    String url2 = "http://localhost:8002/gracefulshutdown/prestop";
                     String s2 = HttpUtil.get(url2);
 //                    String url2 = "http://localhost:8002/actuator/shutdown";
 //                    String s2 = HttpUtil.post(url2, Maps.newHashMap());
