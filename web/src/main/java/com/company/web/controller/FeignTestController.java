@@ -36,19 +36,21 @@ public class FeignTestController {
     public Result<com.company.web.resp.OrderDetailResp> getparam(String orderCode) {
         Result result = restTemplate.getForObject("http://template-order/feignTest/getparam?orderCode=" + orderCode, Result.class);
         log.info("result:{}", JsonUtil.toJsonString(result));
+        return result;
 
-		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode).dataOrThrow();
-		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
-		return Result.success(resp);
+//		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode).dataOrThrow();
+//		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
+//		return Result.success(resp);
     }
 
     @GetMapping(value = "/postbody")
     public Result<com.company.web.resp.OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
         Result result = restTemplate.postForObject("http://template-order/feignTest/postbody",registerOrderReq, Result.class);
         log.info("result:{}", JsonUtil.toJsonString(result));
+        return result;
 
-        OrderDetailResp orderDetailResp = feignTestFeign.postbody(registerOrderReq).dataOrThrow();
-		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
-		return Result.success(resp);
+//        OrderDetailResp orderDetailResp = feignTestFeign.postbody(registerOrderReq).dataOrThrow();
+//		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
+//		return Result.success(resp);
     }
 }

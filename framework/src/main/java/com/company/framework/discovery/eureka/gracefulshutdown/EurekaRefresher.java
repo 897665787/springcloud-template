@@ -25,7 +25,7 @@ import java.util.List;
 public class EurekaRefresher implements ServerListRefresher {
 
     @Override
-    public void refresh(String application) {
+    public void refresh(String type, String application, String ip, int port) {
         this.refreshRegistry(application);
         this.refreshServerList(application);
     }

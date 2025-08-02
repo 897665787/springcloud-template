@@ -10,5 +10,5 @@ public interface ServerListRefresher {
     /**
      * 刷新
      */
-    void refresh(String application);
+    void refresh(String type, String application, String ip, int port);
 }

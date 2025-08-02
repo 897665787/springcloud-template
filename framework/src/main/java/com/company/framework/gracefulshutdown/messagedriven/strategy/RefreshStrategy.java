@@ -21,8 +21,11 @@ public class RefreshStrategy implements BaseStrategy<Map<String, Object>> {
             log.warn("This service is not connected to the registry, no need to refresh the service list");
             return;
         }
+        String type = MapUtils.getString(params, "type");
         String application = MapUtils.getString(params, "application");
-        serverListRefresher.refresh(application);
+        String ip = MapUtils.getString(params, "ip");
+        int port = MapUtils.getIntValue(params, "port");
+        serverListRefresher.refresh(type,application, ip, port);
         log.info("#### refresh success");
     }
 }
