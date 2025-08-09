@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
@@ -48,7 +48,7 @@ public class SubscribeController {
 		SubscribeGrantReq subscribeGrantReq = new SubscribeGrantReq();
 		subscribeGrantReq.setGroup(grantReq.getGroup());
 
-		String openid = HttpContextUtil.deviceid();
+		String openid = HeaderContextUtil.deviceid();
 		subscribeGrantReq.setOpenid(openid);
 
 		subscribeGrantReq.setResJson(grantReq.getResJson());

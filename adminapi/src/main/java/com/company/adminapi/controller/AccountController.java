@@ -22,17 +22,17 @@ import com.company.adminapi.token.TokenService;
 import com.company.adminapi.util.PassWordUtil;
 import com.company.adminapi.util.TokenValueUtil;
 import com.company.common.api.Result;
+import com.company.framework.annotation.RequireLogin;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HttpContextUtil;
-import com.company.tool.api.feign.VerifyCodeFeign;
-import com.company.tool.api.response.CaptchaResp;
-import com.google.common.collect.Maps;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.response.SysUserPasswordResp;
 import com.company.system.api.response.SysUserResp;
+import com.company.tool.api.feign.VerifyCodeFeign;
+import com.company.tool.api.response.CaptchaResp;
+import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 
@@ -118,7 +118,7 @@ public class AccountController {
 		params.put("sysUserId", sysUserId);
 		params.put("account", account);
 		params.put("loginTime", LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
-		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		messageSender.sendFanoutMessage(params, FanoutConstants.SYS_USER_LOGIN.EXCHANGE);
 	}
 	

@@ -16,9 +16,14 @@
 
 package com.company.framework.feign;
 
+import com.company.framework.threadpool.ThreadPoolAutoConfiguration;
+import com.company.framework.threadpool.ThreadPoolProperties;
+import com.company.framework.threadpool.TraceThreadPoolExecutor;
+import com.company.framework.trace.TraceManager;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
@@ -27,7 +32,10 @@ import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4jBulkhea
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * copy from org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JAutoConfiguration
@@ -47,10 +55,18 @@ public class Resilience4JAutoConfiguration {
             CircuitBreakerRegistry circuitBreakerRegistry, TimeLimiterRegistry timeLimiterRegistry,
             @Autowired(required = false) Resilience4jBulkheadProvider bulkheadProvider,
             Resilience4JConfigurationProperties resilience4JConfigurationProperties,
-            ThreadPoolExecutor threadPoolExecutor) {
+            ThreadPoolProperties properties, TraceManager traceManager) {
         Resilience4JCircuitBreakerFactory factory = new Resilience4JCircuitBreakerFactory(circuitBreakerRegistry,
                 timeLimiterRegistry, bulkheadProvider, resilience4JConfigurationProperties);
-        factory.configureExecutorService(threadPoolExecutor);// 自定义线程池传递日志ID
+
+        int corePoolSize = properties.getCorePoolSize();
+        int maximumPoolSize = properties.getMaxPoolSize();
+        long keepAliveTime = properties.getKeepAliveSeconds();
+        BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
+        ExecutorService executor = new TraceThreadPoolExecutor(corePoolSize, maximumPoolSize,
+                keepAliveTime, TimeUnit.SECONDS, workQueue, new ThreadPoolAutoConfiguration.CustomDefaultThreadFactory(), new ThreadPoolAutoConfiguration.CustomCallerRunsPolicy(), traceManager);
+
+        factory.configureExecutorService(executor);// 自定义线程池传递日志ID
         return factory;
     }
 

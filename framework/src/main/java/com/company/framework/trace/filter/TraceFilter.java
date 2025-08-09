@@ -1,4 +1,4 @@
-package com.company.framework.filter;
+package com.company.framework.trace.filter;
 
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
@@ -20,7 +20,7 @@ import java.io.IOException;
  * 对客户端请求添加追踪ID
  */
 @Component
-@Order(CommonConstants.FilterOrdered.MDC)
+@Order(CommonConstants.FilterOrdered.TRACE)
 public class TraceFilter extends OncePerRequestFilter {
 
 	static {

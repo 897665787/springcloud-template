@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.Executor;
+
 /**
  * ApplicationListener异步执行配置
  */
@@ -20,10 +22,9 @@ public class AsyncExecutorConfig {
 	 * </pre>
 	 */
 	@Bean
-	public SimpleApplicationEventMulticaster applicationEventMulticaster(
-			ThreadPoolTaskExecutor threadPoolTaskExecutor) {
+	public SimpleApplicationEventMulticaster applicationEventMulticaster(Executor taskExecutor) {
 		SimpleApplicationEventMulticaster simpleApplicationEventMulticaster = new SimpleApplicationEventMulticaster();
-		simpleApplicationEventMulticaster.setTaskExecutor(threadPoolTaskExecutor);
+		simpleApplicationEventMulticaster.setTaskExecutor(taskExecutor);
 		return simpleApplicationEventMulticaster;
 	}
 }

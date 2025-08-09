@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.OrderFeign;
@@ -91,7 +91,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 	 */
 	@Override
 	public Result<RechargeOrderResp> buy(@RequestBody RechargeOrderReq rechargeOrderReq) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		// 参数校验
 		BigDecimal rechargeAmount = rechargeOrderReq.getRechargeAmount();
 		BigDecimal giftAmount = rechargeOrderReq.getGiftAmount();
@@ -170,9 +170,9 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		payReq.setAppid(rechargeOrderReq.getAppid());
 		payReq.setAmount(needPayAmount);
 		payReq.setBody("充值");
-		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
+		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
 		// payReq.setProductId(productId);
-		payReq.setOpenid(HttpContextUtil.deviceid());
+		payReq.setOpenid(HeaderContextUtil.deviceid());
 		payReq.setNotifyUrl(Constants.feignUrl("/rechargeOrder/buyNotify"));
 		// payReq.setAttach(attach);
 		// payReq.setTimeoutSeconds(timeoutSeconds);

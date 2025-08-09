@@ -1,5 +1,6 @@
 package com.company.framework.threadpool;
 
+import com.company.framework.threadpool.context.HeaderContextTraceTaskDecorator;
 import com.company.framework.trace.TraceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -7,9 +8,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.*;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Configuration
@@ -17,10 +22,33 @@ import java.util.concurrent.atomic.AtomicInteger;
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class ThreadPoolAutoConfiguration {
 
-	@Bean(destroyMethod = "destroy")
+	/*
+	SpringBoot中建议使用ThreadPoolTaskExecutor
+	@Bean
 	@ConditionalOnMissingBean
-	ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties properties, TraceManager traceManager) {
-		ThreadPoolTaskExecutor executor = new TraceThreadPoolTaskExecutor(traceManager);
+	public ExecutorService executorService(ThreadPoolProperties properties, TraceManager traceManager) {
+		int corePoolSize = properties.getCorePoolSize();
+		int maximumPoolSize = properties.getMaxPoolSize();
+		long keepAliveTime = properties.getKeepAliveSeconds();
+		BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
+		ExecutorService executor = new TraceThreadPoolExecutor(corePoolSize, maximumPoolSize,
+				keepAliveTime, TimeUnit.SECONDS, workQueue, new CustomDefaultThreadFactory(), new CustomCallerRunsPolicy(), traceManager);
+		return executor;
+	}
+	*/
+
+	@Bean
+	@ConditionalOnMissingBean
+	public TaskDecorator taskDecorator(TraceManager traceManager) {
+//		return new TraceTaskDecorator(traceManager);// 传递日志id
+		return new HeaderContextTraceTaskDecorator(traceManager);// 传递日志id+上下文
+	}
+
+	@Bean
+	@ConditionalOnMissingBean
+	public AsyncTaskExecutor taskExecutor(ThreadPoolProperties properties, TaskDecorator taskDecorator) {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setTaskDecorator(taskDecorator);
 		// 设置线程池核心容量
 		executor.setCorePoolSize(properties.getCorePoolSize());
 		// 设置线程池最大容量
@@ -41,18 +69,6 @@ public class ThreadPoolAutoConfiguration {
 		return executor;
 	}
 
-	@Bean
-	@ConditionalOnMissingBean
-	ThreadPoolExecutor threadPoolExecutor(ThreadPoolProperties properties, TraceManager traceManager) {
-		int corePoolSize = properties.getCorePoolSize();
-		int maximumPoolSize = properties.getMaxPoolSize();
-		long keepAliveTime = properties.getKeepAliveSeconds();
-		BlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(properties.getQueueCapacity());
-		ThreadPoolExecutor threadPoolExecutor = new TraceThreadPoolExecutor(corePoolSize, maximumPoolSize,
-				keepAliveTime, TimeUnit.SECONDS, workQueue, new CustomDefaultThreadFactory(), new CustomCallerRunsPolicy(), traceManager);
-		return threadPoolExecutor;
-	}
-
 	@Slf4j
 	public static class CustomDefaultThreadFactory implements ThreadFactory {
 		private static final AtomicInteger poolNumber = new AtomicInteger(1);
@@ -60,7 +76,7 @@ public class ThreadPoolAutoConfiguration {
 		private final AtomicInteger threadNumber = new AtomicInteger(1);
 		private final String namePrefix;
 
-		CustomDefaultThreadFactory() {
+		public CustomDefaultThreadFactory() {
 			SecurityManager s = System.getSecurityManager();
 			group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
 			namePrefix = "custom-pool-" + poolNumber.getAndIncrement() + "-thread-";

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.JsonUtil;
-import com.company.framework.context.HttpContextUtil;
 import com.company.tool.api.enums.SubscribeEnum;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
@@ -101,7 +101,7 @@ public class SubscribeController implements SubscribeFeign {
 		 * 2.当前订阅跟当前操作无关联，这样的话runtimeAttach的参数也没有太大意义了
 		 * </pre>
 		 */
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		if (userId == null) {// 未登录情况下尝试通过openid查到用户ID
 			UserOauthResp userOauthResp = userOauthFeign
 					.selectOauth(UserOauthEnum.IdentityType.WX_OPENID_MINIAPP, openid).dataOrThrow();

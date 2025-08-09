@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.util.Utils;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.BestPopupReq;
 import com.company.tool.api.request.CancelUserPopupReq;
@@ -38,13 +38,13 @@ public class PopupController implements PopupFeign {
 
 	@Override
 	public Result<BestPopupResp> bestPopup(@RequestBody BestPopupReq bestPopupReq) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
-		String deviceid = HttpContextUtil.deviceid();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
+		String deviceid = HeaderContextUtil.deviceid();
 
 		Map<String, String> runtimeAttach = bestPopupReq.getRuntimeAttach();
 
 		// 补充一些请求头参数
-		runtimeAttach.putAll(HttpContextUtil.httpContextHeader());
+		runtimeAttach.putAll(HeaderContextUtil.httpContextHeader());
 
 		PopupCanPop popupCanPop = popService.bestPop(userId, deviceid, runtimeAttach);
 		if (popupCanPop == null) {

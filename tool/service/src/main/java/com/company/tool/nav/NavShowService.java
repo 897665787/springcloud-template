@@ -1,24 +1,6 @@
 package com.company.tool.nav;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.NavItemEnum;
@@ -29,8 +11,17 @@ import com.company.tool.service.market.NavItemConditionService;
 import com.company.tool.service.market.NavItemService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -41,8 +32,6 @@ public class NavShowService {
 	private NavItemService navItemService;
 	@Autowired
 	private NavItemConditionService navItemConditionService;
-	@Autowired
-	private TraceManager traceManager;
 	/**
 	 * <pre>
 	 * 导航栏金刚位列表
@@ -212,13 +201,8 @@ public class NavShowService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = traceManager.get();
 		List<Supplier<Boolean>> supplierList = navItemConditionList.stream().map(v -> {
 			Supplier<Boolean> supplier = () -> {
-				String subTraceId = traceManager.get();
-				if (subTraceId == null) {
-					traceManager.put(traceId);
-				}
 				String beanName = v.getShowCondition();
 				NavShowCondition condition = SpringContextUtil.getBean(beanName, NavShowCondition.class);
 				if (condition == null) {
@@ -235,9 +219,6 @@ public class NavShowService {
 				} catch (Exception e) {
 					// 异常情况下不显示
 					log.error("canShow error", e);
-				}
-				if (subTraceId == null) {
-					traceManager.remove();
 				}
 				return canShow;
 			};

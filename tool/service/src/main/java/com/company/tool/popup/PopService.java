@@ -1,22 +1,7 @@
 package com.company.tool.popup;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.PopupEnum;
@@ -32,9 +17,21 @@ import com.company.tool.service.market.PopupLogService;
 import com.company.tool.service.market.PopupService;
 import com.company.tool.service.market.UserPopupService;
 import com.google.common.collect.Maps;
-
-import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -48,8 +45,6 @@ public class PopService {
 	private UserPopupService userPopupService;
 	@Autowired
 	private PopupLogService popupLogService;
-	@Autowired
-	private TraceManager traceManager;
 
 	@Value("${popup.minPopInterval.seconds:0}")
 	private Integer minPopIntervalSeconds;// 弹窗最小时间间隔(s)
@@ -179,13 +174,8 @@ public class PopService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = traceManager.get();
 		List<Supplier<Boolean>> supplierList = popupConditionList.stream().map(v -> {
 			Supplier<Boolean> supplier = () -> {
-				String subTraceId = traceManager.get();
-				if (subTraceId == null) {
-					traceManager.put(traceId);
-				}
 				String beanName = v.getPopCondition();
 				PopCondition condition = SpringContextUtil.getBean(beanName, PopCondition.class);
 				if (condition == null) {
@@ -202,9 +192,6 @@ public class PopService {
 				} catch (Exception e) {
 					// 异常情况下不弹窗
 					log.error("canPop error", e);
-				}
-				if (subTraceId == null) {
-					traceManager.remove();
 				}
 				return canPop;
 			};

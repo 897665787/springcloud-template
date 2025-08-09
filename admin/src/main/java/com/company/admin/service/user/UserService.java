@@ -41,7 +41,7 @@ public class UserService {
 		user.setType(0);
 		user.setOperationType(1);
 		user.setOperationPlatform(1);
-		user.setOperationIp(HttpContextUtil.getRequestIp());
+		user.setOperationIp(HttpContextUtil.requestip());
 		user.setCustomerId(XSUuidUtil.generate());
 		user.setInviteCode(InviteCodeUtil.generateCode());
 		userDao.save(user);

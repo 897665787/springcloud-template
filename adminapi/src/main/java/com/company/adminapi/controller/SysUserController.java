@@ -1,5 +1,18 @@
 package com.company.adminapi.controller;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.company.adminapi.annotation.OperationLog;
 import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.controller.converter.SysUserIdNicknameConverter;
@@ -8,24 +21,17 @@ import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysUserExcel;
 import com.company.common.api.Result;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
-import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.feign.SysUserPasswordFeign;
+import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SaveNewPasswordReq;
 import com.company.system.api.request.SysUserReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.response.SysUserInfoResp;
 import com.company.system.api.response.SysUserResp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @RequireLogin
 @RestController
@@ -103,7 +109,7 @@ public class SysUserController {
      */
 	@GetMapping(value = "/getInfo")
 	public Result<SysUserInfoResp> getInfo() {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		return sysUserFeign.getInfo(userId);
 	}
 
@@ -114,7 +120,7 @@ public class SysUserController {
 	 */
 	@GetMapping(value = "/profile")
 	public Result<SysUserInfoResp> profile() {
-//		Integer userId = HttpContextUtil.currentUserIdInt();
+//		Integer userId = HeaderContextUtil.currentUserIdInt();
 //		return sysUserFeign.getInfo(userId);
 		return Result.success();
 	}
@@ -126,7 +132,7 @@ public class SysUserController {
 	 */
 	@PostMapping(value = "/updateProfile")
 	public Result<SysUserInfoResp> updateProfile() {
-//		Integer userId = HttpContextUtil.currentUserIdInt();
+//		Integer userId = HeaderContextUtil.currentUserIdInt();
 //		return sysUserFeign.getInfo(userId);
 		return Result.success();
 	}
@@ -138,7 +144,7 @@ public class SysUserController {
 	 */
 	@PostMapping(value = "/updatePassword")
 	public Result<SysUserInfoResp> updatePassword() {
-//		Integer userId = HttpContextUtil.currentUserIdInt();
+//		Integer userId = HeaderContextUtil.currentUserIdInt();
 //		return sysUserFeign.getInfo(userId);
 		return Result.success();
 	}

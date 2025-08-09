@@ -22,7 +22,7 @@ import java.io.IOException;
  * （只有接收外部请求的服务才会用到，内部请求的服务通过FeignHeaderInterceptor已经直接放到header）
  */
 @Component
-@Order(CommonConstants.FilterOrdered.HTTPCONTEXT)
+@Order(CommonConstants.FilterOrdered.HTTP_CONTEXT)
 public class HttpContextFilter extends OncePerRequestFilter {
 
 	@Override

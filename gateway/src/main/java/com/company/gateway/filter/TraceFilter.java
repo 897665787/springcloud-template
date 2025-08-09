@@ -29,7 +29,7 @@ public class TraceFilter implements GlobalFilter, Ordered {
 
 	@Override
 	public int getOrder() {
-		return CommonConstants.FilterOrdered.MDC;
+		return CommonConstants.FilterOrdered.TRACE;
 	}
 
 	@Override

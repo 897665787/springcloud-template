@@ -1,20 +1,6 @@
 package com.company.tool.banner;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.BannerEnum;
 import com.company.tool.banner.dto.BannerCanShow;
@@ -24,8 +10,19 @@ import com.company.tool.service.market.BannerConditionService;
 import com.company.tool.service.market.BannerService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -34,8 +31,6 @@ public class BannerShowService {
 	private BannerService bannerService;
 	@Autowired
 	private BannerConditionService bannerConditionService;
-	@Autowired
-	private TraceManager traceManager;
 
 	/**
 	 * <pre>
@@ -120,13 +115,8 @@ public class BannerShowService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = traceManager.get();
 		List<Supplier<Boolean>> supplierList = bannerConditionList.stream().map(v -> {
 			Supplier<Boolean> supplier = () -> {
-				String subTraceId = traceManager.get();
-				if (subTraceId == null) {
-					traceManager.put(traceId);
-				}
 				String beanName = v.getShowCondition();
 				BannerShowCondition condition = SpringContextUtil.getBean(beanName, BannerShowCondition.class);
 				if (condition == null) {
@@ -143,9 +133,6 @@ public class BannerShowService {
 				} catch (Exception e) {
 					// 异常情况下不显示
 					log.error("canShow error", e);
-				}
-				if (subTraceId == null) {
-					traceManager.remove();
 				}
 				return canShow;
 			};

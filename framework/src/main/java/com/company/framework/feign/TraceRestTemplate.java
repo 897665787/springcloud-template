@@ -1,6 +1,6 @@
 package com.company.framework.feign;
 
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
@@ -80,7 +80,7 @@ public class TraceRestTemplate extends RestTemplate {
 
             Map<String, List<String>> headers = Maps.newHashMap();
             // 请求上下文中传递到下游的相关headers
-            headers.putAll(HttpContextUtil.httpContextHeaders());
+            headers.putAll(HeaderContextUtil.httpContextHeaders());
             // 日志追踪ID
             headers.putAll(traceManager.headers());
             HttpHeaders httpHeaders = request.getHeaders();

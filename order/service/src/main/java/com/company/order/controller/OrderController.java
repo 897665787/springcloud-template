@@ -29,8 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.company.common.api.Result;
-import com.company.framework.context.HttpContextUtil;
-import com.company.framework.trace.TraceManager;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.enums.OrderEnum;
@@ -74,8 +73,6 @@ public class OrderController implements OrderFeign {
 	private OrderProductService orderProductService;
 	@Autowired
 	private PayRefundApplyMapper payRefundApplyMapper;
-	@Autowired
-	private TraceManager traceManager;
 
 	@Override
 	public Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
@@ -238,7 +235,7 @@ public class OrderController implements OrderFeign {
 
 	@Override
 	public Result<Void> deleteOrder(String orderCode) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
 			return Result.fail("订单不存在");
@@ -255,25 +252,15 @@ public class OrderController implements OrderFeign {
 	public Result<List<OrderResp>> page(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size, OrderEnum.StatusEnum status) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		Page<Order> page = new Page<>(current, size);
 		List<Order> orderList = orderService.pageByUserIdAndStatus(page, userId, status);
 
 		List<String> orderCodeList = orderList.stream().map(Order::getOrderCode).collect(Collectors.toList());
 		Map<String, List<OrderProduct>> orderCodeThisListMap = orderProductService.groupByOrderCodes(orderCodeList);
 
-		String traceId = traceManager.get();
 		List<OrderResp> orderRespList = orderList.parallelStream().map(v -> {
-			String subTraceId = traceManager.get();
-			if (subTraceId == null) {
-				traceManager.put(traceId);
-			}
-
 			OrderResp orderResp = toOrderResp(v, orderCodeThisListMap);
-
-			if (subTraceId == null) {
-				traceManager.remove();
-			}
 			return orderResp;
 		}).collect(Collectors.toList());
 		return Result.success(orderRespList);
@@ -415,7 +402,7 @@ public class OrderController implements OrderFeign {
 
 	@Override
 	public Result<OrderDetailResp> detail(String orderCode) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		Order order = orderService.selectByOrderCode(orderCode);
 		if (order == null) {
 			return Result.fail("订单不存在");
@@ -560,10 +547,7 @@ public class OrderController implements OrderFeign {
 		log.info("请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject), JsonUtil.toJsonString(paramObject));
 		long start = System.currentTimeMillis();
 		try {
-			HttpHeaders headers = new HttpHeaders();
-			traceManager.headers().forEach((k, v) -> headers.addAll(k, v));// 日志追踪ID
-			HttpContextUtil.httpContextHeaders().forEach((k, v) -> headers.addAll(k, v));// 请求头
-			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject, headers);
+			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(url, httpEntity, Result.class);
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {

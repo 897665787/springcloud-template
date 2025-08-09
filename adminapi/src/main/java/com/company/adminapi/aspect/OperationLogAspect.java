@@ -24,13 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.support.spring.PropertyPreFilters;
+import com.company.adminapi.annotation.OperationLog;
+import com.company.adminapi.enums.OperationLogEnum;
 import com.company.adminapi.messagedriven.Constants;
 import com.company.adminapi.messagedriven.strategy.StrategyConstants;
 import com.company.adminapi.messagedriven.strategy.dto.SysOperLogDto;
-import com.company.adminapi.annotation.OperationLog;
-import com.company.adminapi.enums.OperationLogEnum;
-import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.context.HttpContextUtil;
+import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.util.WebUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,13 +42,13 @@ import lombok.extern.slf4j.Slf4j;
 public class OperationLogAspect {
 	/** 排除敏感属性字段 */
 	public static final String[] EXCLUDE_PROPERTIES = { "password", "oldPassword", "newPassword", "confirmPassword" };
-	
+
 	/** 计算操作消耗时间 */
 	private static final ThreadLocal<Long> TIME_THREADLOCAL = new NamedThreadLocal<>("Cost Time");
 
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	/**
 	 * 处理请求前执行
 	 */
@@ -68,7 +69,7 @@ public class OperationLogAspect {
 
 	/**
 	 * 拦截异常操作
-	 * 
+	 *
 	 * @param joinPoint 切点
 	 * @param e         异常
 	 */
@@ -81,14 +82,14 @@ public class OperationLogAspect {
 	 * 封装请求入参和响应结果，并保存到数据库
 	 */
 	private void handleLog(JoinPoint joinPoint, OperationLog operationLog, Exception exception, Object jsonResult) {
-		Integer sysUserId = HttpContextUtil.currentUserIdInt();
+		Integer sysUserId = HeaderContextUtil.currentUserIdInt();
 
 		HttpServletRequest request = HttpContextUtil.request();
 
 		SysOperLogDto params = new SysOperLogDto();
 		params.setSysUserId(sysUserId);
 		params.setOperUrl(StringUtils.left(request.getRequestURI(), 255));
-		params.setOperIp(HttpContextUtil.getRequestIp());
+		params.setOperIp(HttpContextUtil.requestip());
 
 		// 设置方法名称
 		String className = joinPoint.getTarget().getClass().getName();
@@ -176,7 +177,7 @@ public class OperationLogAspect {
 		return new PropertyPreFilters().addFilter()
 				.addExcludes(ArrayUtils.addAll(EXCLUDE_PROPERTIES, excludeParamNames));
 	}
-	
+
 	/**
 	 * <pre>
 	 * 检查一个对象是否是 MultipartFile、HttpServletRequest、HttpServletResponse 或 BindingResult类型， 或者是否包含这些类型的元素，如果是则返回 true，表示该对象应该被过滤掉

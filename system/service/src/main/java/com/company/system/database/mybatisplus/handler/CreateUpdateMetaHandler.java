@@ -6,7 +6,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 
 @Component
 public class CreateUpdateMetaHandler implements MetaObjectHandler {
@@ -23,7 +23,7 @@ public class CreateUpdateMetaHandler implements MetaObjectHandler {
 			this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 		}
 
-		Integer sysUserId = HttpContextUtil.currentUserIdInt();// 获取当前登录用户
+		Integer sysUserId = HeaderContextUtil.currentUserIdInt();// 获取当前登录用户
 		if (sysUserId == null) {
 			sysUserId = DEFAULT_CREATOR_UID;
 		}
@@ -42,7 +42,7 @@ public class CreateUpdateMetaHandler implements MetaObjectHandler {
 	public void updateFill(MetaObject metaObject) {
 		this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
 		
-		Integer sysUserId = HttpContextUtil.currentUserIdInt();// 获取当前登录用户
+		Integer sysUserId = HeaderContextUtil.currentUserIdInt();// 获取当前登录用户
 		if (sysUserId == null) {
 			sysUserId = DEFAULT_CREATOR_UID;
 		}

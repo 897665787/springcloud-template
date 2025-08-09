@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.util.JsonUtil;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.feign.NavFeign;
 import com.company.tool.api.request.NavReq;
 import com.company.tool.api.response.NavResp;
@@ -31,7 +31,7 @@ public class NavController implements NavFeign {
 		Map<String, String> runtimeAttach = navReq.getRuntimeAttach();
 
 		// 补充一些请求头参数
-		runtimeAttach.putAll(HttpContextUtil.httpContextHeader());
+		runtimeAttach.putAll(HeaderContextUtil.httpContextHeader());
 
 		List<NavItemCanShow> navList = navShowService.list(navReq.getMaxSize(), runtimeAttach);
 		List<NavResp> respList = navList.stream().map(v -> {

@@ -1,6 +1,9 @@
 package com.company.user.controller;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -12,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.util.PropertyUtils;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.lock.LockClient;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.HttpContextUtil;
-import com.company.framework.lock.LockClient;
+import com.company.framework.util.PropertyUtils;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.request.UserInfoReq;
@@ -84,7 +87,7 @@ public class UserInfoController implements UserInfoFeign {
             params.put("identifier", identifier);
             params.put("nickname", userInfo.getNickname());
             params.put("avatar", userInfo.getAvatar());
-            params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+            params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
             messageSender.sendFanoutMessage(params, FanoutConstants.USER_REGISTER.EXCHANGE);
 
             return userInfo.getId();

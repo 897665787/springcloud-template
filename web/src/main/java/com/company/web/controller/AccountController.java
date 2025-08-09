@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.company.framework.context.HeaderContextUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,7 +23,7 @@ import com.company.framework.util.RegexUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;
@@ -257,7 +258,7 @@ public class AccountController {
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("device", device);
 		params.put("userId", userId);
-		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGIN.EXCHANGE);
 
 		return tokenValue;
@@ -277,8 +278,8 @@ public class AccountController {
 		// 发布登出事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("device", device);
-		params.put("userId", HttpContextUtil.currentUserId());
-		params.put("httpContextHeader", HttpContextUtil.httpContextHeader());
+		params.put("userId", HeaderContextUtil.currentUserId());
+		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGOUT.EXCHANGE);
 
 		return Result.success("登出成功");

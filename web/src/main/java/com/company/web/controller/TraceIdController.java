@@ -4,6 +4,7 @@ import com.company.common.api.Result;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,10 +21,7 @@ import java.util.stream.Collectors;
 public class TraceIdController {
 
 	@Autowired
-	private ThreadPoolExecutor threadPoolExecutor;
-
-	@Autowired
-	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	private AsyncTaskExecutor executor;
 
 	@GetMapping(value = "/thread")
 	public Result<Integer> thread() {
@@ -43,7 +41,7 @@ public class TraceIdController {
 		log.info("log begin");
 		for (int i = 0; i < 5; i++) {
 			int n = i;
-			threadPoolExecutor.submit(() -> {
+			executor.execute(() -> {
 				log.info("log in threadpool:{}", n);
 			});
 		}
@@ -56,7 +54,7 @@ public class TraceIdController {
 		log.info("log begin");
 		for (int i = 0; i < 5; i++) {
 			int n = i;
-			threadPoolTaskExecutor.submit(() -> {
+			executor.submit(() -> {
 				log.info("log in threadpool:{}", n);
 			});
 		}

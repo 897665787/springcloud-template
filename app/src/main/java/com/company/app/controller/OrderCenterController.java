@@ -18,7 +18,7 @@ import com.company.app.req.RefundApplyReq;
 import com.company.app.req.ToPayReq;
 import com.company.common.api.Result;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.util.PropertyUtils;
 import com.company.framework.util.Utils;
@@ -110,8 +110,8 @@ public class OrderCenterController {
 		toPayReqApi.setOrderCode(toPayReq.getOrderCode());
 		toPayReqApi.setMethod(toPayReq.getMethod());
 		toPayReqApi.setAppid(toPayReq.getAppid());
-		toPayReqApi.setSpbillCreateIp(HttpContextUtil.requestip());
-		toPayReqApi.setOpenid(HttpContextUtil.deviceid());
+		toPayReqApi.setSpbillCreateIp(HeaderContextUtil.requestip());
+		toPayReqApi.setOpenid(HeaderContextUtil.deviceid());
 
 		PayResp payResp = payFeign.toPay(toPayReqApi).dataOrThrow();
 		if (!payResp.getSuccess()) {

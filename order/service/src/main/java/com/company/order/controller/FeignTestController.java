@@ -1,6 +1,8 @@
 package com.company.order.controller;
 
 import com.company.common.api.Result;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
@@ -39,6 +41,14 @@ public class FeignTestController implements FeignTestFeign {
 		resp.setOrderCode(registerOrderReq.getOrderCode());
 		resp.setOrderType(registerOrderReq.getOrderType());
 		resp.setPayAmount(registerOrderReq.getOrderAmount());
+		return Result.success(resp);
+	}
+
+	@Override
+	public Result<OrderDetailResp> context() {
+		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
+		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		OrderDetailResp resp = new OrderDetailResp();
 		return Result.success(resp);
 	}
 }

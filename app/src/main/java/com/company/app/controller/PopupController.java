@@ -37,7 +37,7 @@ public class PopupController {
 		/* 补充一些系统可自动获取的参数 */
 		// 需要取token的话可能要在最外层取
 		// if (!runtimeAttach.containsKey("token")) {
-		// String token = HttpContextUtil.head("x-token");
+		// String token = HeaderContextUtil.head("x-token");
 		// runtimeAttach.put("token", token);
 		// }
 		/* 补充一些弹窗替换的参数 */

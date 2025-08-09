@@ -24,6 +24,9 @@ public interface FeignTestFeign {
     @PostMapping("/postbody")
     Result<OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq);
 
+    @GetMapping("/context")
+    Result<OrderDetailResp> context();
+
     @Component
     public class FeignTestFeignFallback implements FallbackFactory<FeignTestFeign> {
 
@@ -43,6 +46,11 @@ public interface FeignTestFeign {
 
                 @Override
                 public Result<OrderDetailResp> postbody(RegisterOrderReq registerOrderReq) {
+                    return Result.onFallbackError();
+                }
+
+                @Override
+                public Result<OrderDetailResp> context() {
                     return Result.onFallbackError();
                 }
             };

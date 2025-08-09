@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
-import com.company.framework.util.Utils;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.context.HttpContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderEnum.StatusEnum;
 import com.company.order.api.enums.OrderPayEnum;
@@ -104,7 +104,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 */
 	@Override
 	public Result<DistributeBuyOrderResp> buy(@RequestBody DistributeBuyOrderReq distributeBuyOrderReq) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		// 参数校验
 
 		// TODO 从购物车获取商品数据
@@ -234,8 +234,8 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		payReq.setAppid(distributeBuyOrderReq.getAppid());
 		payReq.setAmount(needPayAmount);
 		payReq.setBody("配送下单");
-		payReq.setSpbillCreateIp(HttpContextUtil.requestip());
-		payReq.setOpenid(HttpContextUtil.deviceid());
+		payReq.setSpbillCreateIp(HeaderContextUtil.requestip());
+		payReq.setOpenid(HeaderContextUtil.deviceid());
 		payReq.setNotifyUrl(Constants.feignUrl("/distributeOrder/buyNotify"));
 		PayResp payResp = payFeign.unifiedorder(payReq).dataOrThrow();
 		if (!payResp.getSuccess()) {

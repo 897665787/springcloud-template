@@ -1,30 +1,40 @@
 package com.company.adminapi.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.company.adminapi.annotation.OperationLog;
 import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.easyexcel.ExcelUtil;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 import com.company.adminapi.excel.SysMenuExcel;
 import com.company.common.api.Result;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
-import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysMenuFeign;
+import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysMenuReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.response.RouterResp;
 import com.company.system.api.response.SysMenuResp;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -109,7 +119,7 @@ public class SysMenuController {
 	@RequireLogin
 	@GetMapping(value = "/getRouters")
 	public Result<List<RouterResp>> getRouters() {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 		return sysMenuFeign.getRouters(userId);
 	}
 

@@ -30,7 +30,7 @@ public class UserController implements UserFeign {
 	public Result<UserResp> getById(Long id) {
 		System.out.println("UserController thread:"+Thread.currentThread());
 		/*
-		HttpServletRequest request = HttpContextUtil.request();
+		HttpServletRequest request = HeaderContextUtil.request();
 		System.out.println("request:" + request);
 		Enumeration<String> headerNames = request.getHeaderNames();
 		while (headerNames.hasMoreElements()) {

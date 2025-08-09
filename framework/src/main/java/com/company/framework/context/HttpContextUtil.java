@@ -1,18 +1,15 @@
 package com.company.framework.context;
 
-import java.util.*;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.util.IpUtil;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.company.framework.constant.HeaderConstants;
-import com.company.framework.util.IpUtil;
-import com.google.common.collect.Maps;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 public class HttpContextUtil {
 
@@ -51,10 +48,12 @@ public class HttpContextUtil {
 		return lastHeader;
 	}
 
+	@Deprecated // 推荐使用HeaderContextUtil.currentUserIdInt()
 	public static Integer currentUserIdInt() {
 		return Optional.ofNullable(currentUserId()).map(Integer::valueOf).orElse(null);
 	}
 
+	@Deprecated // 推荐使用HeaderContextUtil.currentUserId()
 	public static String currentUserId() {
 		return lastHead(HeaderConstants.HEADER_CURRENT_USER_ID);
 	}
@@ -92,33 +91,12 @@ public class HttpContextUtil {
 		}
 	}
 
-
 	public static String source() {
 		return head(HeaderConstants.HEADER_SOURCE);
 	}
 
-	public static Map<String, String> httpContextHeader() {
-		Map<String, String> headers = Maps.newHashMap();
-		headers.put(HeaderConstants.HEADER_CURRENT_USER_ID, currentUserId());
-		headers.put(HeaderConstants.HEADER_PLATFORM, platform());
-		headers.put(HeaderConstants.HEADER_OPERATOR, operator());
-		headers.put(HeaderConstants.HEADER_VERSION, version());
-		headers.put(HeaderConstants.HEADER_DEVICEID, deviceid());
-		headers.put(HeaderConstants.HEADER_CHANNEL, channel());
-		headers.put(HeaderConstants.HEADER_REQUESTIP, requestip());
-		headers.put(HeaderConstants.HEADER_SOURCE, source());
-		return headers;
-	}
-
 	public static Map<String, String> httpContextHeaderThisRequest(HttpServletRequest request) {
 		Map<String, String> headers = Maps.newHashMap();
-
-		Enumeration<String> headerEnum = request.getHeaders(HeaderConstants.HEADER_CURRENT_USER_ID);
-		String lastCurrentUserId = null;
-		while (headerEnum.hasMoreElements()) {
-			lastCurrentUserId = headerEnum.nextElement();
-		}
-		headers.put(HeaderConstants.HEADER_CURRENT_USER_ID, lastCurrentUserId);
 
 		headers.put(HeaderConstants.HEADER_PLATFORM, request.getHeader(HeaderConstants.HEADER_PLATFORM));
 		headers.put(HeaderConstants.HEADER_OPERATOR, request.getHeader(HeaderConstants.HEADER_OPERATOR));
@@ -127,20 +105,18 @@ public class HttpContextUtil {
 		headers.put(HeaderConstants.HEADER_CHANNEL, request.getHeader(HeaderConstants.HEADER_CHANNEL));
 		headers.put(HeaderConstants.HEADER_REQUESTIP, request.getHeader(HeaderConstants.HEADER_REQUESTIP));
 		headers.put(HeaderConstants.HEADER_SOURCE, request.getHeader(HeaderConstants.HEADER_SOURCE));
-		return headers;
-	}
 
-	public static Map<String, List<String>> httpContextHeaders() {
-		Set<Entry<String, String>> entrySet = httpContextHeader().entrySet();
-
-		Map<String, List<String>> headers = Maps.newHashMap();
-		for (Entry<String, String> entry : entrySet) {
-			headers.put(entry.getKey(), Collections.singletonList(entry.getValue()));
+		Enumeration<String> headerEnum = request.getHeaders(HeaderConstants.HEADER_CURRENT_USER_ID);
+		String lastCurrentUserId = null;
+		while (headerEnum.hasMoreElements()) {
+			lastCurrentUserId = headerEnum.nextElement();
 		}
+		headers.put(HeaderConstants.HEADER_CURRENT_USER_ID, lastCurrentUserId);
+
+		headers.put(HeaderConstants.ACCEPT_LANGUAGE, request.getHeader(HeaderConstants.ACCEPT_LANGUAGE));
+		headers.put(HeaderConstants.TRACE_ID, request.getHeader(HeaderConstants.TRACE_ID));
+
 		return headers;
 	}
 
-	public static String getRequestIp() {
-		return IpUtil.getRequestIp(request());
-	}
 }

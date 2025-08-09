@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.feign.WalletRecordFeign;
 import com.company.user.api.response.WalletRecordResp;
@@ -34,7 +34,7 @@ public class WalletRecordController implements WalletRecordFeign {
 	public Result<List<WalletRecordResp>> pageMain(
 			@Valid @NotNull(message = "缺少参数当前页") @Min(value = 1, message = "当前页不能小于1") Integer current,
 			@Valid @NotNull(message = "缺少参数每页数量") Integer size) {
-		Integer userId = HttpContextUtil.currentUserIdInt();
+		Integer userId = HeaderContextUtil.currentUserIdInt();
 
 		Wallet wallet = walletService.getOrInit(userId, WalletEnum.Type.TO_MAIN);
 		List<WalletRecord> walletRecordList = walletRecordService.page(wallet.getId(), current, size);

@@ -1,7 +1,7 @@
 package com.company.framework.threadpool;
 
+import com.company.framework.trace.thread.TraceRunnable;
 import com.company.framework.trace.TraceManager;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
@@ -41,10 +41,6 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
 
 	@Override
 	protected void beforeExecute(Thread t, Runnable r) {
-		if (r instanceof TraceRunnable) {
-			TraceRunnable wr = (TraceRunnable) r;
-			traceManager.put(wr.getTraceId());
-		}
 		timetl.set(System.currentTimeMillis());
 		super.beforeExecute(t, r);
 	}
@@ -59,44 +55,10 @@ public class TraceThreadPoolExecutor extends ThreadPoolExecutor {
 		log.info("duration:{} ms,poolSize:{},active:{},completedTaskCount:{},taskCount:{},queue:{},largestPoolSize:{}",
 				diff, this.getPoolSize(), this.getActiveCount(), this.getCompletedTaskCount(), this.getTaskCount(),
 				this.getQueue().size(), this.getLargestPoolSize());
-		if (r instanceof TraceRunnable) {
-			traceManager.remove();
-		}
 	}
 
 	@Override
 	public void execute(Runnable command) {
-		super.execute(new TraceRunnable(command, traceManager.get()));
-	}
-
-	@Override
-	public Future<?> submit(Runnable task) {
-		return super.submit(task);
-	}
-
-	@Override
-	public <T> Future<T> submit(Runnable task, T result) {
-		return super.submit(task, result);
-	}
-
-	@Override
-	public <T> Future<T> submit(Callable<T> task) {
-		return super.submit(task);
-	}
-
-	private static class TraceRunnable implements Runnable {
-		private final Runnable target;
-		@Getter
-		private String traceId;
-
-		public TraceRunnable(Runnable target, String traceId) {
-			this.target = target;
-			this.traceId = traceId;
-		}
-
-		@Override
-		public void run() {
-			target.run();
-		}
+		super.execute(new TraceRunnable(command, traceManager, traceManager.get()));
 	}
 }

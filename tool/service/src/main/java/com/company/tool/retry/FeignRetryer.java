@@ -114,9 +114,7 @@ public class FeignRetryer {
 		log.info("调用,地址:{},参数:{}", retryTask.getUrl(), jsonParams);
 		long start = System.currentTimeMillis();
 		try {
-			HttpHeaders headers = new HttpHeaders();
-			traceManager.headers().forEach((k, v) -> headers.addAll(k, v));// 日志追踪ID
-			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject, headers);
+			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject);
 			@SuppressWarnings("rawtypes")
 			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(retryTask.getUrl(), httpEntity,
 					Result.class);

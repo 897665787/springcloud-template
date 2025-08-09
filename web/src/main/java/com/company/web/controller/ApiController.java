@@ -1,15 +1,15 @@
 package com.company.web.controller;
 
 import com.company.common.api.Result;
-import com.company.framework.constant.HeaderConstants;
-import com.company.framework.util.JsonUtil;
-import com.company.framework.util.PropertyUtils;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.threadpool.ThreadPoolProperties;
 import com.company.framework.cache.ICache;
-import com.company.framework.context.HttpContextUtil;
+import com.company.framework.constant.HeaderConstants;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
+import com.company.framework.threadpool.ThreadPoolProperties;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.response.OrderResp;
 import com.company.user.api.feign.UserFeign;
@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @RestController
 @RequestMapping("/api")
@@ -42,9 +41,7 @@ public class ApiController {
 	@Autowired
 	private UserFeign userFeign;
 	@Autowired
-	private ThreadPoolExecutor threadPoolExecutor;
-	@Autowired
-	private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	private AsyncTaskExecutor executor;
 	@Autowired
 	private TimeService timeService;
 
@@ -96,7 +93,6 @@ public class ApiController {
 //		if (true)
 //			ExceptionUtil.throwException(1, "aaaaaaaaaaa");
 //		Result<OrderResp> byId = orderFeign.getById(id);
-		System.out.println("currentUserId:" + HttpContextUtil.currentUserId());
 //		return byId;
 		return Result.success();
 	}
@@ -117,19 +113,19 @@ public class ApiController {
 	@GetMapping(value = "/getInt")
 	public Result<Integer> getInt(HttpServletRequest request) {
 		String thname = Thread.currentThread().getName();
-		System.out.println(thname+" "+"ApiController platform():" + HttpContextUtil.platform());
-		System.out.println(thname+" "+"ApiController httpContextHeader():" + HttpContextUtil.httpContextHeader());
+		System.out.println(thname+" "+"ApiController platform():" + HeaderContextUtil.platform());
+		System.out.println(thname+" "+"ApiController httpContextHeader():" + HeaderContextUtil.httpContextHeader());
 //		threadPoolTaskExecutor.submit(()->{
 //			String thname2 = Thread.currentThread().getName();
-//			System.err.println(thname2+" "+"ApiController submit platform():" + HttpContextUtil.platform());
-////			System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HttpContextUtil.httpContextHeader());
+//			System.err.println(thname2+" "+"ApiController submit platform():" + HeaderContextUtil.platform());
+////			System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HeaderContextUtil.httpContextHeader());
 //		});
 
-		Future<Integer> submit = threadPoolTaskExecutor.submit(()->{
+		Future<Integer> submit = executor.submit(()->{
 		String thname2 = Thread.currentThread().getName();
 			System.err.println(thname2+" "+"ApiController submit request platform():" + request.getHeader(HeaderConstants.HEADER_PLATFORM));
-			System.err.println(thname2+" "+"ApiController submit platform():" + HttpContextUtil.platform());
-	//		System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HttpContextUtil.httpContextHeader());
+			System.err.println(thname2+" "+"ApiController submit platform():" + HeaderContextUtil.platform());
+	//		System.out.println(thname2+" "+"ApiController submit httpContextHeader():" + HeaderContextUtil.httpContextHeader());
 		return 1;
 		});
 
@@ -140,8 +136,8 @@ public class ApiController {
 
 //		threadPoolTaskExecutor.execute(()->{
 //			String thname2 = Thread.currentThread().getName();
-//			System.err.println(thname2+" "+"ApiController execute platform():" + HttpContextUtil.platform());
-////			System.out.println(thname2+" "+"ApiController execute httpContextHeader():" + HttpContextUtil.httpContextHeader());
+//			System.err.println(thname2+" "+"ApiController execute platform():" + HeaderContextUtil.platform());
+////			System.out.println(thname2+" "+"ApiController execute httpContextHeader():" + HeaderContextUtil.httpContextHeader());
 //		});
 		return Result.success(1);
 	}
@@ -193,10 +189,10 @@ public class ApiController {
 
 	@GetMapping(value = "/threadpool")
 	public Result<Integer> threadpool() {
-		System.out.println("threadPoolExecutor:"+threadPoolExecutor);
+		System.out.println("executor:"+executor);
 		for (int i = 0; i < 3; i++) {
 			int n = i;
-			threadPoolExecutor.submit(() -> {
+			executor.submit(() -> {
 				System.out.println("execute:"+n);
 				try {
 					Thread.sleep(new Random().nextInt(1000));
@@ -211,10 +207,10 @@ public class ApiController {
 
 	@GetMapping(value = "/threadpooltask")
 	public Result<Integer> threadpooltask() {
-		System.out.println("threadPoolTaskExecutor:"+threadPoolTaskExecutor);
+		System.out.println("executor:"+executor);
 		for (int i = 0; i < 3; i++) {
 			int n = i;
-			threadPoolTaskExecutor.submit(() -> {
+			executor.execute(() -> {
 				System.out.println("execute:"+n);
 				try {
 					Thread.sleep(new Random().nextInt(1000));
@@ -225,7 +221,7 @@ public class ApiController {
 			System.out.println("submit:"+n);
 		}
 
-		threadPoolTaskExecutor.getActiveCount();
+//		executor.getActiveCount();
 		return Result.success(1);
 	}
 

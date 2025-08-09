@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import com.company.framework.context.SpringContextUtil;
-import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.user.coupon.dto.MatchResult;
@@ -39,8 +38,6 @@ public class UseCouponService {
 	private UserCouponService userCouponService;
 	@Autowired
 	private CouponTemplateConditionService couponTemplateConditionService;
-	@Autowired
-	private TraceManager traceManager;
 
 	/**
 	 * <pre>
@@ -336,13 +333,8 @@ public class UseCouponService {
 			/*
 			 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 			 */
-			String traceId = traceManager.get();
 			List<Supplier<Boolean>> supplierList = couponTemplateConditionList.stream().map(v -> {
 				Supplier<Boolean> supplier = () -> {
-					String subTraceId = traceManager.get();
-					if (subTraceId == null) {
-						traceManager.put(traceId);
-					}
 					String beanName = v.getUseCondition();
 					UseCondition condition = SpringContextUtil.getBean(beanName, UseCondition.class);
 					if (condition == null) {
@@ -357,9 +349,6 @@ public class UseCouponService {
 					} catch (Exception e) {
 						// 异常情况下不可见
 						log.error("canSee error", e);
-					}
-					if (subTraceId == null) {
-						traceManager.remove();
 					}
 					return canSee;
 				};
@@ -401,13 +390,8 @@ public class UseCouponService {
 		/*
 		 * 并发执行条件判断，任意1个匹配false则返回false，否则返回true
 		 */
-		String traceId = traceManager.get();
 		List<Supplier<MatchResult>> supplierList = couponTemplateConditionList.stream().map(v -> {
 			Supplier<MatchResult> supplier = () -> {
-				String subTraceId = traceManager.get();
-				if (subTraceId == null) {
-					traceManager.put(traceId);
-				}
 				String beanName = v.getUseCondition();
 				UseCondition condition = SpringContextUtil.getBean(beanName, UseCondition.class);
 				if (condition == null) {
@@ -430,9 +414,6 @@ public class UseCouponService {
 					// 异常情况下不可用
 					log.error("canUse error", e);
 					canUse = MatchResult.builder().canUse(false).reason("系统判断异常").build();
-				}
-				if (subTraceId == null) {
-					traceManager.remove();
 				}
 				return canUse;
 			};
