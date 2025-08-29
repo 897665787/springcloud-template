@@ -1,9 +1,10 @@
 jmx下载地址：https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/
 
 
-启动参数加上：-javaagent:/Users/anker/code/opensource/springcloud-template/组件安装/jmx_prometheus_javaagent-1.0.1.jar=60011:/Users/anker/code/opensource/springcloud-template/组件安装/jmx_prometheus_javaagent-config.yaml
+启动参数加上：-javaagent:/path/to/jmx_prometheus_javaagent-1.0.1.jar=60011:/path/to/jmx_prometheus_javaagent-config.yaml
 
 
 前端：http://localhost:60011/
 
-prometheus端点：http://localhost:60011/metrics
+prometheus端点：http://localhost:60011/
+
