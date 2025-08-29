@@ -4,26 +4,16 @@ FROM springcloud-template/base-image:v1
 # 将jar文件添加到容器中并更名为app.jar
 COPY target/template-*.jar app.jar
 
-# 暴露容器内的端口给外部访问
-#EXPOSE 8080 可以在docker run中使用‘-p 8080:8080’指定
+# 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 8080:8080’指定
+EXPOSE 6001
 
 # 创建日志目录
 RUN mkdir -p /logs
 
 # 在容器启动时运行jar包
 ENTRYPOINT ["java"\
-# 避免意外阻止代码，urandom安全性没有random高，默认：file:/dev/random
+# 避免意外阻塞代码，urandom安全性没有random高，默认：file:/dev/random
 ,"-Djava.security.egd=file:/dev/./urandom"\
-
-# 阿里TTL，有功能性支持线程池传递上下文
-,"-javaagent:plugins/ttl/transmittable-thread-local-2.14.5.jar"\
-# skywalking日志追踪
-,"-javaagent:plugins/skywalking-agent/skywalking-agent.jar" \
-,"-Dskywalking.agent.service_name=springcloud-template::template-web" \
-,"-Dskywalking.collector.backend_service=127.0.0.1:11800" \
-,"-Dskywalking.logging.file_name=template-web.log" \
-# jmx监控
-,"-javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=26001:plugins/prometheus/jmx_prometheus_javaagent-config.yaml" \
 
 # 最小堆，默认：物理内存1/64（最小1MB），最大堆，默认：物理内存1/4（最大1GB）
 ,"-Xms512M","-Xmx2048M"\
@@ -59,6 +49,15 @@ ENTRYPOINT ["java"\
 ,"-XX:ErrorFile=./logs/hs_err_pid-%p.log"\
 # 发生致命错误时，记录栈信息、堆信息
 ,"-XX:OnError=\"jstack %p > ./logs/error-jstack-%p.log;jmap -dump:format=b,file=./logs/error-heapdump-%p.hprof %p\""\
+
+# 阿里TTL，有功能性支持线程池传递上下文
+,"-javaagent:plugins/ttl/transmittable-thread-local-2.14.5.jar"\
+# skywalking日志追踪
+,"-javaagent:plugins/skywalking-agent/skywalking-agent.jar" \
+,"-Dskywalking.agent.service_name=springcloud-template::template-web" \
+,"-Dskywalking.collector.backend_service=127.0.0.1:11800" \
+# jmx监控
+,"-javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=26001:plugins/prometheus/jmx_prometheus_javaagent-config.yaml" \
 
 ,"-jar","/app.jar"\
 ,"--spring.profiles.active=dev"\
