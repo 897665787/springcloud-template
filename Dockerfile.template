@@ -1,0 +1,165 @@
+# 多阶段构建的Spring Cloud微服务Dockerfile模板
+# 适用于：order-service, user-service, system-service
+
+# 第一阶段：构建阶段
+FROM maven:3.8.6-openjdk-8 AS builder
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制Maven配置文件
+COPY pom.xml .
+COPY */pom.xml */pom.xml
+COPY */*/pom.xml */*/pom.xml
+
+# 下载依赖（利用Docker缓存层）
+RUN mvn dependency:go-offline -B
+
+# 复制源代码
+COPY . .
+
+# 构建项目（替换SERVICE_NAME为实际服务名）
+ARG SERVICE_NAME
+RUN mvn clean package -pl ${SERVICE_NAME}/service -am -DskipTests
+
+# 第二阶段：运行阶段
+FROM openjdk:8-jre-alpine
+
+# 设置元数据
+LABEL maintainer="your-email@company.com"
+LABEL description="Spring Cloud Microservice - ${SERVICE_NAME}"
+LABEL version="1.0.0"
+
+# 安装必要的工具
+RUN apk add --no-cache \
+    curl \
+    tzdata \
+    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
+    && apk del tzdata
+
+# 创建应用用户（安全最佳实践）
+RUN addgroup -g 1001 -S appuser && \
+    adduser -u 1001 -S appuser -G appuser
+
+# 创建必要的目录
+RUN mkdir -p /app/logs /app/plugins /app/config /app/tmp && \
+    chown -R appuser:appuser /app
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制SkyWalking Agent
+COPY --from=builder /app/plugins/skywalking-agent/skywalking-agent.jar /app/plugins/
+COPY --from=builder /app/plugins/ttl/transmittable-thread-local-2.14.5.jar /app/plugins/
+
+# 复制Prometheus JMX Exporter（可选）
+COPY --from=builder /app/plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar /app/plugins/
+COPY --from=builder /app/plugins/prometheus/jmx_prometheus_javaagent-config.yaml /app/plugins/
+
+# 复制构建好的JAR文件
+COPY --from=builder /app/*/service/target/*.jar /app/app.jar
+
+# 设置文件权限
+RUN chown -R appuser:appuser /app
+
+# 切换到应用用户
+USER appuser
+
+# 设置环境变量
+ENV JAVA_OPTS="" \
+    SKYWALKING_OPTS="" \
+    PROMETHEUS_OPTS="" \
+    TTL_OPTS="" \
+    JVM_OPTS="" \
+    APP_PROFILE="prod" \
+    APP_NAME="${SERVICE_NAME}" \
+    JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk" \
+    PATH="/usr/lib/jvm/java-1.8-openjdk/bin:$PATH"
+
+# 设置JVM参数（生产环境优化）
+ENV JVM_OPTS="\
+    -server \
+    -Xms2g \
+    -Xmx4g \
+    -XX:MetaspaceSize=256m \
+    -XX:MaxMetaspaceSize=512m \
+    -XX:+UseG1GC \
+    -XX:MaxGCPauseMillis=200 \
+    -XX:+UseG1GC \
+    -XX:G1HeapRegionSize=16m \
+    -XX:G1NewSizePercent=30 \
+    -XX:G1MaxNewSizePercent=40 \
+    -XX:G1MixedGCCountTarget=8 \
+    -XX:+UnlockExperimentalVMOptions \
+    -XX:+UseCGroupMemoryLimitForHeap \
+    -XX:+HeapDumpOnOutOfMemoryError \
+    -XX:HeapDumpPath=/app/logs/heapdump.hprof \
+    -XX:+PrintGCDetails \
+    -XX:+PrintGCDateStamps \
+    -XX:+PrintGCTimeStamps \
+    -Xloggc:/app/logs/gc.log \
+    -XX:+UseGCLogFileRotation \
+    -XX:NumberOfGCLogFiles=5 \
+    -XX:GCLogFileSize=100M \
+    -Djava.awt.headless=true \
+    -Dfile.encoding=UTF-8 \
+    -Duser.timezone=Asia/Shanghai \
+    -Djava.security.egd=file:/dev/./urandom \
+    -Dspring.profiles.active=${APP_PROFILE} \
+    -Dapp.name=${APP_NAME}"
+
+# 设置SkyWalking参数
+ENV SKYWALKING_OPTS="\
+    -javaagent:/app/plugins/skywalking-agent.jar \
+    -Dskywalking.agent.service_name=${APP_NAME} \
+    -Dskywalking.collector.backend_service=skywalking-oap:11800 \
+    -Dskywalking.logging.level=INFO \
+    -Dskywalking.logging.dir=/app/logs \
+    -Dskywalking.agent.instance_name=${APP_NAME}-${HOSTNAME} \
+    -Dskywalking.agent.authentication= \
+    -Dskywalking.agent.span_limit_per_segment=300 \
+    -Dskywalking.agent.ignore_suffix=.jpg,.jpeg,.js,.css,.png,.bmp,.gif,.ico,.mp3,.mp4,.html,.svg"
+
+# 设置Prometheus JMX Exporter参数（可选）
+ENV PROMETHEUS_OPTS="\
+    -javaagent:/app/plugins/jmx_prometheus_javaagent-1.0.1.jar=8080:/app/plugins/jmx_prometheus_javaagent-config.yaml"
+
+# 设置TTL参数
+ENV TTL_OPTS="\
+    -Xbootclasspath/a:/app/plugins/transmittable-thread-local-2.14.5.jar"
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# 暴露端口
+EXPOSE 8080
+
+# 创建启动脚本
+RUN echo '#!/bin/sh' > /app/startup.sh && \
+    echo 'set -e' >> /app/startup.sh && \
+    echo '' >> /app/startup.sh && \
+    echo '# 记录启动时间' >> /app/startup.sh && \
+    echo 'echo "$(date): Starting ${APP_NAME}..." >> /app/logs/startup.log' >> /app/startup.sh && \
+    echo '' >> /app/startup.sh && \
+    echo '# 检查JAR文件' >> /app/startup.sh && \
+    echo 'if [ ! -f /app/app.jar ]; then' >> /app/startup.sh && \
+    echo '    echo "$(date): ERROR - app.jar not found!" >> /app/logs/startup.log' >> /app/startup.sh && \
+    echo '    exit 1' >> /app/startup.sh && \
+    echo 'fi' >> /app/startup.sh && \
+    echo '' >> /app/startup.sh && \
+    echo '# 启动应用' >> /app/startup.sh && \
+    echo 'exec java $JVM_OPTS $SKYWALKING_OPTS $PROMETHEUS_OPTS $TTL_OPTS $JAVA_OPTS -jar /app/app.jar' >> /app/startup.sh && \
+    chmod +x /app/startup.sh
+
+# 设置启动命令
+CMD ["/app/startup.sh"]
+
+# 设置卷挂载点
+VOLUME ["/app/logs", "/app/config", "/app/tmp"]
+
+# 设置标签
+LABEL org.opencontainers.image.source="https://github.com/your-org/springcloud-template" \
+      org.opencontainers.image.description="Spring Cloud Microservice Template" \
+      org.opencontainers.image.licenses="Apache-2.0"

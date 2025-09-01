@@ -1,0 +1,376 @@
+version: '3.8'
+
+services:
+  # 基础服务
+  eureka-server:
+    build:
+      context: ..
+      dockerfile: eureka/Dockerfile
+    container_name: eureka-server
+    ports:
+      - "7001:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_SERVER_PORT=8080
+    volumes:
+      - eureka-logs:/app/logs
+      - eureka-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+
+  config-server:
+    build:
+      context: ..
+      dockerfile: config/Dockerfile
+    container_name: config-server
+    ports:
+      - "7002:8080"
+    environment:
+      - APP_PROFILE=prod
+    volumes:
+      - config-logs:/app/logs
+      - config-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  gateway-service:
+    build:
+      context: ..
+      dockerfile: gateway/Dockerfile
+    container_name: gateway-service
+    ports:
+      - "7003:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - gateway-logs:/app/logs
+      - gateway-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 业务服务
+  user-service:
+    build:
+      context: ..
+      dockerfile: user/service/Dockerfile
+    container_name: user-service
+    ports:
+      - "7004:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+      - JVM_OPTS=-Xms1g -Xmx2g
+    volumes:
+      - user-logs:/app/logs
+      - user-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  order-service:
+    build:
+      context: ..
+      dockerfile: order/service/Dockerfile
+    container_name: order-service
+    ports:
+      - "7005:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+      - JVM_OPTS=-Xms2g -Xmx4g
+    volumes:
+      - order-logs:/app/logs
+      - order-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+      - user-service
+
+  system-service:
+    build:
+      context: ..
+      dockerfile: system/service/Dockerfile
+    container_name: system-service
+    ports:
+      - "7006:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+      - JVM_OPTS=-Xms1g -Xmx2g
+    volumes:
+      - system-logs:/app/logs
+      - system-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 监控服务
+  monitor-service:
+    build:
+      context: ..
+      dockerfile: monitor/Dockerfile
+    container_name: monitor-service
+    ports:
+      - "7007:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - monitor-logs:/app/logs
+      - monitor-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 定时任务服务
+  job-service:
+    build:
+      context: ..
+      dockerfile: job/Dockerfile
+    container_name: job-service
+    ports:
+      - "7008:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - job-logs:/app/logs
+      - job-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 其他服务
+  tool-service:
+    build:
+      context: ..
+      dockerfile: tool/service/Dockerfile
+    container_name: tool-service
+    ports:
+      - "7009:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - tool-logs:/app/logs
+      - tool-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  im-service:
+    build:
+      context: ..
+      dockerfile: im/service/Dockerfile
+    container_name: im-service
+    ports:
+      - "7010:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - im-logs:/app/logs
+      - im-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 管理后台
+  admin-service:
+    build:
+      context: ..
+      dockerfile: admin/Dockerfile
+    container_name: admin-service
+    ports:
+      - "7011:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - admin-logs:/app/logs
+      - admin-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  admin-api-service:
+    build:
+      context: ..
+      dockerfile: adminapi/Dockerfile
+    container_name: admin-api-service
+    ports:
+      - "7012:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - adminapi-logs:/app/logs
+      - adminapi-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 前端服务
+  web-service:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    container_name: web-service
+    ports:
+      - "7013:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - web-logs:/app/logs
+      - web-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  app-service:
+    build:
+      context: ..
+      dockerfile: app/Dockerfile
+    container_name: app-service
+    ports:
+      - "7014:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - app-logs:/app/logs
+      - app-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # 开放API服务
+  openapi-service:
+    build:
+      context: ..
+      dockerfile: openapi/Dockerfile
+    container_name: openapi-service
+    ports:
+      - "7015:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - openapi-logs:/app/logs
+      - openapi-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  # XXL-Job服务
+  xxl-job-admin:
+    build:
+      context: ..
+      dockerfile: xxl-job/xxl-job-admin/Dockerfile
+    container_name: xxl-job-admin
+    ports:
+      - "7016:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - xxl-job-admin-logs:/app/logs
+      - xxl-job-admin-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+
+  xxl-job-executor:
+    build:
+      context: ..
+      dockerfile: xxl-job/xxl-job-executor-samples/xxl-job-executor-sample-springboot/Dockerfile
+    container_name: xxl-job-executor
+    ports:
+      - "7017:8080"
+    environment:
+      - APP_PROFILE=prod
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8080/eureka/
+    volumes:
+      - xxl-job-executor-logs:/app/logs
+      - xxl-job-executor-config:/app/config
+    networks:
+      - springcloud-network
+    restart: unless-stopped
+    depends_on:
+      - eureka-server
+      - xxl-job-admin
+
+volumes:
+  eureka-logs:
+  eureka-config:
+  config-logs:
+  config-config:
+  gateway-logs:
+  gateway-config:
+  user-logs:
+  user-config:
+  order-logs:
+  order-config:
+  system-logs:
+  system-config:
+  monitor-logs:
+  monitor-config:
+  job-logs:
+  job-config:
+  tool-logs:
+  tool-config:
+  im-logs:
+  im-config:
+  admin-logs:
+  admin-config:
+  adminapi-logs:
+  adminapi-config:
+  web-logs:
+  web-config:
+  app-logs:
+  app-config:
+  openapi-logs:
+  openapi-config:
+  xxl-job-admin-logs:
+  xxl-job-admin-config:
+  xxl-job-executor-logs:
+  xxl-job-executor-config:
+
+networks:
+  springcloud-network:
+    driver: bridge
