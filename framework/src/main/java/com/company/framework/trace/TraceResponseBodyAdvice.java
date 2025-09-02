@@ -47,6 +47,9 @@ public class TraceResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return body;
         }
         String bodyStr = JsonUtil.toJsonString(body);
+        if (bodyStr.startsWith("[")) {// 数组无法设置traceId
+            return body;
+        }
         JsonNode resultNode = JsonUtil.toJsonNode(bodyStr);
         ObjectNode putResultNode = (ObjectNode) resultNode;
         putResultNode.put("traceId", traceManager.get());// 日志追踪ID

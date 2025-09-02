@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.company.tool.smartretry.ICgService;
+import com.company.tool.entity.AppInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +25,14 @@ public class BannerController implements BannerFeign {
 
 	@Autowired
 	private BannerShowService bannerShowService;
+	@Autowired
+	private ICgService cgService;
 
 	@Override
 	public Result<List<BannerResp>> list(@RequestBody BannerReq bannerReq) {
+//		AppInfo appInfo = cgService.get(new AppInfo());
+//		System.out.println(appInfo);
+
 		Map<String, String> runtimeAttach = bannerReq.getRuntimeAttach();
 
 		// 补充一些请求头参数
