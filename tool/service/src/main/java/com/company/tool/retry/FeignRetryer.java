@@ -143,8 +143,8 @@ public class FeignRetryer {
 		}
 		remark = Utils.rightRemark(retryTask.getRemark(), remark);
 
-		String waitStrategy = retryTask.getWaitStrategy();
-		int nextSeconds = WaitStrategyBeanFactory.of(waitStrategy).nextSeconds(retryTask.getIncreaseSeconds(),
+		String waitStrategyCode = retryTask.getWaitStrategy();
+		int nextSeconds = WaitStrategyBeanFactory.of(waitStrategyCode).nextSeconds(retryTask.getIncreaseSeconds(),
 				retryTask.getFailure());
 		LocalDateTime nextDisposeTime = retryTask.getNextDisposeTime().plusSeconds(nextSeconds);
 		baseMapper.retryFail(RetryTaskEnum.Status.CALL_FAIL, nextDisposeTime, remark, retryTask.getId());

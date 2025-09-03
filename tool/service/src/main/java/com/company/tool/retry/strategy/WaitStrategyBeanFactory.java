@@ -16,11 +16,11 @@ public class WaitStrategyBeanFactory {
     public static final String RANDOM_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_RANDOM + SUFFIX;
     public static final String WECHAT_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_WECHAT + SUFFIX;
 
-    public static WaitStrategy of(String waitStrategyStr) {
-        String beanName = waitStrategyStr + SUFFIX;
+    public static WaitStrategy of(String waitStrategyCode) {
+        String beanName = waitStrategyCode + SUFFIX;
         WaitStrategy waitStrategy = SpringContextUtil.getBean(beanName, WaitStrategy.class);
         if (waitStrategy == null) {
-            log.warn("等待策略{}找不到，使用默认策略执行", waitStrategyStr);
+            log.warn("等待策略{}找不到，使用默认策略执行", waitStrategyCode);
             // 默认策略
             waitStrategy = SpringContextUtil.getBean(INCREMENTING_WAIT_STRATEGY, WaitStrategy.class);
         }
