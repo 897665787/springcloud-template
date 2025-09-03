@@ -7,24 +7,23 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class WaitStrategyBeanFactory {
-	private static final String SUFFIX = "WaitStrategy";
+    private static final String SUFFIX = "WaitStrategy";
 
-	public static final String INCREMENTING_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_INCREMENTING + SUFFIX;
-	public static final String FIXED_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_FIXED + SUFFIX;
-	public static final String EXPONENTIAL_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_EXPONENTIAL + SUFFIX;
-	public static final String FIBONACCI_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_FIBONACCI + SUFFIX;
-	public static final String RANDOM_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_RANDOM + SUFFIX;
-	public static final String WECHAT_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_WECHAT + SUFFIX;
+    public static final String INCREMENTING_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_INCREMENTING + SUFFIX;
+    public static final String FIXED_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_FIXED + SUFFIX;
+    public static final String EXPONENTIAL_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_EXPONENTIAL + SUFFIX;
+    public static final String FIBONACCI_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_FIBONACCI + SUFFIX;
+    public static final String RANDOM_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_RANDOM + SUFFIX;
+    public static final String WECHAT_WAIT_STRATEGY = RetryerEnum.WAIT_STRATEGY_WECHAT + SUFFIX;
 
-	public static WaitStrategy of(String increaseStrategy) {
-		String beanName = increaseStrategy + SUFFIX;
-		WaitStrategy waitStrategy = SpringContextUtil.getBean(beanName,
-				WaitStrategy.class);
-		if (waitStrategy == null) {
-			log.warn("秒数增加策略{}找不到，使用默认策略执行", increaseStrategy);
-			// 默认策略
-			waitStrategy = SpringContextUtil.getBean(INCREMENTING_WAIT_STRATEGY, WaitStrategy.class);
-		}
-		return waitStrategy;
-	}
+    public static WaitStrategy of(String waitStrategyStr) {
+        String beanName = waitStrategyStr + SUFFIX;
+        WaitStrategy waitStrategy = SpringContextUtil.getBean(beanName, WaitStrategy.class);
+        if (waitStrategy == null) {
+            log.warn("等待策略{}找不到，使用默认策略执行", waitStrategyStr);
+            // 默认策略
+            waitStrategy = SpringContextUtil.getBean(INCREMENTING_WAIT_STRATEGY, WaitStrategy.class);
+        }
+        return waitStrategy;
+    }
 }

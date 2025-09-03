@@ -4,7 +4,7 @@ CREATE TABLE `retry_task` (
   `json_params` varchar(2048) DEFAULT NULL COMMENT 'JSON参数',
   `json_result` varchar(128) DEFAULT NULL COMMENT 'JSON结果',
   `status` tinyint(4) NOT NULL COMMENT '状态(1:待回调,2:回调成功(END),21.回调失败,22.放弃回调(END))',
-  `seconds_strategy` varchar(32) NOT NULL DEFAULT 'increment' COMMENT '递增秒数策略(increment:增量,fix:固定)',
+  `wait_strategy` varchar(32) NOT NULL DEFAULT 'incrementing' COMMENT '等待策略(incrementing:线性递增,fixed:固定等待,exponential:指数退避,fibonacci:斐波那契,random:随机,wechat:微信)',
   `increase_seconds` int(11) NOT NULL DEFAULT '2' COMMENT '递增秒数',
   `next_dispose_time` datetime NOT NULL COMMENT '下次处理时间',
   `max_failure` int(11) NOT NULL COMMENT '最大允许失败次数',

@@ -13,7 +13,7 @@ public interface RetryerEnum {
     String WAIT_STRATEGY_WECHAT = "wechat";// 微信
 
     @AllArgsConstructor
-    enum SecondsStrategy {
+    enum WaitStrategy {
         INCREMENTING(WAIT_STRATEGY_INCREMENTING, "线性递增"),
         FIX(WAIT_STRATEGY_FIXED, "固定等待"),
         EXPONENTIAL(WAIT_STRATEGY_EXPONENTIAL, "指数退避"),
@@ -27,8 +27,8 @@ public interface RetryerEnum {
         @Getter
         private String desc;
 
-        public static SecondsStrategy of(String code) {
-            for (SecondsStrategy item : SecondsStrategy.values()) {
+        public static WaitStrategy of(String code) {
+            for (WaitStrategy item : WaitStrategy.values()) {
                 if (item.getCode().equals(code)) {
                     return item;
                 }

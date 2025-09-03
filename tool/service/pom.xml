@@ -181,6 +181,11 @@
 			<artifactId>easy-retry-mybatis-starter</artifactId>
 			<version>1.0.3</version>
 		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.60</version>
+		</dependency>
 
 		<!-- 分布式重试，任务执行过程持久化 -->
 

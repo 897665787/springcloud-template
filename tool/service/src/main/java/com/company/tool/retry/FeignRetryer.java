@@ -50,9 +50,9 @@ public class FeignRetryer {
 		Object jsonParams = retryerInfo.getJsonParams();
 		int increaseSeconds = retryerInfo.getIncreaseSeconds();
 		int maxFailure = retryerInfo.getMaxFailure();
-		RetryerEnum.SecondsStrategy secondsStrategy = retryerInfo.getSecondsStrategy();
-		if (secondsStrategy == null) {
-			secondsStrategy = RetryerEnum.SecondsStrategy.INCREMENTING;
+		RetryerEnum.WaitStrategy waitStrategy = retryerInfo.getWaitStrategy();
+		if (waitStrategy == null) {
+			waitStrategy = RetryerEnum.WaitStrategy.INCREMENTING;
 		}
 
 		LocalDateTime now = LocalDateTime.now();
@@ -70,7 +70,7 @@ public class FeignRetryer {
 				.setMaxFailure(maxFailure)
 				.setFailure(0)
 				.setTraceId(traceManager.get())
-				.setSecondsStrategy(secondsStrategy.getCode());
+				.setWaitStrategy(waitStrategy.getCode());
 		baseMapper.insert(retryTask);
 
 		if (nextDisposeTime.isAfter(now)) {
@@ -143,8 +143,8 @@ public class FeignRetryer {
 		}
 		remark = Utils.rightRemark(retryTask.getRemark(), remark);
 
-		String secondsStrategy = retryTask.getSecondsStrategy();
-		int nextSeconds = WaitStrategyBeanFactory.of(secondsStrategy).nextSeconds(retryTask.getIncreaseSeconds(),
+		String waitStrategy = retryTask.getWaitStrategy();
+		int nextSeconds = WaitStrategyBeanFactory.of(waitStrategy).nextSeconds(retryTask.getIncreaseSeconds(),
 				retryTask.getFailure());
 		LocalDateTime nextDisposeTime = retryTask.getNextDisposeTime().plusSeconds(nextSeconds);
 		baseMapper.retryFail(RetryTaskEnum.Status.CALL_FAIL, nextDisposeTime, remark, retryTask.getId());
