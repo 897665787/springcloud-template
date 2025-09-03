@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.company.tool.api.enums.RetryerEnum;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 		refundNotifyReq.setRefundAll(totalRefundAmount.compareTo(orderPayRefund.getAmount()) == 0);
 
-		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(refundNotifyReq).build();
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(refundNotifyReq).waitStrategy(RetryerEnum.WaitStrategy.WECHAT).build();
 		retryerFeign.call(retryerInfoReq);
 	}
 
