@@ -4,11 +4,8 @@ FROM springcloud-template/base-image:v1
 # 将jar文件添加到容器中并更名为app.jar
 COPY target/template-*.jar app.jar
 
-# 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 8080:8080’指定
+# 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 外端口:内端口’指定
 EXPOSE 6001
-
-# 创建日志目录
-RUN mkdir -p /logs
 
 # 在容器启动时运行jar包
 ENTRYPOINT ["java"\
