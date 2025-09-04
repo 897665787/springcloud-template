@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y less vim net-tools procps
 # 设置工作目录为/app，默认为/
 WORKDIR /app
 
-# 定义卷，挂载日志目录到宿主机，docker run加上参数‘-v 宿主机目录:/app/logs’，如：‘-v /logs:/app/logs’
+# 数据卷，挂载日志目录到宿主机，docker run加上参数‘-v 宿主机目录:/app/logs’，如：‘-v /logs:/app/logs’
 VOLUME logs
 
 # 将依赖的插件添加到容器中
