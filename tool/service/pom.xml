@@ -167,6 +167,14 @@
 		    <version>1.0.10</version>
 		</dependency>
         <!-- 数据库 -->
+
+		<!-- 工作流、审批流：https://gitee.com/aizuda/flowlong -->
+		<dependency>
+			<groupId>com.aizuda</groupId>
+			<artifactId>flowlong-spring-boot-starter</artifactId>
+			<version>1.1.16</version>
+		</dependency>
+		<!-- 工作流、审批流：https://gitee.com/aizuda/flowlong -->
         
 	</dependencies>
 	<build>
