@@ -1,4 +1,4 @@
-package com.company.tool.flow;
+package com.company.tool.workflow;
 
 import com.aizuda.bpm.engine.entity.FlwTask;
 

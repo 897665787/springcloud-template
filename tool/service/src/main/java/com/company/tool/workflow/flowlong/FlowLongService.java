@@ -1,9 +1,9 @@
-package com.company.tool.flow.flowlong;
+package com.company.tool.workflow.flowlong;
 
 import com.aizuda.bpm.engine.FlowLongEngine;
 import com.aizuda.bpm.engine.core.FlowCreator;
 import com.aizuda.bpm.engine.entity.FlwTask;
-import com.company.tool.flow.WorkFlowService;
+import com.company.tool.workflow.WorkFlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
