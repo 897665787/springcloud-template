@@ -146,7 +146,7 @@ springcloud-template
 |-------------------|------|--------------------|
 | template-eureka   | 7001 | 注册中心（可替换为nacos） |
 | template-gateway  | 5001 | 网关                 |
-| template-config   | 4001 | 配置中心（可替换为nacos）    |
+| template-config   | 4010 | 配置中心（可替换为nacos）    |
 | template-monitor  | 3001 | 监控                 |
 | template-system   | 8003 | 系统服务               |
 | template-tool     | 4001 | 工具服务               |
@@ -157,7 +157,7 @@ springcloud-template
 | template-app      | 6101 | APP端              |
 | template-openapi  | 6201 | 第三方访问入口          |
 | template-job      | 7002 | 定时任务               |
-| template-adminapi | 5001 | 管理后台端 |
+| template-adminapi | 5010 | 管理后台端 |
 
 [![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 

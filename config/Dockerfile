@@ -18,7 +18,7 @@ VOLUME /logs
 COPY target/template-*.jar app.jar
 
 # 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 外端口:内端口’指定
-EXPOSE 4001
+EXPOSE 4010
 
 # 在容器启动时运行jar包
 ENTRYPOINT ["java"\

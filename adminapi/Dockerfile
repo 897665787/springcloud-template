@@ -5,7 +5,7 @@ FROM springcloud-template/base-image:v1
 COPY target/template-*.jar app.jar
 
 # 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 外端口:内端口’指定
-EXPOSE 5001
+EXPOSE 5010
 
 # 在容器启动时运行jar包
 ENTRYPOINT ["java"\
@@ -54,7 +54,7 @@ ENTRYPOINT ["java"\
 ,"-Dskywalking.agent.service_name=springcloud-template::template-adminapi" \
 ,"-Dskywalking.collector.backend_service=127.0.0.1:11800" \
 # jmx监控
-,"-javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=25001:plugins/prometheus/jmx_prometheus_javaagent-config.yaml" \
+,"-javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=25010:plugins/prometheus/jmx_prometheus_javaagent-config.yaml" \
 
 ,"-jar","/app.jar"\
 ,"--spring.profiles.active=dev"\
