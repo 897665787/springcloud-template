@@ -1,28 +1,15 @@
-# 使用官方的OpenJDK 8镜像作为基础镜像
-FROM openjdk:8-jre-slim
-
-# 在镜像中创建一个目录存放我们的应用
-VOLUME /tmp
-
-# 指定时区
-ENV TZ=Asia/Shanghai LANG=C.UTF-8 LC_ALL=C.UTF-8
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# 安装一些镜像中没有的软件
-RUN apt-get update && apt-get install -y less vim net-tools procps
+# 请先使用根目录docker/Dockerfile构建基础镜像
+FROM springcloud-template/base-image:v1
 
 # 将jar文件添加到容器中并更名为app.jar
 COPY target/template-*.jar app.jar
 
-# 暴露容器内的端口给外部访问
-#EXPOSE 8080 可以在docker run中使用‘-p 8080:8080’指定
-
-# 创建日志目录
-RUN mkdir -p /logs
+# 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 外端口:内端口’指定
+EXPOSE 9001
 
 # 在容器启动时运行jar包
 ENTRYPOINT ["java"\
-# urandom安全性没有random高，默认：file:/dev/random
+# 避免意外阻塞代码，urandom安全性没有random高，默认：file:/dev/random
 ,"-Djava.security.egd=file:/dev/./urandom"\
 
 # 最小堆，默认：物理内存1/64（最小1MB），最大堆，默认：物理内存1/4（最大1GB）
@@ -59,6 +46,15 @@ ENTRYPOINT ["java"\
 ,"-XX:ErrorFile=./logs/hs_err_pid-%p.log"\
 # 发生致命错误时，记录栈信息、堆信息
 ,"-XX:OnError=\"jstack %p > ./logs/error-jstack-%p.log;jmap -dump:format=b,file=./logs/error-heapdump-%p.hprof %p\""\
+
+# 阿里TTL，有功能性支持线程池传递上下文
+,"-javaagent:plugins/ttl/transmittable-thread-local-2.14.5.jar"\
+# skywalking日志追踪
+,"-javaagent:plugins/skywalking-agent/skywalking-agent.jar" \
+,"-Dskywalking.agent.service_name=springcloud-template::template-job" \
+,"-Dskywalking.collector.backend_service=127.0.0.1:11800" \
+# jmx监控
+,"-javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=29001:plugins/prometheus/jmx_prometheus_javaagent-config.yaml" \
 
 ,"-jar","/app.jar"\
 ,"--spring.profiles.active=dev"\
