@@ -1,6 +1,6 @@
 # bootstrap是系统级配置文件，优先级高于application.yml，建议不可变的配置放在bootstrap.yml中
 server:
-  port: 5010
+  port: 9030
   shutdown: graceful # 优雅关闭应用
   tomcat:
     threads:

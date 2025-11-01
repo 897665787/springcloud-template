@@ -62,5 +62,5 @@ ENTRYPOINT ["java"\
 
 ,"-jar","/app.jar"\
 ,"--spring.profiles.active=dev"\
-,"--eureka.client.service-url.defaultZone=http://host.docker.internal:7001/eureka/"\
+,"--eureka.client.service-url.defaultZone=http://host.docker.internal:7010/eureka/"\
 ]

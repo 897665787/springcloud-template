@@ -22,6 +22,6 @@ docker build -t template-gateway .
 cd ../web
 
 运行镜像demo：
-docker run --name template-eureka -d -p 7001:7001 template-eureka
-docker run --name template-gateway -d -p 5001:5001 template-gateway
-docker run --name template-web -d -p 6001:6001 template-web
+docker run --name template-eureka -d -p 7010:7010 template-eureka
+docker run --name template-gateway -d -p 7020:7020 template-gateway
+docker run --name template-web -d -p 9010:9010 template-web

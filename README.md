@@ -144,20 +144,22 @@ springcloud-template
 
 | 服务                | 端口   | 功能说明               |
 |-------------------|------|--------------------|
-| template-eureka   | 7001 | 注册中心（可替换为nacos） |
-| template-gateway  | 5001 | 网关                 |
-| template-config   | 4010 | 配置中心（可替换为nacos）    |
-| template-monitor  | 3001 | 监控                 |
-| template-system   | 8003 | 系统服务               |
-| template-tool     | 4001 | 工具服务               |
-| template-user     | 8002 | 用户服务               |
-| template-order    | 8001 | 订单服务               |
-| template-im       | 8004 | 即时通讯服务             |
-| template-web      | 6001 | WEB端              |
-| template-app      | 6101 | APP端              |
-| template-openapi  | 6201 | 第三方访问入口          |
-| template-job      | 7002 | 定时任务               |
-| template-adminapi | 5010 | 管理后台端 |
+| template-eureka   | 7010 | 注册中心（可替换为nacos） |
+| template-gateway  | 7020 | 网关                 |
+| template-config   | 7030 | 配置中心（可替换为nacos）    |
+| template-monitor  | 7040 | 监控                 |
+| template-system   | 8010 | 系统服务               |
+| template-tool     | 8020 | 工具服务               |
+| template-user     | 8030 | 用户服务               |
+| template-order    | 8040 | 订单服务               |
+| template-im       | 8050 | 即时通讯服务             |
+| template-web      | 9010 | WEB端              |
+| template-app      | 9020 | APP端              |
+| template-adminapi | 9030 | 管理后台端 |
+| template-job      | 9040 | 定时任务               |
+| template-openapi  | 9050 | 第三方访问入口          |
+
+端口规范：7XX0:公共组件，8XX0:内部微服务，9XX0:边缘微服务
 
 [![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 

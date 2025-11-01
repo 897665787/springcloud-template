@@ -15,7 +15,7 @@ VOLUME /logs
 COPY target/template-*.jar app.jar
 
 # 暴露容器内的端口给外部访问，也可以在docker run中使用‘-p 外端口:内端口’指定
-EXPOSE 5001
+EXPOSE 7020
 
 # 在容器启动时运行jar包
 ENTRYPOINT ["java"\
@@ -59,5 +59,5 @@ ENTRYPOINT ["java"\
 
 ,"-jar","/app.jar"\
 ,"--spring.profiles.active=dev"\
-,"--eureka.client.service-url.defaultZone=http://host.docker.internal:7001/eureka/"\
+,"--eureka.client.service-url.defaultZone=http://host.docker.internal:7010/eureka/"\
 ]
