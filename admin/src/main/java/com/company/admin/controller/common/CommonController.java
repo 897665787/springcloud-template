@@ -1,12 +1,10 @@
 package com.company.admin.controller.common;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
+import com.company.common.api.Result;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.jqdi.filestorage.core.FileStorage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,13 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.company.common.api.Result;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.jqdi.filestorage.core.FileStorage;
-import com.jqdi.filestorage.core.FileUrl;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 @Slf4j
@@ -65,9 +62,9 @@ public class CommonController {
     			String fileName = generateFileName(file.getOriginalFilename());
 				String fullFileName = fullFileName(folders[i], fileName);
 
-    			FileUrl fileUrl = fileStorage.upload(inputStream, fullFileName);
-    			
-    			resultList.add(fileUrl.getDomainUrl());
+                fileStorage.upload(inputStream, fullFileName);
+
+    			resultList.add(fullFileName);
     		} catch (IOException e) {
     			log.error("IOException", e);
     		}
