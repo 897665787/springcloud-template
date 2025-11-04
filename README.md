@@ -1,6 +1,11 @@
-一个基于 Spring Cloud Netflix 的微服务开发脚手架，记录了各种基础、通用功能的最佳实践。
+# springcloud-template
 
-## 功能说明
+## 项目介绍
+
+springcloud-template 是一个企业级的Spring Cloud微服务架构模板，整合了大量常用组件和最佳实践，帮助快速搭建微服务项目。
+
+### 特性
+
 - 基于Eureka服务下线实现无报错优雅发版，优雅关闭应用
 - 魔改负载路由，实现环境流量路由到开发本机调试
 - 统一异常处理和响应包装
@@ -161,8 +166,6 @@ springcloud-template
 
 [![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 
-### 项目架构
-
 [![模块说明截图](./doc/架构图.jpg)](https://www.processon.com/view/link/68713ad7c67d8579a95c07d2?cid=686fc6f7352e7c324d1b6bdf)
 
 ### 本地开发 运行
@@ -184,8 +187,48 @@ spring:
 
 ### 运用
 
-- 建议作为参考demo，再结合你的项目选择合适代码放到你的项目中
+#### 快速开始
 
+1. 克隆项目到本地
+2. 导入项目到IDE（推荐IntelliJ IDEA），等待Maven依赖下载完成
+3. 启动基础服务：
+   - 启动注册中心：运行`eureka`模块的`EurekaApplication`
+   - 启动网关：运行[gateway](gateway)模块的`GatewayApplication`
+4. 启动业务服务：
+   - 根据需要启动相应的业务服务，如[system](system)、[user](user)、[order](order)等
+5. 访问服务：
+   - API文档：http://localhost:5001/doc.html
+   - Eureka控制台：http://localhost:7001
+
+#### Docker部署
+详细说明请参考 [docker/README.md](docker/README.md)
+
+1. 构建基础镜像：
+   ```bash
+   cd docker
+   docker build -t springcloud-template/base-image:v1 .
+   ```
+   
+2. 构建并启动各服务：
+   - 构建eureka服务
+   ```bash
+    cd ../eureka
+    docker build -t template-eureka .
+    docker run -d -it -p 7001:7001 -v D:/logs/template-eureka:/logs --name template-eureka template-eureka
+   ```
+   - 构建web服务
+   ```bash
+    cd ../web
+    docker build -t template-web .
+    docker run -d -it -p 7001:7001 -v D:/logs/template-eureka:/logs --name template-eureka template-eureka
+  ```
+    - 构建其他服务类似...
+
+#### 自定义开发
+
+1. 选择需要的功能模块作为参考
+2. 复制相关代码到你的项目中
+3. 根据实际需求进行调整和扩展
 
 ## 开源共建
 
