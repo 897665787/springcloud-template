@@ -159,7 +159,9 @@ springcloud-template
 | template-job      | 9040 | 定时任务               |
 | template-openapi  | 9050 | 第三方访问入口          |
 
-端口规范：7XX0:公共组件，8XX0:内部微服务，9XX0:边缘微服务
+#### 端口规范
+- 7XX0:公共组件，8XX0:内部微服务，9XX0:边缘微服务
+- 最后1位用于同主机扩展多实例，如注册中心集群可使用7011,7012...
 
 [![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 
@@ -183,6 +185,25 @@ spring:
 ```
 
 - 每个微服务都可以单独启动、单独调试（如果需要预览API内没有依赖内部微服务，也可不启动），就可以请求相关API进行效果预览了（建议使用postman等工具）
+
+### 开关配置
+
+| 开关                                                   | 配置                                                                                                 | 配置文件                                                                                                                                                                        
+|------------------------------------------------------|----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 注册到eureka注册中心 <br/> 注册到nacos注册中心                     | eureka.client.enabled <br/> spring.cloud.nacos.discovery.enabled                                   | [bootstrap-eureka.yml](framework/src/main/resources/bootstrap-eureka.yml) <br/> [bootstrap-nacos-discovery.yml](framework/src/main/resources/bootstrap-nacos-discovery.yml) 
+| 注册到apollo配置中心 <br/> 注册到nacos配置中心 <br/> 注册到config配置中心 | apollo.bootstrap.enabled <br/> spring.cloud.nacos.config.enabled <br/> spring.cloud.config.enabled | [bootstrap-apollo.yml](framework/src/main/resources/bootstrap-apollo.yml) <br/> [bootstrap-nacos-config.yml](framework/src/main/resources/bootstrap-nacos-config.yml) <br/> [bootstrap-config.yml](framework/src/main/resources/bootstrap-config.yml)                                                                                   |
+| template-config                                      | 7030                                                                                               | 配置中心（可替换为nacos）                                                                                                                                                             |
+| template-monitor                                     | 7040                                                                                               | 监控                                                                                                                                                                          |
+| template-system                                      | 8010                                                                                               | 系统服务                                                                                                                                                                        |
+| template-tool                                        | 8020                                                                                               | 工具服务                                                                                                                                                                        |
+| template-user                                        | 8030                                                                                               | 用户服务                                                                                                                                                                        |
+| template-order                                       | 8040                                                                                               | 订单服务                                                                                                                                                                        |
+| template-im                                          | 8050                                                                                               | 即时通讯服务                                                                                                                                                                      |
+| template-web                                         | 9010                                                                                               | WEB端                                                                                                                                                                        |
+| template-app                                         | 9020                                                                                               | APP端                                                                                                                                                                        |
+| template-adminapi                                    | 9030                                                                                               | 管理后台端                                                                                                                                                                       |
+| template-job                                         | 9040                                                                                               | 定时任务                                                                                                                                                                        |
+| template-openapi                                     | 9050                                                                                               | 第三方访问入口                                                                                                                                                                     |
 
 ### 运用
 
