@@ -99,7 +99,7 @@ public class NotifyMock {
 		model.setTotalAmount("1");
 
         request.setBizModel(model);
-        request.setNotifyUrl("http://localhost:5001/server/callback/ali");
+        request.setNotifyUrl("http://localhost:7020/openapi/notify/aliPay");
 
 		NotifyMock.payNotify(config, request);
 	}
