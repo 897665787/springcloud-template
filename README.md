@@ -1,6 +1,11 @@
-一个基于 Spring Cloud Netflix 的微服务开发脚手架，记录了各种基础、通用功能的最佳实践。
+# springcloud-template
 
-## 功能说明
+## 项目介绍
+
+springcloud-template 是一个企业级的Spring Cloud微服务架构模板，整合了大量常用组件和最佳实践，帮助快速搭建微服务项目。
+
+### 特性
+
 - 基于Eureka服务下线实现无报错优雅发版，优雅关闭应用
 - 魔改负载路由，实现环境流量路由到开发本机调试
 - 统一异常处理和响应包装
@@ -144,20 +149,25 @@ springcloud-template
 
 | 服务                | 端口   | 功能说明               |
 |-------------------|------|--------------------|
-| template-eureka   | 7001 | 注册中心（可替换为nacos） |
-| template-gateway  | 5001 | 网关                 |
-| template-config   | 4001 | 配置中心（可替换为nacos）    |
-| template-monitor  | 3001 | 监控                 |
-| template-system   | 8003 | 系统服务               |
-| template-tool     | 4001 | 工具服务               |
-| template-user     | 8002 | 用户服务               |
-| template-order    | 8001 | 订单服务               |
-| template-im       | 8004 | 即时通讯服务             |
-| template-web      | 6001 | WEB端              |
-| template-app      | 6101 | APP端              |
-| template-openapi  | 6201 | 第三方访问入口          |
-| template-job      | 7002 | 定时任务               |
-| template-adminapi | 5001 | 管理后台端 |
+| template-eureka   | 7010 | 注册中心（可替换为nacos） |
+| template-gateway  | 7020 | 网关                 |
+| template-config   | 7030 | 配置中心（可替换为nacos）    |
+| template-monitor  | 7040 | 监控                 |
+| template-system   | 8010 | 系统服务               |
+| template-tool     | 8020 | 工具服务               |
+| template-user     | 8030 | 用户服务               |
+| template-order    | 8040 | 订单服务               |
+| template-im       | 8050 | 即时通讯服务             |
+| template-web      | 9010 | WEB端              |
+| template-app      | 9020 | APP端              |
+| template-adminapi | 9030 | 管理后台端 |
+| template-job      | 9040 | 定时任务               |
+| template-openapi  | 9050 | 第三方访问入口          |
+
+#### 端口规范
+
+- 7XX0:公共组件，8XX0:内部微服务，9XX0:边缘微服务
+- 最后1位用于同主机扩展多实例，如注册中心集群可使用7011,7012...
 
 [![模块说明截图](./doc/模块说明.jpg)](https://www.processon.com/view/link/68317e34db67fa46d0c8594e?cid=68317cad128c8b0017e8cd56)
 
@@ -165,27 +175,69 @@ springcloud-template
 
 [![模块说明截图](./doc/架构图.jpg)](https://www.processon.com/view/link/68713ad7c67d8579a95c07d2?cid=686fc6f7352e7c324d1b6bdf)
 
-### 本地开发 运行
+### 开发与运行
 
-- dev环境下默认关闭了注册中心，如开启请修改framework下bootstrap-eureka.yml或bootstrap-nacos-discovery.yml的dev环境配置
-```yaml
-eureka:
-  client:
-    enabled: true # Eureka注册中心开关
-# or
-spring:
-  cloud:
-    nacos:
-      discovery:
-        enabled: true # nacos注册中心开关
-```
+#### 按需执行[sql](sql)脚本
 
-- 每个微服务都可以单独启动、单独调试（如果需要预览API内没有依赖内部微服务，也可不启动），就可以请求相关API进行效果预览了（建议使用postman等工具）
+#### 开关配置
 
-### 运用
+| 开关/可选项                                        | 配置                                                                                                 | 说明                                                                                                                                                                                                                                                  |
+|-----------------------------------------------------|----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 注册到eureka注册中心 <br/> 注册到nacos注册中心                    | eureka.client.enabled <br/> spring.cloud.nacos.discovery.enabled                                   | [bootstrap-eureka.yml](framework/src/main/resources/bootstrap-eureka.yml) <br/> [bootstrap-nacos-discovery.yml](framework/src/main/resources/bootstrap-nacos-discovery.yml)                                                                         |
+| 注册到apollo配置中心 <br/> 注册到nacos配置中心 <br/> 注册到config配置中心 | apollo.bootstrap.enabled <br/> spring.cloud.nacos.config.enabled <br/> spring.cloud.config.enabled | [bootstrap-apollo.yml](framework/src/main/resources/bootstrap-apollo.yml) <br/> [bootstrap-nacos-config.yml](framework/src/main/resources/bootstrap-nacos-config.yml) <br/> [bootstrap-config.yml](framework/src/main/resources/bootstrap-config.yml) |
+| 使用resilience4j熔断器 <br/> 使用sentinel熔断器               | spring.cloud.circuitbreaker.resilience4j.enable <br/> spring.cloud.sentinel.enabled                | [application-resilience4j.yml](framework/src/main/resources/application-resilience4j.yml) <br/> [application-sentinel.yml](framework/src/main/resources/application-sentinel.yml)                                                                   |
+| 缓存                                                  | template.enable.cache                                                                              | [application-dev/../prod.yml](user/service/src/main/resources/application-dev.yml) <br/> guava:本地缓存（启动不依赖中间件，建议仅dev使用）<br/> redis:redis缓存（建议使用）<br/> combination:组合缓存（redis挂掉可切换至本地缓存）                                                              |
+| 锁                                                   | template.enable.lock                                                                               | [application-dev/../prod.yml](user/service/src/main/resources/application-dev.yml) <br/> jvm:jvm锁（启动不依赖中间件，建议仅dev使用）<br/> redisson:redisson分布式锁（建议使用）                                                                                               |
+| 消息驱动                                                | template.enable.message-driven                                                                     | [application-dev/../prod.yml](user/service/src/main/resources/application-dev.yml) <br/> springevent:spring事件（启动不依赖中间件，建议仅dev使用）<br/> rabbitmq:RabbitMQ消息队列（建议使用）<br/> rocketmq:RocketMQ消息队列（建议使用）                                                  |
+| 访问控制（仅边缘微服务有）                                       | template.enable.access-control                                                                     | [application-dev/../prod.yml](web/src/main/resources/application-dev.yml)) <br/> true:开启token鉴权 <br/> false:关闭token鉴权 （建议仅dev使用）                                                                                                                    |
 
-- 建议作为参考demo，再结合你的项目选择合适代码放到你的项目中
+#### 快速开始
 
+1. 启动基础服务：
+   - 启动注册中心：运行`eureka`模块的`EurekaApplication` 或 外置`nacos`
+     - dev环境下默认关闭了注册中心，如开启请修改framework下bootstrap-eureka.yml或bootstrap-nacos-discovery.yml的dev环境配置
+      ```yaml
+      eureka:
+        client:
+          enabled: true # Eureka注册中心开关
+      # or
+      spring:
+        cloud:
+          nacos:
+            discovery:
+              enabled: true # nacos注册中心开关
+      ```
+   - 启动网关：运行[gateway](gateway)模块的`GatewayApplication`
+2. 启动业务服务：
+   - 根据需要启动相应的业务服务，如[app](app)、[system](system)、[user](user)等
+3. 访问服务：
+   - Eureka控制台：http://localhost:7010
+   - API文档（基于gateway）：http://localhost:7020/doc.html
+
+#### Docker部署
+
+详细说明请参考 [docker/README.md](docker/README.md)
+
+1. 构建基础镜像：
+   ```bash
+   cd docker
+   docker build -t springcloud-template/base-image:v1 .
+   ```
+   
+2. 构建并启动各服务：
+   - 构建eureka服务
+   ```bash
+    cd ../eureka
+    docker build -t template-eureka .
+    docker run -d -it -p 7010:7010 -v D:/logs/template-eureka:/logs --name template-eureka template-eureka
+   ```
+   - 构建web服务
+   ```bash
+    cd ../web
+    docker build -t template-web .
+    docker run -d -it -p 9010:9010 -v D:/logs/template-web:/logs --name template-web template-web
+   ```
+   - 构建其他服务类似...
 
 ## 开源共建
 
@@ -195,5 +247,15 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
 允许商业使用，但务必保留类作者、Copyright 信息。
 
 ### 其他说明
-
 1. 联系作者 <a href="mailto:897665787@qq.com">897665787@qq.com</a>
+
+### 感谢
+ - nacos: https://nacos.io/
+ - 登录认证：https://gitee.com/jq_di/easy-login
+ - Sa-Token：https://sa-token.cc
+ - 文件存储：https://gitee.com/jq_di/file-storage
+ - 短信发送：https://gitee.com/jq_di/sms-sender
+ - Knife4j API文档：https://doc.xiaominfo.com
+ - 动态数据源：https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter
+ - XXL-JOB：https://gitee.com/xuxueli0323/xxl-job
+

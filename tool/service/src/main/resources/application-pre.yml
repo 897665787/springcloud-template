@@ -18,7 +18,7 @@ filestorage:
   local:
     endpoint: D:/home/data/oss
     bucketName: buket-template-pre
-    domain: http://localhost:4001 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
+    domain: http://localhost:8020 # 访问域名，可以结合spring.resources.static-locations静态资源来使用 或 使用nginx配置访问目录指向
   minio:
     endpoint: http://127.0.0.1:9000
     accessKey: pRYo5fCm9ZyVNKLA

@@ -22,7 +22,7 @@ public class ReqTest {
 	}
 
 	static void orderinfo() {
-		String urlString = "http://localhost:6201/order/info";
+		String urlString = "http://localhost:9050/order/info";
 
 		long timestamp = System.currentTimeMillis();
 		String noncestr = RandomUtil.randomString(10);
@@ -41,7 +41,7 @@ public class ReqTest {
 	static void orderget() {
 		String orderCode = "12312345646";
 
-		String urlString = "http://localhost:6201/order/get?orderCode=" + orderCode;
+		String urlString = "http://localhost:9050/order/get?orderCode=" + orderCode;
 
 		long timestamp = System.currentTimeMillis();
 		String noncestr = RandomUtil.randomString(10);
@@ -61,7 +61,7 @@ public class ReqTest {
 	}
 
 	static void ordercreate() {
-		String urlString = "http://localhost:6201/order/create";
+		String urlString = "http://localhost:9050/order/create";
 		long timestamp = System.currentTimeMillis();
 		String noncestr = RandomUtil.randomString(10);
 
@@ -82,7 +82,7 @@ public class ReqTest {
 	}
 
 	static void ordercreate2() {
-		String urlString = "http://localhost:6201/order/create2";
+		String urlString = "http://localhost:9050/order/create2";
 		long timestamp = System.currentTimeMillis();
 		String noncestr = RandomUtil.randomString(10);
 
