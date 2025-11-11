@@ -26,8 +26,6 @@ public class JvmLockClient implements LockClient {
 		try {
 			lock.lock();
 			return supplier.get();
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			lock.unlock();
 		}
@@ -35,7 +33,7 @@ public class JvmLockClient implements LockClient {
 
 	private ReentrantLock getLock(String name) {
 		try {
-			return locks.get(name, () -> new ReentrantLock());
+			return locks.get(name, ReentrantLock::new);
 		} catch (ExecutionException e) {
 			log.error("getLock error", e);
 		}

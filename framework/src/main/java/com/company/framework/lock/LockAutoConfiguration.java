@@ -1,5 +1,6 @@
 package com.company.framework.lock;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -25,4 +26,11 @@ public class LockAutoConfiguration {
 		LockClient lockClient = new RedissonLockClient(redisProperties);
 		return lockClient;
 	}
+
+    @Bean
+    @ConditionalOnBean(LockClient.class)
+    public AnnotationLockAspect annotationLockAspect(LockClient lockClient) {
+        AnnotationLockAspect annotationLockAspect = new AnnotationLockAspect(lockClient);
+        return annotationLockAspect;
+    }
 }
