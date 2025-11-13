@@ -1,21 +1,18 @@
 package com.company.order.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
+import com.company.order.api.feign.fallback.ThrowExceptionFallback;
+import com.company.order.api.request.PayRefundApplyReq;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.order.api.constant.Constants;
-import com.company.order.api.request.PayRefundApplyReq;
+import java.util.List;
 
-import org.springframework.cloud.openfeign.FallbackFactory;
-
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/refundApply", fallbackFactory = RefundApplyFeign.RefundApplyFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/refundApply", fallbackFactory = ThrowExceptionFallback.class)
 public interface RefundApplyFeign {
 
 	/**
@@ -42,29 +39,4 @@ public interface RefundApplyFeign {
 	 */
 	@PostMapping("/dealRefundApply")
 	Result<Boolean> dealRefundApply(@RequestParam("id") Integer id);
-
-	@Component
-	class RefundApplyFeignFactory implements FallbackFactory<RefundApplyFeign> {
-
-		@Override
-		public RefundApplyFeign create(Throwable throwable) {
-			return new RefundApplyFeign() {
-
-				@Override
-				public Result<Integer> refundApply(PayRefundApplyReq payRefundApplyReq) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<List<Integer>> selectId4Deal() {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<Boolean> dealRefundApply(Integer id) {
-					return Result.onFallbackError();
-				}
-			};
-		}
-	}
 }

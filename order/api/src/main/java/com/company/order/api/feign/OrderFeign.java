@@ -4,7 +4,6 @@ import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.feign.fallback.OrderFeignFallback;
-import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import com.company.order.api.request.*;
 import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderDetailResp;
@@ -18,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-//@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = ThrowExceptionFallback.class)
+//@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = ThrowExceptionFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
 public interface OrderFeign {
 
 	/**
@@ -61,7 +60,7 @@ public interface OrderFeign {
 	/**
 	 * 修改订单状态（确认收货）
 	 * 
-	 * @param orderFinishReq
+	 * @param orderReceiveReq
 	 * @return
 	 */
 	@PostMapping("/receive")
@@ -91,7 +90,9 @@ public interface OrderFeign {
 	/**
 	 * 分页查询订单列表
 	 * 
-	 * @param id
+	 * @param current
+	 * @param size
+	 * @param status
 	 * @return
 	 */
 	@GetMapping("/page")

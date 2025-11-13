@@ -1,16 +1,13 @@
 package com.company.order.api.feign;
 
+import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
+import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.company.common.api.Result;
-import com.company.order.api.constant.Constants;
-
-import org.springframework.cloud.openfeign.FallbackFactory;
-
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/wxnotify", fallbackFactory = WxNotifyFeign.WxNotifyFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/wxnotify", fallbackFactory = ThrowExceptionFallback.class)
 public interface WxNotifyFeign {
 
 	/**
@@ -27,25 +24,4 @@ public interface WxNotifyFeign {
 	 */
 	@PostMapping("/wxPayRefundNotify")
 	Result<String> wxPayRefundNotify(@RequestBody String xmlString);
-	
-	@Component
-	class WxNotifyFeignFactory implements FallbackFactory<WxNotifyFeign> {
-
-		@Override
-		public WxNotifyFeign create(Throwable throwable) {
-			return new WxNotifyFeign() {
-
-				@Override
-				public Result<String> wxPayNotify(String xmlString) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<String> wxPayRefundNotify(String xmlString) {
-					return Result.onFallbackError();
-				}
-
-			};
-		}
-	}
 }
