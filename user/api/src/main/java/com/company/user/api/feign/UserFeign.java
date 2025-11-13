@@ -1,17 +1,16 @@
 package com.company.user.api.feign;
 
+import com.company.common.api.Result;
+import com.company.user.api.constant.Constants;
+import com.company.user.api.feign.fallback.ThrowExceptionFallback;
+import com.company.user.api.request.UserReq;
+import com.company.user.api.response.UserResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.user.api.constant.Constants;
-import com.company.user.api.feign.fallback.UserFeignFallback;
-import com.company.user.api.request.UserReq;
-import com.company.user.api.response.UserResp;
-
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/user", fallbackFactory = UserFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/user", fallbackFactory = ThrowExceptionFallback.class)
 public interface UserFeign {
 
 	@RequestMapping("/getById")
