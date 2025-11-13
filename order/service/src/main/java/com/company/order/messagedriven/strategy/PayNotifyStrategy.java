@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
+import com.company.tool.api.enums.RetryerEnum;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,7 @@ public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
 		log.info("支付回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
-		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(payNotifyReq).build();
+		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(payNotifyReq).waitStrategy(RetryerEnum.WaitStrategy.WECHAT).build();
 		retryerFeign.call(retryerInfoReq);
 	}
 

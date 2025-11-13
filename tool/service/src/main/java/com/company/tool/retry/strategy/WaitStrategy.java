@@ -1,15 +1,15 @@
 package com.company.tool.retry.strategy;
 
 /**
- * 秒数策略
- * 
+ * 等待策略
+ *
  * @author JQ棣
  *
  */
-public interface SecondsStrategy {
+public interface WaitStrategy {
 
 	/**
-	 * 
+	 *
 	 * @param increaseSeconds
 	 *            递增秒数
 	 * @param failure

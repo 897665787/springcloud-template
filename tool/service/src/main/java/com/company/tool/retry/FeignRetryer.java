@@ -1,34 +1,31 @@
 package com.company.tool.retry;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
-
+import cn.hutool.core.date.LocalDateTimeUtil;
+import com.company.common.api.Result;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.trace.TraceManager;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-
-import com.company.common.api.Result;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.RetryerEnum;
 import com.company.tool.entity.RetryTask;
 import com.company.tool.enums.RetryTaskEnum;
 import com.company.tool.mapper.RetryTaskMapper;
-import com.company.tool.retry.strategy.SecondsStrategyBeanFactory;
-
-import cn.hutool.core.date.LocalDateTimeUtil;
+import com.company.tool.retry.strategy.WaitStrategyBeanFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -51,9 +48,9 @@ public class FeignRetryer {
 		Object jsonParams = retryerInfo.getJsonParams();
 		int increaseSeconds = retryerInfo.getIncreaseSeconds();
 		int maxFailure = retryerInfo.getMaxFailure();
-		RetryerEnum.SecondsStrategy secondsStrategy = retryerInfo.getSecondsStrategy();
-		if (secondsStrategy == null) {
-			secondsStrategy = RetryerEnum.SecondsStrategy.INCREMENT;
+		RetryerEnum.WaitStrategy waitStrategy = retryerInfo.getWaitStrategy();
+		if (waitStrategy == null) {
+			waitStrategy = RetryerEnum.WaitStrategy.INCREMENTING;
 		}
 
 		LocalDateTime now = LocalDateTime.now();
@@ -71,7 +68,7 @@ public class FeignRetryer {
 				.setMaxFailure(maxFailure)
 				.setFailure(0)
 				.setTraceId(traceManager.get())
-				.setSecondsStrategy(secondsStrategy.getCode());
+				.setWaitStrategy(waitStrategy.getCode());
 		baseMapper.insert(retryTask);
 
 		if (nextDisposeTime.isAfter(now)) {
@@ -144,8 +141,8 @@ public class FeignRetryer {
 		}
 		remark = Utils.rightRemark(retryTask.getRemark(), remark);
 
-		String secondsStrategy = retryTask.getSecondsStrategy();
-		int nextSeconds = SecondsStrategyBeanFactory.of(secondsStrategy).nextSeconds(retryTask.getIncreaseSeconds(),
+		String waitStrategyCode = retryTask.getWaitStrategy();
+		int nextSeconds = WaitStrategyBeanFactory.of(waitStrategyCode).nextSeconds(retryTask.getIncreaseSeconds(),
 				retryTask.getFailure());
 		LocalDateTime nextDisposeTime = retryTask.getNextDisposeTime().plusSeconds(nextSeconds);
 		baseMapper.retryFail(RetryTaskEnum.Status.CALL_FAIL, nextDisposeTime, remark, retryTask.getId());
@@ -156,26 +153,6 @@ public class FeignRetryer {
 
 	public List<Integer> selectId4CallFail() {
 		return baseMapper.selectId4CallFail(RetryTaskEnum.Status.CALL_FAIL.getCode());
-	}
-
-	public static void main(String[] args) {
-		// 等比数列求和公式
-		double a1 = 60;// 基数
-		int retrytimes = 13;// 重试次数
-
-		double q = 2;// 比
-		int n = retrytimes - 1;// 项数
-
-		for (int i = 1; i <= n; i++) {
-			System.out.println("第" + (i + 1) + "次等待秒数：" + (a1 * Math.pow(q, i - 1)));
-		}
-
-		double sn = a1 * (1.0 - Math.pow(q, n)) / (1 - q);
-
-		System.out.println("秒数:" + sn);
-		System.out.println("分钟:" + sn / 60);
-		System.out.println("小时:" + sn / 60 / 60);
-		System.out.println("天数:" + sn / 60 / 60 / 24);
 	}
 
 }

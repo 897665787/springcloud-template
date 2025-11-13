@@ -36,9 +36,9 @@ public class RetryTask {
 	 */
 	private Integer status;
 	/**
-	 * 递增秒数策略(increment:增量,fix:固定)
+	 * 等待策略(incrementing:线性递增,fixed:固定等待,exponential:指数退避,fibonacci:斐波那契,random:随机,wechat:微信)
 	 */
-	private String secondsStrategy;
+	private String waitStrategy;
 	/**
 	 * 递增秒数
 	 */
