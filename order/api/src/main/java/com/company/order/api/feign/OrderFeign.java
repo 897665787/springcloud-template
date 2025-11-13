@@ -3,7 +3,7 @@ package com.company.order.api.feign;
 import com.company.common.api.Result;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderEnum;
-import com.company.order.api.feign.fallback.OrderFeignFallback;
+import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import com.company.order.api.request.*;
 import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderDetailResp;
@@ -17,115 +17,115 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-//@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = ThrowExceptionFallback.class)
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
+//@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class) // 自定义降级，已废弃，建议使用通用抛异常降级ThrowExceptionFallback
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = ThrowExceptionFallback.class)
 public interface OrderFeign {
 
-	/**
-	 * 注册订单
-	 * 
-	 * @param registerOrderReq
-	 * @return
-	 */
-	@PostMapping("/registerOrder")
-	Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
+    /**
+     * 注册订单
+     *
+     * @param registerOrderReq
+     * @return
+     */
+    @PostMapping("/registerOrder")
+    Result<Void> registerOrder(@RequestBody RegisterOrderReq registerOrderReq);
 
-	/**
-	 * 修改订单状态（用户取消订单）
-	 * 
-	 * @param orderCancelReq
-	 * @return
-	 */
-	@PostMapping("/cancelByUser")
-	Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq);
-	
-	/**
-	 * 修改订单状态（超时取消订单）
-	 * 
-	 * @param orderCancelReq
-	 * @return
-	 */
-	@PostMapping("/cancelByTimeout")
-	Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
-	
-	/**
-	 * 修改订单状态（支付成功）
-	 * 
-	 * @param orderPaySuccessReq
-	 * @return
-	 */
-	@PostMapping("/paySuccess")
-	Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
-	
-	/**
-	 * 修改订单状态（确认收货）
-	 * 
-	 * @param orderReceiveReq
-	 * @return
-	 */
-	@PostMapping("/receive")
-	Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq);
-	
-	/**
-	 * 修改订单状态（完成订单）
-	 * 
-	 * @param orderFinishReq
-	 * @return
-	 */
-	@PostMapping("/finish")
-	Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq);
+    /**
+     * 修改订单状态（用户取消订单）
+     *
+     * @param orderCancelReq
+     * @return
+     */
+    @PostMapping("/cancelByUser")
+    Result<OrderDetailResp> cancelByUser(@RequestBody OrderCancelReq orderCancelReq);
 
-	@PostMapping("/refundApply")
-	Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
+    /**
+     * 修改订单状态（超时取消订单）
+     *
+     * @param orderCancelReq
+     * @return
+     */
+    @PostMapping("/cancelByTimeout")
+    Result<Boolean> cancelByTimeout(@RequestBody OrderCancelReq orderCancelReq);
 
-	@PostMapping("/refundFail")
-	Result<Boolean> refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq);
+    /**
+     * 修改订单状态（支付成功）
+     *
+     * @param orderPaySuccessReq
+     * @return
+     */
+    @PostMapping("/paySuccess")
+    Result<Boolean> paySuccess(@RequestBody OrderPaySuccessReq orderPaySuccessReq);
 
-	@PostMapping("/refundFinish")
-	Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+    /**
+     * 修改订单状态（确认收货）
+     *
+     * @param orderReceiveReq
+     * @return
+     */
+    @PostMapping("/receive")
+    Result<Boolean> receive(@RequestBody OrderReceiveReq orderReceiveReq);
 
-	@GetMapping("/deleteOrder")
-	Result<Void> deleteOrder(@RequestParam("orderCode") String orderCode);
-	
-	/**
-	 * 分页查询订单列表
-	 * 
-	 * @param current
-	 * @param size
-	 * @param status
-	 * @return
-	 */
-	@GetMapping("/page")
-	Result<List<OrderResp>> page(@RequestParam("current") Integer current, @RequestParam("size") Integer size,
-			@RequestParam(value = "status", required = false) OrderEnum.StatusEnum status);
+    /**
+     * 修改订单状态（完成订单）
+     *
+     * @param orderFinishReq
+     * @return
+     */
+    @PostMapping("/finish")
+    Result<Boolean> finish(@RequestBody OrderFinishReq orderFinishReq);
 
-	/**
-	 * 根据订单号查询订单详情
-	 * 
-	 * @param orderCode
-	 * @return
-	 */
-	@GetMapping("/detail")
-	Result<OrderDetailResp> detail(@RequestParam("orderCode") String orderCode);
-	
-	/**
-	 * 查询超时未收货订单号改为已收货(job)
-	 * 
-	 * @param limit
-	 * @return
-	 */
-	@GetMapping("/select4OverSendSuccess")
-	Result<List<String>> select4OverSendSuccess(@RequestParam("limit") Integer limit);
+    @PostMapping("/refundApply")
+    Result<OrderRefundApplyResp> refundApply(@RequestBody OrderRefundApplyReq orderRefundApplyReq);
 
-	/**
-	 * 查询超时未评价订单号改为已完成(job)
-	 * 
-	 * @param limit
-	 * @return
-	 */
-	@GetMapping("/select4OverWaitReview")
-	Result<List<String>> select4OverWaitReview(@RequestParam("limit") Integer limit);
+    @PostMapping("/refundFail")
+    Result<Boolean> refundFail(@RequestBody OrderRefundFailReq orderRefundFailReq);
 
-	@GetMapping("/selectByOrderCode")
-	Result<Order4Resp> selectByOrderCode(@RequestParam("orderCode") String orderCode);
+    @PostMapping("/refundFinish")
+    Result<Boolean> refundFinish(@RequestBody OrderRefundFinishReq orderRefundFinishReq);
+
+    @GetMapping("/deleteOrder")
+    Result<Void> deleteOrder(@RequestParam("orderCode") String orderCode);
+
+    /**
+     * 分页查询订单列表
+     *
+     * @param current
+     * @param size
+     * @param status
+     * @return
+     */
+    @GetMapping("/page")
+    Result<List<OrderResp>> page(@RequestParam("current") Integer current, @RequestParam("size") Integer size,
+                                 @RequestParam(value = "status", required = false) OrderEnum.StatusEnum status);
+
+    /**
+     * 根据订单号查询订单详情
+     *
+     * @param orderCode
+     * @return
+     */
+    @GetMapping("/detail")
+    Result<OrderDetailResp> detail(@RequestParam("orderCode") String orderCode);
+
+    /**
+     * 查询超时未收货订单号改为已收货(job)
+     *
+     * @param limit
+     * @return
+     */
+    @GetMapping("/select4OverSendSuccess")
+    Result<List<String>> select4OverSendSuccess(@RequestParam("limit") Integer limit);
+
+    /**
+     * 查询超时未评价订单号改为已完成(job)
+     *
+     * @param limit
+     * @return
+     */
+    @GetMapping("/select4OverWaitReview")
+    Result<List<String>> select4OverWaitReview(@RequestParam("limit") Integer limit);
+
+    @GetMapping("/selectByOrderCode")
+    Result<Order4Resp> selectByOrderCode(@RequestParam("orderCode") String orderCode);
 }
