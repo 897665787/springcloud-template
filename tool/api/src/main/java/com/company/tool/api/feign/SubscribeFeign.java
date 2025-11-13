@@ -1,20 +1,19 @@
 package com.company.tool.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.tool.api.constant.Constants;
+import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
+import com.company.tool.api.request.SubscribeGrantReq;
+import com.company.tool.api.request.SubscribeSendReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.tool.api.constant.Constants;
-import com.company.tool.api.feign.fallback.SubscribeFeignFallback;
-import com.company.tool.api.request.SubscribeGrantReq;
-import com.company.tool.api.request.SubscribeSendReq;
+import java.util.List;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/subscribe", fallbackFactory = SubscribeFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/subscribe", fallbackFactory = ThrowExceptionFallback.class)
 public interface SubscribeFeign {
 
 	@GetMapping("/selectTemplateCodeByGroup")

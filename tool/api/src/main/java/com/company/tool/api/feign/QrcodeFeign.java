@@ -1,17 +1,14 @@
 package com.company.tool.api.feign;
 
+import com.company.common.api.Result;
+import com.company.tool.api.constant.Constants;
+import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
+import com.company.tool.api.request.WxaCodeReq;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.company.common.api.Result;
-import com.company.tool.api.constant.Constants;
-import com.company.tool.api.request.WxaCodeReq;
-
-import org.springframework.cloud.openfeign.FallbackFactory;
-
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/qrcode", fallbackFactory = QrcodeFeign.QrcodeFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/qrcode", fallbackFactory = ThrowExceptionFallback.class)
 public interface QrcodeFeign {
 
 	/**
@@ -31,26 +28,5 @@ public interface QrcodeFeign {
 	 */
 	@PostMapping(value = "/wxaCode")
 	Result<byte[]> wxaCode(@RequestBody WxaCodeReq wxaCodeReq);
-
-	@Component
-	class QrcodeFeignFactory implements FallbackFactory<QrcodeFeign> {
-
-		@Override
-		public QrcodeFeign create(Throwable throwable) {
-			return new QrcodeFeign() {
-
-				@Override
-				public Result<String> wxaCode2upload(WxaCodeReq wxaCodeReq) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<byte[]> wxaCode(WxaCodeReq wxaCodeReq) {
-					return Result.onFallbackError();
-				}
-
-			};
-		}
-	}
 
 }

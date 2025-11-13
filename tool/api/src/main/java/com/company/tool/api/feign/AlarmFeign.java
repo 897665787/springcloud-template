@@ -1,16 +1,16 @@
 package com.company.tool.api.feign;
 
+import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.company.common.api.Result;
 import com.company.tool.api.constant.Constants;
-import com.company.tool.api.feign.fallback.AlarmFeignFallback;
 import com.company.tool.api.request.AlarmReq;
 import com.company.tool.api.request.WebhookAlarmReq;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/alarm", fallbackFactory = AlarmFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/alarm", fallbackFactory = ThrowExceptionFallback.class)
 public interface AlarmFeign {
 
 	/**
