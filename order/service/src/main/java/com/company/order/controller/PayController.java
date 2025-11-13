@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import com.company.framework.lock.annotation.Lock;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,68 +84,64 @@ public class PayController implements PayFeign {
 	private static final String NOTIFY_URL_PAYRESULT = com.company.order.api.constant.Constants.feignUrl("/pay/pollingPayResult");
 	private static final String NOTIFY_URL_REFUNDRESULT = com.company.order.api.constant.Constants.feignUrl("/pay/pollingRefundResult");
 
+    @Lock("'lock:orderpay:ordercode:'+#payReq.orderCode")
 	@Override
 	public Result<PayResp> unifiedorder(@RequestBody @Valid PayReq payReq) {
-
 		String orderCode = payReq.getOrderCode();
-		String key = String.format("lock:orderpay:ordercode:%s", orderCode);
-		PayResp payRespR = lockClient.doInLock(key, () -> {
-			OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
-			if (orderPay == null) {
-				orderPay = new OrderPay();
-				orderPay.setUserId(payReq.getUserId());
-				orderPay.setOrderCode(orderCode);
-				orderPay.setBusinessType(payReq.getBusinessType().getCode());
-				orderPay.setMethod(payReq.getMethod().getCode());
-				orderPay.setAmount(payReq.getAmount());
-				orderPay.setBody(payReq.getBody());
-				orderPay.setProductId(payReq.getProductId());
-				orderPay.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
-				orderPay.setNotifyUrl(payReq.getNotifyUrl());
-				orderPay.setNotifyAttach(payReq.getAttach());
-				orderPay.setRemark(payReq.getRemark());
+        OrderPay orderPay = orderPayService.selectByOrderCode(orderCode);
+        if (orderPay == null) {
+            orderPay = new OrderPay();
+            orderPay.setUserId(payReq.getUserId());
+            orderPay.setOrderCode(orderCode);
+            orderPay.setBusinessType(payReq.getBusinessType().getCode());
+            orderPay.setMethod(payReq.getMethod().getCode());
+            orderPay.setAmount(payReq.getAmount());
+            orderPay.setBody(payReq.getBody());
+            orderPay.setProductId(payReq.getProductId());
+            orderPay.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
+            orderPay.setNotifyUrl(payReq.getNotifyUrl());
+            orderPay.setNotifyAttach(payReq.getAttach());
+            orderPay.setRemark(payReq.getRemark());
 
-				orderPayService.save(orderPay);
-			} else {
-				OrderPay orderPay4Update = new OrderPay();
-				orderPay4Update.setId(orderPay.getId());
-				orderPay4Update.setBusinessType(payReq.getBusinessType().getCode());
-				orderPay4Update.setMethod(payReq.getMethod().getCode());
-				orderPay4Update.setAmount(payReq.getAmount());
-				orderPay4Update.setBody(payReq.getBody());
-				orderPay4Update.setProductId(payReq.getProductId());
-				orderPay4Update.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
-				orderPay4Update.setNotifyUrl(payReq.getNotifyUrl());
-				orderPay4Update.setNotifyAttach(payReq.getAttach());
-				orderPay4Update.setRemark(payReq.getRemark());
+            orderPayService.save(orderPay);
+        } else {
+            OrderPay orderPay4Update = new OrderPay();
+            orderPay4Update.setId(orderPay.getId());
+            orderPay4Update.setBusinessType(payReq.getBusinessType().getCode());
+            orderPay4Update.setMethod(payReq.getMethod().getCode());
+            orderPay4Update.setAmount(payReq.getAmount());
+            orderPay4Update.setBody(payReq.getBody());
+            orderPay4Update.setProductId(payReq.getProductId());
+            orderPay4Update.setStatus(OrderPayEnum.Status.WAITPAY.getCode());
+            orderPay4Update.setNotifyUrl(payReq.getNotifyUrl());
+            orderPay4Update.setNotifyAttach(payReq.getAttach());
+            orderPay4Update.setRemark(payReq.getRemark());
 
-				orderPayService.updateById(orderPay4Update);
-			}
+            orderPayService.updateById(orderPay4Update);
+        }
 
-			payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
+        payTimeout(orderCode, payReq.getTimeoutSeconds());// 订单超时处理
 
-			// 支付参数
-			PayParams payParams = new PayParams();
-			payParams.setAppid(payReq.getAppid());
-			payParams.setMchid(payReq.getMchid());
-			payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
-			payParams.setBody(payReq.getBody());
-			payParams.setOutTradeNo(orderCode);
-			payParams.setSpbillCreateIp(payReq.getSpbillCreateIp());
-			payParams.setProductId(payReq.getProductId());
-			payParams.setOpenid(payReq.getOpenid());
+        // 支付参数
+        PayParams payParams = new PayParams();
+        payParams.setAppid(payReq.getAppid());
+        payParams.setMchid(payReq.getMchid());
+        payParams.setAmount(payReq.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));// 向上取整，保留2位小数
+        payParams.setBody(payReq.getBody());
+        payParams.setOutTradeNo(orderCode);
+        payParams.setSpbillCreateIp(payReq.getSpbillCreateIp());
+        payParams.setProductId(payReq.getProductId());
+        payParams.setOpenid(payReq.getOpenid());
 
-			PayClient tradeClient = PayFactory.of(payReq.getMethod());
-			PayResp payResp = tradeClient.pay(payParams);
-			if (!payResp.getSuccess()) {
-				ExceptionUtil.throwException(payResp.getMessage());
-			}
+        PayClient tradeClient = PayFactory.of(payReq.getMethod());
+        PayResp payResp = tradeClient.pay(payParams);
+        if (!payResp.getSuccess()) {
+            ExceptionUtil.throwException(payResp.getMessage());
+        }
 
-			payResult(orderCode);// 主动查询支付结果
+        payResult(orderCode);// 主动查询支付结果
 
-			return payResp;
-		});
-		return Result.success(payRespR);
+		return Result.success(payResp);
 	}
 
 	/**

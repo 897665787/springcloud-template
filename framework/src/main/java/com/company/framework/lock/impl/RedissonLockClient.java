@@ -35,8 +35,6 @@ public class RedissonLockClient implements LockClient {
 		try {
 			lock.lock();
 			return supplier.get();
-		} catch (Exception e) {
-			throw e;
 		} finally {
 			lock.unlock();
 		}
