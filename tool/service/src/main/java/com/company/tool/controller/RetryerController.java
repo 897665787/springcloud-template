@@ -25,7 +25,7 @@ public class RetryerController implements RetryerFeign {
 		RetryerInfo retryerInfo = RetryerInfo.builder()
 				.feignUrl(req.getFeignUrl()).jsonParams(req.getJsonParams())
 				.increaseSeconds(req.getIncreaseSeconds()).maxFailure(req.getMaxFailure())
-				.secondsStrategy(req.getSecondsStrategy()).nextDisposeTime(req.getNextDisposeTime()).build();
+				.waitStrategy(req.getWaitStrategy()).nextDisposeTime(req.getNextDisposeTime()).build();
 		feignRetryer.call(retryerInfo);
 		return Result.success();
 	}

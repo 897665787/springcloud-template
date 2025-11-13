@@ -11,7 +11,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -25,7 +24,7 @@ import com.company.tool.api.enums.RetryerEnum;
 import com.company.tool.entity.RetryTask;
 import com.company.tool.enums.RetryTaskEnum;
 import com.company.tool.mapper.RetryTaskMapper;
-import com.company.tool.retry.strategy.SecondsStrategyBeanFactory;
+import com.company.tool.retry.strategy.WaitStrategyBeanFactory;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -51,9 +50,9 @@ public class FeignRetryer {
 		Object jsonParams = retryerInfo.getJsonParams();
 		int increaseSeconds = retryerInfo.getIncreaseSeconds();
 		int maxFailure = retryerInfo.getMaxFailure();
-		RetryerEnum.SecondsStrategy secondsStrategy = retryerInfo.getSecondsStrategy();
-		if (secondsStrategy == null) {
-			secondsStrategy = RetryerEnum.SecondsStrategy.INCREMENT;
+		RetryerEnum.WaitStrategy waitStrategy = retryerInfo.getWaitStrategy();
+		if (waitStrategy == null) {
+			waitStrategy = RetryerEnum.WaitStrategy.INCREMENTING;
 		}
 
 		LocalDateTime now = LocalDateTime.now();
@@ -71,7 +70,7 @@ public class FeignRetryer {
 				.setMaxFailure(maxFailure)
 				.setFailure(0)
 				.setTraceId(traceManager.get())
-				.setSecondsStrategy(secondsStrategy.getCode());
+				.setWaitStrategy(waitStrategy.getCode());
 		baseMapper.insert(retryTask);
 
 		if (nextDisposeTime.isAfter(now)) {
@@ -144,8 +143,8 @@ public class FeignRetryer {
 		}
 		remark = Utils.rightRemark(retryTask.getRemark(), remark);
 
-		String secondsStrategy = retryTask.getSecondsStrategy();
-		int nextSeconds = SecondsStrategyBeanFactory.of(secondsStrategy).nextSeconds(retryTask.getIncreaseSeconds(),
+		String waitStrategyCode = retryTask.getWaitStrategy();
+		int nextSeconds = WaitStrategyBeanFactory.of(waitStrategyCode).nextSeconds(retryTask.getIncreaseSeconds(),
 				retryTask.getFailure());
 		LocalDateTime nextDisposeTime = retryTask.getNextDisposeTime().plusSeconds(nextSeconds);
 		baseMapper.retryFail(RetryTaskEnum.Status.CALL_FAIL, nextDisposeTime, remark, retryTask.getId());

@@ -42,7 +42,7 @@ public class RetryerInfo {
 	 * 递增秒数策略
 	 */
 	@Builder.Default
-	RetryerEnum.SecondsStrategy secondsStrategy = RetryerEnum.SecondsStrategy.INCREMENT;
+	RetryerEnum.WaitStrategy waitStrategy = RetryerEnum.WaitStrategy.INCREMENTING;
 	
 	/**
 	 * 指定首次的下次执行时间，可用于首次重试延迟
