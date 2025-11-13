@@ -1,12 +1,12 @@
 package com.company.system.api.feign;
 
 import com.company.common.api.Result;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
 import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.SysUserFeignFallback;
+import com.company.system.api.feign.fallback.ThrowExceptionFallback;
+import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserAssignRoleReq;
 import com.company.system.api.request.SysUserReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.response.SysUserInfoResp;
 import com.company.system.api.response.SysUserResp;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysUser", fallbackFactory = SysUserFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysUser", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysUserFeign {
 
 	@GetMapping("/page")
