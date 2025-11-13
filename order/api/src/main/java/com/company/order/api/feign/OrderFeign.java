@@ -1,31 +1,25 @@
 package com.company.order.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.order.api.constant.Constants;
+import com.company.order.api.enums.OrderEnum;
+import com.company.order.api.feign.fallback.OrderFeignFallback;
+import com.company.order.api.feign.fallback.ThrowExceptionFallback;
+import com.company.order.api.request.*;
+import com.company.order.api.response.Order4Resp;
+import com.company.order.api.response.OrderDetailResp;
+import com.company.order.api.response.OrderRefundApplyResp;
+import com.company.order.api.response.OrderResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.order.api.constant.Constants;
-import com.company.order.api.enums.OrderEnum;
-import com.company.order.api.feign.fallback.OrderFeignFallback;
-import com.company.order.api.request.OrderCancelReq;
-import com.company.order.api.request.OrderFinishReq;
-import com.company.order.api.request.OrderPaySuccessReq;
-import com.company.order.api.request.OrderReceiveReq;
-import com.company.order.api.request.OrderRefundApplyReq;
-import com.company.order.api.request.OrderRefundFailReq;
-import com.company.order.api.request.OrderRefundFinishReq;
-import com.company.order.api.request.RegisterOrderReq;
-import com.company.order.api.response.Order4Resp;
-import com.company.order.api.response.OrderDetailResp;
-import com.company.order.api.response.OrderRefundApplyResp;
-import com.company.order.api.response.OrderResp;
+import java.util.List;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
+//@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = OrderFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/order", fallbackFactory = ThrowExceptionFallback.class)
 public interface OrderFeign {
 
 	/**
