@@ -1,5 +1,6 @@
 package com.company.order.api.feign.fallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -77,11 +78,11 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 			public Result<Void> deleteOrder(String orderCode) {
 				return Result.onFallbackError();
 			}
-			
-			@Override
-			public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
-				return Result.onFallbackError();
-			}
+
+            @Override
+            public Result<List<OrderResp>> page(Integer current, Integer size, StatusEnum status) {
+                return Result.success(new ArrayList<>());// 降级返回空列表
+            }
 
 			@Override
 			public Result<OrderDetailResp> detail(String orderCode) {
@@ -90,12 +91,12 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 			@Override
 			public Result<List<String>> select4OverSendSuccess(Integer limit) {
-				return Result.onFallbackError();
+                return Result.success(new ArrayList<>());// 降级返回空列表
 			}
 			
 			@Override
 			public Result<List<String>> select4OverWaitReview(Integer limit) {
-				return Result.onFallbackError();
+                return Result.success(new ArrayList<>());// 降级返回空列表
 			}
 
 			@Override

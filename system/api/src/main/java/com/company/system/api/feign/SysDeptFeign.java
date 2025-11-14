@@ -1,22 +1,21 @@
 package com.company.system.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.system.api.constant.Constants;
+import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysDeptReq;
+import com.company.system.api.response.PageResp;
+import com.company.system.api.response.SysDeptResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.system.api.response.PageResp;
-import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.SysDeptFeignFallback;
-import com.company.system.api.request.SysDeptReq;
-import com.company.system.api.response.SysDeptResp;
+import java.util.List;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysDept", fallbackFactory = SysDeptFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysDept", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysDeptFeign {
 
 	@GetMapping("/page")

@@ -2,19 +2,12 @@ package com.company.user.api.feign;
 
 import com.company.common.api.Result;
 import com.company.user.api.constant.Constants;
-import com.company.user.api.feign.fallback.DeviceFeignFallback;
-import com.company.user.api.feign.fallback.UserInfoFeignFallback;
-import com.company.user.api.request.UserInfoReq;
-import com.company.user.api.response.UserInfoResp;
+import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collection;
-import java.util.Map;
-
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/device", fallbackFactory = DeviceFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/device", fallbackFactory = ThrowExceptionFallback.class)
 public interface DeviceFeign {
 
     /**

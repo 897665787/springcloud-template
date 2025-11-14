@@ -1,11 +1,11 @@
 package com.company.system.api.feign;
 
 import com.company.common.api.Result;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
 import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.SysMenuFeignFallback;
+import com.company.system.api.feign.fallback.ThrowExceptionFallback;
+import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysMenuReq;
+import com.company.system.api.response.PageResp;
 import com.company.system.api.response.RouterResp;
 import com.company.system.api.response.SysMenuResp;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysMenu", fallbackFactory = SysMenuFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysMenu", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysMenuFeign {
 
 	@GetMapping("/page")

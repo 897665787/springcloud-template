@@ -11,8 +11,8 @@ import com.company.framework.threadpool.ThreadPoolProperties;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
+import com.company.order.api.response.Order4Resp;
 import com.company.order.api.response.OrderResp;
-import com.company.user.api.feign.UserFeign;
 import com.company.user.api.response.UserResp;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
@@ -38,8 +38,6 @@ public class ApiController {
 
 	@Autowired
 	private OrderFeign orderFeign;
-	@Autowired
-	private UserFeign userFeign;
 	@Autowired
 	private AsyncTaskExecutor executor;
 	@Autowired
@@ -89,12 +87,12 @@ public class ApiController {
 
 	@RequireLogin
 	@GetMapping(value = "/getOrderById")
-	public Result<OrderResp> getOrderById(Long id) {
+	public Result<Order4Resp> getOrderById(String orderCode) {
 //		if (true)
 //			ExceptionUtil.throwException(1, "aaaaaaaaaaa");
-//		Result<OrderResp> byId = orderFeign.getById(id);
-//		return byId;
-		return Result.success();
+//        Result<OrderDetailResp> detail = orderFeign.detail(orderCode);
+        Order4Resp order4RespResult = orderFeign.selectByOrderCode(orderCode).dataOrThrow();
+        return Result.success(order4RespResult);
 	}
 
 	@GetMapping(value = "/getUserById")

@@ -1,5 +1,6 @@
 package com.company.tool.api.feign.fallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class EmailFeignFallback implements FallbackFactory<EmailFeign> {
 
 			@Override
 			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
-				return Result.onFallbackError();
+				return Result.success(new ArrayList<>());// 降级返回空列表
 			}
 
 			@Override

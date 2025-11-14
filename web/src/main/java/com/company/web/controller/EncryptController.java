@@ -5,7 +5,8 @@ import cn.licoy.encryptbody.enums.EncryptBodyMethod;
 import com.company.common.api.Result;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
-import com.company.user.api.feign.UserFeign;
+import com.company.order.api.feign.OrderFeign;
+import com.company.order.api.response.Order4Resp;
 import com.company.user.api.response.UserResp;
 import com.company.web.req.DecryptEntityReq;
 import com.company.web.req.DecryptFieldReq;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class EncryptController {
 
 	@Autowired
-	private UserFeign userFeign;
+	private OrderFeign orderFeign;
 
 	@PostMapping(value = "/post-body-row")
 	public Result<com.company.web.resp.UserResp> postbodyrow(@RequestBody Map<String, Object> param) {
@@ -32,9 +33,9 @@ public class EncryptController {
 //			ExceptionUtil.throwException("asdasd");
 //		}
 
-		Result<UserResp> byId = userFeign.getById(1L);
-		System.out.println("byId:"+JsonUtil.toJsonString(byId));
-		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId.dataOrThrow(), com.company.web.resp.UserResp.class);
+		Result<Order4Resp> result = orderFeign.selectByOrderCode("666");
+		System.out.println("byId:"+JsonUtil.toJsonString(result));
+		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(result.dataOrThrow(), com.company.web.resp.UserResp.class);
 		return Result.success(resp);
 	}
 

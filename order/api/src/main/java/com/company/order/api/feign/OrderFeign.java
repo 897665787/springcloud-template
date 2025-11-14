@@ -66,8 +66,8 @@ public interface OrderFeign {
 	
 	/**
 	 * 修改订单状态（确认收货）
-	 * 
-	 * @param orderFinishReq
+	 *
+	 * @param orderReceiveReq
 	 * @return
 	 */
 	@PostMapping("/receive")

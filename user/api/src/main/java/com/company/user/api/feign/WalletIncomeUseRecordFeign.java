@@ -1,19 +1,17 @@
 package com.company.user.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.user.api.constant.Constants;
+import com.company.user.api.feign.fallback.ThrowExceptionFallback;
+import com.company.user.api.feign.fallback.WalletIncomeUseRecordFeignFactory;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.user.api.constant.Constants;
+import java.util.List;
 
-import org.springframework.cloud.openfeign.FallbackFactory;
-
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/walletIncomeUseRecord", fallbackFactory = WalletIncomeUseRecordFeign.WalletIncomeUseRecordFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/walletIncomeUseRecord", fallbackFactory = WalletIncomeUseRecordFeignFactory.class)
 public interface WalletIncomeUseRecordFeign {
 
 	@GetMapping("/selectId4Expire")
@@ -21,26 +19,4 @@ public interface WalletIncomeUseRecordFeign {
 
 	@PostMapping("/update4Expire")
 	Result<Boolean> update4Expire(@RequestParam("id") Integer id);
-
-	@Component
-	class WalletIncomeUseRecordFeignFactory implements FallbackFactory<WalletIncomeUseRecordFeign> {
-
-		@Override
-		public WalletIncomeUseRecordFeign create(Throwable throwable) {
-			return new WalletIncomeUseRecordFeign() {
-
-				@Override
-				public Result<List<Integer>> selectId4Expire(Integer limit) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<Boolean> update4Expire(Integer id) {
-					return Result.onFallbackError();
-				}
-
-			};
-		}
-	}
-
 }

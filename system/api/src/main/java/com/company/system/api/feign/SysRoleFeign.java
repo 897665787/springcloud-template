@@ -1,23 +1,22 @@
 package com.company.system.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.system.api.constant.Constants;
+import com.company.system.api.feign.fallback.ThrowExceptionFallback;
+import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysRoleGrantMenuReq;
+import com.company.system.api.request.SysRoleReq;
+import com.company.system.api.response.PageResp;
+import com.company.system.api.response.SysRoleResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.system.api.request.RemoveReq;
-import com.company.system.api.response.PageResp;
-import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.SysRoleFeignFallback;
-import com.company.system.api.request.SysRoleGrantMenuReq;
-import com.company.system.api.request.SysRoleReq;
-import com.company.system.api.response.SysRoleResp;
+import java.util.List;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysRole", fallbackFactory = SysRoleFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysRole", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysRoleFeign {
 
 	@GetMapping("/page")

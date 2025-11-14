@@ -1,22 +1,21 @@
 package com.company.system.api.feign;
 
-import java.util.List;
-
+import com.company.common.api.Result;
+import com.company.system.api.constant.Constants;
+import com.company.system.api.feign.fallback.ThrowExceptionFallback;
 import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysDictTypeReq;
+import com.company.system.api.response.PageResp;
+import com.company.system.api.response.SysDictTypeResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.company.common.api.Result;
-import com.company.system.api.response.PageResp;
-import com.company.system.api.constant.Constants;
-import com.company.system.api.feign.fallback.SysDictTypeFeignFallback;
-import com.company.system.api.request.SysDictTypeReq;
-import com.company.system.api.response.SysDictTypeResp;
+import java.util.List;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysDictType", fallbackFactory = SysDictTypeFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysDictType", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysDictTypeFeign {
 
 	@GetMapping("/page")

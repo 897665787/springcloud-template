@@ -1,5 +1,6 @@
 package com.company.order.api.feign;
 
+import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,7 @@ import com.company.order.api.response.PayResp;
 
 import org.springframework.cloud.openfeign.FallbackFactory;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/pay", fallbackFactory = PayFeign.PayFeignFactory.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/pay", fallbackFactory = ThrowExceptionFallback.class)
 public interface PayFeign {
 
 	/**
@@ -53,35 +54,4 @@ public interface PayFeign {
 	 */
 	@PostMapping("/refund")
 	Result<Void> refund(@RequestBody PayRefundReq payRefundReq);
-	
-	@Component
-	class PayFeignFactory implements FallbackFactory<PayFeign> {
-
-		@Override
-		public PayFeign create(Throwable throwable) {
-			return new PayFeign() {
-
-				@Override
-				public Result<PayResp> unifiedorder(PayReq payReq) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<Void> payClose(PayCloseReq payCloseReq) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<PayResp> toPay(ToPayReq toPayReq) {
-					return Result.onFallbackError();
-				}
-
-				@Override
-				public Result<Void> refund(PayRefundReq payRefundReq) {
-					return Result.onFallbackError();
-				}
-
-			};
-		}
-	}
 }
