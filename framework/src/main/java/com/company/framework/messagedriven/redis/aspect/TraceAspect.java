@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * Redis消息队列日志追踪ID切面
+ * 日志追踪ID切面
  *
  * @author JQ棣
  */

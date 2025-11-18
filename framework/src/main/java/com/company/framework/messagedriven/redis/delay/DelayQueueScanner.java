@@ -32,7 +32,7 @@ public class DelayQueueScanner {
     /**
      * 每秒扫描一次延时队列
      */
-    @Scheduled(fixedRate = 1000)
+//    @Scheduled(fixedRate = 1000)
     public void scanDelayQueue() {
         try {
             // 获取所有延时队列的key

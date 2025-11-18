@@ -12,7 +12,7 @@ import com.company.framework.cache.redis.RedisCache;
 @Configuration
 public class CacheAutoConfiguration {
 
-	@Bean
+	@Bean("mqStringRedisTemplate")
 	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
 		StringRedisTemplate template = new StringRedisTemplate();
 		template.setConnectionFactory(redisConnectionFactory);

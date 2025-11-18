@@ -8,8 +8,10 @@ import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -29,7 +31,8 @@ public class RedisMessageSender implements MessageSender {
     private static final String DELAY_QUEUE_PREFIX = "mq:delay:";
 
     @Autowired
-    private RedisTemplate<String, String> redisMessageTemplate;
+    @Qualifier("mqStringRedisTemplate")
+    private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private TraceManager traceManager;
 
@@ -87,13 +90,13 @@ public class RedisMessageSender implements MessageSender {
             // 延时消息：存储到 sorted set，使用时间戳作为score
             long executeTime = System.currentTimeMillis() + delaySeconds * 1000L;
             String delayQueueKey = DELAY_QUEUE_PREFIX + channel;
-            redisMessageTemplate.opsForZSet().add(delayQueueKey, messageJson, executeTime);
+            stringRedisTemplate.opsForZSet().add(delayQueueKey, messageJson, executeTime);
             log.info("sendDelayMessage,correlationId:{},strategyName:{},toJson:{},channel:{},routingKey:{},delaySeconds:{}",
                     correlationId, strategyName, paramsStr, channel, routingKey, delaySeconds);
         } else {
             // 普通消息：使用发布订阅
             String channelKey = CHANNEL_PREFIX + channel;
-            redisMessageTemplate.convertAndSend(channelKey, messageJson);
+            stringRedisTemplate.convertAndSend(channelKey, messageJson);
             log.info("sendNormalMessage,correlationId:{},strategyName:{},toJson:{},channel:{},routingKey:{}",
                     correlationId, strategyName, paramsStr, channel, routingKey);
         }
