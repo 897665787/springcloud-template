@@ -2,10 +2,8 @@ package com.company.framework.messagedriven.redis.utils;
 
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.messagedriven.BaseStrategy;
-import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.MapUtils;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -24,67 +22,66 @@ public class ConsumerUtils {
      * 使用Strategy处理逻辑
      *
      * @param jsonStrMsg 消息JSON字符串
-     * @param properties 消息属性
+     * @param strategyName 消息属性
+     * @param paramsClassName 消息属性
      */
-    public static <E> void handleByStrategy(String jsonStrMsg, Map<String, String> properties) {
-        handleByStrategy(jsonStrMsg, properties, true);
+    public static <E> void handleByStrategy(String jsonStrMsg, String strategyName, String paramsClassName) {
+        handleByStrategy(jsonStrMsg, strategyName, paramsClassName, true);
     }
 
     /**
      * 使用Strategy处理逻辑
      *
      * @param jsonStrMsg       消息JSON字符串
-     * @param properties       消息属性
+     * @param paramsClassName       消息属性
      * @param unAckIfException 如果抛出java.lang.Exception异常则不ack
      */
-    public static <E> void handleByStrategy(String jsonStrMsg, Map<String, String> properties,
+    public static <E> void handleByStrategy(String jsonStrMsg, String strategyName, String paramsClassName,
                                             boolean unAckIfException) {
         @SuppressWarnings("unchecked")
         Consumer<Object> consumer = entity -> {
-            String strategyName = MapUtils.getString(properties, HeaderConstants.HEADER_STRATEGY_NAME);
             BaseStrategy<E> strategy = SpringContextUtil.getBean(strategyName, BaseStrategy.class);
             strategy.doStrategy((E) entity);
         };
-        handle(jsonStrMsg, properties, consumer, unAckIfException);
+        handle(jsonStrMsg, paramsClassName, consumer, unAckIfException);
     }
 
     /**
      * 使用自定义Consumer函数处理逻辑
      *
      * @param jsonStrMsg 消息JSON字符串
-     * @param properties 消息属性
+     * @param paramsClassName 消息属性
      * @param consumer   消费函数
      */
-    public static <E> void handleByConsumer(String jsonStrMsg, Map<String, String> properties, Consumer<E> consumer) {
-        handleByConsumer(jsonStrMsg, properties, consumer, false);
+    public static <E> void handleByConsumer(String jsonStrMsg, String paramsClassName, Consumer<E> consumer) {
+        handleByConsumer(jsonStrMsg, paramsClassName, consumer, false);
     }
 
     /**
      * 使用自定义Consumer函数处理逻辑
      *
      * @param jsonStrMsg       消息JSON字符串
-     * @param properties       消息属性
+     * @param paramsClassName       消息属性
      * @param consumer         消费函数
      * @param unAckIfException 如果抛出java.lang.Exception异常则不ack
      */
-    public static <E> void handleByConsumer(String jsonStrMsg, Map<String, String> properties, Consumer<E> consumer,
+    public static <E> void handleByConsumer(String jsonStrMsg, String paramsClassName, Consumer<E> consumer,
                                             boolean unAckIfException) {
         @SuppressWarnings("unchecked")
         Consumer<Object> consumer2 = entity -> {
             consumer.accept((E) entity);
         };
-        handle(jsonStrMsg, properties, consumer2, unAckIfException);
+        handle(jsonStrMsg, paramsClassName, consumer2, unAckIfException);
     }
 
-    private static void handle(String jsonStrMsg, Map<String, String> properties, Consumer<Object> consumer,
+    private static void handle(String jsonStrMsg, String paramsClassName, Consumer<Object> consumer,
                                boolean unAckIfException) {
-        log.info("jsonStrMsg:{},properties:{}", jsonStrMsg, JsonUtil.toJsonString(properties));
+        log.info("jsonStrMsg:{}", jsonStrMsg);
         if (jsonStrMsg == null) {
             return;
         }
         long start = System.currentTimeMillis();
         try {
-            String paramsClassName = MapUtils.getString(properties, HeaderConstants.HEADER_PARAMS_CLASS);
             Class<?> paramsClass;
             try {
                 paramsClass = Class.forName(paramsClassName);

@@ -3,24 +3,15 @@ package com.company.framework.messagedriven.redis;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * Redis消息队列自动配置类
- *
- * @author JQ棣
- */
 @Slf4j
 @Configuration
-//@EnableScheduling
 @Conditional(RedisAutoConfiguration.RedisCondition.class)
 public class RedisAutoConfiguration {
 
@@ -35,6 +26,7 @@ public class RedisAutoConfiguration {
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+//        container.addMessageListener();
         return container;
     }
 

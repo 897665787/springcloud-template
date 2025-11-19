@@ -10,12 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Conditional;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Redis消息发送器
@@ -27,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 @Conditional(RedisAutoConfiguration.RedisCondition.class)
 public class RedisMessageSender implements MessageSender {
 
-    private static final String CHANNEL_PREFIX = "mq:channel:";
     private static final String DELAY_QUEUE_PREFIX = "mq:delay:";
 
     @Autowired
@@ -37,20 +34,20 @@ public class RedisMessageSender implements MessageSender {
     private TraceManager traceManager;
 
     @Override
-    public void sendNormalMessage(String strategyName, Object toJson, String channel, String routingKey) {
-        sendMessage(strategyName, toJson, channel, routingKey, null);
+    public void sendNormalMessage(String strategyName, Object toJson, String exchange, String routingKey) {
+        sendMessage(strategyName, toJson, exchange, routingKey, null);
     }
 
     @Override
-    public void sendFanoutMessage(Object toJson, String channel) {
+    public void sendFanoutMessage(Object toJson, String exchange) {
         // Redis 使用发布订阅模式实现广播
-        sendMessage(null, toJson, channel, null, null);
+        sendMessage(null, toJson, exchange, null, null);
     }
 
     @Override
-    public void sendDelayMessage(String strategyName, Object toJson, String channel, String routingKey,
+    public void sendDelayMessage(String strategyName, Object toJson, String exchange, String routingKey,
                                   Integer delaySeconds) {
-        sendMessage(strategyName, toJson, channel, routingKey, delaySeconds);
+        sendMessage(strategyName, toJson, exchange, routingKey, delaySeconds);
     }
 
     /**
@@ -58,47 +55,38 @@ public class RedisMessageSender implements MessageSender {
      *
      * @param strategyName 策略名称
      * @param toJson       消息内容
-     * @param channel      频道（对应exchange）
+     * @param exchange      频道（对应exchange）
      * @param routingKey   路由键（对应队列key）
      * @param delaySeconds 延时秒数
      */
-    private void sendMessage(String strategyName, Object toJson, String channel, String routingKey,
+    private void sendMessage(String strategyName, Object toJson, String exchange, String routingKey,
                              Integer delaySeconds) {
-        String correlationId = RandomUtil.randomString(32);
         String paramsStr = JsonUtil.toJsonString(toJson);
-
-        // 构建消息头
-        Map<String, String> headers = Maps.newHashMap();
-        if (strategyName != null) {
-            headers.put(HeaderConstants.HEADER_STRATEGY_NAME, strategyName);
-        }
-        headers.put(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
-        headers.put(HeaderConstants.HEADER_MESSAGE_ID, traceManager.get());
-        headers.put("correlation_id", correlationId);
 
         // 构建完整消息
         Map<String, Object> message = Maps.newHashMap();
-        message.put("headers", headers);
-        message.put("body", paramsStr);
-        if (routingKey != null) {
-            message.put("routing_key", routingKey);
+        if (strategyName != null) {
+            message.put(HeaderConstants.HEADER_STRATEGY_NAME, strategyName);
         }
+        message.put(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
+        message.put(HeaderConstants.HEADER_MESSAGE_ID, traceManager.get());
+        message.put("body", paramsStr);
 
         String messageJson = JsonUtil.toJsonString(message);
-
+        String channel = exchange;
+        if (routingKey != null) {
+            channel = String.format("%s:%s", exchange, routingKey);
+        }
         if (delaySeconds != null && delaySeconds > 0) {
             // 延时消息：存储到 sorted set，使用时间戳作为score
             long executeTime = System.currentTimeMillis() + delaySeconds * 1000L;
             String delayQueueKey = DELAY_QUEUE_PREFIX + channel;
             stringRedisTemplate.opsForZSet().add(delayQueueKey, messageJson, executeTime);
-            log.info("sendDelayMessage,correlationId:{},strategyName:{},toJson:{},channel:{},routingKey:{},delaySeconds:{}",
-                    correlationId, strategyName, paramsStr, channel, routingKey, delaySeconds);
+            log.info("opsForZSet.add,strategyName:{},toJson:{},channel:{},routingKey:{},delaySeconds:{}", strategyName, paramsStr, channel, routingKey, delaySeconds);
         } else {
             // 普通消息：使用发布订阅
-            String channelKey = CHANNEL_PREFIX + channel;
-            stringRedisTemplate.convertAndSend(channelKey, messageJson);
-            log.info("sendNormalMessage,correlationId:{},strategyName:{},toJson:{},channel:{},routingKey:{}",
-                    correlationId, strategyName, paramsStr, channel, routingKey);
+            stringRedisTemplate.convertAndSend(channel, messageJson);
+            log.info("convertAndSend,strategyName:{},toJson:{},channel:{},routingKey:{}", strategyName, paramsStr, channel, routingKey);
         }
     }
 }
