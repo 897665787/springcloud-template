@@ -29,15 +29,16 @@ public class TraceAspect {
     @Before("@annotation(org.springframework.amqp.rabbit.annotation.RabbitListener)")
     public void setTraceId(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();// 获取方法参数
-        if (args.length == 0 || !(args[0] instanceof Message)) { // 参数不符合预期，拿不到日志ID
-            traceManager.put();
-            log.info("初始化日志ID");
-            return;
+        String traceId = null;
+        for (Object arg : args) {
+            if (arg instanceof Message) {
+                Message message = (Message) arg;
+                MessageProperties messageProperties = message.getMessageProperties();
+                traceId = messageProperties.getMessageId();
+                break;
+            }
         }
-
-        Message message = (Message) args[0];
-        MessageProperties messageProperties = message.getMessageProperties();
-        traceManager.put(messageProperties.getMessageId());
+        traceManager.put(traceId);
         log.info("初始化日志ID");
     }
 

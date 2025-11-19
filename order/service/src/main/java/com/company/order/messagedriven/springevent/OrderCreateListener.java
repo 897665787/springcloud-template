@@ -23,7 +23,7 @@ public class OrderCreateListener {
 			return;
 		}
 		Map<String, Object> headers = event.getHeaders();
-		String strategyName = StrategyConstants.SMS_STRATEGY;
+		String strategyName = StrategyConstants.ORDERCREATE_SMS_STRATEGY;
 		String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, strategyName, paramsClassName);
 	}
@@ -36,7 +36,7 @@ public class OrderCreateListener {
 			return;
 		}
 		Map<String, Object> headers = event.getHeaders();
-		String strategyName = StrategyConstants.COUNTMONEY_STRATEGY;
+		String strategyName = StrategyConstants.ORDERCREATE_COUNTMONEY_STRATEGY;
 		String paramsClassName = MapUtils.getString(headers, HeaderConstants.HEADER_PARAMS_CLASS);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, strategyName, paramsClassName);
 	}

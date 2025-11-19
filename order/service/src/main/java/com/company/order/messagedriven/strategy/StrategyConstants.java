@@ -4,11 +4,11 @@ public interface StrategyConstants {
 	String USER_STRATEGY = "userStrategy";
 	String MAP_STRATEGY = "mapStrategy";
 	String XDELAYMESSAGE_STRATEGY = "xDelayMessageStrategy";
-	
+
 	String PAY_CLOSE_STRATEGY = "payCloseStrategy";
 	String PAY_NOTIFY_STRATEGY = "payNotifyStrategy";
 	String REFUND_NOTIFY_STRATEGY = "refundNotifyStrategy";
-	
-	String COUNTMONEY_STRATEGY = "countmoneyStrategy";
-	String SMS_STRATEGY = "smsStrategy";
+
+	String ORDERCREATE_SMS_STRATEGY = "orderCreateSmsStrategy";
+	String ORDERCREATE_COUNTMONEY_STRATEGY = "orderCreateCountmoneyStrategy";
 }

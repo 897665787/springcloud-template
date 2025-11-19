@@ -10,7 +10,7 @@ import com.company.framework.messagedriven.BaseStrategy;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component(StrategyConstants.COUNTMONEY_STRATEGY)
+@Component(StrategyConstants.ORDERCREATE_COUNTMONEY_STRATEGY)
 public class CountmoneyStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override

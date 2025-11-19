@@ -10,7 +10,7 @@ import com.company.framework.messagedriven.BaseStrategy;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component(StrategyConstants.SMS_STRATEGY)
+@Component(StrategyConstants.ORDERCREATE_SMS_STRATEGY)
 public class SmsStrategy implements BaseStrategy<Map<String, Object>> {
 
 	@Override

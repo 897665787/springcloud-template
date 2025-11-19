@@ -32,7 +32,7 @@ public class OrderCreateConsumer {
                 Map<String, Object> messageMap = JsonUtil.toEntity(messageBody, Map.class);
 
                 String body = MapUtils.getString(messageMap, "body");
-                String strategyName = StrategyConstants.SMS_STRATEGY;
+                String strategyName = StrategyConstants.ORDERCREATE_SMS_STRATEGY;
                 String paramsClass = MapUtils.getString(messageMap, HeaderConstants.HEADER_PARAMS_CLASS);
                 ConsumerUtils.handleByStrategy(body, strategyName, paramsClass);
             }
@@ -56,7 +56,7 @@ public class OrderCreateConsumer {
                 Map<String, Object> messageMap = JsonUtil.toEntity(messageBody, Map.class);
 
                 String body = MapUtils.getString(messageMap, "body");
-                String strategyName = StrategyConstants.COUNTMONEY_STRATEGY;
+                String strategyName = StrategyConstants.ORDERCREATE_COUNTMONEY_STRATEGY;
                 String paramsClass = MapUtils.getString(messageMap, HeaderConstants.HEADER_PARAMS_CLASS);
                 ConsumerUtils.handleByStrategy(body, strategyName, paramsClass);
             }
