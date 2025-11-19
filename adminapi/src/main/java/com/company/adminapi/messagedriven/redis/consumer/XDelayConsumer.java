@@ -1,24 +1,47 @@
 package com.company.adminapi.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
-import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
+import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.company.framework.messagedriven.redis.RedisAutoConfiguration;
+import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
+import com.company.framework.util.JsonUtil;
 import com.company.adminapi.messagedriven.Constants;
-import com.rabbitmq.client.Channel;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.*;
+import org.apache.commons.collections.MapUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
 @Component
-@Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
+@Conditional(RedisAutoConfiguration.RedisCondition.class)
 public class XDelayConsumer {
 
-	@RabbitListener(
-			bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.XDELAYED.NAME),
-			exchange = @Exchange(value = Constants.EXCHANGE.XDELAYED, type = "x-delayed-message",
-								arguments = { @Argument(name = "x-delayed-type", value = "direct", type = "java.lang.String") }),
-			key = Constants.QUEUE.XDELAYED.KEY))
-	public void handle(String jsonStrMsg, Channel channel, Message message) {
-		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
-	}
+    @Bean
+    public MessageListener xDelayMessageListener() {
+        return new MessageListener() {
+            @Override
+            public void onMessage(Message message, byte[] pattern) {
+                String messageBody = new String(message.getBody(), StandardCharsets.UTF_8);
+                @SuppressWarnings("unchecked")
+                Map<String, Object> messageMap = JsonUtil.toEntity(messageBody, Map.class);
+
+                String body = MapUtils.getString(messageMap, "body");
+                String strategyName = MapUtils.getString(messageMap, HeaderConstants.HEADER_STRATEGY_NAME);
+                String paramsClass = MapUtils.getString(messageMap, HeaderConstants.HEADER_PARAMS_CLASS);
+                ConsumerUtils.handleByStrategy(body, strategyName, paramsClass);
+            }
+        };
+    }
+
+    @Bean
+    public Object registerXDelayConsumer(RedisMessageListenerContainer container, MessageListener xDelayMessageListener) {
+        String channel = String.format("%s:%s", Constants.EXCHANGE.XDELAYED, Constants.QUEUE.XDELAYED.KEY);
+        container.addMessageListener(xDelayMessageListener, new ChannelTopic(channel));
+        return new Object();
+    }
 }

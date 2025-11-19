@@ -19,10 +19,10 @@ import java.util.Map;
 
 @Component
 @Conditional(RedisAutoConfiguration.RedisCondition.class)
-public class CommonConsumer {
+public class FlashkillConsumer {
 
     @Bean
-    public MessageListener commonMessageListener() {
+    public MessageListener flashkillMessageListener() {
         return new MessageListener() {
             @Override
             public void onMessage(Message message, byte[] pattern) {
@@ -39,9 +39,9 @@ public class CommonConsumer {
     }
 
     @Bean
-    public Object registerCommonConsumer(RedisMessageListenerContainer container, MessageListener commonMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
-        container.addMessageListener(commonMessageListener, new ChannelTopic(channel));
+    public Object registerFlashkillConsumer(RedisMessageListenerContainer container, MessageListener flashkillMessageListener) {
+        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.FLASH_KILL.KEY);
+        container.addMessageListener(flashkillMessageListener, new ChannelTopic(channel));
         return new Object();
     }
 }

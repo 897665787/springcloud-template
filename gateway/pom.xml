@@ -127,6 +127,16 @@
 		</dependency>
 		<!-- MQ -->
 
+        <!-- redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
 		<!-- knife4j文档：https://doc.xiaominfo.com/docs/action/springcloud-gateway -->
 		<dependency>
 			<groupId>com.github.xiaoymin</groupId>

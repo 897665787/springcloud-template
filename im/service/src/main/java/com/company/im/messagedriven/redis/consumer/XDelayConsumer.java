@@ -1,10 +1,10 @@
-package com.company.adminapi.messagedriven.redis.consumer;
+package com.company.im.messagedriven.redis.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
 import com.company.framework.util.JsonUtil;
-import com.company.adminapi.messagedriven.Constants;
+import com.company.im.messagedriven.Constants;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -19,10 +19,10 @@ import java.util.Map;
 
 @Component
 @Conditional(RedisAutoConfiguration.RedisCondition.class)
-public class CommonConsumer {
+public class XDelayConsumer {
 
     @Bean
-    public MessageListener commonMessageListener() {
+    public MessageListener xDelayMessageListener() {
         return new MessageListener() {
             @Override
             public void onMessage(Message message, byte[] pattern) {
@@ -39,9 +39,9 @@ public class CommonConsumer {
     }
 
     @Bean
-    public Object registerCommonConsumer(RedisMessageListenerContainer container, MessageListener commonMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
-        container.addMessageListener(commonMessageListener, new ChannelTopic(channel));
+    public Object registerXDelayConsumer(RedisMessageListenerContainer container, MessageListener xDelayMessageListener) {
+        String channel = String.format("%s:%s", Constants.EXCHANGE.XDELAYED, Constants.QUEUE.XDELAYED.KEY);
+        container.addMessageListener(xDelayMessageListener, new ChannelTopic(channel));
         return new Object();
     }
 }
