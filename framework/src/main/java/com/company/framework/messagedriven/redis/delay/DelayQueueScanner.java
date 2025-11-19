@@ -31,52 +31,44 @@ public class DelayQueueScanner {
     @Qualifier("mqStringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate;
 
-    /**
-     * 每秒扫描一次延时队列
-     */
-//    @Scheduled(fixedRate = 1000)
     public void scanDelayQueue() {
-        try {
-            // 获取所有延时队列的key
-            Set<String> delayQueueKeys = stringRedisTemplate.keys(DELAY_QUEUE_PREFIX + "*");
-            if (delayQueueKeys == null || delayQueueKeys.isEmpty()) {
-                return;
+        // 获取所有延时队列的key
+        Set<String> delayQueueKeys = stringRedisTemplate.keys(DELAY_QUEUE_PREFIX + "*");
+        if (delayQueueKeys == null || delayQueueKeys.isEmpty()) {
+            return;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        for (String delayQueueKey : delayQueueKeys) {
+            // 获取到期的消息（score小于等于当前时间）
+            Set<String> expiredMessages = stringRedisTemplate.opsForZSet()
+                    .rangeByScore(delayQueueKey, 0, currentTime);
+            if (expiredMessages == null && expiredMessages.isEmpty()) {
+                continue;
             }
+            for (String message : expiredMessages) {
+                try {
+                    // 解析消息
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> messageMap = JsonUtil.toEntity(message, Map.class);
 
-            long currentTime = System.currentTimeMillis();
-            for (String delayQueueKey : delayQueueKeys) {
-                // 获取到期的消息（score小于等于当前时间）
-                Set<String> expiredMessages = stringRedisTemplate.opsForZSet()
-                        .rangeByScore(delayQueueKey, 0, currentTime);
+                    // 提取channel名称
+                    String channel = delayQueueKey.substring(DELAY_QUEUE_PREFIX.length());
+                    String channelKey = channel;
 
-                if (expiredMessages != null && !expiredMessages.isEmpty()) {
-                    for (String message : expiredMessages) {
-                        try {
-                            // 解析消息
-                            @SuppressWarnings("unchecked")
-                            Map<String, Object> messageMap = JsonUtil.toEntity(message, Map.class);
-                            
-                            // 提取channel名称
-                            String channel = delayQueueKey.substring(DELAY_QUEUE_PREFIX.length());
-                            String channelKey = channel;
+                    // 发布到对应的频道
+                    stringRedisTemplate.convertAndSend(channelKey, message);
 
-                            // 发布到对应的频道
-                            stringRedisTemplate.convertAndSend(channelKey, message);
-                            
-                            // 从延时队列中移除
-                            stringRedisTemplate.opsForZSet().remove(delayQueueKey, message);
-                            
-                            log.info("延时消息已到期并发送，channel:{}", channel);
-                        } catch (Exception e) {
-                            log.error("处理延时消息失败：{}", message, e);
-                            // 移除异常消息，避免重复处理
-                            stringRedisTemplate.opsForZSet().remove(delayQueueKey, message);
-                        }
-                    }
+                    // 从延时队列中移除
+                    stringRedisTemplate.opsForZSet().remove(delayQueueKey, message);
+
+                    log.info("延时消息已到期并发送，channel:{}", channel);
+                } catch (Exception e) {
+                    log.error("处理延时消息失败：{}", message, e);
+                    // 移除异常消息，避免重复处理
+                    stringRedisTemplate.opsForZSet().remove(delayQueueKey, message);
                 }
             }
-        } catch (Exception e) {
-            log.error("扫描延时队列异常", e);
         }
     }
 }

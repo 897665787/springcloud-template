@@ -97,7 +97,7 @@ public class ConsumerUtils {
         } catch (Exception e) {
             log.error("accept error", e);
             if (unAckIfException) {
-                throw new RuntimeException(e);
+                return;
             }
         } finally {
             log.info("耗时:{}ms", System.currentTimeMillis() - start);
