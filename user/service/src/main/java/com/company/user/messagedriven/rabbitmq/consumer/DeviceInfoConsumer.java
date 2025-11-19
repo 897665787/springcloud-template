@@ -2,6 +2,7 @@ package com.company.user.messagedriven.rabbitmq.consumer;
 
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
 import com.company.user.messagedriven.strategy.StrategyConstants;
 import com.rabbitmq.client.Channel;
@@ -11,9 +12,11 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 @Component
+@Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class DeviceInfoConsumer {
 
 	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.DEVICE_INFO.DEVICE_INFO_RECORD_QUEUE, durable = "false",
