@@ -15,7 +15,7 @@
 
     <properties>
         <!--项目版本定义、升级统一改这里-->
-        <version.api>1.0.0${version.type}</version.api>
+        <version.api>1.0.0${version.suffix}</version.api>
     </properties>
 
 	<modules>

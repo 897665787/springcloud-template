@@ -14,6 +14,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+
+        <!-- 统一管理api jar版本 -->
+        <tool-api.version>1.0.0${version.suffix}</tool-api.version>
+        <user-api.version>1.0.0${version.suffix}</user-api.version>
+        <system-api.version>1.0.0${version.suffix}</system-api.version>
+        <order-api.version>1.0.0${version.suffix}</order-api.version>
+        <im-api.version>1.0.0${version.suffix}</im-api.version>
+
 		<!-- Alibaba 与springboot、cloud版本适配：https://blog.csdn.net/a749227859/article/details/120195331 -->
 		<!--
 		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
@@ -122,7 +130,7 @@
         <profile>
             <id>snapshot</id>
             <properties>
-                <version.type>-SNAPSHOT</version.type>
+                <version.suffix>-SNAPSHOT</version.suffix>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -133,7 +141,7 @@
         <profile>
             <id>release</id>
             <properties>
-                <version.type></version.type>
+                <version.suffix></version.suffix>
             </properties>
         </profile>
     </profiles>
