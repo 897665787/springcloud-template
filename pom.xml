@@ -116,4 +116,25 @@
 	        </plugin>
         </plugins>
 	</build>
+
+    <profiles>
+        <!-- 开发/测试: 打SNAPSHOT版本 -->
+        <profile>
+            <id>snapshot</id>
+            <properties>
+                <version.type>-SNAPSHOT</version.type>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <!-- 生产: 打Release版本 -->
+        <profile>
+            <id>release</id>
+            <properties>
+                <version.type></version.type>
+            </properties>
+        </profile>
+    </profiles>
 </project>
