@@ -9,7 +9,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
 /**
- * Redis消息队列消费者优雅下线
+ * Redis 消费者下线
  *
  * @author JQ棣
  */
@@ -18,15 +18,13 @@ import org.springframework.stereotype.Component;
 @Conditional(RedisAutoConfiguration.RedisCondition.class)
 public class RedisConsumerComponent implements ConsumerComponent {
 
-    @Autowired(required = false)
+    @Autowired
     private RedisMessageListenerContainer redisMessageListenerContainer;
 
     @Override
     public void preStop() {
-        if (redisMessageListenerContainer != null) {
-            // 下线Redis消息监听器
-            redisMessageListenerContainer.stop();
-            log.info("Redis消息队列消费者已下线");
-        }
+        // 下线Redis消费者
+        redisMessageListenerContainer.stop();
+        log.info("Redis消费者已下线");
     }
 }
