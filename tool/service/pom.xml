@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.company</groupId>
 			<artifactId>template-order-api</artifactId>
-			<version>1.0.0</version>
+			<version>${order-api.version}</version>
 		</dependency>
 
 		<!-- 文件系统 -->
