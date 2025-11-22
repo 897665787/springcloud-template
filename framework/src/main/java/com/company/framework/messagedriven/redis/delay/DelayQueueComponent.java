@@ -7,7 +7,6 @@ import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.DelayQueue;
 
 @Slf4j
 @Component
@@ -63,8 +61,6 @@ public class DelayQueueComponent implements CommandLineRunner {
                         DelayedConsumer delayedConsumer = JsonUtil.toEntity(delayedJsonStr, DelayedConsumer.class);
 
                         String messageJson = delayedConsumer.getMessageJson();
-                        // 解析消息
-                        @SuppressWarnings("unchecked")
                         Map<String, Object> messageMap = JsonUtil.toEntity(messageJson, Map.class);
 
                         String exchange = delayedConsumer.getExchange();
@@ -85,12 +81,4 @@ public class DelayQueueComponent implements CommandLineRunner {
 		thread.setDaemon(true);
 		thread.start();
 	}
-
-    public static void main(String[] args) {
-        String channel = "mq:delay";
-        String[] split = StringUtils.split(channel, ":");
-        System.out.println(split[0]);
-        System.out.println(split[1]);
-        System.out.println(split.length);
-    }
 }
