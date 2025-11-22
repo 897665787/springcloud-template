@@ -31,11 +31,5 @@ public interface Constants {
 			String NAME = PREFIX + "common";
 			String KEY = PREFIX + "key-common";
 		}
-
-		// 秒杀队列
-		interface FLASH_KILL {
-			String NAME = PREFIX + "flash_kill";
-			String KEY = PREFIX + "key-flash_kill";
-		}
 	}
 }
