@@ -1,8 +1,8 @@
 package com.company.framework.messagedriven.redis;
 
-import cn.hutool.core.util.RandomUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.company.framework.messagedriven.redis.delay.DelayQueueComponent;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
@@ -25,11 +25,11 @@ import java.util.Map;
 @Conditional(RedisAutoConfiguration.RedisCondition.class)
 public class RedisMessageSender implements MessageSender {
 
-    private static final String DELAY_QUEUE_PREFIX = "mq:delay:";
-
     @Autowired
     @Qualifier("mqStringRedisTemplate")
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private DelayQueueComponent delayQueueComponent;
     @Autowired
     private TraceManager traceManager;
 
@@ -78,15 +78,12 @@ public class RedisMessageSender implements MessageSender {
             channel = String.format("%s:%s", exchange, routingKey);
         }
         if (delaySeconds != null && delaySeconds > 0) {
-            // 延时消息：存储到 sorted set，使用时间戳作为score
-            long executeTime = System.currentTimeMillis() + delaySeconds * 1000L;
-            String delayQueueKey = DELAY_QUEUE_PREFIX + channel;
-            stringRedisTemplate.opsForZSet().add(delayQueueKey, messageJson, executeTime);
-            log.info("opsForZSet.add,strategyName:{},toJson:{},channel:{},routingKey:{},delaySeconds:{}", strategyName, paramsStr, channel, routingKey, delaySeconds);
+            delayQueueComponent.inqueue(exchange, routingKey, messageJson, delaySeconds);
+            log.info("inqueue,strategyName:{},toJson:{},exchange:{},routingKey:{},delaySeconds:{}", strategyName, paramsStr, exchange, routingKey, delaySeconds);
         } else {
             // 普通消息：使用发布订阅
             stringRedisTemplate.convertAndSend(channel, messageJson);
-            log.info("convertAndSend,strategyName:{},toJson:{},channel:{},routingKey:{}", strategyName, paramsStr, channel, routingKey);
+            log.info("convertAndSend,channel:{},messageJson:{}", channel, messageJson);
         }
     }
 }
