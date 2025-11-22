@@ -1,16 +1,14 @@
 package com.company.framework.messagedriven.redis.delay;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DelayedConsumer {
     private String exchange;
     private String routingKey;
     private String messageJson;
-
-    public DelayedConsumer(String exchange, String routingKey, String messageJson) {
-        this.exchange = exchange;
-        this.routingKey = routingKey;
-        this.messageJson = messageJson;
-    }
 }

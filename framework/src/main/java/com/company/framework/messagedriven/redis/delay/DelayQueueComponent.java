@@ -58,23 +58,26 @@ public class DelayQueueComponent implements CommandLineRunner {
                             ThreadUtil.sleep(1000);
                             return null;
                         }
-                        traceManager.put();
                         for (String delayedJsonStr : delayedJsonStrSet) {
                             DelayedConsumer delayedConsumer = JsonUtil.toEntity(delayedJsonStr, DelayedConsumer.class);
 
                             String messageJson = delayedConsumer.getMessageJson();
                             Map<String, Object> messageMap = JsonUtil.toEntity(messageJson, Map.class);
 
+                            String traceId = MapUtils.getString(messageMap, HeaderConstants.HEADER_MESSAGE_ID);
+                            traceManager.put(traceId);
+
                             String exchange = delayedConsumer.getExchange();
                             String routingKey = delayedConsumer.getRoutingKey();
                             String strategyName = MapUtils.getString(messageMap, HeaderConstants.HEADER_STRATEGY_NAME);
+
                             String body = MapUtils.getString(messageMap, "body");
                             Map<String, Object> toJson = JsonUtil.toEntity(body, Map.class);
                             messageSender.sendNormalMessage(strategyName, toJson, exchange, routingKey);
+                            traceManager.remove();
                         }
                         // 从延时队列中移除
-                        stringRedisTemplate.opsForZSet().remove(DELAY_QUEUE, delayedJsonStrSet);
-                        traceManager.remove();
+                        stringRedisTemplate.opsForZSet().remove(DELAY_QUEUE, delayedJsonStrSet.toArray());
                         return null;
                     });
                 } catch (Exception e) {
