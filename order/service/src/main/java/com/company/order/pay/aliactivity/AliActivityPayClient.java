@@ -1,17 +1,5 @@
 package com.company.order.pay.aliactivity;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -23,9 +11,9 @@ import com.alipay.api.request.AlipayMarketingActivityOrderCreateRequest;
 import com.alipay.api.request.AlipayMarketingActivityOrderRefundRequest;
 import com.alipay.api.response.AlipayMarketingActivityOrderCreateResponse;
 import com.alipay.api.response.AlipayMarketingActivityOrderRefundResponse;
+import com.company.framework.context.SpringContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
-import com.company.framework.context.SpringContextUtil;
 import com.company.order.api.response.PayOrderQueryResp;
 import com.company.order.api.response.PayRefundQueryResp;
 import com.company.order.entity.AliActivityCoupon;
@@ -42,8 +30,18 @@ import com.company.order.pay.aliactivity.mock.NotifyMock;
 import com.company.order.pay.core.BasePayClient;
 import com.company.order.pay.dto.PayParams;
 import com.google.common.collect.Lists;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 支付宝兑换券支付
@@ -68,7 +66,7 @@ public class AliActivityPayClient extends BasePayClient {
 	@Autowired
 	private AliActivityCouponMapper aliActivityCouponMapper;
 	@Autowired
-	private ThreadPoolTaskExecutor executor;
+	private AsyncTaskExecutor executor;
 
 	@Value("${template.mock.aliactivitynotify:false}")
 	private Boolean mockNotify;

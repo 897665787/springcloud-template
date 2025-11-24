@@ -3,6 +3,7 @@ package com.company.system.messagedriven.springevent;
 import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import com.company.framework.messagedriven.springevent.utils.ConsumerUtils;
 import com.company.system.messagedriven.strategy.StrategyConstants;
 
 @Component
+@ConditionalOnProperty(prefix = "template.enable", name = "message-driven", havingValue = "springevent")
 public class SysUserLoginListener {
 
 	@EventListener

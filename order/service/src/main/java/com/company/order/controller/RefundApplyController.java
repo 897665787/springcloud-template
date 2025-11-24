@@ -1,24 +1,10 @@
 package com.company.order.controller;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
-import com.company.framework.util.Utils;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.util.JsonUtil;
+import com.company.framework.util.Utils;
 import com.company.order.api.constant.Constants;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
@@ -30,8 +16,15 @@ import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.PayRefundApply;
 import com.company.order.mapper.PayRefundApplyMapper;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -48,7 +41,7 @@ public class RefundApplyController implements RefundApplyFeign {
 	private PayFeign payFeign;
 
 	@Autowired
-	private ThreadPoolTaskExecutor executor;
+	private AsyncTaskExecutor executor;
 
 	/**
 	 * 退款申请

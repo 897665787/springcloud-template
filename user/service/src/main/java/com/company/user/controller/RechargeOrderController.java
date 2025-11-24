@@ -1,18 +1,5 @@
 package com.company.user.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.common.api.Result;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
@@ -23,14 +10,7 @@ import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
-import com.company.order.api.request.OrderCancelReq;
-import com.company.order.api.request.OrderFinishReq;
-import com.company.order.api.request.OrderPaySuccessReq;
-import com.company.order.api.request.OrderReq;
-import com.company.order.api.request.PayCloseReq;
-import com.company.order.api.request.PayNotifyReq;
-import com.company.order.api.request.PayReq;
-import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum.Type;
@@ -49,8 +29,19 @@ import com.company.user.wallet.dto.MainChargeGiftAmount;
 import com.company.user.wallet.dto.MainChargeGiftWalletId;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 充值订单demo
@@ -73,7 +64,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 	private MessageSender messageSender;
 
 	@Autowired
-	private ThreadPoolTaskExecutor executor;
+	private AsyncTaskExecutor executor;
 
 	@Autowired
 	private RechargeOrderService rechargeOrderService;

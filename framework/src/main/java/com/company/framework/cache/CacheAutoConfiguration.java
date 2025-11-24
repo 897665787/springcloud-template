@@ -1,5 +1,6 @@
 package com.company.framework.cache;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +12,6 @@ import com.company.framework.cache.redis.RedisCache;
 
 @Configuration
 public class CacheAutoConfiguration {
-
-	@Bean
-	public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
-		StringRedisTemplate template = new StringRedisTemplate();
-		template.setConnectionFactory(redisConnectionFactory);
-		return template;
-	}
 
 	@Bean
 	@ConditionalOnProperty(prefix = "template.enable", name = "cache", havingValue = "redis")

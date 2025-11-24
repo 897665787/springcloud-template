@@ -31,7 +31,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -61,7 +61,7 @@ public class AliPayClient extends BasePayClient {
 	@Autowired
 	private AliPayRefundMapper aliPayRefundMapper;
 	@Autowired
-	private ThreadPoolTaskExecutor executor;
+	private AsyncTaskExecutor executor;
 
 	@Value("${template.domain}")
 	private String domain;

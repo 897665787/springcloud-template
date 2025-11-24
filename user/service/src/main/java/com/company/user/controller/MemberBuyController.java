@@ -1,19 +1,5 @@
 package com.company.user.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.common.api.Result;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
@@ -25,14 +11,7 @@ import com.company.order.api.enums.OrderEnum;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
-import com.company.order.api.request.OrderCancelReq;
-import com.company.order.api.request.OrderFinishReq;
-import com.company.order.api.request.OrderPaySuccessReq;
-import com.company.order.api.request.OrderReq;
-import com.company.order.api.request.PayCloseReq;
-import com.company.order.api.request.PayNotifyReq;
-import com.company.order.api.request.PayReq;
-import com.company.order.api.request.RegisterOrderReq;
+import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum;
@@ -47,25 +26,28 @@ import com.company.user.coupon.UseCouponService;
 import com.company.user.coupon.dto.UserCouponCanUse;
 import com.company.user.entity.MemberBuyOrder;
 import com.company.user.entity.RechargeOrder;
-import com.company.user.service.ChargeConfigService;
+import com.company.user.service.*;
 import com.company.user.service.ChargeConfigService.ChargeGiftData;
-import com.company.user.service.MemberBuyOrderService;
-import com.company.user.service.MemberService;
 import com.company.user.service.MemberService.MemberData;
-import com.company.user.service.RechargeOrderService;
-import com.company.user.service.WalletFreezeService;
-import com.company.user.service.WalletUseSeqService;
 import com.company.user.service.market.UserCouponService;
 import com.company.user.wallet.IWallet;
-import com.company.user.wallet.dto.FreezeBalance;
-import com.company.user.wallet.dto.FreezeMainChargeGiftAmount;
-import com.company.user.wallet.dto.FreezeMainChargeGiftBalance;
-import com.company.user.wallet.dto.MainChargeGiftAmount;
-import com.company.user.wallet.dto.MainChargeGiftWalletId;
+import com.company.user.wallet.dto.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 购买会员子订单demo
@@ -94,7 +76,7 @@ public class MemberBuyController implements MemberBuyFeign {
 	private UserCouponService userCouponService;
 
 	@Autowired
-	private ThreadPoolTaskExecutor executor;
+	private AsyncTaskExecutor executor;
 
 	@Autowired
 	private MemberService memberService;
