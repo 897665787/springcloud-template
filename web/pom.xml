@@ -29,17 +29,17 @@
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-tool-api</artifactId>
-		    <version>1.0.0</version>
+		    <version>${tool-api.version}</version>
 		</dependency>
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-order-api</artifactId>
-		    <version>1.0.0</version>
+            <version>${order-api.version}</version>
 		</dependency>
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-user-api</artifactId>
-		    <version>1.0.0</version>
+            <version>${user-api.version}</version>
 		</dependency>
 		
 		<!-- 渲染模板 -->

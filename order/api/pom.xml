@@ -8,6 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
+    <version>${order-api.version}</version>
 	<artifactId>template-order-api</artifactId>
 	<packaging>jar</packaging>
 

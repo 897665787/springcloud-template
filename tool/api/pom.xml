@@ -8,6 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
+    <version>${tool-api.version}</version>
 	<artifactId>template-tool-api</artifactId>
 	<packaging>jar</packaging>
 

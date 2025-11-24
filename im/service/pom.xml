@@ -29,7 +29,7 @@
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-im-api</artifactId>
-		    <version>1.0.0</version>
+            <version>${im-api.version}</version>
 		</dependency>
 
 		<!-- websocket通信依赖，参考文档：https://www.jb51.net/article/232513.htm -->
