@@ -1,5 +1,6 @@
 package com.company.tool.banner;
 
+import com.alibaba.easyretry.extension.spring.aop.EasyRetryable;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.util.Utils;
 import com.company.tool.api.enums.BannerEnum;
@@ -40,7 +41,11 @@ public class BannerShowService {
 	 * @param runtimeAttach
 	 * @return
 	 */
+	@EasyRetryable
 	public List<BannerCanShow> list(Map<String, String> runtimeAttach) {
+		if (true) {
+			throw new RuntimeException("error");
+		}
 		LocalDateTime now = LocalDateTime.now();
 
 		// 查询条件符合的轮播图，排序priority desc,id desc

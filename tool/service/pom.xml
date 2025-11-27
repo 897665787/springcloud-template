@@ -167,7 +167,28 @@
 		    <version>1.0.10</version>
 		</dependency>
         <!-- 数据库 -->
-        
+
+
+		<!-- 分布式重试，任务执行过程持久化 -->
+		<dependency>
+			<groupId>com.github.hadoop002.smartretry</groupId>
+			<artifactId>retry-spring4</artifactId>
+			<version>1.3.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>easy-retry-mybatis-starter</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.60</version>
+		</dependency>
+
+		<!-- 分布式重试，任务执行过程持久化 -->
+
 	</dependencies>
 	<build>
 		<plugins>
