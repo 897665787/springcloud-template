@@ -13,4 +13,6 @@ public interface StrategyConstants {
 	String MEMBER_BUY_STRATEGY = "memberBuyStrategy";
 	String GOODS_REFUND_STRATEGY = "goodsRefundStrategy";
 	String RECHARGE_STRATEGY = "rechargeStrategy";
+
+	String CANAL_STRATEGY = "canalStrategy";
 }
