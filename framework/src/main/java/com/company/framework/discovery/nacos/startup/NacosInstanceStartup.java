@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
- * eureka实例启动
+ * nacos实例启动
  *
  * @author JQ棣
  */

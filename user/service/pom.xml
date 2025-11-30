@@ -81,14 +81,7 @@
 		    <version>1.0.10</version>
 		</dependency>
         <!-- 数据库 -->
-        
-        <!-- Canal 依赖 -->
-		<dependency>
-			<groupId>top.javatool</groupId>
-			<artifactId>canal-spring-boot-starter</artifactId>
-			<version>1.2.1-RELEASE</version>
-		</dependency>
-        
+
 	</dependencies>
 	<build>
 		<plugins>

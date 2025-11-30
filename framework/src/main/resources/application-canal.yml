@@ -1,0 +1,56 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+canal:
+  # 跟服务端canal.properties中canal.serverMode配置强相关
+  # 框架实现选项：simple,cluster,zk,kafka
+  # 自定义实现选项：messagedriven（canal.properties中canal.serverMode=rabbitMQ或rocketMQ时可用）
+  mode: close # 默认：simple 可以使用一个不存在的选项关闭canal
+  server: 127.0.0.1:11111 # canal的地址
+  destination: example # 数据同步的目的地，默认：example；canal.mode=simple时，该值有效
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+canal:
+  # 跟服务端canal.properties中canal.serverMode配置强相关
+  # 框架实现选项：simple,cluster,zk,kafka
+  # 自定义实现选项：messagedriven（canal.properties中canal.serverMode=rabbitMQ或rocketMQ时可用）
+  mode: simple # 默认：simple 可以使用一个不存在的选项关闭canal
+  server: 127.0.0.1:11111 # canal的地址
+  destination: example # 数据同步的目的地，默认：example；canal.mode=simple时，该值有效
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+canal:
+  # 跟服务端canal.properties中canal.serverMode配置强相关
+  # 框架实现选项：simple,cluster,zk,kafka
+  # 自定义实现选项：messagedriven（canal.properties中canal.serverMode=rabbitMQ或rocketMQ时可用）
+  mode: messagedriven # 默认：simple 可以使用一个不存在的选项关闭canal
+  server: 127.0.0.1:11111 # canal的地址
+  destination: example # 数据同步的目的地，默认：example；canal.mode=simple时，该值有效
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod
+canal:
+  # 跟服务端canal.properties中canal.serverMode配置强相关
+  # 框架实现选项：simple,cluster,zk,kafka
+  # 自定义实现选项：messagedriven（canal.properties中canal.serverMode=rabbitMQ或rocketMQ时可用）
+  mode: messagedriven # 默认：simple 可以使用一个不存在的选项关闭canal
+  server: 127.0.0.1:11111 # canal的地址
+  destination: example # 数据同步的目的地，默认：example；canal.mode=simple时，该值有效

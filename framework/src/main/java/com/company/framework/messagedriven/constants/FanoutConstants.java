@@ -22,8 +22,10 @@ public interface FanoutConstants {
 		// 队列
 		String USER_QUEUE = PREFIX + "user";
 		String ORDER_QUEUE = PREFIX + "order";
+		String TOOL_QUEUE = PREFIX + "order";
+		String SYSTEM_QUEUE = PREFIX + "order";
 	}
-	
+
 	// 订单创建事件
 	interface ORDER_CREATE {
 		// 交换机
@@ -87,71 +89,71 @@ public interface FanoutConstants {
 		String LOGOUT_RECORD_QUEUE = PREFIX + "logout_record";
 		String USER_DEVICE_QUEUE = PREFIX + "user_device";
 	}
-	
+
 	// 优惠券发放事件
 	interface SEND_COUPON {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "send_coupon";
-		
+
 		String PREFIX = FanoutConstants.PREFIX + "send_coupon-";
 		// 队列
 		String SUBSCRIBE_RECEIVE_QUEUE = PREFIX + "subscribe_receive";
 		String SUBSCRIBE_TOUSE_QUEUE = PREFIX + "subscribe_touse";
 		String SUBSCRIBE_EXPIRE_QUEUE = PREFIX + "subscribe_expire";
 	}
-	
+
 	// 退款申请结果事件
 	interface REFUND_APPLY_RESULT {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "refund_apply_result";
-		
+
 		String PREFIX = FanoutConstants.PREFIX + "refund_apply_result-";
 		// 队列
 		String MEMBER_BUY_QUEUE = PREFIX + "member_buy";
 		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 		String RECHARGE_REFUND_QUEUE = PREFIX + "recharge";
 	}
-	
+
 	// 购买会员-支付成功事件
 	interface MEMBER_BUY_PAY_SUCCESS {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "member_buy_pay_success";
-		
+
 		String PREFIX = FanoutConstants.PREFIX + "member_buy_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
-	
+
 	// 配送订单-支付成功事件
 	interface DISTRIBUTE_PAY_SUCCESS {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "distribute_pay_success";
-		
+
 		String PREFIX = FanoutConstants.PREFIX + "distribute_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
-	
+
 	// 子订单demo3-支付成功事件
 	interface SUBORDERDEMO3_PAY_SUCCESS {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "subOrderDemo3_pay_success";
-		
+
 		String PREFIX = FanoutConstants.PREFIX + "subOrderDemo3_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
-	
+
 	// 充值-支付成功事件
 	interface RECHARGE_PAY_SUCCESS {
 		// 交换机
 		String EXCHANGE = FanoutConstants.PREFIX + "recharge_pay_success";
-		
+
 		String PREFIX = FanoutConstants.PREFIX + "recharge_pay_success-";
 		// 队列
 //		String GOODS_REFUND_QUEUE = PREFIX + "goods_refund";
 	}
-	
+
 	// admin用户登录事件
 	interface SYS_USER_LOGIN {
 		// 交换机

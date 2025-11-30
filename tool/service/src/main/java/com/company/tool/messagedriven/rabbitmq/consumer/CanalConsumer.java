@@ -1,10 +1,10 @@
-package com.company.user.messagedriven.rabbitmq.consumer;
+package com.company.tool.messagedriven.rabbitmq.consumer;
 
 import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
-import com.company.user.messagedriven.strategy.StrategyConstants;
+import com.company.tool.messagedriven.strategy.StrategyConstants;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.ExchangeTypes;
@@ -25,7 +25,7 @@ import java.util.Map;
 @ConditionalOnProperty(value = "canal.mode", havingValue = "messagedriven")
 public class CanalConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.CANAL.USER_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.CANAL.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.CANAL.TOOL_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.CANAL.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
     public void handle(String jsonStrMsg, Channel channel, Message message) {
         /*
         jsonStrMsg样例：

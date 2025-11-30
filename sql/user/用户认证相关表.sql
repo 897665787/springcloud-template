@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `bu_user_info`;
 CREATE TABLE `bu_user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `nickname` varchar(32) DEFAULT NULL COMMENT '昵称',
-  `avator` varchar(32) DEFAULT NULL COMMENT '头像',
+  `avatar` varchar(32) DEFAULT NULL COMMENT '头像',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',

@@ -1,8 +1,3 @@
-canal:
-  mode: close # simple,cluster,zookeeper,kafka,rocketMQ，默认：simple 可以使用一个不存在的选项关闭canal
-  server: 127.0.0.1:11111 # canal的地址
-  destination: example # 数据同步的目的地，默认：example
-  
 template:
   domain: http://d-domain.com
   enable:

@@ -70,6 +70,7 @@ springcloud-template
 └── template-framework -- 框架代码(内部微服务)
      └── autoconfigure -- 自动配置
      └── cache -- 缓存
+     └── canal -- 数据变更监听（分享：https://www.toutiao.com/article/7578448808669921838）
      └── config -- 动态刷新配置中心配置（分享：https://www.toutiao.com/article/7258567779102917139）
      └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
      └── developer -- 环境流量路由到本机，调试神器（分享：https://www.toutiao.com/article/7514716979333268008）

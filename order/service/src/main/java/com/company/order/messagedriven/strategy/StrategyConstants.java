@@ -1,6 +1,8 @@
 package com.company.order.messagedriven.strategy;
 
 public interface StrategyConstants {
+	String CANAL_STRATEGY = "canalStrategy";
+
 	String USER_STRATEGY = "userStrategy";
 	String XDELAYMESSAGE_STRATEGY = "xDelayMessageStrategy";
 
