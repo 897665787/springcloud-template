@@ -3,6 +3,7 @@ package com.company.framework.globalresponse;
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.ResultException;
+import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.message.IMessage;
 import com.company.framework.util.JsonUtil;
@@ -56,7 +57,7 @@ public class GlobalExceptionHandler {
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
 		}
-		log.warn("业务异常:{}", message);
+        log.warn("{},业务异常:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()), message);
 		sendErrorIfPage(request, response, handler);
 		return Result.fail(e.getCode(), imessage.getMessage(message, e.getArgs()));
 	}
@@ -71,7 +72,7 @@ public class GlobalExceptionHandler {
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
 		}
-		log.warn("业务异常:{}", message);
+        log.warn("{},业务异常:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()), message);
 		sendErrorIfPage(request, response, handler);
 		return Result.fail(e.getCode(), imessage.getMessage(message));
 	}
@@ -85,8 +86,8 @@ public class GlobalExceptionHandler {
 		String message = e.getMessage();
 		if (StringUtils.isBlank(message)) {
 			message = ExceptionUtils.getStackTrace(e);
-		}
-		log.warn("业务异常:{}", message);
+        }
+        log.warn("{},业务异常:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()), message);
 		sendErrorIfPage(request, response, handler);
 		return Result.fail(e.getCode(), imessage.getMessage(message));
 	}
@@ -97,7 +98,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public Result<?> error(Exception e, HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handler) {
-		log.error("未知异常:", e);
+        log.error("{},未知异常", JsonUtil.toJsonString(HeaderContextUtil.headerMap()), e);
 		sendErrorIfPage(request, response, handler);
 		ResultCode resultCode = ResultCode.SYSTEM_ERROR;
 		return Result.fail(resultCode.getCode(), imessage.getMessage(resultCode.getMessage()));
@@ -156,7 +157,7 @@ public class GlobalExceptionHandler {
 			HttpServletRequest request, HttpServletResponse response) {
 		String maxFileSize = SpringContextUtil.getProperty("spring.servlet.multipart.max-file-size", "1M");
 		String message = imessage.getMessage("文件大小需小于{0}", maxFileSize);
-		log.warn(message, e);
+//		log.warn(message, e);
 		return Result.fail(message);
 	}
 
@@ -166,7 +167,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	public Result<?> runtime(RuntimeException e, HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handler) {
-		log.error("未处理运行时异常", e);
+        log.error("{},未处理运行时异常", JsonUtil.toJsonString(HeaderContextUtil.headerMap()), e);
 		sendErrorIfPage(request, response, handler);
 		ResultCode resultCode = ResultCode.SYSTEM_ERROR;
 		return Result.fail(resultCode.getCode(), imessage.getMessage(resultCode.getMessage()));
@@ -227,7 +228,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(DuplicateKeyException.class)
 	public Result<?> duplicateKey(DuplicateKeyException e, HttpServletRequest request, HttpServletResponse response,
 			HandlerMethod handler) {
-		log.error("数据重复异常", e);
+        log.error("{},数据重复异常", JsonUtil.toJsonString(HeaderContextUtil.headerMap()), e);
 		sendErrorIfPage(request, response, handler);
 		return Result.fail(imessage.getMessage("数据重复"));
 	}
