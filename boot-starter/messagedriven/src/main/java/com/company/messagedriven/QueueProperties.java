@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class QueueProperties {
 
     private String prefix;
-    private Exchange exchange;// 对应rabbitmq exchange，对应rocketmq topic
-    private Queue queue;// 对应rabbitmq queue，对应rocketmq consumer group
+    private Exchange exchange;// 对应rabbitmq的exchange，对应rocketmq的topic
+    private Queue queue;// 对应rabbitmq的queue，对应rocketmq的consumerGroup
 
     @Data
     public static class Exchange {
