@@ -1,6 +1,6 @@
-package com.company.web.messagedriven.rabbitmq.consumer;
+package com.company.messagedriven.rabbitmq.consumer;
 
-import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
+import com.company.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Argument;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -10,8 +10,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
-import com.company.web.messagedriven.Constants;
+import com.company.messagedriven.rabbitmq.utils.ConsumerUtils;
 import com.rabbitmq.client.Channel;
 
 /**
@@ -28,10 +27,10 @@ import com.rabbitmq.client.Channel;
 public class XDelayConsumer {
 
 	@RabbitListener(
-			bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.XDELAYED.NAME),
-			exchange = @Exchange(value = Constants.EXCHANGE.XDELAYED, type = "x-delayed-message",
+			bindings = @QueueBinding(value = @Queue(value = "${messagedriven.queue.xdelayed.name}"),
+			exchange = @Exchange(value = "${messagedriven.exchange.xdelayed}", type = "x-delayed-message",
 								arguments = { @Argument(name = "x-delayed-type", value = "direct", type = "java.lang.String") }),
-			key = Constants.QUEUE.XDELAYED.KEY))
+			key = "${messagedriven.queue.xdelayed.key}"))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

@@ -1,10 +1,10 @@
-package com.company.web.messagedriven.redis.consumer;
+package com.company.framework.messagedriven.redis.consumer;
 
+import com.company.framework.messagedriven.QueueProperties;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
 import com.company.framework.util.JsonUtil;
-import com.company.web.messagedriven.Constants;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
@@ -39,8 +39,8 @@ public class CommonConsumer {
     }
 
     @Bean
-    public Object registerCommonConsumer(RedisMessageListenerContainer container, MessageListener commonMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
+    public Object registerCommonConsumer(RedisMessageListenerContainer container, MessageListener commonMessageListener, QueueProperties queueProperties) {
+        String channel = String.format("%s:%s", queueProperties.getExchange().getDirect(), queueProperties.getQueue().getCommon().getKey());
         container.addMessageListener(commonMessageListener, new ChannelTopic(channel));
         return new Object();
     }

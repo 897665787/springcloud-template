@@ -1,5 +1,6 @@
-package com.company.web.messagedriven.rabbitmq.config;
+package com.company.framework.messagedriven.rabbitmq.config;
 
+import com.company.framework.messagedriven.QueueProperties;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -9,8 +10,6 @@ import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-
-import com.company.web.messagedriven.Constants;
 
 /**
  * 延时队列(用2个队列实现)
@@ -26,8 +25,8 @@ import com.company.web.messagedriven.Constants;
 public class DelayConfig {
 
 	@Bean
-	public DirectExchange directExchange() {
-		return new DirectExchange(Constants.EXCHANGE.DIRECT);
+	public DirectExchange directExchange(QueueProperties queueProperties) {
+		return new DirectExchange(queueProperties.getExchange().getDirect());
 	}
 
 	/**
@@ -36,14 +35,14 @@ public class DelayConfig {
 	 * @return
 	 */
 	@Bean
-	public Queue delayQueue() {
-		return QueueBuilder.durable(Constants.QUEUE.DEAD_LETTER.NAME)
+	public Queue delayQueue(QueueProperties queueProperties) {
+		return QueueBuilder.durable(queueProperties.getQueue().getDead_letter().getName())
 				// 最大延迟毫秒数（这里指定1天）
 				.withArgument("x-message-ttl", 86400000)
 				// 配置到期后转发的交换
-				.withArgument("x-dead-letter-exchange", Constants.EXCHANGE.DIRECT)
+				.withArgument("x-dead-letter-exchange", queueProperties.getExchange().getDirect())
 				// 配置到期后转发的路由键
-				.withArgument("x-dead-letter-routing-key", Constants.QUEUE.COMMON.KEY)// ttl到期后转发到普通公共队列
+				.withArgument("x-dead-letter-routing-key", queueProperties.getQueue().getCommon().getKey())// ttl到期后转发到普通公共队列
 				.build();
 	}
 
@@ -53,7 +52,7 @@ public class DelayConfig {
 	 * @return
 	 */
 	@Bean
-	public Binding delayBinding(Queue delayQueue, DirectExchange directExchange) {
-		return BindingBuilder.bind(delayQueue).to(directExchange).with(Constants.QUEUE.DEAD_LETTER.KEY);
+	public Binding delayBinding(Queue delayQueue, DirectExchange directExchange, QueueProperties queueProperties) {
+		return BindingBuilder.bind(delayQueue).to(directExchange).with(queueProperties.getQueue().getDead_letter().getKey());
 	}
 }

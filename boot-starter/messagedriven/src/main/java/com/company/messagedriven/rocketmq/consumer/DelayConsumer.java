@@ -1,8 +1,7 @@
-package com.company.web.messagedriven.rocketmq.consumer;
+package com.company.messagedriven.rocketmq.consumer;
 
-import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
-import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
-import com.company.web.messagedriven.Constants;
+import com.company.messagedriven.rocketmq.utils.ConsumerUtils;
+import com.company.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -16,14 +15,14 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-        topic = Constants.EXCHANGE.DIRECT,
-        consumerGroup = Constants.QUEUE.COMMON.NAME,
+        topic = "${messagedriven.exchange.xdelayed}",
+        consumerGroup = "${messagedriven.queue.xdelayed.name}",
         selectorType = SelectorType.TAG,
-        selectorExpression = Constants.QUEUE.COMMON.KEY
+        selectorExpression = "${messagedriven.queue.xdelayed.key}"
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
-public class CommonConsumer implements RocketMQListener<MessageExt> {
+public class DelayConsumer implements RocketMQListener<MessageExt> {
     @Override
     public void onMessage(MessageExt messageExt) {
         Map<String, String> properties = messageExt.getProperties();
