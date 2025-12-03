@@ -2,8 +2,8 @@ package com.company.framework.filter;
 
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+//import com.company.framework.messagedriven.MessageSender;
+//import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,8 @@ import java.util.Map;
 @Order(CommonConstants.FilterOrdered.SOURCE)
 public class SourceFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private MessageSender messageSender;
+//	@Autowired
+//	private MessageSender messageSender;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -72,7 +72,7 @@ public class SourceFilter extends OncePerRequestFilter {
 		params.put("source", source);
 		params.put("deviceid", deviceid);
 		params.put("time", time);
-		messageSender.sendFanoutMessage(params, FanoutConstants.USER_SOURCE.EXCHANGE);
+//		messageSender.sendFanoutMessage(params, FanoutConstants.USER_SOURCE.EXCHANGE);
 
 		chain.doFilter(request, response);
 	}

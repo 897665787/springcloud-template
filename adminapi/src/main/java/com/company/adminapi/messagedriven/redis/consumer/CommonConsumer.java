@@ -40,7 +40,7 @@ public class CommonConsumer {
 
     @Bean
     public Object registerCommonConsumer(RedisMessageListenerContainer container, MessageListener commonMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", "${messagedriven.queue.common.key}");
         container.addMessageListener(commonMessageListener, new ChannelTopic(channel));
         return new Object();
     }

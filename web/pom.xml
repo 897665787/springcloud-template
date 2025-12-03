@@ -20,12 +20,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework-edge</artifactId>
 		    <version>1.0.0</version>
 		</dependency>
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>boot-starter-messagedriven</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-tool-api</artifactId>

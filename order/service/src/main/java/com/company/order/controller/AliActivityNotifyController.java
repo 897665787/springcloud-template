@@ -193,7 +193,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		params.put("merchantNo", "未配置");
 		params.put("tradeNo", aliActivityPay.getTradeNo());
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 
 		// 支付成功后回调，开始异步发码，最终保存到券码表，在下面的代码需要轮询券码表获取券码响应给支付宝（需要重试机制）

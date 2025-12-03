@@ -220,8 +220,8 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			params.put("merchantNo", "未配置");
 			params.put("tradeNo", aliActivityPay.getTradeNo());
 
-			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.KEY);
+			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
+					"${messagedriven.queue.common.key}");
 		}
 	}
 

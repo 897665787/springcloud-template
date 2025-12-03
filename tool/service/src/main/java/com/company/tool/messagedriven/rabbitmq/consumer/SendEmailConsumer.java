@@ -17,7 +17,7 @@ import com.rabbitmq.client.Channel;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class SendEmailConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.SEND_EMAIL.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.SEND_EMAIL.KEY))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.SEND_EMAIL.NAME), exchange = @Exchange(value = "${messagedriven.exchange.direct}"), key = Constants.QUEUE.SEND_EMAIL.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

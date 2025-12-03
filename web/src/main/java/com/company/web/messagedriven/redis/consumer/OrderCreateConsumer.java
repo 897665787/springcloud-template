@@ -1,9 +1,9 @@
 package com.company.web.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.messagedriven.constants.HeaderConstants;
-import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
-import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
+import com.company.messagedriven.constants.FanoutConstants;
+import com.company.messagedriven.constants.HeaderConstants;
+import com.company.messagedriven.redis.RedisMQAutoConfiguration;
+import com.company.messagedriven.redis.utils.ConsumerUtils;
 import com.company.framework.util.JsonUtil;
 import com.company.web.messagedriven.strategy.StrategyConstants;
 import org.apache.commons.collections.MapUtils;

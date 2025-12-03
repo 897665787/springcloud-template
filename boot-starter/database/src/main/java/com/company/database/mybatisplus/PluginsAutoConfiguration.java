@@ -5,21 +5,20 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.company.database.mybatisplus.plugins.PerformanceInterceptor;
 import com.company.database.mybatisplus.plugins.SqlLimitInterceptor;
 import com.company.database.mybatisplus.plugins.SummarySQLInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+//@Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
 public class PluginsAutoConfiguration {
-	
-	@Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor(@Value("${template.sqllimit.max:0}") Integer limit) {
 		MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
 		// 分页拦截器
 		mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
 		
 		// 给没有添加limit的SQL添加limit，防止全量查询导致慢SQL
-//		int limit = SpringContextUtil.getIntegerProperty("template.sqllimit.max", 0);
-		int limit = 0;
 		if (limit > 0) {
 			mybatisPlusInterceptor.addInnerInterceptor(new SqlLimitInterceptor(limit));
 		}

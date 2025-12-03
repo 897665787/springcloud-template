@@ -2,8 +2,8 @@ package com.company.framework.filter;
 
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+//import com.company.framework.messagedriven.MessageSender;
+//import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.company.framework.util.IpUtil;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
@@ -30,8 +30,8 @@ import java.util.Map;
 @Order(CommonConstants.FilterOrdered.DEVICE)
 public class DeviceInfoFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private MessageSender messageSender;
+//	@Autowired
+//	private MessageSender messageSender;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -94,7 +94,7 @@ public class DeviceInfoFilter extends OncePerRequestFilter {
 		params.put("requestip", requestip);
 		params.put("userAgent", userAgent);
 		params.put("time", time);
-		messageSender.sendFanoutMessage(params, FanoutConstants.DEVICE_INFO.EXCHANGE);
+//		messageSender.sendFanoutMessage(params, FanoutConstants.DEVICE_INFO.EXCHANGE);
 
 		chain.doFilter(request, response);
 	}

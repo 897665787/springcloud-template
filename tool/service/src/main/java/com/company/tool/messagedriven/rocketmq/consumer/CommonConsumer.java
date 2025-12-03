@@ -14,12 +14,19 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+
+
+
+
 @Component
 @RocketMQMessageListener(
-        topic = Constants.EXCHANGE.DIRECT,
-        consumerGroup = Constants.QUEUE.COMMON.NAME,
+//        topic = "${messagedriven.exchange.direct}",
+//        consumerGroup = "${messagedriven.queue.common.name}",
+        topic = "${messagedriven.exchange.direct}",
+        consumerGroup = "${messagedriven.queue.common.name}",
         selectorType = SelectorType.TAG,
-        selectorExpression = Constants.QUEUE.COMMON.KEY
+//        selectorExpression = "${messagedriven.queue.common.key}"
+        selectorExpression = "${messagedriven.queue.common.key}"
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)

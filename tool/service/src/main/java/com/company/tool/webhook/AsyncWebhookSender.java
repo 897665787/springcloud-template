@@ -93,7 +93,7 @@ public class AsyncWebhookSender {
 		SendWebhookMQDto params = new SendWebhookMQDto();
 		params.setWebhookTaskId(webhookTaskId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDWEBHOOK_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.SENDWEBHOOK_STRATEGY, params, "${messagedriven.exchange.direct}",
 				Constants.QUEUE.SEND_WEBHOOK.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行

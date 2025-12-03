@@ -40,7 +40,7 @@ public class XDelayConsumer {
 
     @Bean
     public Object registerXDelayConsumer(RedisMessageListenerContainer container, MessageListener xDelayMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.XDELAYED, Constants.QUEUE.XDELAYED.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.xdelayed}", "${messagedriven.queue.xdelayed.key}");
         container.addMessageListener(xDelayMessageListener, new ChannelTopic(channel));
         return new Object();
     }

@@ -41,7 +41,7 @@ public class SendWebhookConsumer {
 
     @Bean
     public Object registerSendWebhookConsumer(RedisMessageListenerContainer container, MessageListener sendWebhookMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.SEND_WEBHOOK.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", Constants.QUEUE.SEND_WEBHOOK.KEY);
         container.addMessageListener(sendWebhookMessageListener, new ChannelTopic(channel));
         return new Object();
     }

@@ -125,8 +125,8 @@ public class OperationLogAspect {
 
 		try {
 			// MQ 异步保存
-			messageSender.sendNormalMessage(StrategyConstants.SAVE_OPERLOG_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.KEY);
+			messageSender.sendNormalMessage(StrategyConstants.SAVE_OPERLOG_STRATEGY, params, "${messagedriven.exchange.direct}",
+					"${messagedriven.queue.common.key}");
 		} catch (Exception e) {
 			log.error("异常信息", e);
 		} finally {

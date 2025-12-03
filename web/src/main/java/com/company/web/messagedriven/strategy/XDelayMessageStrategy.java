@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.BaseStrategy;
+import com.company.messagedriven.BaseStrategy;
 
 import lombok.extern.slf4j.Slf4j;
 
