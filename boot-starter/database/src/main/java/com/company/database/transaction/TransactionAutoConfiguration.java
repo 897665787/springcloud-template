@@ -10,7 +10,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * 事务配置
  */
-@Configuration
+//@Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
 public class TransactionAutoConfiguration {
 
 	@Bean(name = "transactionManager")

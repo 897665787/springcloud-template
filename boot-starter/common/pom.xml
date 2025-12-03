@@ -3,20 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<groupId>com.company</groupId>
-		<artifactId>template</artifactId>
+		<artifactId>boot-starter</artifactId>
 		<version>1.0.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>boot-starter</artifactId>
-	<packaging>pom</packaging>
+	<artifactId>boot-starter-common</artifactId>
+	<packaging>jar</packaging>
 
-	<description>starter框架代码</description>
+	<description>common starter代码</description>
 
-	<modules>
-		<module>common</module>
-		<module>database</module>
-		<module>messagedriven</module>
-	</modules>
-
+	<dependencies>
+		<!-- common -->
+        <!-- common -->
+	</dependencies>
 </project>
