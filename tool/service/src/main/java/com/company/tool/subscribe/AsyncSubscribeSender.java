@@ -103,7 +103,7 @@ public class AsyncSubscribeSender {
 		SendSubscribeMQDto params = new SendSubscribeMQDto();
 		params.setSubscribeTaskDetailId(subscribeTaskDetailId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDSUBSCRIBE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.SENDSUBSCRIBE_STRATEGY, params, "${messagedriven.exchange.direct}",
 				Constants.QUEUE.SEND_SUBSCRIBE.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行

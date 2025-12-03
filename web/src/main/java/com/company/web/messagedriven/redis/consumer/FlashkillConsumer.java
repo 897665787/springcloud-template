@@ -40,7 +40,7 @@ public class FlashkillConsumer {
 
     @Bean
     public Object registerFlashkillConsumer(RedisMessageListenerContainer container, MessageListener flashkillMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.FLASH_KILL.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", Constants.QUEUE.FLASH_KILL.KEY);
         container.addMessageListener(flashkillMessageListener, new ChannelTopic(channel));
         return new Object();
     }

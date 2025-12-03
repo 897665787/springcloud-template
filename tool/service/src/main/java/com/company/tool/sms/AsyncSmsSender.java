@@ -125,7 +125,7 @@ public class AsyncSmsSender {
 		SendSmsMQDto params = new SendSmsMQDto();
 		params.setSmsTaskDetailId(smsTaskDetailId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDSMS_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.SENDSMS_STRATEGY, params, "${messagedriven.exchange.direct}",
 				Constants.QUEUE.SEND_SMS.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行
