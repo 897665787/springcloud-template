@@ -41,7 +41,7 @@ public class SendSubscribeConsumer {
 
     @Bean
     public Object registerSendSubscribeConsumer(RedisMessageListenerContainer container, MessageListener sendSubscribeMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.SEND_SUBSCRIBE.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", Constants.QUEUE.SEND_SUBSCRIBE.KEY);
         container.addMessageListener(sendSubscribeMessageListener, new ChannelTopic(channel));
         return new Object();
     }

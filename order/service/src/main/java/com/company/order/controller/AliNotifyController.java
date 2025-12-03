@@ -168,8 +168,8 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("merchantNo", aliParams.get("seller_id"));
 			params.put("tradeNo", aliParams.get("trade_no"));
 
-			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.KEY);
+			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
+					"${messagedriven.queue.common.key}");
 		} else if ("TRADE_SUCCESS".equals(tradeStatus)) {
 			// trade_status=TRADE_SUCCESS，则认为是支付成功回调
 			/**
@@ -232,7 +232,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("merchantNo", aliParams.get("seller_id"));
 			params.put("tradeNo", aliParams.get("trade_no"));
 
-			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
 					Constants.QUEUE.PAY_NOTIFY.KEY);
 		}
 		return Result.success("success");

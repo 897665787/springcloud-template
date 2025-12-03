@@ -1,6 +1,6 @@
 package com.company.web.messagedriven.rabbitmq.consumer;
 
-import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
+import com.company.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -9,7 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
+import com.company.messagedriven.rabbitmq.utils.ConsumerUtils;
 import com.company.web.messagedriven.Constants;
 import com.rabbitmq.client.Channel;
 
@@ -17,7 +17,7 @@ import com.rabbitmq.client.Channel;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class FlashkillConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.FLASH_KILL.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.FLASH_KILL.KEY))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.FLASH_KILL.NAME), exchange = @Exchange(value = "${messagedriven.exchange.direct}"), key = Constants.QUEUE.FLASH_KILL.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

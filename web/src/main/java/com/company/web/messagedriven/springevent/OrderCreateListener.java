@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.framework.messagedriven.constants.HeaderConstants;
-import com.company.framework.messagedriven.springevent.event.MessageEvent;
-import com.company.framework.messagedriven.springevent.utils.ConsumerUtils;
+import com.company.messagedriven.constants.FanoutConstants;
+import com.company.messagedriven.constants.HeaderConstants;
+import com.company.messagedriven.springevent.event.MessageEvent;
+import com.company.messagedriven.springevent.utils.ConsumerUtils;
 import com.company.web.messagedriven.strategy.StrategyConstants;
 
 @Component

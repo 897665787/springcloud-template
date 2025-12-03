@@ -167,7 +167,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("merchantNo", wxPay.getMchid());
 		params.put("tradeNo", orderNotifyResult.getTransactionId());
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
@@ -276,8 +276,8 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("orderPayMethod", OrderPayEnum.Method.WX.getCode());
 		params.put("tradeNo", reqInfo.getRefundId());
 
-		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.KEY);
+		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
+				"${messagedriven.queue.common.key}");
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
 }

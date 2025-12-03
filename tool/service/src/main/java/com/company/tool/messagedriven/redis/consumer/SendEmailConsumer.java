@@ -41,7 +41,7 @@ public class SendEmailConsumer {
 
     @Bean
     public Object registerSendEmailConsumer(RedisMessageListenerContainer container, MessageListener sendEmailMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.SEND_EMAIL.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", Constants.QUEUE.SEND_EMAIL.KEY);
         container.addMessageListener(sendEmailMessageListener, new ChannelTopic(channel));
         return new Object();
     }

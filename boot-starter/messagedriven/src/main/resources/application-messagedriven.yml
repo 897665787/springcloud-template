@@ -1,0 +1,15 @@
+messagedriven:
+  prefix: ${spring.application.name}
+  exchange:
+    direct: ${messagedriven.prefix}-direct
+    xdelayed: ${messagedriven.prefix}-x-delayed-direct
+  queue:
+    xdelayed:
+      name: ${messagedriven.prefix}-x-delayed
+      key: ${messagedriven.prefix}-key-x-delayed
+    dead_letter:
+      name: ${messagedriven.prefix}-x-dead-letter
+      key: ${messagedriven.prefix}-key-x-dead-letter
+    common:
+      name: ${messagedriven.prefix}-common
+      key: ${messagedriven.prefix}-key-common

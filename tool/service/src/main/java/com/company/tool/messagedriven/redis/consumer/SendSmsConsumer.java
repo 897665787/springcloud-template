@@ -41,7 +41,7 @@ public class SendSmsConsumer {
 
     @Bean
     public Object registerSendSmsConsumer(RedisMessageListenerContainer container, MessageListener sendSmsMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.SEND_SMS.KEY);
+        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", Constants.QUEUE.SEND_SMS.KEY);
         container.addMessageListener(sendSmsMessageListener, new ChannelTopic(channel));
         return new Object();
     }

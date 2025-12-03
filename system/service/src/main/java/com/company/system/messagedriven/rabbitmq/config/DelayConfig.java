@@ -26,7 +26,7 @@ public class DelayConfig {
 
 	@Bean
 	public DirectExchange directExchange() {
-		return new DirectExchange(Constants.EXCHANGE.DIRECT);
+		return new DirectExchange("${messagedriven.exchange.direct}");
 	}
 
 	/**
@@ -40,9 +40,9 @@ public class DelayConfig {
 				// 最大延迟毫秒数（这里指定1天）
 				.withArgument("x-message-ttl", 86400000)
 				// 配置到期后转发的交换
-				.withArgument("x-dead-letter-exchange", Constants.EXCHANGE.DIRECT)
+				.withArgument("x-dead-letter-exchange", "${messagedriven.exchange.direct}")
 				// 配置到期后转发的路由键
-				.withArgument("x-dead-letter-routing-key", Constants.QUEUE.COMMON.KEY)// ttl到期后转发到普通公共队列
+				.withArgument("x-dead-letter-routing-key", "${messagedriven.queue.common.key}")// ttl到期后转发到普通公共队列
 				.build();
 	}
 
@@ -53,6 +53,6 @@ public class DelayConfig {
 	 */
 	@Bean
 	public Binding delayBinding(@Qualifier("delayQueue") Queue delayQueue, @Qualifier("directExchange") DirectExchange directExchange) {
-		return BindingBuilder.bind(delayQueue).to(directExchange).with(Constants.QUEUE.DEAD_LETTER.KEY);
+		return BindingBuilder.bind(delayQueue).to(directExchange).with("${messagedriven.queue.dead_letter.key}");
 	}
 }

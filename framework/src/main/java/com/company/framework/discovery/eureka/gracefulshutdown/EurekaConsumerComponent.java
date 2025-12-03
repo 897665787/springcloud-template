@@ -2,8 +2,8 @@ package com.company.framework.discovery.eureka.gracefulshutdown;
 
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.gracefulshutdown.ConsumerComponent;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+//import com.company.framework.messagedriven.MessageSender;
+//import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,8 @@ public class EurekaConsumerComponent implements ConsumerComponent {
     @Autowired
     private EurekaRegistration registration;
 
-    @Autowired
-    private MessageSender messageSender;
+//    @Autowired
+//    private MessageSender messageSender;
 
     @Override
     public void preStop() {
@@ -43,7 +43,7 @@ public class EurekaConsumerComponent implements ConsumerComponent {
         params.put("application", application);
         params.put("ip", registration.getHost());
         params.put("port", registration.getPort());
-        messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
+//        messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
         log.info("服务{}已在注册中心下线", application);
     }
 }

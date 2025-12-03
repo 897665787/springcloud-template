@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-		topic = Constants.EXCHANGE.DIRECT,
+		topic = "${messagedriven.exchange.direct}",
 		consumerGroup = Constants.QUEUE.SEND_EMAIL.NAME,
 		selectorType = SelectorType.TAG,
 		selectorExpression = Constants.QUEUE.SEND_EMAIL.KEY

@@ -1,0 +1,16 @@
+fanout:
+  prefix: fanout
+  deploy:
+    exchange: ${fanout.prefix}-deploy
+  canal:
+    exchange: ${fanout.prefix}-canal
+    prefix: ${fanout.canal.exchange}
+    user_queue: ${fanout.canal.prefix}-user
+    order_queue: ${fanout.canal.prefix}-order
+    tool_queue: ${fanout.canal.prefix}-tool
+    system_queue: ${fanout.canal.prefix}-system
+  order_create:
+    exchange: ${fanout.prefix}-order_create
+    prefix: ${fanout.order_create.exchange}
+    sms_queue: ${fanout.canal.prefix}-sms
+    countmoney_queue: ${fanout.canal.prefix}-countmoney

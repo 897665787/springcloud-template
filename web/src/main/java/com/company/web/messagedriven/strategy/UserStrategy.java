@@ -2,7 +2,7 @@ package com.company.web.messagedriven.strategy;
 
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.BaseStrategy;
+import com.company.messagedriven.BaseStrategy;
 import com.company.web.messagedriven.strategy.dto.UserMQDto;
 
 import lombok.extern.slf4j.Slf4j;

@@ -3,8 +3,8 @@ package com.company.framework.discovery.nacos.startup;
 import com.alibaba.cloud.nacos.registry.NacosRegistration;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.gracefulshutdown.InstanceStartup;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+//import com.company.framework.messagedriven.MessageSender;
+//import com.company.framework.messagedriven.constants.FanoutConstants;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,8 @@ public class NacosInstanceStartup implements InstanceStartup {
     @Autowired
     private NacosRegistration registration;
 
-    @Autowired
-    private MessageSender messageSender;
+//    @Autowired
+//    private MessageSender messageSender;
 
     @Override
     public void startup() {
@@ -38,7 +38,7 @@ public class NacosInstanceStartup implements InstanceStartup {
         params.put("application", application);
         params.put("ip", registration.getHost());
         params.put("port", registration.getPort());
-        messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
+//        messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
     }
 
 }

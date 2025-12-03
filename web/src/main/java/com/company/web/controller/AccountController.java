@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.company.framework.context.HeaderContextUtil;
+import com.company.messagedriven.constants.FanoutConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,10 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.common.api.Result;
 import com.company.framework.util.RegexUtil;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.messagedriven.MessageSender;
 import com.company.framework.annotation.RequireLogin;
-import com.company.framework.context.HeaderContextUtil;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserInfoFeign;

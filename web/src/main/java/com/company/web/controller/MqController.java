@@ -2,9 +2,9 @@ package com.company.web.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.company.common.api.Result;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
-import com.company.web.messagedriven.Constants;
+import com.company.messagedriven.MessageSender;
+import com.company.messagedriven.QueueProperties;
+import com.company.messagedriven.constants.FanoutConstants;
 import com.company.web.messagedriven.strategy.StrategyConstants;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,8 @@ import java.util.Map;
 public class MqController {
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private QueueProperties queueProperties;
 
 	@GetMapping(value = "/sendNormalMessage")
 	public Result<String> sendNormalMessage(String message) {
@@ -28,14 +30,14 @@ public class MqController {
 		params.put("open", message);
 		params.put("open2", message);
 		params.put("time", DateUtil.now());
-		messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY,params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
+		messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY, params, queueProperties.getExchange().getDirect(), queueProperties.getQueue().getCommon().getKey());
 
 //		UserMQDto param = new UserMQDto();
 //		param.setP1("p1");
 //		param.setP2("p2");
 //		param.setP3("p3");
 //		param.put("time", DateUtil.now());
-//		messageSender.sendNormalMessage(StrategyConstants.USER_STRATEGY, param, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.ROUTING_KEY);
+//		messageSender.sendNormalMessage(StrategyConstants.USER_STRATEGY, param, queueProperties.getExchange().getDirect(), Constants.QUEUE.COMMON.ROUTING_KEY);
 
 		return Result.success("success");
 	}
@@ -58,8 +60,8 @@ public class MqController {
 		params.put("time", DateUtil.now());
 		params.put("delaySeconds", delaySeconds);
 
-		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.DEAD_LETTER.KEY, delaySeconds);
+		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, queueProperties.getExchange().getDirect(),
+                queueProperties.getQueue().getDead_letter().getKey(), delaySeconds);
 		return Result.success("success");
 	}
 	
@@ -70,8 +72,8 @@ public class MqController {
 		params.put("time", DateUtil.now());
 		params.put("delaySeconds", delaySeconds);
 
-		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
-				Constants.QUEUE.XDELAYED.KEY, delaySeconds);
+		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, queueProperties.getExchange().getXdelayed(),
+                queueProperties.getQueue().getXdelayed().getKey(), delaySeconds);
 		return Result.success("success");
 	}
 }

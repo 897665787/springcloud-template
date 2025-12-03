@@ -1,0 +1,15 @@
+messagedriven:
+  prefix: tool
+  exchange:
+    direct: ${prefix}-direct
+    xdelayed: ${prefix}-x-delayed-direct
+  queue:
+    xdelayed:
+      name: ${prefix}-x-delayed
+      key: ${prefix}-key-x-delayed
+    dead_letter:
+      name: ${prefix}-x-dead-letter
+      key: ${prefix}-key-x-dead-letter
+    common:
+      name: ${prefix}-common
+      key: ${prefix}-key-common

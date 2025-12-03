@@ -16,10 +16,10 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-        topic = Constants.EXCHANGE.XDELAYED,
-        consumerGroup = Constants.QUEUE.XDELAYED.NAME,
+        topic = "${messagedriven.exchange.xdelayed}",
+        consumerGroup = "${messagedriven.queue.xdelayed.name}",
         selectorType = SelectorType.TAG,
-        selectorExpression = Constants.QUEUE.XDELAYED.KEY
+        selectorExpression = "${messagedriven.queue.xdelayed.key}"
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)

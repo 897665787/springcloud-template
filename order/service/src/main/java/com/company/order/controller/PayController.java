@@ -302,7 +302,7 @@ public class PayController implements PayFeign {
 		params.put("merchantNo", payOrderQuery.getMerchantNo());
 		params.put("tradeNo", payOrderQuery.getTradeNo());
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 
 		return Result.success(null, "支付成功");
@@ -345,8 +345,8 @@ public class PayController implements PayFeign {
 			delay = (int) LocalDateTimeUtil.between(now, minPayCloseTime, ChronoUnit.SECONDS);
 		}
 
-		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
-				Constants.QUEUE.XDELAYED.KEY, delay);
+		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, "${messagedriven.exchange.xdelayed}",
+				"${messagedriven.queue.xdelayed.key}", delay);
 
 		return Result.success();
 	}
@@ -554,8 +554,8 @@ public class PayController implements PayFeign {
 		params.put("merchantNo", payRefundQuery.getMerchantNo());
 		params.put("tradeNo", payRefundQuery.getTradeNo());
 
-		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.KEY);
+		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, "${messagedriven.exchange.direct}",
+				"${messagedriven.queue.common.key}");
 
 		return Result.success(null, "退款成功");
 	}
