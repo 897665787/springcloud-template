@@ -1,15 +1,10 @@
-package com.company.framework.messagedriven;
+package com.company.framework.messagedriven.properties;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
 @Data
-@ConfigurationProperties(prefix = "messagedriven")
-public class MessagedrivenProperties {
+public class Messagedriven {
 
-    private String prefix;
     private Exchange exchange;// 对应rabbitmq的exchange，对应rocketmq的topic
     private Queue queue;// 对应rabbitmq的queue，对应rocketmq的consumerGroup
 

@@ -28,7 +28,7 @@ public class MqController {
 		params.put("open", message);
 		params.put("open2", message);
 		params.put("time", DateUtil.now());
-		messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY,params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
+        messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY, params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
 
 //		UserMQDto param = new UserMQDto();
 //		param.setP1("p1");

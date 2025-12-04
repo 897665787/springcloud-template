@@ -1,6 +1,6 @@
 package com.company.framework.messagedriven.rabbitmq.config;
 
-import com.company.framework.messagedriven.MessagedrivenProperties;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

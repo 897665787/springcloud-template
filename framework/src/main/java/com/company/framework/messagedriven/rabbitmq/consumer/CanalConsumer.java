@@ -24,7 +24,9 @@ import java.util.Map;
 @ConditionalOnProperty(value = "canal.mode", havingValue = "messagedriven")
 public class CanalConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = "${messagedriven.canal.queue}", durable = "false", autoDelete = "true"), exchange = @Exchange(value = "${messagedriven.canal.exchange}", type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
+	@RabbitListener(
+            bindings = @QueueBinding(value = @Queue(value = "${messagedriven.canal.queue}", durable = "false", autoDelete = "true"),
+                    exchange = @Exchange(value = "${messagedriven.canal.exchange}", type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
     public void handle(String jsonStrMsg, Channel channel, Message message) {
         /*
         jsonStrMsg样例：

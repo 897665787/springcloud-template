@@ -1,0 +1,9 @@
+# 消息驱动 配置
+messagedriven:
+  self:
+    exchange:
+      direct2: ${messagedriven.prefix}-direct2
+    queue:
+      flash_kill:
+        name: ${messagedriven.prefix}-flash_kill
+        key: ${messagedriven.prefix}-key-flash_kill

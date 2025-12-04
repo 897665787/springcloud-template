@@ -1,6 +1,5 @@
 # 消息驱动 配置
 messagedriven:
-  # 普通消息
   prefix: ${spring.application.name}
   framework:
     exchange:

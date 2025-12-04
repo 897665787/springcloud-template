@@ -26,12 +26,11 @@ import com.rabbitmq.client.Channel;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class XDelayConsumer {
 
-	@RabbitListener(
-			bindings = @QueueBinding(value = @Queue(value = "${messagedriven.queue.xdelayed.name}"),
-			exchange = @Exchange(value = "${messagedriven.exchange.xdelayed}", type = "x-delayed-message",
-								arguments = { @Argument(name = "x-delayed-type", value = "direct", type = "java.lang.String") }),
-			key = "${messagedriven.queue.xdelayed.key}"))
-	public void handle(String jsonStrMsg, Channel channel, Message message) {
-		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
+    @RabbitListener(
+            bindings = @QueueBinding(value = @Queue(value = "${messagedriven.queue.xdelayed.name}"),
+            exchange = @Exchange(value = "${messagedriven.exchange.xdelayed}", type = "x-delayed-message", arguments = {@Argument(name = "x-delayed-type", value = "direct", type = "java.lang.String")}),
+            key = "${messagedriven.queue.xdelayed.key}"))
+    public void handle(String jsonStrMsg, Channel channel, Message message) {
+        ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}
 }

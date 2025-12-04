@@ -1,16 +1,33 @@
 package com.company.web.messagedriven;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.framework.messagedriven.properties.Messagedriven;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
+
+import java.util.Objects;
+
 /**
  * EXCHANGE: rabbitmq对应为EXCHANGE，rocketmq对应为topic
  * KEY: rabbitmq对应为routingkey，rocketmq对应为tag
  */
-public interface Constants {
+public abstract class Constants {
+    static MessagedrivenProperties messagedrivenProperties;
+    static Messagedriven.Exchange exchange;
+    static Messagedriven.Queue queue;
 
-	String PREFIX = "web-";
+    static {
+        messagedrivenProperties = SpringContextUtil.getBean(MessagedrivenProperties.class);
+        assert messagedrivenProperties != null;
+        exchange = messagedrivenProperties.getExchange();
+        queue = messagedrivenProperties.getQueue();
+    }
 
 	interface EXCHANGE {
-		String DIRECT = PREFIX + "direct";
-		String XDELAYED = PREFIX + "x-delayed-direct";
+//		String DIRECT = PREFIX + "direct";
+//      String XDELAYED = PREFIX + "x-delayed-direct";
+
+		String DIRECT = exchange.getDirect();
+		String XDELAYED = exchange.getXdelayed();
 	}
 
 	interface QUEUE {
@@ -32,10 +49,10 @@ public interface Constants {
 			String KEY = PREFIX + "key-common";
 		}
 
-		// 秒杀队列
-		interface FLASH_KILL {
-			String NAME = PREFIX + "flash_kill";
-			String KEY = PREFIX + "key-flash_kill";
-		}
+        // 秒杀队列
+        interface FLASH_KILL {
+            String NAME = PREFIX + "flash_kill";
+            String KEY = PREFIX + "key-flash_kill";
+        }
 	}
 }

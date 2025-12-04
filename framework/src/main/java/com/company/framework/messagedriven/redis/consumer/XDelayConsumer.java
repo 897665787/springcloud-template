@@ -1,6 +1,6 @@
 package com.company.framework.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.MessagedrivenProperties;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
