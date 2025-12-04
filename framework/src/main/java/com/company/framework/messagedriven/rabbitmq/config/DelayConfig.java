@@ -1,6 +1,6 @@
 package com.company.framework.messagedriven.rabbitmq.config;
 
-import com.company.framework.messagedriven.QueueProperties;
+import com.company.framework.messagedriven.MessagedrivenProperties;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -25,8 +25,8 @@ import org.springframework.context.annotation.Configuration;
 public class DelayConfig {
 
 	@Bean
-	public DirectExchange directExchange(QueueProperties queueProperties) {
-		return new DirectExchange(queueProperties.getExchange().getDirect());
+	public DirectExchange directExchange(MessagedrivenProperties messagedrivenProperties) {
+		return new DirectExchange(messagedrivenProperties.getExchange().getDirect());
 	}
 
 	/**
@@ -35,14 +35,14 @@ public class DelayConfig {
 	 * @return
 	 */
 	@Bean
-	public Queue delayQueue(QueueProperties queueProperties) {
-		return QueueBuilder.durable(queueProperties.getQueue().getDead_letter().getName())
+	public Queue delayQueue(MessagedrivenProperties messagedrivenProperties) {
+		return QueueBuilder.durable(messagedrivenProperties.getQueue().getDead_letter().getName())
 				// 最大延迟毫秒数（这里指定1天）
 				.withArgument("x-message-ttl", 86400000)
 				// 配置到期后转发的交换
-				.withArgument("x-dead-letter-exchange", queueProperties.getExchange().getDirect())
+				.withArgument("x-dead-letter-exchange", messagedrivenProperties.getExchange().getDirect())
 				// 配置到期后转发的路由键
-				.withArgument("x-dead-letter-routing-key", queueProperties.getQueue().getCommon().getKey())// ttl到期后转发到普通公共队列
+				.withArgument("x-dead-letter-routing-key", messagedrivenProperties.getQueue().getCommon().getKey())// ttl到期后转发到普通公共队列
 				.build();
 	}
 
@@ -52,7 +52,7 @@ public class DelayConfig {
 	 * @return
 	 */
 	@Bean
-	public Binding delayBinding(Queue delayQueue, DirectExchange directExchange, QueueProperties queueProperties) {
-		return BindingBuilder.bind(delayQueue).to(directExchange).with(queueProperties.getQueue().getDead_letter().getKey());
+	public Binding delayBinding(Queue delayQueue, DirectExchange directExchange, MessagedrivenProperties messagedrivenProperties) {
+		return BindingBuilder.bind(delayQueue).to(directExchange).with(messagedrivenProperties.getQueue().getDead_letter().getKey());
 	}
 }

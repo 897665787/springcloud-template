@@ -1,6 +1,6 @@
 package com.company.framework.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.QueueProperties;
+import com.company.framework.messagedriven.MessagedrivenProperties;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -39,8 +39,8 @@ public class XDelayConsumer {
     }
 
     @Bean
-    public Object registerXDelayConsumer(RedisMessageListenerContainer container, MessageListener xDelayMessageListener, QueueProperties queueProperties) {
-        String channel = String.format("%s:%s", queueProperties.getExchange().getXdelayed(), queueProperties.getQueue().getXdelayed().getKey());
+    public Object registerXDelayConsumer(RedisMessageListenerContainer container, MessageListener xDelayMessageListener, MessagedrivenProperties messagedrivenProperties) {
+        String channel = String.format("%s:%s", messagedrivenProperties.getExchange().getXdelayed(), messagedrivenProperties.getQueue().getXdelayed().getKey());
         container.addMessageListener(xDelayMessageListener, new ChannelTopic(channel));
         return new Object();
     }

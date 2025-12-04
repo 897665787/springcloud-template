@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @ConfigurationProperties(prefix = "messagedriven")
-public class QueueProperties {
+public class MessagedrivenProperties {
 
     private String prefix;
     private Exchange exchange;// 对应rabbitmq的exchange，对应rocketmq的topic
