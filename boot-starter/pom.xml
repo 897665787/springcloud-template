@@ -16,7 +16,6 @@
 	<modules>
 		<module>common</module>
 		<module>database</module>
-		<module>messagedriven</module>
 	</modules>
 
 </project>

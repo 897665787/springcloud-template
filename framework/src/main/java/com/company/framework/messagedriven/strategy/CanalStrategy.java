@@ -1,7 +1,7 @@
-package com.company.messagedriven.strategy;
+package com.company.framework.messagedriven.strategy;
 
 import com.alibaba.otter.canal.protocol.FlatMessage;
-import com.company.messagedriven.BaseStrategy;
+import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,7 +17,7 @@ import java.util.Map;
 @ConditionalOnProperty(value = "canal.mode", havingValue = "messagedriven")
 public class CanalStrategy implements BaseStrategy<Map<String, Object>> {
     @Autowired
-    private MessageHandler messageHandler;
+    private MessageHandler<FlatMessage> messageHandler;
 
     @Override
     public void doStrategy(Map<String, Object> params) {
