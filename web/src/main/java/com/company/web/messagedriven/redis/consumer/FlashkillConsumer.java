@@ -1,6 +1,7 @@
 package com.company.web.messagedriven.redis.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
 import com.company.framework.util.JsonUtil;
@@ -39,8 +40,8 @@ public class FlashkillConsumer {
     }
 
     @Bean
-    public Object registerFlashkillConsumer(RedisMessageListenerContainer container, MessageListener flashkillMessageListener) {
-        String channel = String.format("%s:%s", "${messagedriven.exchange.direct}", Constants.QUEUE.FLASH_KILL.KEY);
+    public Object registerFlashkillConsumer(RedisMessageListenerContainer container, MessageListener flashkillMessageListener, MessagedrivenProperties messagedrivenProperties) {
+        String channel = String.format("%s:%s", messagedrivenProperties.getExchange().getDirect(), Constants.QUEUE.FLASH_KILL.KEY);
         container.addMessageListener(flashkillMessageListener, new ChannelTopic(channel));
         return new Object();
     }

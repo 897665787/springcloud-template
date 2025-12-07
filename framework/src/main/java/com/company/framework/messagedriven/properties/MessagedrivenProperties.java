@@ -10,26 +10,25 @@ import org.springframework.stereotype.Component;
 public class MessagedrivenProperties {
 
     private String prefix;
-//    private Messagedriven framework;
 
-    private Messagedriven.Exchange exchange;// 对应rabbitmq的exchange，对应rocketmq的topic
-    private Messagedriven.Queue queue;// 对应rabbitmq的queue，对应rocketmq的consumerGroup
+    private Exchange exchange;// 对应rabbitmq的exchange，对应rocketmq的topic
+    private Queue queue;// 对应rabbitmq的queue，对应rocketmq的consumerGroup
 
     @Data
     public static class Exchange {
-        private String direct;
-        private String xdelayed;
+        private String direct;// 简单消息
+        private String xdelayed; // 延迟消息
     }
 
     @Data
     public static class Queue {
-        private Messagedriven.Queue.NameKey xdelayed;
-        private Messagedriven.Queue.NameKey dead_letter;
-        private Messagedriven.Queue.NameKey common;
+        private NameKey xdelayed; // 延迟队列
+        private NameKey deadLetter; // 死信队列
+        private NameKey common; // 通用队列
 
         @Data
         public static class NameKey {
-            private String name;
+            private String name; // 队列名
             private String key; // 对应rabbitmq的routingKey，对应rocketmq的tag
         }
     }

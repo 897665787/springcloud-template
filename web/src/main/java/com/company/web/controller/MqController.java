@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.company.common.api.Result;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.web.messagedriven.Constants;
 import com.company.web.messagedriven.strategy.StrategyConstants;
 import com.google.common.collect.Maps;
@@ -21,6 +22,8 @@ import java.util.Map;
 public class MqController {
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 
 	@GetMapping(value = "/sendNormalMessage")
 	public Result<String> sendNormalMessage(String message) {
@@ -28,7 +31,8 @@ public class MqController {
 		params.put("open", message);
 		params.put("open2", message);
 		params.put("time", DateUtil.now());
-        messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY, params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
+//        messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY, params, Constants.EXCHANGE.DIRECT, Constants.QUEUE.COMMON.KEY);
+        messageSender.sendNormalMessage(StrategyConstants.MAP_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(), messagedrivenProperties.getQueue().getCommon().getKey());
 
 //		UserMQDto param = new UserMQDto();
 //		param.setP1("p1");
@@ -58,11 +62,13 @@ public class MqController {
 		params.put("time", DateUtil.now());
 		params.put("delaySeconds", delaySeconds);
 
-		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.DEAD_LETTER.KEY, delaySeconds);
+//		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+//				Constants.QUEUE.DEAD_LETTER.KEY, delaySeconds);
+		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
+				messagedrivenProperties.getQueue().getDeadLetter().getKey(), delaySeconds);
 		return Result.success("success");
 	}
-	
+
 	@GetMapping(value = "/sendXDelayMessage")
 	public Result<String> sendXDelayMessage(String message, Integer delaySeconds) {
 		Map<String, Object> params = Maps.newHashMap();
@@ -70,8 +76,10 @@ public class MqController {
 		params.put("time", DateUtil.now());
 		params.put("delaySeconds", delaySeconds);
 
-		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
-				Constants.QUEUE.XDELAYED.KEY, delaySeconds);
+//		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
+//				Constants.QUEUE.XDELAYED.KEY, delaySeconds);
+		messageSender.sendDelayMessage(StrategyConstants.XDELAYMESSAGE_STRATEGY, params, messagedrivenProperties.getExchange().getXdelayed(),
+				messagedrivenProperties.getQueue().getXdelayed().getKey(), delaySeconds);
 		return Result.success("success");
 	}
 }

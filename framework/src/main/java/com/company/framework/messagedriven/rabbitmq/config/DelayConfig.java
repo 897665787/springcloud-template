@@ -36,7 +36,7 @@ public class DelayConfig {
 	 */
 	@Bean
 	public Queue delayQueue(MessagedrivenProperties messagedrivenProperties) {
-		return QueueBuilder.durable(messagedrivenProperties.getQueue().getDead_letter().getName())
+		return QueueBuilder.durable(messagedrivenProperties.getQueue().getDeadLetter().getName())
 				// 最大延迟毫秒数（这里指定1天）
 				.withArgument("x-message-ttl", 86400000)
 				// 配置到期后转发的交换
@@ -53,6 +53,6 @@ public class DelayConfig {
 	 */
 	@Bean
 	public Binding delayBinding(Queue delayQueue, DirectExchange directExchange, MessagedrivenProperties messagedrivenProperties) {
-		return BindingBuilder.bind(delayQueue).to(directExchange).with(messagedrivenProperties.getQueue().getDead_letter().getKey());
+		return BindingBuilder.bind(delayQueue).to(directExchange).with(messagedrivenProperties.getQueue().getDeadLetter().getKey());
 	}
 }
