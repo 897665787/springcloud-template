@@ -1,6 +1,7 @@
 package com.company.tool.messagedriven.redis.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
 import com.company.framework.util.JsonUtil;
@@ -40,8 +41,8 @@ public class SendWebhookConsumer {
     }
 
     @Bean
-    public Object registerSendWebhookConsumer(RedisMessageListenerContainer container, MessageListener sendWebhookMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.SEND_WEBHOOK.KEY);
+    public Object registerSendWebhookConsumer(RedisMessageListenerContainer container, MessageListener sendWebhookMessageListener, MessagedrivenProperties messagedrivenProperties) {
+        String channel = String.format("%s:%s", messagedrivenProperties.getExchange().getDirect(), Constants.QUEUE.SEND_WEBHOOK.KEY);
         container.addMessageListener(sendWebhookMessageListener, new ChannelTopic(channel));
         return new Object();
     }

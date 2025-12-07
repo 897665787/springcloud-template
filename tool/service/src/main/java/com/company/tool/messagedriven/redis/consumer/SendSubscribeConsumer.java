@@ -1,6 +1,7 @@
 package com.company.tool.messagedriven.redis.consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
 import com.company.framework.util.JsonUtil;
@@ -40,8 +41,8 @@ public class SendSubscribeConsumer {
     }
 
     @Bean
-    public Object registerSendSubscribeConsumer(RedisMessageListenerContainer container, MessageListener sendSubscribeMessageListener) {
-        String channel = String.format("%s:%s", Constants.EXCHANGE.DIRECT, Constants.QUEUE.SEND_SUBSCRIBE.KEY);
+    public Object registerSendSubscribeConsumer(RedisMessageListenerContainer container, MessageListener sendSubscribeMessageListener, MessagedrivenProperties messagedrivenProperties) {
+        String channel = String.format("%s:%s", messagedrivenProperties.getExchange().getDirect(), Constants.QUEUE.SEND_SUBSCRIBE.KEY);
         container.addMessageListener(sendSubscribeMessageListener, new ChannelTopic(channel));
         return new Object();
     }

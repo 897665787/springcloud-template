@@ -1,25 +1,13 @@
 package com.company.order.controller;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.URLUtil;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.framework.util.RetryUtils;
@@ -43,11 +31,22 @@ import com.company.order.pay.aliactivity.notify.FromMessage;
 import com.company.order.pay.aliactivity.notify.FromMessageBeanFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.URLUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -61,6 +60,8 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 
 	@Autowired
 	private AliActivityPayConfiguration aliActivityPayConfiguration;
@@ -193,7 +194,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 		params.put("merchantNo", "未配置");
 		params.put("tradeNo", aliActivityPay.getTradeNo());
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 
 		// 支付成功后回调，开始异步发码，最终保存到券码表，在下面的代码需要轮询券码表获取券码响应给支付宝（需要重试机制）

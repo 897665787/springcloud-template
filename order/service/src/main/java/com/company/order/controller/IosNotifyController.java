@@ -1,38 +1,36 @@
 package com.company.order.controller;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.http.HttpUtil;
 import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.IosNotifyFeign;
 import com.company.order.entity.PayNotify;
 import com.company.order.mapper.AliPayMapper;
 import com.company.order.mapper.AliPayRefundMapper;
 import com.company.order.mapper.PayNotifyMapper;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
-
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.http.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 // 待完善
 @Slf4j
@@ -54,6 +52,8 @@ public class IosNotifyController implements IosNotifyFeign {
 
 	@Autowired
 	private MessageSender messageSender;
+    @Autowired
+    private MessagedrivenProperties messagedrivenProperties;
 
     @Value("${iOSPay.secretKey}")
     private String secretKey;
@@ -163,7 +163,7 @@ public class IosNotifyController implements IosNotifyFeign {
 		params.put("merchantNo", iosParams.get("seller_id"));
 		params.put("tradeNo", iosParams.get("trade_no"));
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success("success");
 	}
