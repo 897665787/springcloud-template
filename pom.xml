@@ -42,6 +42,8 @@
 		<module>gateway</module>
 		<module>config</module><!-- 替代组件：nacos、apollo -->
 		<module>monitor</module>
+		<!-- starter组件 -->
+        <module>boot-starter</module>
 		<!-- 内部微服务 -->
 		<module>common</module><!-- 公共代码 -->
 		<module>framework</module><!-- 框架代码 -->
