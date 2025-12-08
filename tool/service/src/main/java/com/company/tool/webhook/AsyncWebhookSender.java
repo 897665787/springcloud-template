@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,8 @@ public class AsyncWebhookSender {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 	@Autowired
 	private WebhookTaskService webhookTaskService;
 
@@ -93,7 +96,7 @@ public class AsyncWebhookSender {
 		SendWebhookMQDto params = new SendWebhookMQDto();
 		params.setWebhookTaskId(webhookTaskId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDWEBHOOK_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.SENDWEBHOOK_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.SEND_WEBHOOK.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行

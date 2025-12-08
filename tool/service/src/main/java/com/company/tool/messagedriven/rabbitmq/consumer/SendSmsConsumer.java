@@ -17,7 +17,9 @@ import com.rabbitmq.client.Channel;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class SendSmsConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.SEND_SMS.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.SEND_SMS.KEY))
+	@RabbitListener
+			(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.SEND_SMS.NAME),
+					exchange = @Exchange(value = "${messagedriven.exchange.direct}"), key = Constants.QUEUE.SEND_SMS.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}

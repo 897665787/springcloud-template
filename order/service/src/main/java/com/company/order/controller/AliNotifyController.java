@@ -1,21 +1,12 @@
 package com.company.order.controller;
 
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.AliNotifyFeign;
 import com.company.order.entity.AliPay;
@@ -24,12 +15,20 @@ import com.company.order.entity.PayNotify;
 import com.company.order.mapper.AliPayMapper;
 import com.company.order.mapper.AliPayRefundMapper;
 import com.company.order.mapper.PayNotifyMapper;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.ali.AliConstants;
 import com.company.order.pay.ali.config.AliPayConfiguration;
 import com.company.order.pay.ali.config.AliPayProperties;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -47,6 +46,8 @@ public class AliNotifyController implements AliNotifyFeign {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 
 	@Autowired
 	private AliPayConfiguration aliPayConfiguration;
@@ -168,8 +169,8 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("merchantNo", aliParams.get("seller_id"));
 			params.put("tradeNo", aliParams.get("trade_no"));
 
-			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.KEY);
+			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
+					messagedrivenProperties.getQueue().getCommon().getKey());
 		} else if ("TRADE_SUCCESS".equals(tradeStatus)) {
 			// trade_status=TRADE_SUCCESS，则认为是支付成功回调
 			/**
@@ -232,7 +233,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			params.put("merchantNo", aliParams.get("seller_id"));
 			params.put("tradeNo", aliParams.get("trade_no"));
 
-			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 					Constants.QUEUE.PAY_NOTIFY.KEY);
 		}
 		return Result.success("success");

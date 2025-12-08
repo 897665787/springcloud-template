@@ -1,13 +1,17 @@
 package com.company.adminapi.aspect;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.support.spring.PropertyPreFilters;
+import com.company.adminapi.annotation.OperationLog;
+import com.company.adminapi.enums.OperationLogEnum;
+import com.company.adminapi.messagedriven.strategy.StrategyConstants;
+import com.company.adminapi.messagedriven.strategy.dto.SysOperLogDto;
+import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.context.HttpContextUtil;
+import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
+import com.company.framework.util.WebUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
@@ -22,19 +26,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.support.spring.PropertyPreFilters;
-import com.company.adminapi.annotation.OperationLog;
-import com.company.adminapi.enums.OperationLogEnum;
-import com.company.adminapi.messagedriven.Constants;
-import com.company.adminapi.messagedriven.strategy.StrategyConstants;
-import com.company.adminapi.messagedriven.strategy.dto.SysOperLogDto;
-import com.company.framework.context.HeaderContextUtil;
-import com.company.framework.context.HttpContextUtil;
-import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.util.WebUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Aspect
@@ -48,6 +45,8 @@ public class OperationLogAspect {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 
 	/**
 	 * 处理请求前执行
@@ -125,8 +124,8 @@ public class OperationLogAspect {
 
 		try {
 			// MQ 异步保存
-			messageSender.sendNormalMessage(StrategyConstants.SAVE_OPERLOG_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.KEY);
+			messageSender.sendNormalMessage(StrategyConstants.SAVE_OPERLOG_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
+					messagedrivenProperties.getQueue().getCommon().getKey());
 		} catch (Exception e) {
 			log.error("异常信息", e);
 		} finally {

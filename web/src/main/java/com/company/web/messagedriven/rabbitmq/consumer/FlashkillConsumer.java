@@ -17,7 +17,10 @@ import com.rabbitmq.client.Channel;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class FlashkillConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.FLASH_KILL.NAME), exchange = @Exchange(value = Constants.EXCHANGE.DIRECT), key = Constants.QUEUE.FLASH_KILL.KEY))
+	@RabbitListener(
+            bindings = @QueueBinding(value = @Queue(value = Constants.QUEUE.FLASH_KILL.NAME),
+            exchange = @Exchange(value = "${messagedriven.exchange.direct}"),
+            key = Constants.QUEUE.FLASH_KILL.KEY))
 	public void handle(String jsonStrMsg, Channel channel, Message message) {
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}
