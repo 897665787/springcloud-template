@@ -49,7 +49,7 @@ public class PluginsAutoConfiguration {
 	 * 输出日志
 	 * </pre>
 	 */
-	@Bean
+//	@Bean // 待启用，用于监控采集SQL耗时
 	public SummarySQLInterceptor summarySQLInterceptor() {
 		return new SummarySQLInterceptor();
 	}

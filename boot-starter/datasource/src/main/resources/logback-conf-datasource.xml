@@ -9,8 +9,8 @@
     </logger>
      -->
 
-	<!-- 打印SQL性能分析拦截器日志 -->
-	<logger name="com.company.datasource.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
+	<!-- 打印mybatis拦截器插件日志 -->
+	<logger name="com.company.datasource.mybatisplus.plugins" level="DEBUG" additivity="false">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE" />
 		<appender-ref ref="ERROR_FILE" />

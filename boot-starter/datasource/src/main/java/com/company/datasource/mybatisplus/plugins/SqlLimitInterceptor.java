@@ -1,10 +1,11 @@
 package com.company.datasource.mybatisplus.plugins;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
+import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
+import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.DialectFactory;
+import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
+import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
+import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
@@ -15,26 +16,19 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
-import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.pagination.DialectFactory;
-import com.baomidou.mybatisplus.extension.plugins.pagination.DialectModel;
-import com.baomidou.mybatisplus.extension.plugins.pagination.dialects.IDialect;
-import com.baomidou.mybatisplus.extension.toolkit.JdbcUtils;
-
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 给没有添加limit的SQL添加limit，防止全量查询导致慢SQL
  *
  * @author JQ棣
  */
-@Slf4j
-@Data
 @SuppressWarnings({"rawtypes"})
 public class SqlLimitInterceptor implements InnerInterceptor {
-    protected final Log logger = LogFactory.getLog(this.getClass());
+    private static final Log logger = LogFactory.getLog(PerformanceInterceptor.class);
 
     /**
      * 最大条数限制
@@ -67,7 +61,7 @@ public class SqlLimitInterceptor implements InnerInterceptor {
         model.consumers(mappings, configuration, additionalParameter);
         mpBoundSql.sql(model.getDialectSql());
 		mpBoundSql.parameterMappings(mappings);
-		log.info("{},sql has added limit {}", ms.getId(), maxLimit);
+        logger.debug(ms.getId() + ",sql has added limit " + maxLimit);
 	}
 
     /**
