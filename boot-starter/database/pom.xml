@@ -8,6 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
+    <version>${boot-starter-database.version}</version>
 	<artifactId>boot-starter-database</artifactId>
 	<packaging>jar</packaging>
 
