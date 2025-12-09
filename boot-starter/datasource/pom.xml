@@ -8,11 +8,11 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
-    <version>${boot-starter-database.version}</version>
-	<artifactId>boot-starter-database</artifactId>
+    <version>${boot-starter-datasource.version}</version>
+	<artifactId>boot-starter-datasource</artifactId>
 	<packaging>jar</packaging>
 
-	<description>数据库 starter代码</description>
+	<description>数据源 starter代码</description>
 
 	<dependencies>
         <dependency>

@@ -1,4 +1,4 @@
-package com.company.database.mybatisplus.plugins;
+package com.company.datasource.mybatisplus.plugins;
 
 import com.baomidou.mybatisplus.core.toolkit.SystemClock;
 import lombok.extern.slf4j.Slf4j;

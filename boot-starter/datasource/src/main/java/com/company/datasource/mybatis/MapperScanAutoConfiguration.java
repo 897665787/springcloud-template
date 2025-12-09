@@ -1,8 +1,7 @@
-package com.company.database.mybatis;
+package com.company.datasource.mybatis;
 
 import com.company.common.constant.CommonConstants;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * MapperScan 配置

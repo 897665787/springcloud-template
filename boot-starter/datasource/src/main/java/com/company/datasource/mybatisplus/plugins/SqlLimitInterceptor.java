@@ -1,4 +1,4 @@
-package com.company.database.mybatisplus.plugins;
+package com.company.datasource.mybatisplus.plugins;
 
 import java.sql.SQLException;
 import java.util.List;

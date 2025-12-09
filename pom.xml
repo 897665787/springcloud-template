@@ -16,7 +16,7 @@
         <java.version>1.8</java.version>
 
         <!-- 统一管理boot-starter jar版本 -->
-        <boot-starter-database.version>1.0.0${version.suffix}</boot-starter-database.version>
+        <boot-starter-datasource.version>1.0.0${version.suffix}</boot-starter-datasource.version>
 
         <!-- 统一管理api jar版本 -->
         <tool-api.version>1.0.0${version.suffix}</tool-api.version>

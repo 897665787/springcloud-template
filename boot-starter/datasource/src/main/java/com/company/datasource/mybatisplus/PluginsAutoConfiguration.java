@@ -1,13 +1,12 @@
-package com.company.database.mybatisplus;
+package com.company.datasource.mybatisplus;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.company.database.mybatisplus.plugins.PerformanceInterceptor;
-import com.company.database.mybatisplus.plugins.SqlLimitInterceptor;
-import com.company.database.mybatisplus.plugins.SummarySQLInterceptor;
+import com.company.datasource.mybatisplus.plugins.PerformanceInterceptor;
+import com.company.datasource.mybatisplus.plugins.SqlLimitInterceptor;
+import com.company.datasource.mybatisplus.plugins.SummarySQLInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 //@Configuration 使用org.springframework.boot.autoconfigure.AutoConfiguration.imports装配bean
 public class PluginsAutoConfiguration {

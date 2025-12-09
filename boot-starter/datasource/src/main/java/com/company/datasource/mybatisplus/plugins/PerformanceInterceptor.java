@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.company.database.mybatisplus.plugins;
+package com.company.datasource.mybatisplus.plugins;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -71,7 +71,7 @@ public class PerformanceInterceptor implements Interceptor {
     /**
      * SQL 是否格式化
      */
-    private boolean format = true;
+    private boolean format = false;
     /**
      * 是否写入日志文件<br>
      * true 写入日志文件，不阻断程序执行！<br>

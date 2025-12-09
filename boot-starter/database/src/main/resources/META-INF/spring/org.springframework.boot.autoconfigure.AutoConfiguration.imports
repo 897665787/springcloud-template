@@ -1,3 +1,0 @@
-com.company.database.mybatis.MapperScanAutoConfiguration
-com.company.database.mybatisplus.PluginsAutoConfiguration
-com.company.database.transaction.TransactionAutoConfiguration
