@@ -127,54 +127,9 @@
         <dependency>
             <groupId>com.company</groupId>
             <artifactId>boot-starter-database</artifactId>
-            <version>1.0.0</version>
+            <version>${boot-starter-database.version}</version>
         </dependency>
 
-        <!--
-		&lt;!&ndash; mysql &ndash;&gt;
-        <dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		&lt;!&ndash; druid &ndash;&gt;
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.2.8</version>
-        </dependency>
-        
-        &lt;!&ndash; 引入了mybatis-plus-boot-starter，就不需要引入mybatis-spring-boot-starter &ndash;&gt;
-		&lt;!&ndash;
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		 &ndash;&gt;
-		
-		&lt;!&ndash; mybatis-plus &ndash;&gt;
-		<dependency>
-        	<groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.5.7</version>
-        </dependency>
-        
-        &lt;!&ndash; mybatis-plus动态数据源，可用于（主/从切换、多主库） &ndash;&gt;
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>dynamic-datasource-spring-boot-starter</artifactId>
-			<version>3.6.1</version>
-		</dependency>
-		
-		&lt;!&ndash; mybatis-plus字段加密（https://github.com/panlicun/mybatisplus-database-encrypt-spring-boot-starter） &ndash;&gt;
-		<dependency>
-		    <groupId>io.github.panlicun</groupId>
-		    <artifactId>mybatisplus-database-encrypt-spring-boot-starter</artifactId>
-		    <version>1.0.10</version>
-		</dependency>-->
-        <!-- 数据库 -->
-        
 	</dependencies>
 	<build>
 		<plugins>
