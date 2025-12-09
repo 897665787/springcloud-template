@@ -163,8 +163,8 @@ public class PerformanceInterceptor implements Interceptor {
         MappedStatement ms = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
         StringBuilder formatSql = new StringBuilder();
         formatSql.append(" Time：").append(timing);
-        formatSql.append(" ms - ID：").append(ms.getId());
-        formatSql.append("\n Execute SQL：").append(sqlFormat(originalSql, format)).append("\n");
+        formatSql.append(" ms,ID：").append(ms.getId());
+        formatSql.append(",Execute SQL：").append(sqlFormat(originalSql, format));
         if (this.isWriteInLog()) {
             if (this.getMaxTime() >= 1 && timing > this.getMaxTime()) {
                 logger.error(formatSql.toString());
