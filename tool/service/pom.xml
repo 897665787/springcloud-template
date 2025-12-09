@@ -123,7 +123,7 @@
 		</dependency>
 		<!-- 企微机器人 -->
 
-		<!-- 数据库 -->
+        <!-- 数据源 -->
         <dependency>
             <groupId>com.company</groupId>
             <artifactId>boot-starter-datasource</artifactId>

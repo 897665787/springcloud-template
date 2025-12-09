@@ -37,7 +37,7 @@
 		    <version>${user-api.version}</version>
 		</dependency>
 
-        <!-- 数据库 -->
+        <!-- 数据源 -->
         <dependency>
             <groupId>com.company</groupId>
             <artifactId>boot-starter-datasource</artifactId>
