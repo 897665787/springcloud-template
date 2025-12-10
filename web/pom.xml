@@ -109,7 +109,7 @@
                     <mainClass>com.company.web.WebApplication</mainClass>
                 </configuration>
 			</plugin>
-            <!-- mvn install 忽略本项目-->
+            <!-- mvn install 忽略本模块-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-install-plugin</artifactId>
@@ -117,7 +117,7 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <!-- mvn deploy 忽略本项目-->
+            <!-- mvn deploy 忽略本模块-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
