@@ -15,11 +15,6 @@
 	<description>数据源 starter代码</description>
 
 	<dependencies>
-        <dependency>
-            <groupId>com.company</groupId>
-            <artifactId>boot-starter-common</artifactId>
-            <version>1.0.0</version>
-        </dependency>
 		<!-- 数据库 -->
 		<!-- mysql -->
         <dependency>

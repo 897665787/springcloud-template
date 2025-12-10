@@ -1,0 +1,148 @@
+# 数据源 Starter 使用指南
+
+## 简介
+
+数据源 Starter 是一个基于 Spring Boot 的自动化配置模块，集成了 MyBatis-Plus 和动态数据源功能。该 Starter 提供了以下核心功能：
+
+1. 自动配置 MyBatis Mapper 扫描
+2. 集成 MyBatis-Plus 插件（分页、SQL 限流、性能分析）
+3. 动态数据源支持（主从切换、多数据源）
+4. 事务管理器自动配置
+
+## 功能特性
+
+### 1. MyBatis Mapper 自动扫描
+- 自动扫描项目中所有 mapper 接口
+- 默认扫描路径：`com.company.**.mapper`
+
+### 2. MyBatis-Plus 插件
+- **分页插件**：支持物理分页查询
+- **SQL 限流插件**：防止全表扫描导致的慢 SQL
+- **性能分析插件**：输出每条 SQL 语句及其执行时间
+
+### 3. 动态数据源
+- 支持主从数据源自动切换
+- 支持多数据源配置
+- 支持懒加载数据源
+
+### 4. 事务管理
+- 自动配置 DataSourceTransactionManager
+
+## 快速开始
+
+### 1. 添加依赖
+
+在您的模块的 `pom.xml` 中添加以下依赖：
+
+```xml
+<!-- 数据源 -->
+<dependency>
+    <groupId>com.company</groupId>
+    <artifactId>boot-starter-datasource</artifactId>
+    <version>${boot-starter-datasource.version}</version>
+</dependency>
+```
+
+### 2. 配置数据源
+
+在 `application.yml` 中导入默认数据源默认配置：
+
+```yaml
+spring:
+  profiles:
+    include: datasource
+```
+
+**如需自定义数据源配置**：复制[application-datasource.yml](src/main/resources/application-datasource.yml)到你的模块的 `resources` 目录下，并修改以下内容：
+
+```yaml
+custom:
+  ip_port: 127.0.0.1:3306
+  username: root
+  password: 12345678
+  lazy: true # 是否懒加载数据源
+```
+
+### 3. 使用主从数据源
+
+在 Service 层方法上添加注解来指定使用主库或从库：
+
+```java
+@Service
+public class UserService {
+    
+    @Master // 使用主数据源
+    public void updateUser(User user) {
+        // 更新操作
+    }
+    
+    @Slave // 使用从数据源
+    public User getUserById(Long id) {
+        // 查询操作
+        return userMapper.selectById(id);
+    }
+}
+```
+
+在 Mapper 层方法上添加注解来指定使用主库或从库：
+
+```
+public interface UserInfoMapper extends BaseMapper<UserInfo> {
+
+//	@DS("slave_1") // 查询从库1
+//	@DS("slave_2") // 查询从库2
+//	@DS("slave") // 查询分组slave的数据
+@Slave // 查询分组slave的数据
+@Select("select * from bu_user_info where id = #{id}")
+UserInfo getById(@Param("id") Integer id);
+}
+```
+
+### 4. SQL 限流配置
+
+通过配置项控制 SQL 限流功能：
+
+```yaml
+template:
+  sqllimit:
+    max: 1000 # 每条 SQL 默认最多返回 1000 条记录
+```
+
+当设置大于 0 的值时，会自动为没有 limit 的查询 SQL 添加 limit 限制。
+
+### 5. 日志打印
+
+在 `logback-conf.xml` 中引用数据源日志配置文件：[logback-conf-datasource.xml](src/main/resources/logback-conf-datasource.xml)
+
+```xml
+<!--引用数据源日志 -->
+<include resource="logback-conf-datasource.xml" />
+```
+
+## 版本依赖
+
+该 Starter 集成了以下主要组件：
+
+- MyBatis-Plus: 3.5.7
+- Dynamic DataSource: 3.6.1
+- Druid: 1.2.8
+- MySQL Connector/J: 8.x
+
+## 常见问题
+
+### 1. 如何禁用某个插件？
+
+可以通过排除配置类的方式禁用不需要的插件，例如在 `spring.factories` 中移除对应的自动配置类。
+
+### 2. 如何自定义插件配置？
+
+可以创建同名的 Bean 来覆盖默认配置，例如：
+
+```java
+@Bean
+public MybatisPlusInterceptor mybatisPlusInterceptor() {
+    MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+    // 自定义插件配置
+    return interceptor;
+}
+```
