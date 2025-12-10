@@ -128,6 +128,36 @@
 	                </execution>
 	            </executions>
 	        </plugin>
+            <!--构建过程中，将占位符替换为实际值-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <configuration>
+                    <!-- 是否将生成的扁平化POM设置为项目文件 -->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 扁平化模式，常用的是处理占位符 -->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <!-- 绑定到process-resources阶段，自动执行flatten目标 -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- 清理生成的文件 -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 	</build>
 
