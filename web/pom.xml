@@ -12,7 +12,7 @@
 	<packaging>jar</packaging>
 
 	<description>聚合服务</description>
-    
+
 	<dependencies>
 		<!-- 单元测试，因为加了scope=test，所以不能在公共包引用 -->
 		<dependency>
@@ -20,7 +20,7 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
         <dependency>
 		    <groupId>com.company</groupId>
 		    <artifactId>template-framework-edge</artifactId>
@@ -41,7 +41,7 @@
 		    <artifactId>template-user-api</artifactId>
             <version>${user-api.version}</version>
 		</dependency>
-		
+
 		<!-- 渲染模板 -->
 		<!-- 对jsp的支持的依赖 -->
 		<dependency>
@@ -55,7 +55,7 @@
 			<artifactId>jstl</artifactId>
 		</dependency>
 		<!-- 渲染模板 -->
-		
+
 		<!-- 授权登录 -->
 		<!-- 源码：https://gitee.com/jq_di/easy-login -->
 		<dependency>
@@ -64,7 +64,7 @@
 		    <version>1.0.0</version>
 		</dependency>
 		<!-- 授权登录 -->
-		
+
 		<!-- token -->
         <dependency>
             <groupId>com.company</groupId>

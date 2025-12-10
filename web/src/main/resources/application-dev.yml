@@ -21,10 +21,3 @@ knife4j:
 developer:
   enabled: true
   headers: x-deviceid,x-current-user-id
-
-# body加解密
-encrypt:
-  body:
-    enabled: true # 是否开启加解密
-    aes-key: 1468657f04e24e4d8c43f1b8b4032984 #AES加解密秘钥
-    des-key: 1468657f04e24e4d8c43f1b8b4032984 #DES加解密秘钥

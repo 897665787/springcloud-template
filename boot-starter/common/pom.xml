@@ -8,6 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
+	<version>${boot-starter-common.version}</version>
 	<artifactId>boot-starter-common</artifactId>
 	<packaging>jar</packaging>
 
@@ -15,6 +16,10 @@
 
 	<dependencies>
 		<!-- common -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
         <!-- common -->
 	</dependencies>
 </project>

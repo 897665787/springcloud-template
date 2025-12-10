@@ -201,11 +201,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
  */
-package com.company.framework.encryptbody.annotation;
+package com.company.encryptbody.annotation;
 
 import cn.licoy.encryptbody.advice.DecryptRequestBodyAdvice;
 import cn.licoy.encryptbody.config.EncryptBodyConfig;
-import com.company.framework.encryptbody.advice.EncryptResponseBodyAdvice;
+import com.company.encryptbody.advice.EncryptResponseBodyAdvice;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
