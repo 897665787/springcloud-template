@@ -1,4 +1,4 @@
 /**
- * 核心功能：token相关配置
+ * 核心功能：token相关
  */
 package com.company.token;

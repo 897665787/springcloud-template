@@ -1,18 +1,12 @@
 package com.company.token.jsonwebtoken.util;
 
-import java.util.Date;
-
+import cn.hutool.core.util.RandomUtil;
+import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
-import cn.hutool.core.util.RandomUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Date;
 
 /**
  * token工具类
@@ -21,18 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TokenUtil {
 
 	private TokenUtil() {
-	}
-
-	public static void main(String[] args) {
-		String secret = "hxqhjvtam5";// 密钥
-		String subject = "83848";
-		String audience = "APP";// APP MINIP
-		Date expiration = DateUtils.addSeconds(new Date(), 5);
-		String token = TokenUtil.generateToken(subject, audience, expiration, secret);
-//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTRVJWSUNFIiwic3ViIjoiODM4NDgiLCJhdWQiOiJBUFAiLCJleHAiOjE2Mzk5MjU1ODIsIm5iZiI6MTYzOTkyNTU3NywiaWF0IjoxNjM5OTI1NTc3LCJqdGkiOiI5NzcyNTU4MGJjYjM0N2E1ODljZTZiYjkxZjY4OWZhZiJ9.-W6Z-VOffBLwvIipDT_LwUVhbLhJAFff_arh8Iu93go";
-		System.out.println("token:" + token);
-		String userId = TokenUtil.checkTokenAndGetSubject(token, false, secret);
-		System.out.println("userId:" + userId);
 	}
 
 	public static String generateToken(String subject, String audience, Date expiration, String secret) {
@@ -137,4 +119,17 @@ public class TokenUtil {
 		}
 		return body;
 	}
+
+    public static void main(String[] args) {
+        String secret = "hxqhjvtam5";// 密钥
+        String subject = "83848";
+        String audience = "APP";// APP MINIP
+        Date expiration = DateUtils.addSeconds(new Date(), 5);
+        String token = TokenUtil.generateToken(subject, audience, expiration, secret);
+//		String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJTRVJWSUNFIiwic3ViIjoiODM4NDgiLCJhdWQiOiJBUFAiLCJleHAiOjE2Mzk5MjU1ODIsIm5iZiI6MTYzOTkyNTU3NywiaWF0IjoxNjM5OTI1NTc3LCJqdGkiOiI5NzcyNTU4MGJjYjM0N2E1ODljZTZiYjkxZjY4OWZhZiJ9.-W6Z-VOffBLwvIipDT_LwUVhbLhJAFff_arh8Iu93go";
+        System.out.println("token:" + token);
+        String userId = TokenUtil.checkTokenAndGetSubject(token, false, secret);
+        System.out.println("userId:" + userId);
+        log.info("token:" + token);
+    }
 }

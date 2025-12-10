@@ -1,4 +1,4 @@
-package com.company.adminapi.util;
+package com.company.token.util;
 
 import org.apache.commons.lang3.StringUtils;
 

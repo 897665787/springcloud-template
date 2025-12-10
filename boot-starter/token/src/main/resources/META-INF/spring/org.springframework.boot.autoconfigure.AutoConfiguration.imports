@@ -1,3 +1,1 @@
-com.company.datasource.mybatis.MapperScanAutoConfiguration
-com.company.datasource.mybatisplus.PluginsAutoConfiguration
-com.company.datasource.transaction.TransactionAutoConfiguration
+com.company.token.TokenAutoConfiguration

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.company.token.util.TokenValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.adminapi.constants.Constants;
 import com.company.adminapi.req.LoginReq;
 import com.company.adminapi.resp.LoginResp;
-import com.company.adminapi.token.TokenService;
+import com.company.token.TokenService;
 import com.company.adminapi.util.PassWordUtil;
-import com.company.adminapi.util.TokenValueUtil;
 import com.company.common.api.Result;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
