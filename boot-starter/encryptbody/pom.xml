@@ -15,11 +15,6 @@
 	<description>encryptbody starter代码</description>
 
 	<dependencies>
-<!--        <dependency>
-            <groupId>com.company</groupId>
-            <artifactId>boot-starter-common</artifactId>
-            <version>${boot-starter-common.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>com.company</groupId>
             <artifactId>template-common</artifactId>
