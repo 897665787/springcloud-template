@@ -8,7 +8,6 @@ Boot Starter 模块是一个基于 Spring Boot 的自动化配置框架，旨在
 
 ```
 boot-starter/
-├── common/              # 通用 Starter 组件
 ├── datasource/          # 数据源 Starter 组件
 ├── token/               # Token 管理 Starter 组件
 └── encryptbody/         # 请求体加解密 Starter 组件
