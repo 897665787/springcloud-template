@@ -20,10 +20,6 @@
             <artifactId>template-common</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
 
         <!-- 请求参数解密、响应值加密，源码：https://gitee.com/licoy/encrypt-body-spring-boot-starter -->
         <dependency>
