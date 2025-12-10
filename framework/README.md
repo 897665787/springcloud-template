@@ -1,8 +1,13 @@
-# Framework 模块
+# framework 模块
+
+## 与 boot-starter 模块区别
+#### 1. 只有部分模块适用的公共代码，放在boot-starter，按需引用
+#### 2. 全部模块都适用的公共代码，放在framework，减少引用工作
+#### 3. 本质上全部模块都适用的公共代码也可以放在boot-starter，然后在framework中引用boot-starter
 
 ## 简介
 
-Framework 模块是整个微服务架构的核心基础框架，提供了一系列通用的自动化配置和基础设施功能。该模块基于 Spring Boot 和 Spring Cloud 构建，集成了微服务开发中常用的组件和工具，旨在简化微服务应用的开发，提高开发效率和代码质量。
+framework 模块是整个微服务架构的核心基础框架，提供了一系列通用的自动化配置和基础设施功能。该模块基于 Spring Boot 和 Spring Cloud 构建，集成了微服务开发中常用的组件和工具，旨在简化微服务应用的开发，提高开发效率和代码质量。
 
 ## 核心功能
 

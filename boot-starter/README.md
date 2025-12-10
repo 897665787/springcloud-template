@@ -1,4 +1,9 @@
-# Boot Starter 模块
+# boot-starter 模块
+
+## 与 Framework 模块区别
+#### 1. 只有部分模块适用的公共代码，放在boot-starter，按需引用
+#### 2. 全部模块都适用的公共代码，放在framework，减少引用工作
+#### 3. 本质上全部模块都适用的公共代码也可以放在boot-starter，然后在framework中引用boot-starter
 
 ## 简介
 
