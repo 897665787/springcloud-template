@@ -12,3 +12,4 @@ logs/
 /minio
 jrebel-classpath-*.jar
 /nacos-server-*
+.flattened-pom.xml
