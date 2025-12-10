@@ -31,7 +31,6 @@ spring:
   config:
     activate:
       on-profile: dev
-# Token 配置
 token:
   # 密钥
   secret: hxqhjvtam5
@@ -42,7 +41,6 @@ spring:
   config:
     activate:
       on-profile: test
-# Token 配置
 token:
   # 密钥
   secret: hxqhjvtam5
@@ -53,7 +51,6 @@ spring:
   config:
     activate:
       on-profile: pre
-# Token 配置
 token:
   # 密钥
   secret: btqh5d8ah6
@@ -64,7 +61,6 @@ spring:
   config:
     activate:
       on-profile: prod
-# Token 配置
 token:
   # 密钥
   secret: btqh5d8ah6

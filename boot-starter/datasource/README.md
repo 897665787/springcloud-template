@@ -118,31 +118,3 @@ template:
 <!--引用数据源日志 -->
 <include resource="logback-conf-datasource.xml" />
 ```
-
-## 版本依赖
-
-该 Starter 集成了以下主要组件：
-
-- MyBatis-Plus: 3.5.7
-- Dynamic DataSource: 3.6.1
-- Druid: 1.2.8
-- MySQL Connector/J: 8.x
-
-## 常见问题
-
-### 1. 如何禁用某个插件？
-
-可以通过排除配置类的方式禁用不需要的插件，例如在 `spring.factories` 中移除对应的自动配置类。
-
-### 2. 如何自定义插件配置？
-
-可以创建同名的 Bean 来覆盖默认配置，例如：
-
-```java
-@Bean
-public MybatisPlusInterceptor mybatisPlusInterceptor() {
-    MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-    // 自定义插件配置
-    return interceptor;
-}
-```

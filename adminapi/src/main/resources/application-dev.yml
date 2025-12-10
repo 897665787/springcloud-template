@@ -6,8 +6,3 @@ template:
     message-driven: springevent # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
     access-control: false
     permission: false
-
-# Token 配置
-token:
-  # 密钥
-  secret: ddr2h42vhj

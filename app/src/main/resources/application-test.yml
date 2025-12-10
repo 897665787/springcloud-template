@@ -6,11 +6,6 @@ template:
     message-driven: rocketmq # springevent:spring事件,rabbitmq:RabbitMQ消息队列,rocketmq:RocketMQ消息队列,redis:redis消息队列
     access-control: true
 
-# Token 配置
-token:
-  # 密钥
-  secret: hxqhjvtam5
-
 # knife4j文档，访问地址：http://localhost:xxxx/doc.html
 knife4j:
   enable: true # 增强模式开关
