@@ -21,4 +21,6 @@ public class UserInfoReq {
 	
 	private String nickname;
 	private String avatar;
+
+    private String password;
 }

@@ -36,11 +36,11 @@ public class UserOauthController implements UserOauthFeign {
 		return Result.success(userOauth.getIdentifier());
 	}
 
-	@Override
-	public Result<String> selectCertificate(Integer userId, UserOauthEnum.IdentityType identityType) {
-		UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, identityType);
-		return Result.success(userOauth.getCertificate());
-	}
+    @Override
+    public Result<String> selectPassword(Integer userId) {
+        UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, UserOauthEnum.IdentityType.PASSWORD);
+        return Result.success(userOauth.getCertificate());
+    }
 
 	@Override
 	public Result<Boolean> bindOauth(@RequestBody @Valid UserOauthReq userInfoReq) {

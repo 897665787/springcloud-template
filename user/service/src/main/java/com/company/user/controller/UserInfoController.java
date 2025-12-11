@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -79,6 +80,10 @@ public class UserInfoController implements UserInfoFeign {
             userInfoMapper.insert(userInfo);
 
             userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
+            if (StringUtils.isNotBlank(userInfoReq.getPassword())) {
+                // 如果密码不为空，就同时绑定密码
+                userOauthMapper.bindOauth(userInfo.getId(), UserOauthEnum.IdentityType.PASSWORD, userInfo.getId().toString(), userInfoReq.getPassword());
+            }
 
             // 发布注册事件
             Map<String, Object> params = Maps.newHashMap();

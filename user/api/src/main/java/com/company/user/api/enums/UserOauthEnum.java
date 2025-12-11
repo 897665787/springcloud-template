@@ -7,6 +7,8 @@ public interface UserOauthEnum {
 
 	@AllArgsConstructor
 	enum IdentityType {
+        // 密码只有1个，不能绑定在USERNAME、MOBILE或EMAIL其中一条上，所以给密码单独建一个PASSWORD类型
+        PASSWORD("password", "密码"),
 		// 账号类型(mobile:手机号,wx-unionid:微信unionid,wx-openid-miniapp:微信小程序openid,wx-openid-mp:微信公众号openid,email:邮箱,username:用户名,sina:新浪微博,qq:QQ)
 		USERNAME("username", "用户名"),
 		MOBILE("mobile", "手机号"), 

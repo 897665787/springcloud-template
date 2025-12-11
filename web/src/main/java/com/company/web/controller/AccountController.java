@@ -114,7 +114,8 @@ public class AccountController {
 		UserInfoReq userInfoReq = new UserInfoReq();
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.EMAIL);
 		userInfoReq.setIdentifier(email);
-		userInfoReq.setCertificate(PassWordUtil.md5(regByEmailReq.getPassword()));
+		userInfoReq.setCertificate(regByEmailReq.getCode());
+		userInfoReq.setPassword(PassWordUtil.md5(regByEmailReq.getPassword()));
 //		userInfoReq.setAvatar(null);
 //		userInfoReq.setNickname(null);
 		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq).dataOrThrow();
@@ -163,7 +164,8 @@ public class AccountController {
 		UserInfoReq userInfoReq = new UserInfoReq();
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.MOBILE);
 		userInfoReq.setIdentifier(identifier);
-		userInfoReq.setCertificate(PassWordUtil.md5(regByMobileReq.getPassword()));
+		userInfoReq.setCertificate(regByMobileReq.getCode());
+        userInfoReq.setPassword(PassWordUtil.md5(regByMobileReq.getPassword()));
 //		userInfoReq.setAvatar(null);
 //		userInfoReq.setNickname(null);
 		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq).dataOrThrow();
