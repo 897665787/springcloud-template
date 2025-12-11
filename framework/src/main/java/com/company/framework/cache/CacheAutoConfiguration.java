@@ -1,15 +1,18 @@
 package com.company.framework.cache;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.StringRedisTemplate;
-
 import com.company.framework.cache.guava.GuavaCache;
 import com.company.framework.cache.redis.RedisCache;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.time.Duration;
+
+@EnableCaching
 @Configuration
 public class CacheAutoConfiguration {
 
@@ -35,4 +38,11 @@ public class CacheAutoConfiguration {
 		ICache combinationCache = new CombinationCache(redisCache, guavaCache);
 		return combinationCache;
 	}
+
+    @Bean
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager();
+        cacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(500).expireAfterWrite(Duration.ofMinutes(10)));
+        return cacheManager;
+    }
 }
