@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS `bu_order`;
-CREATE TABLE `bu_order` (
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE `order` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
+  `user_id` int(11) NOT NULL COMMENT 'user_info.id',
   `order_code` varchar(32) NOT NULL DEFAULT '' COMMENT '订单编号',
   `order_type` varchar(16) NOT NULL COMMENT '订单类型(distribute:配送类,writeoff:核销码,groupmeal:外卖,groupmealhelp:外卖助力)',
   `status` tinyint(1) NOT NULL COMMENT '状态(1:待支付,2:已取消(END)3:已支付[待发货],4:待收货,5.已完成(END),6:退款(END))',
@@ -28,8 +28,8 @@ CREATE TABLE `bu_order` (
   KEY `idx_ui_status` (`user_id`,`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COMMENT='订单表';
 
-DROP TABLE IF EXISTS `bu_order_product`;
-CREATE TABLE `bu_order_product` (
+DROP TABLE IF EXISTS `order_product`;
+CREATE TABLE `order_product` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `order_code` varchar(32) NOT NULL DEFAULT '' COMMENT '订单编号',
   `number` int(11) NOT NULL DEFAULT '0' COMMENT '购买数量',

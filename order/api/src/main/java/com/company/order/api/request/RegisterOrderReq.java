@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class RegisterOrderReq {
 	/**
-	 * bu_user_info.id
+	 * user_info.id
 	 */
 	@NotNull(message = "userId不能为空")
 	private Integer userId;

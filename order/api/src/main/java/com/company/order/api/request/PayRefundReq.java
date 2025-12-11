@@ -60,7 +60,7 @@ public class PayRefundReq {
 	private String attach;
 	
 	/**
-	 * 退款备注，写到bu_user_pay_order的refund_remark字段
+	 * 退款备注，写到user_pay_order的refund_remark字段
 	 */
 	private String refundRemark;
 }

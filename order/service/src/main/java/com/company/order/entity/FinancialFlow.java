@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@TableName("bu_financial_flow")
+@TableName("financial_flow")
 @Data
 @Accessors(chain = true)
 public class FinancialFlow implements Serializable {

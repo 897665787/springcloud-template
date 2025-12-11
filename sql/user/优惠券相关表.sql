@@ -47,7 +47,7 @@ CREATE TABLE `mk_coupon_template_condition` (
 
 CREATE TABLE `mk_user_coupon` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
+  `user_id` int(11) NOT NULL COMMENT 'user_info.id',
   `coupon_template_id` int(11) NOT NULL COMMENT 'mk_coupon_template.id',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '优惠券名称',
   `max_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '最大优惠金额',

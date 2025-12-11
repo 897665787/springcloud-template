@@ -378,7 +378,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				walletFreezeService.update2Return(orderCode);
 			}
 
-			// 还原bu_wallet_use_seq
+			// 还原wallet_use_seq
 			String calcUseFmaStr = Utils.getByJson(payNotifyReq.getAttach(), "calcUseFma");
 			if (StringUtils.isNotBlank(calcUseFmaStr)) {// 有冻结的钱包金额
 				BigDecimal calcUseFma = new BigDecimal(calcUseFmaStr);
@@ -546,7 +546,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			walletFreezeService.update2Return(orderCode);
 		}
 
-		// 还原bu_wallet_use_seq
+		// 还原wallet_use_seq
 		String calcUseFmaStr = Utils.getByJson(orderReq.getAttach(), "calcUseFma");
 		if (StringUtils.isNotBlank(calcUseFmaStr)) {// 有冻结的钱包金额
 			BigDecimal calcUseFma = new BigDecimal(calcUseFmaStr);

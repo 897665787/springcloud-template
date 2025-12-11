@@ -13,6 +13,6 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 //	@DS("slave_2") // 查询从库2
 //	@DS("slave") // 查询分组slave的数据
 	@Slave // 查询分组slave的数据
-	@Select("select * from bu_user_info where id = #{id}")
+	@Select("select * from user_info where id = #{id}")
 	UserInfo getById(@Param("id") Integer id);
 }

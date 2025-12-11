@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("bu_order_pay_refund")
+@TableName("order_pay_refund")
 public class OrderPayRefund {
 
 	/**
@@ -20,7 +20,7 @@ public class OrderPayRefund {
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
 	/**
-	 * bu_user_info.id
+	 * user_info.id
 	 */
 	@TableField("user_id")
 	private Integer userId;

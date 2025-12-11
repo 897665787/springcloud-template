@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName(value = "bu_wallet_income_use_record")
+@TableName(value = "wallet_income_use_record")
 public class WalletIncomeUseRecord {
 	/**
 	 * ID
@@ -21,12 +21,12 @@ public class WalletIncomeUseRecord {
 	private Integer id;
 	
 	/**
-	 * bu_wallet.id
+	 * wallet.id
 	 */
 	private Integer walletId;
 
 	/**
-	 * bu_wallet_record.id
+	 * wallet_record.id
 	 */
 	private Integer walletRecordId;
 

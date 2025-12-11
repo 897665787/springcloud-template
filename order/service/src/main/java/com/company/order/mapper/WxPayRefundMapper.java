@@ -8,6 +8,6 @@ import com.company.order.entity.WxPayRefund;
 
 public interface WxPayRefundMapper extends BaseMapper<WxPayRefund> {
 	
-	@Select("select * from bu_wx_pay_refund where out_refund_no = #{outRefundNo}")
+	@Select("select * from wx_pay_refund where out_refund_no = #{outRefundNo}")
 	WxPayRefund selectByOutRefundNo(@Param("outRefundNo") String outRefundNo);
 }

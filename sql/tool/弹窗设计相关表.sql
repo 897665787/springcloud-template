@@ -79,7 +79,7 @@ INSERT INTO `template`.`mk_popup_condition`(`id`, `popup_id`, `pop_condition`, `
 DROP TABLE IF EXISTS `mk_user_popup`;
 CREATE TABLE `mk_user_popup` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
+  `user_id` int(11) NOT NULL COMMENT 'user_info.id',
   `begin_time` datetime NOT NULL COMMENT '有效期开始时间',
   `end_time` datetime NOT NULL COMMENT '有效期结束时间',
   `status` varchar(8) NOT NULL DEFAULT '' COMMENT '状态(off:下架,on:上架)',
@@ -104,7 +104,7 @@ CREATE TABLE `mk_popup_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `business_type` varchar(64) NOT NULL DEFAULT '' COMMENT '业务类型(popup:mk_popup,user_popup:mk_user_popup)',
   `business_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '业务ID',
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT 'bu_user_info.id',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT 'user_info.id',
   `deviceid` varchar(64) NOT NULL DEFAULT '' COMMENT '设备号',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

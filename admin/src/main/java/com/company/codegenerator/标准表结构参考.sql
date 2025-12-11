@@ -1,4 +1,4 @@
-CREATE TABLE `bu_pay_refund_apply` (
+CREATE TABLE `pay_refund_apply` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `order_code` varchar(32) NOT NULL DEFAULT '' COMMENT '退款订单号',
   `old_order_code` varchar(32) NOT NULL DEFAULT '' COMMENT '原订单号',

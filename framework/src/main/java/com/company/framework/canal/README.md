@@ -94,7 +94,7 @@ canal:
 
 ```java
 @Component
-@CanalTable(value = "bu_user_info") // 对应的数据库表名
+@CanalTable(value = "user_info") // 对应的数据库表名
 public class UserInfoHandler implements EntryHandler<UserInfo> {
 
     @Override

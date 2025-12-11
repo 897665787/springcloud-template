@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `bu_ali_activity_pay`;
-CREATE TABLE `bu_ali_activity_pay` (
+DROP TABLE IF EXISTS `ali_activity_pay`;
+CREATE TABLE `ali_activity_pay` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL DEFAULT '' COMMENT '应用ID',
   `out_order_no` varchar(32) NOT NULL DEFAULT '' COMMENT '商户订单号',
@@ -20,8 +20,8 @@ CREATE TABLE `bu_ali_activity_pay` (
   UNIQUE KEY `uniq_otn` (`out_order_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付宝活动支付表';
 
-DROP TABLE IF EXISTS `bu_ali_activity_pay_refund`;
-CREATE TABLE `bu_ali_activity_pay_refund` (
+DROP TABLE IF EXISTS `ali_activity_pay_refund`;
+CREATE TABLE `ali_activity_pay_refund` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
   `out_order_no` varchar(32) NOT NULL COMMENT '商户订单号',
@@ -42,8 +42,8 @@ CREATE TABLE `bu_ali_activity_pay_refund` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='支付宝活动支付退款表';
 
 
-DROP TABLE IF EXISTS `bu_ali_activity_notify`;
-CREATE TABLE `bu_ali_activity_notify` (
+DROP TABLE IF EXISTS `ali_activity_notify`;
+CREATE TABLE `ali_activity_notify` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `method` varchar(16) NOT NULL DEFAULT '' COMMENT '消息(spiordersend:订单券发放,from:FROM消息)',
   `notify_data` varchar(2048) NOT NULL DEFAULT '' COMMENT '通知数据',
@@ -54,8 +54,8 @@ CREATE TABLE `bu_ali_activity_notify` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付宝活动通知表';
 
-DROP TABLE IF EXISTS `bu_ali_activity_coupon`;
-CREATE TABLE `bu_ali_activity_coupon` (
+DROP TABLE IF EXISTS `ali_activity_coupon`;
+CREATE TABLE `ali_activity_coupon` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `activity_id` varchar(128) NOT NULL COMMENT '活动id',
   `event_id` varchar(128) NOT NULL DEFAULT '' COMMENT '事件id。可用于业务去重。',

@@ -8,6 +8,6 @@ import com.company.order.entity.OrderPay;
 
 public interface OrderPayMapper extends BaseMapper<OrderPay> {
 
-	@Select("select * from bu_order_pay where order_code = #{orderCode}")
+	@Select("select * from order_pay where order_code = #{orderCode}")
 	OrderPay selectByOrderCode(@Param("orderCode") String orderCode);
 }

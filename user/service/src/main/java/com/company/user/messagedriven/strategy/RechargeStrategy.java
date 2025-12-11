@@ -124,7 +124,7 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 							JsonUtil.toJsonString(balance), JsonUtil.toJsonString(amount));
 				}
 
-				// 扣回bu_wallet_use_seq
+				// 扣回wallet_use_seq
 				walletUseSeqService.calcAndUse(rechargeOrder.getUserId(),
 						Lists.newArrayList(WalletEnum.Type.TO_CHARGE, WalletEnum.Type.TO_GIFT),
 						rechargeOrder.getAmount().add(rechargeOrder.getGiftAmount()));

@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("bu_user_oauth")
+@TableName("user_oauth")
 public class UserOauth implements Encrypted {
 	private Integer id;
 	

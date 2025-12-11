@@ -14,7 +14,7 @@ import lombok.Data;
  * 购买会员订单表
  */
 @Data
-@TableName(value ="bu_member_buy_order")
+@TableName(value ="member_buy_order")
 public class MemberBuyOrder {
     /**
      * ID
@@ -23,7 +23,7 @@ public class MemberBuyOrder {
     private Integer id;
 
     /**
-     * bu_user_info.id
+     * user_info.id
      */
     @TableField(value = "user_id")
     private Integer userId;

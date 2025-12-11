@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@TableName("bu_verify_code")
+@TableName("verify_code")
 @Data
 @Accessors(chain = true)
 public class VerifyCode {

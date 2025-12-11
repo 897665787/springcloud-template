@@ -15,7 +15,7 @@ public class Order4Resp {
     private Integer id;
 
     /**
-     * bu_user_info.id
+     * user_info.id
      */
     private Integer userId;
 

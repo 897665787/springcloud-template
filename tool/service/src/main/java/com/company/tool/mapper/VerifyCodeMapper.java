@@ -10,13 +10,13 @@ import com.company.tool.enums.VerifyCodeEnum;
 
 public interface VerifyCodeMapper extends BaseMapper<VerifyCode> {
 
-	@Select("select * from bu_verify_code where certificate = #{certificate} and type = #{type} order by id desc limit 1")
+	@Select("select * from verify_code where certificate = #{certificate} and type = #{type} order by id desc limit 1")
 	VerifyCode selectLastByCertificateType(@Param("certificate") String certificate, @Param("type") String type);
 
-	@Update("update bu_verify_code set err_count = err_count + 1 where id = #{id}")
+	@Update("update verify_code set err_count = err_count + 1 where id = #{id}")
 	Integer incrErrCount(@Param("id") Integer id);
 
-	@Update("update bu_verify_code set status = ${status.code} where id = #{id}")
+	@Update("update verify_code set status = ${status.code} where id = #{id}")
 	Integer updateStatus(@Param("id") Integer id, @Param("status") VerifyCodeEnum.Status status);
 
 }

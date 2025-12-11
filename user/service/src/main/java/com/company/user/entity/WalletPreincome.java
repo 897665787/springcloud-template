@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName("bu_wallet_preincome")
+@TableName("wallet_preincome")
 public class WalletPreincome {
 	/**
 	 * ID
@@ -24,7 +24,7 @@ public class WalletPreincome {
 	 */
 	private String uniqueCode;
 	/**
-	 * bu_wallet.id
+	 * wallet.id
 	 */
 	private Integer walletId;
 	/**

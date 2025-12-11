@@ -24,7 +24,7 @@ public class PopupLog {
 	private Integer businessId;
 	
 	/**
-	 * bu_user_info.id
+	 * user_info.id
 	 */
 	private Integer userId;
 
