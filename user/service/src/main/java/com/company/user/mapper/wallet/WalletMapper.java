@@ -12,12 +12,12 @@ import com.company.user.entity.Wallet;
 
 public interface WalletMapper extends BaseMapper<Wallet> {
 
-	@Select("select * from bu_wallet where user_id = #{userId} and type = #{type.code}")
+	@Select("select * from wallet where user_id = #{userId} and type = #{type.code}")
 	Wallet selectByUserIdType(@Param("userId") Integer userId, @Param("type") WalletEnum.Type type);
 
-	@Update("update bu_wallet set balance = balance + #{amount} where id = #{id}")
+	@Update("update wallet set balance = balance + #{amount} where id = #{id}")
 	int income(@Param("id") Integer id, @Param("amount") BigDecimal amount);
 
-	@Update("update bu_wallet set balance = balance - #{amount} where id = #{id} and balance >= #{amount}")
+	@Update("update wallet set balance = balance - #{amount} where id = #{id} and balance >= #{amount}")
 	int outcome(@Param("id") Integer id, @Param("amount") BigDecimal amount);
 }

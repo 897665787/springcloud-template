@@ -106,7 +106,7 @@ public class MemberBuyStrategy implements BaseStrategy<Map<String, Object>> {
 			if (walletRefundAmount.compareTo(BigDecimal.ZERO) > 0) {
 				String uniqueCode = MapUtils.getString(params, "refundOrderCode");
 
-				// 退还bu_wallet_use_seq
+				// 退还wallet_use_seq
 				BigDecimal returnTotalAmount = walletRefundAmount;
 				Map<WalletEnum.Type, BigDecimal> typeAmountMap = walletUseSeqService.calcAndReturn(
 						memberBuyOrder.getUserId(),

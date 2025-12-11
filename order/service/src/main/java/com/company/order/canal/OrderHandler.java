@@ -9,7 +9,7 @@ import top.javatool.canal.client.handler.EntryHandler;
 
 @Slf4j
 @Component
-@CanalTable(value = "bu_order") // 对应的数据库表名
+@CanalTable(value = "order") // 对应的数据库表名
 public class OrderHandler implements EntryHandler<Order> {
 
     @Override

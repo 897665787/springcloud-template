@@ -8,7 +8,7 @@ import com.company.order.entity.AliActivityPayRefund;
 
 public interface AliActivityPayRefundMapper extends BaseMapper<AliActivityPayRefund> {
 
-	@Select("select * from bu_ali_activity_pay_refund where out_biz_no = #{outBizNo}")
+	@Select("select * from ali_activity_pay_refund where out_biz_no = #{outBizNo}")
 	AliActivityPayRefund selectByOutBizNo(@Param("outBizNo") String outBizNo);
 
 	/**
@@ -17,6 +17,6 @@ public interface AliActivityPayRefundMapper extends BaseMapper<AliActivityPayRef
 	 * @param outOrderNo
 	 * @return
 	 */
-	@Select("select * from bu_ali_activity_pay_refund where out_order_no = #{outOrderNo}")
+	@Select("select * from ali_activity_pay_refund where out_order_no = #{outOrderNo}")
 	AliActivityPayRefund selectByOutOrderNo(@Param("outOrderNo") String outOrderNo);
 }

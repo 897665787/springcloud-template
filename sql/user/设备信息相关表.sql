@@ -21,7 +21,7 @@ CREATE TABLE `device_info` (
 -- 监听登录事件，登录后记录
 CREATE TABLE `user_device` (
  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
- `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
+ `user_id` int(11) NOT NULL COMMENT 'user_info.id',
  `deviceid` varchar(64) NOT NULL COMMENT '设备ID',
  `last_login_time` datetime DEFAULT NULL COMMENT '最后登录时间',
  `last_logout_time` datetime DEFAULT NULL COMMENT '最后登出时间',

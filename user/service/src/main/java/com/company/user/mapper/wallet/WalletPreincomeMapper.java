@@ -12,15 +12,15 @@ import com.company.user.entity.WalletPreincome;
 
 public interface WalletPreincomeMapper extends BaseMapper<WalletPreincome> {
 
-	@Select("select sum(amount) from bu_wallet_preincome where wallet_id = #{walletId} and status = 1")
+	@Select("select sum(amount) from wallet_preincome where wallet_id = #{walletId} and status = 1")
 	BigDecimal sumAmount(@Param("walletId") Integer walletId);
 
-	@Select("select id from bu_wallet_preincome where status = 1 limit #{limit}")
+	@Select("select id from wallet_preincome where status = 1 limit #{limit}")
 	List<Integer> selectId4Income(@Param("limit") Integer limit);
 
-	@Update("update bu_wallet_preincome set status = 2 where id = #{id} and status = 1")
+	@Update("update wallet_preincome set status = 2 where id = #{id} and status = 1")
 	Integer update4Income(@Param("id") Integer id);
 
-	@Select("select * from bu_wallet_preincome where unique_code = #{uniqueCode} limit 1")
+	@Select("select * from wallet_preincome where unique_code = #{uniqueCode} limit 1")
 	WalletPreincome selectByUniqueCode(@Param("uniqueCode") String uniqueCode);
 }

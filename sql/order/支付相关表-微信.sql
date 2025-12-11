@@ -1,8 +1,8 @@
 -- ----------------------------
--- Table structure for bu_wx_pay
+-- Table structure for wx_pay
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_wx_pay`;
-CREATE TABLE `bu_wx_pay` (
+DROP TABLE IF EXISTS `wx_pay`;
+CREATE TABLE `wx_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '小程序ID|公众账号ID|应用ID',
   `mchid` varchar(32) NOT NULL COMMENT '商户号',
@@ -33,10 +33,10 @@ CREATE TABLE `bu_wx_pay` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='微信支付表';
 
 -- ----------------------------
--- Table structure for bu_wx_pay_refund
+-- Table structure for wx_pay_refund
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_wx_pay_refund`;
-CREATE TABLE `bu_wx_pay_refund` (
+DROP TABLE IF EXISTS `wx_pay_refund`;
+CREATE TABLE `wx_pay_refund` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '小程序ID|公众账号ID|应用ID',
   `mchid` varchar(32) NOT NULL COMMENT '商户号',

@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS `bu_member_buy_order`;
-CREATE TABLE `bu_member_buy_order` (
+DROP TABLE IF EXISTS `member_buy_order`;
+CREATE TABLE `member_buy_order` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
+  `user_id` int(11) NOT NULL COMMENT 'user_info.id',
   `order_code` varchar(32) NOT NULL DEFAULT '' COMMENT '订单编号',
   `user_coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT 'mk_user_coupon.id',
   `product_code` varchar(32) NOT NULL DEFAULT '' COMMENT '会员续期编码',

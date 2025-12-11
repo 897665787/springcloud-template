@@ -8,7 +8,7 @@ import com.company.order.entity.PayNotify;
 
 public interface PayNotifyMapper extends BaseMapper<PayNotify> {
 
-	@Update("update bu_pay_notify set remark = #{remark} where id = #{id}")
+	@Update("update pay_notify set remark = #{remark} where id = #{id}")
 	int updateRemarkById(@Param("remark") String remark, @Param("id") Integer id);
 
 }

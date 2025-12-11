@@ -1,5 +1,5 @@
 
-CREATE TABLE `bu_verify_code` (
+CREATE TABLE `verify_code` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `type` varchar(16) NOT NULL COMMENT '业务(register:注册,login:登录,changepwd:修改密码)',
   `certificate` varchar(32) NOT NULL COMMENT '凭证(手机号|UUID)',

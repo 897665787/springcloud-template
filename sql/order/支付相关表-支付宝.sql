@@ -1,9 +1,9 @@
 
 -- ----------------------------
--- Table structure for bu_ali_pay
+-- Table structure for ali_pay
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_ali_pay`;
-CREATE TABLE `bu_ali_pay` (
+DROP TABLE IF EXISTS `ali_pay`;
+CREATE TABLE `ali_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
   `notify_url` varchar(256) DEFAULT NULL COMMENT '通知地址',
@@ -24,10 +24,10 @@ CREATE TABLE `bu_ali_pay` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='支付宝支付表';
 
 -- ----------------------------
--- Table structure for bu_ali_pay_refund
+-- Table structure for ali_pay_refund
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_ali_pay_refund`;
-CREATE TABLE `bu_ali_pay_refund` (
+DROP TABLE IF EXISTS `ali_pay_refund`;
+CREATE TABLE `ali_pay_refund` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `appid` varchar(32) NOT NULL COMMENT '应用ID',
   `out_trade_no` varchar(32) NOT NULL COMMENT '商户订单号',

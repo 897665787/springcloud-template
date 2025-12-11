@@ -10,18 +10,18 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.company.order.entity.OrderProduct;
 
 public interface OrderProductMapper extends BaseMapper<OrderProduct> {
-	@Select("select * from bu_order_product where order_code=#{orderCode}")
+	@Select("select * from order_product where order_code=#{orderCode}")
 	List<OrderProduct> selectByOrderCode(@Param("orderCode") String orderCode);
 
-	@Select("select * from bu_order_product where order_code = #{orderCode} limit 1")
+	@Select("select * from order_product where order_code = #{orderCode} limit 1")
 	OrderProduct selectOneByOrderCode(@Param("orderCode") String orderCode);
 
 	List<OrderProduct> selectByOrderCodes(@Param("orderCodes") List<String> orderCodes);
 
-	@Select("select * from bu_order_product where order_code = #{orderCode} and store_id = #{storeId}")
+	@Select("select * from order_product where order_code = #{orderCode} and store_id = #{storeId}")
 	List<OrderProduct> selectByOrderCodeAndStoreId(@Param("orderCode") String orderCode,
 			@Param("storeId") String storeId);
 
-	@Select("select ifnull(sum(number), 0) from `lssq-takeout`.bu_order_product where product_code = #{productCode} and create_time > #{beginTime}")
+	@Select("select ifnull(sum(number), 0) from `lssq-takeout`.order_product where product_code = #{productCode} and create_time > #{beginTime}")
 	Integer countByProductCode(@Param("productCode") String productCode, @Param("beginTime") Date beginTime);
 }

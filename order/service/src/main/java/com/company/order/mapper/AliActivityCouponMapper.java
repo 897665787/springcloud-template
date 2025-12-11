@@ -10,10 +10,10 @@ import com.company.order.entity.AliActivityCoupon;
 
 public interface AliActivityCouponMapper extends BaseMapper<AliActivityCoupon> {
 
-	@Select("select * from bu_ali_activity_coupon where event_id = #{eventId}")
+	@Select("select * from ali_activity_coupon where event_id = #{eventId}")
 	AliActivityCoupon selectByEventId(@Param("eventId") String eventId);
 
-	@Select("select * from bu_ali_activity_coupon where activity_id = #{activityId} and receive_user_id = #{receiveUserId}")
+	@Select("select * from ali_activity_coupon where activity_id = #{activityId} and receive_user_id = #{receiveUserId}")
 	List<AliActivityCoupon> selectByActivityIdReceiveUserId(@Param("activityId") String activityId,
 			@Param("receiveUserId") String receiveUserId);
 

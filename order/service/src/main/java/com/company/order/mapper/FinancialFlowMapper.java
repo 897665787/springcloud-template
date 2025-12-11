@@ -8,6 +8,6 @@ import com.company.order.entity.FinancialFlow;
 
 public interface FinancialFlowMapper extends BaseMapper<FinancialFlow> {
 
-	@Select("select * from bu_financial_flow where order_code = #{orderCode}")
+	@Select("select * from financial_flow where order_code = #{orderCode}")
 	FinancialFlow selectByOrderCode(@Param("orderCode") String orderCode);
 }

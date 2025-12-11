@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@TableName("bu_ali_pay_refund")
+@TableName("ali_pay_refund")
 @Data
 @Accessors(chain = true)
 public class AliPayRefund {

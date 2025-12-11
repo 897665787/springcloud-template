@@ -8,6 +8,6 @@ import com.company.order.entity.WxPay;
 
 public interface WxPayMapper extends BaseMapper<WxPay> {
 	
-	@Select("select * from bu_wx_pay where out_trade_no = #{outTradeNo}")
+	@Select("select * from wx_pay where out_trade_no = #{outTradeNo}")
 	WxPay selectByOutTradeNo(@Param("outTradeNo") String outTradeNo);
 }
