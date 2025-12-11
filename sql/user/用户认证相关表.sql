@@ -5,12 +5,14 @@
 DROP TABLE IF EXISTS `bu_user_info`;
 CREATE TABLE `bu_user_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `uid` varchar(8) NOT NULL COMMENT '编码',
   `nickname` varchar(32) DEFAULT NULL COMMENT '昵称',
   `avatar` varchar(32) DEFAULT NULL COMMENT '头像',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `uniq_uid` (`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='用户信息表';
 
 
