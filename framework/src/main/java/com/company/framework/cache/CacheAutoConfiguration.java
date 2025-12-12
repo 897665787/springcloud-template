@@ -2,15 +2,22 @@ package com.company.framework.cache;
 
 import com.company.framework.cache.guava.GuavaCache;
 import com.company.framework.cache.redis.RedisCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @EnableCaching
 @Configuration
@@ -40,9 +47,25 @@ public class CacheAutoConfiguration {
 	}
 
     @Bean
+    public CacheManager cacheManager(RedisConnectionFactory factory) {
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofMinutes(10))   // 默认TTL
+                .disableCachingNullValues()         // 不缓存null值
+                .prefixCacheNameWith("cache:")      // key前缀
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
+        return RedisCacheManager.builder(factory).cacheDefaults(config).build();
+    }
+
+    @Bean
     public CacheManager cacheManager() {
+        Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
+                .expireAfterWrite(10, TimeUnit.MINUTES)  // 写入后10分钟过期
+                .maximumSize(1000)                       // 最大缓存条目数
+//                .recordStats()
+                ;
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        cacheManager.setCaffeine(Caffeine.newBuilder().maximumSize(500).expireAfterWrite(Duration.ofMinutes(10)));
+        cacheManager.setCaffeine(caffeine);
         return cacheManager;
     }
 }

@@ -1,0 +1,58 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+  cache:
+    type: redis # 可选caffeine,redis，默认caffeine
+    redis:
+      time-to-live: 60000       # 默认TTL，单位ms
+      cache-null-values: false  # 是否缓存null值
+      use-key-prefix: true      # 使用key前缀
+      key-prefix: ${spring.application.name}      # key前缀
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=5m  # Caffeine规范
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000       # 默认TTL，单位ms
+      cache-null-values: false  # 是否缓存null值
+      use-key-prefix: true      # 使用key前缀
+      key-prefix: "cache:"      # key前缀
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000       # 默认TTL，单位ms
+      cache-null-values: false  # 是否缓存null值
+      use-key-prefix: true      # 使用key前缀
+      key-prefix: "cache:"      # key前缀
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod,prod-zone1,prod-zone2
+  cache:
+    type: redis
+    redis:
+      time-to-live: 60000       # 默认TTL，单位ms
+      cache-null-values: false  # 是否缓存null值
+      use-key-prefix: true      # 使用key前缀
+      key-prefix: "cache:"      # key前缀

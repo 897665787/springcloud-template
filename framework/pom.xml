@@ -167,6 +167,23 @@
 		    <version>3.12.0</version><!-- 最新版是3.32.0，存在客户端与服务端不兼容问题，高版本会导致redisson初始化很慢 -->
 		</dependency>
 
+        <!-- cache -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- 已有redis依赖
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <!-- cache -->
+
 		<!-- Canal -->
 		<dependency>
 			<groupId>top.javatool</groupId>
