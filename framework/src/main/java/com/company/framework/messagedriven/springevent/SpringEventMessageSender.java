@@ -50,7 +50,7 @@ public class SpringEventMessageSender implements MessageSender {
 	}
 
 	@Override
-	public void sendFanoutMessage(Object toJson, String exchange) {
+	public void sendBroadcastMessage(Object toJson, String exchange) {
 		MessageEvent messageEvent = new MessageEvent();
 		messageEvent.setHeader(HeaderConstants.HEADER_PARAMS_CLASS, toJson.getClass().getName());
 		String paramsStr = JsonUtil.toJsonString(toJson);

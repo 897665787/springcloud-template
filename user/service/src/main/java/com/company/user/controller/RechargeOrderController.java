@@ -3,7 +3,7 @@ package com.company.user.controller;
 import com.company.common.api.Result;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderEnum;
@@ -214,7 +214,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		// 发布‘支付成功’事件
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("orderCode", orderCode);
-		messageSender.sendFanoutMessage(params, FanoutConstants.RECHARGE_PAY_SUCCESS.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.RECHARGE_PAY_SUCCESS.EXCHANGE);
 
 		RechargeOrder rechargeOrder = rechargeOrderService.selectByOrderCode(orderCode);
 		BigDecimal rechargeAmount = rechargeOrder.getAmount();

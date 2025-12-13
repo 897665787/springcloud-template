@@ -1,6 +1,6 @@
 package com.company.framework.gracefulshutdown.messagedriven.rocketmq.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
 import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
@@ -18,8 +18,8 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-        topic = FanoutConstants.DEPLOY.EXCHANGE,
-        consumerGroup = FanoutConstants.DEPLOY.EXCHANGE + "-${spring.application.name}",
+        topic = BroadcastConstants.DEPLOY.EXCHANGE,
+        consumerGroup = BroadcastConstants.DEPLOY.EXCHANGE + "-${spring.application.name}",
         messageModel = MessageModel.BROADCASTING
 )
 @Slf4j

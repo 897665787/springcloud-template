@@ -2,7 +2,7 @@ package com.company.order.controller;
 
 import com.company.common.api.Result;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.Utils;
 import com.company.order.api.constant.Constants;
@@ -47,7 +47,7 @@ public class RefundApplyController implements RefundApplyFeign {
 	 * 退款申请
 	 *
 	 * <pre>
-	 * 如果需要获得退款结果，请订阅 FanoutConstants.REFUND_APPLY_RESULT 的广播消息
+	 * 如果需要获得退款结果，请订阅 BroadcastConstants.REFUND_APPLY_RESULT 的广播消息
 	 * 参考：RefundApplyResultConsumer
 	 * </pre>
 	 *
@@ -235,6 +235,6 @@ public class RefundApplyController implements RefundApplyFeign {
 		params.put("totalRefundAmount", totalRefundAmount);
 		params.put("refundAll", refundAll);
 
-		messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.REFUND_APPLY_RESULT.EXCHANGE);
 	}
 }

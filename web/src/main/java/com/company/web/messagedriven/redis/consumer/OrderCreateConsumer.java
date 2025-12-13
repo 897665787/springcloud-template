@@ -1,6 +1,6 @@
 package com.company.web.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class OrderCreateConsumer {
 
     @Bean
     public Object smsOrderCreateConsumer(RedisMessageListenerContainer container, MessageListener smsOrderCreateMessageListener) {
-        String channel = FanoutConstants.ORDER_CREATE.EXCHANGE;
+        String channel = BroadcastConstants.ORDER_CREATE.EXCHANGE;
         container.addMessageListener(smsOrderCreateMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -65,7 +65,7 @@ public class OrderCreateConsumer {
 
     @Bean
     public Object countmoneyOrderCreateConsumer(RedisMessageListenerContainer container, MessageListener countmoneyOrderCreateMessageListener) {
-        String channel = FanoutConstants.ORDER_CREATE.EXCHANGE;
+        String channel = BroadcastConstants.ORDER_CREATE.EXCHANGE;
         container.addMessageListener(countmoneyOrderCreateMessageListener, new ChannelTopic(channel));
         return new Object();
     }

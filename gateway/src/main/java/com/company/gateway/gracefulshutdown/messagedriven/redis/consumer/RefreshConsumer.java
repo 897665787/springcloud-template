@@ -1,7 +1,7 @@
 package com.company.gateway.gracefulshutdown.messagedriven.redis.consumer;
 
 import com.company.gateway.gracefulshutdown.messagedriven.strategy.StrategyConstants;
-import com.company.gateway.messagedriven.constants.FanoutConstants;
+import com.company.gateway.messagedriven.constants.BroadcastConstants;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.gateway.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class RefreshConsumer {
 
     @Bean
     public Object registerRefreshConsumer(RedisMessageListenerContainer container, MessageListener refreshMessageListener) {
-        String channel = FanoutConstants.DEPLOY.EXCHANGE;
+        String channel = BroadcastConstants.DEPLOY.EXCHANGE;
         container.addMessageListener(refreshMessageListener, new ChannelTopic(channel));
         return new Object();
     }

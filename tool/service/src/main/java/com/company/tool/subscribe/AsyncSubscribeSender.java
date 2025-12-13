@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,8 @@ public class AsyncSubscribeSender {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 	@Autowired
 	private SubscribeTaskService subscribeTaskService;
 	@Autowired
@@ -103,7 +106,7 @@ public class AsyncSubscribeSender {
 		SendSubscribeMQDto params = new SendSubscribeMQDto();
 		params.setSubscribeTaskDetailId(subscribeTaskDetailId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDSUBSCRIBE_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.SENDSUBSCRIBE_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.SEND_SUBSCRIBE.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行

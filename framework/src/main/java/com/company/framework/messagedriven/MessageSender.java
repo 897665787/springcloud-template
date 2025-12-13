@@ -4,7 +4,7 @@ public interface MessageSender {
 
 	/**
 	 * 发送普通消息
-	 * 
+	 *
 	 * @param strategyName
 	 * @param toJson
 	 * @param exchange
@@ -14,15 +14,15 @@ public interface MessageSender {
 
 	/**
 	 * 发送广播消息
-	 * 
+	 *
 	 * @param toJson
 	 * @param exchange
 	 */
-	void sendFanoutMessage(Object toJson, String exchange);
+	void sendBroadcastMessage(Object toJson, String exchange);
 
 	/**
 	 * 发送延时消息
-	 * 
+	 *
 	 * @param strategyName
 	 * @param toJson
 	 * @param exchange

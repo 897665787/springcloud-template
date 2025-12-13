@@ -127,7 +127,7 @@ canal.serverMode = rabbitMQ
 
 rabbitmq.host = localhost:5672
 rabbitmq.virtual.host = /
-rabbitmq.exchange = fanout-canal
+rabbitmq.exchange = broadcast-canal
 rabbitmq.username = guest
 rabbitmq.password = guest
 rabbitmq.deliveryMode =
@@ -151,7 +151,7 @@ rocketmq.tag =
 
 #### 2. 服务端配置conf/example/instance.properties
 ```
-canal.mq.topic=fanout-canal
+canal.mq.topic=broadcast-canal
 ```
 
 ### 接口`EntryHandler<T>` 用法还是清晰简单的，所以将数据转发到EntryHandler处理

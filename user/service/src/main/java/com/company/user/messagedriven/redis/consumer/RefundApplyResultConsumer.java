@@ -1,6 +1,6 @@
 package com.company.user.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class RefundApplyResultConsumer {
 
     @Bean
     public Object registerMemberBuyConsumer(RedisMessageListenerContainer container, MessageListener memberBuyMessageListener) {
-        String channel = FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE;
+        String channel = BroadcastConstants.REFUND_APPLY_RESULT.EXCHANGE;
         container.addMessageListener(memberBuyMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -65,7 +65,7 @@ public class RefundApplyResultConsumer {
 
     @Bean
     public Object registerGoodsRefundConsumer(RedisMessageListenerContainer container, MessageListener goodsRefundMessageListener) {
-        String channel = FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE;
+        String channel = BroadcastConstants.REFUND_APPLY_RESULT.EXCHANGE;
         container.addMessageListener(goodsRefundMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -89,7 +89,7 @@ public class RefundApplyResultConsumer {
 
     @Bean
     public Object registerRechargeConsumer(RedisMessageListenerContainer container, MessageListener rechargeMessageListener) {
-        String channel = FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE;
+        String channel = BroadcastConstants.REFUND_APPLY_RESULT.EXCHANGE;
         container.addMessageListener(rechargeMessageListener, new ChannelTopic(channel));
         return new Object();
     }

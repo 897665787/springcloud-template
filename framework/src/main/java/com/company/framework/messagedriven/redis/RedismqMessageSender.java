@@ -37,7 +37,7 @@ public class RedismqMessageSender implements MessageSender {
     }
 
     @Override
-    public void sendFanoutMessage(Object toJson, String exchange) {
+    public void sendBroadcastMessage(Object toJson, String exchange) {
         // Redis 使用发布订阅模式实现广播
         sendMessage(null, toJson, exchange, null, null);
     }

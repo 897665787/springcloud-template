@@ -1,40 +1,34 @@
 package com.company.order.pay.aliactivity.notify;
 
-import java.math.BigDecimal;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
-
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.framework.sequence.SequenceGenerator;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.enums.PayRefundApplyEnum;
-import com.company.order.entity.AliActivityPay;
-import com.company.order.entity.AliActivityPayRefund;
-import com.company.order.entity.OrderPay;
-import com.company.order.entity.OrderPayRefund;
-import com.company.order.entity.PayRefundApply;
+import com.company.order.entity.*;
 import com.company.order.mapper.AliActivityNotifyMapper;
 import com.company.order.mapper.AliActivityPayMapper;
 import com.company.order.mapper.AliActivityPayRefundMapper;
 import com.company.order.mapper.PayRefundApplyMapper;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.aliactivity.AliActivityConstants;
 import com.company.order.pay.aliactivity.dto.OrderRefundBizContent;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
 import com.company.order.service.OrderPayService;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * <pre>
@@ -56,6 +50,8 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 
 	@Autowired
 	private SequenceGenerator sequenceGenerator;
@@ -189,7 +185,7 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			params.put("totalRefundAmount", aliActivityPay.getTotalAmount());
 			params.put("refundAll", true);
 
-			messageSender.sendFanoutMessage(params, FanoutConstants.REFUND_APPLY_RESULT.EXCHANGE);
+			messageSender.sendBroadcastMessage(params, BroadcastConstants.REFUND_APPLY_RESULT.EXCHANGE);
 		} else {// 用户主动退款
 			AliActivityPayRefund aliActivityPay4Update = new AliActivityPayRefund()
 					.setOutBizNo(outBizNo)
@@ -220,8 +216,8 @@ public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 			params.put("merchantNo", "未配置");
 			params.put("tradeNo", aliActivityPay.getTradeNo());
 
-			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-					Constants.QUEUE.COMMON.KEY);
+			messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
+					messagedrivenProperties.getQueue().getCommon().getKey());
 		}
 	}
 

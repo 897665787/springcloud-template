@@ -29,7 +29,7 @@ public class RabbitmqMessageSender implements MessageSender {
 	}
 
 	@Override
-	public void sendFanoutMessage(Object toJson, String exchange) {
+	public void sendBroadcastMessage(Object toJson, String exchange) {
 		sendMessage(null, toJson, exchange, null, null);
 	}
 

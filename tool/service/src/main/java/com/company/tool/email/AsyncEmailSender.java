@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,8 @@ public class AsyncEmailSender {
 
 	@Autowired
 	private MessageSender messageSender;
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 	@Autowired
 	private EmailTaskService emailTaskService;
 	@Autowired
@@ -128,7 +131,7 @@ public class AsyncEmailSender {
 		SendEmailMQDto params = new SendEmailMQDto();
 		params.setEmailTaskDetailId(emailTaskDetailId);
 
-		messageSender.sendNormalMessage(StrategyConstants.SENDEMAIL_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.SENDEMAIL_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.SEND_EMAIL.KEY);
 
 		// 必须加状态条件，消费者代码可能会比下面的代码先执行

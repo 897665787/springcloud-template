@@ -6,7 +6,7 @@ import org.apache.commons.collections.MapUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.springevent.event.MessageEvent;
 import com.company.framework.messagedriven.springevent.utils.ConsumerUtils;
@@ -19,7 +19,7 @@ public class UserSourceListener {
 	public void loginRecord(MessageEvent event) {
 		String jsonStrMsg = event.getJsonStrMsg();
 		String exchange = event.getExchange();
-		if (!FanoutConstants.USER_SOURCE.EXCHANGE.equals(exchange)) {
+		if (!BroadcastConstants.USER_SOURCE.EXCHANGE.equals(exchange)) {
 			return;
 		}
 		Map<String, Object> headers = event.getHeaders();

@@ -1,6 +1,6 @@
 package com.company.system.messagedriven.rocketmq.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
@@ -17,8 +17,8 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-		topic = FanoutConstants.SYS_USER_LOGIN.EXCHANGE,
-		consumerGroup = FanoutConstants.SYS_USER_LOGIN.INCR_EXPIRELOGINTIMES_QUEUE
+		topic = BroadcastConstants.SYS_USER_LOGIN.EXCHANGE,
+		consumerGroup = BroadcastConstants.SYS_USER_LOGIN.INCR_EXPIRELOGINTIMES_QUEUE
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)

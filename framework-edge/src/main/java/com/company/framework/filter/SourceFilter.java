@@ -3,7 +3,7 @@ package com.company.framework.filter;
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class SourceFilter extends OncePerRequestFilter {
 		params.put("source", source);
 		params.put("deviceid", deviceid);
 		params.put("time", time);
-		messageSender.sendFanoutMessage(params, FanoutConstants.USER_SOURCE.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_SOURCE.EXCHANGE);
 
 		chain.doFilter(request, response);
 	}

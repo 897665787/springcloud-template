@@ -1,6 +1,6 @@
 package com.company.user.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class UserRegisterConsumer {
 
     @Bean
     public Object registerBindEmailConsumer(RedisMessageListenerContainer container, MessageListener bindEmailMessageListener) {
-        String channel = FanoutConstants.USER_REGISTER.EXCHANGE;
+        String channel = BroadcastConstants.USER_REGISTER.EXCHANGE;
         container.addMessageListener(bindEmailMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -65,7 +65,7 @@ public class UserRegisterConsumer {
 
     @Bean
     public Object registerBindMobileConsumer(RedisMessageListenerContainer container, MessageListener bindMobileMessageListener) {
-        String channel = FanoutConstants.USER_REGISTER.EXCHANGE;
+        String channel = BroadcastConstants.USER_REGISTER.EXCHANGE;
         container.addMessageListener(bindMobileMessageListener, new ChannelTopic(channel));
         return new Object();
     }

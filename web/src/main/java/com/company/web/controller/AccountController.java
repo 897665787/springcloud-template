@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.common.api.Result;
 import com.company.framework.util.RegexUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.annotation.RequireLogin;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
@@ -258,7 +258,7 @@ public class AccountController {
 		params.put("device", device);
 		params.put("userId", userId);
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
-		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGIN.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGIN.EXCHANGE);
 
 		return tokenValue;
 	}
@@ -279,7 +279,7 @@ public class AccountController {
 		params.put("device", device);
 		params.put("userId", HeaderContextUtil.currentUserId());
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
-		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGOUT.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
 		return Result.success("登出成功");
 	}

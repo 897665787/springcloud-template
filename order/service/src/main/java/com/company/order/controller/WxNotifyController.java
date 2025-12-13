@@ -1,22 +1,9 @@
 package com.company.order.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.order.messagedriven.Constants;
-import com.company.order.messagedriven.strategy.StrategyConstants;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.feign.WxNotifyFeign;
 import com.company.order.entity.PayNotify;
@@ -25,6 +12,8 @@ import com.company.order.entity.WxPayRefund;
 import com.company.order.mapper.PayNotifyMapper;
 import com.company.order.mapper.WxPayMapper;
 import com.company.order.mapper.WxPayRefundMapper;
+import com.company.order.messagedriven.Constants;
+import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.company.order.pay.wx.config.WxPayConfiguration;
 import com.company.order.pay.wx.config.WxPayProperties;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
@@ -36,8 +25,18 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
 import com.google.common.collect.Maps;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -55,6 +54,9 @@ public class WxNotifyController implements WxNotifyFeign {
 	@Autowired
 	private MessageSender messageSender;
 	
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
+
 	@Autowired
 	private WxPayConfiguration wxPayConfiguration;
 	
@@ -167,7 +169,7 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("merchantNo", wxPay.getMchid());
 		params.put("tradeNo", orderNotifyResult.getTransactionId());
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
@@ -276,8 +278,8 @@ public class WxNotifyController implements WxNotifyFeign {
 		params.put("orderPayMethod", OrderPayEnum.Method.WX.getCode());
 		params.put("tradeNo", reqInfo.getRefundId());
 
-		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.KEY);
+		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
+				messagedrivenProperties.getQueue().getCommon().getKey());
 		return Result.success(WxPayNotifyResponse.success("OK"));
 	}
 }

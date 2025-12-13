@@ -29,7 +29,7 @@ import com.company.token.util.TokenValueUtil;
 import com.company.common.api.Result;
 import com.company.framework.util.RegexUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.annotation.RequireLogin;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
@@ -145,7 +145,7 @@ public class AccountController {
 		params.put("userId", userId);
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGIN.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGIN.EXCHANGE);
 
 		return tokenValue;
 	}
@@ -167,7 +167,7 @@ public class AccountController {
 		params.put("userId", HeaderContextUtil.currentUserId());
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		messageSender.sendFanoutMessage(params, FanoutConstants.USER_LOGOUT.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
 		return Result.success("登出成功");
 	}

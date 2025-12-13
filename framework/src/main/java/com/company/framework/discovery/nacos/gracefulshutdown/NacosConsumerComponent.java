@@ -5,7 +5,7 @@ import com.alibaba.cloud.nacos.registry.NacosServiceRegistry;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class NacosConsumerComponent implements ConsumerComponent {
         params.put("application", application);
         params.put("ip", registration.getHost());
         params.put("port", registration.getPort());
-        messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
+        messageSender.sendBroadcastMessage(params, BroadcastConstants.DEPLOY.EXCHANGE);
         log.info("服务{}已在注册中心下线", application);
     }
 }

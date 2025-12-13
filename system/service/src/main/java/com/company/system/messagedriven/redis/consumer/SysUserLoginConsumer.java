@@ -1,6 +1,6 @@
 package com.company.system.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class SysUserLoginConsumer {
 
     @Bean
     public Object registerLoginRecordConsumer(RedisMessageListenerContainer container, MessageListener loginRecordMessageListener) {
-        String channel = FanoutConstants.SYS_USER_LOGIN.EXCHANGE;
+        String channel = BroadcastConstants.SYS_USER_LOGIN.EXCHANGE;
         container.addMessageListener(loginRecordMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -65,7 +65,7 @@ public class SysUserLoginConsumer {
 
     @Bean
     public Object registerIncrExpireLoginTimesConsumer(RedisMessageListenerContainer container, MessageListener incrExpireLoginTimesMessageListener) {
-        String channel = FanoutConstants.SYS_USER_LOGIN.EXCHANGE;
+        String channel = BroadcastConstants.SYS_USER_LOGIN.EXCHANGE;
         container.addMessageListener(incrExpireLoginTimesMessageListener, new ChannelTopic(channel));
         return new Object();
     }

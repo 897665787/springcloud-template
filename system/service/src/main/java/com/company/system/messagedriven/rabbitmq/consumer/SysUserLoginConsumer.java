@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.rabbitmq.client.Channel;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.rabbitmq.utils.ConsumerUtils;
 import com.company.system.messagedriven.strategy.StrategyConstants;
 
@@ -20,14 +20,14 @@ import com.company.system.messagedriven.strategy.StrategyConstants;
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
 public class SysUserLoginConsumer {
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.SYS_USER_LOGIN.SYS_LOGIN_RECORD_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.SYS_USER_LOGIN.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = BroadcastConstants.SYS_USER_LOGIN.SYS_LOGIN_RECORD_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = BroadcastConstants.SYS_USER_LOGIN.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
 	public void loginRecord(String jsonStrMsg, Channel channel, Message message) {
 		message.getMessageProperties().setHeader(HeaderConstants.HEADER_STRATEGY_NAME,
 				StrategyConstants.SYS_LOGINRECORD_STRATEGY);
 		ConsumerUtils.handleByStrategy(jsonStrMsg, channel, message);
 	}
 
-	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = FanoutConstants.SYS_USER_LOGIN.INCR_EXPIRELOGINTIMES_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = FanoutConstants.SYS_USER_LOGIN.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
+	@RabbitListener(bindings = @QueueBinding(value = @Queue(value = BroadcastConstants.SYS_USER_LOGIN.INCR_EXPIRELOGINTIMES_QUEUE, durable = "false", autoDelete = "true"), exchange = @Exchange(value = BroadcastConstants.SYS_USER_LOGIN.EXCHANGE, type = ExchangeTypes.FANOUT, durable = "false", autoDelete = "true")))
 	public void incrExpireLoginTimes(String jsonStrMsg, Channel channel, Message message) {
 		message.getMessageProperties().setHeader(HeaderConstants.HEADER_STRATEGY_NAME,
 				StrategyConstants.INCR_EXPIRELOGINTIMES_STRATEGY);

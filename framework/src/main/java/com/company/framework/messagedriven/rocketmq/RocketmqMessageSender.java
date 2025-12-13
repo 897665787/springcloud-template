@@ -34,7 +34,7 @@ public class RocketmqMessageSender implements MessageSender {
     }
 
     @Override
-    public void sendFanoutMessage(Object toJson, String topic) {
+    public void sendBroadcastMessage(Object toJson, String topic) {
         sendMessage(null, toJson, topic, null, null);
     }
 

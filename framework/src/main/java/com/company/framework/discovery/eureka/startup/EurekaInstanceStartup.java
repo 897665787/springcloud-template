@@ -3,7 +3,7 @@ package com.company.framework.discovery.eureka.startup;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.gracefulshutdown.InstanceStartup;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class EurekaInstanceStartup implements InstanceStartup {
         params.put("application", application);
         params.put("ip", registration.getHost());
         params.put("port", registration.getPort());
-        messageSender.sendFanoutMessage(params, FanoutConstants.DEPLOY.EXCHANGE);
+        messageSender.sendBroadcastMessage(params, BroadcastConstants.DEPLOY.EXCHANGE);
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.user.entity.CouponTemplate;
 import com.company.user.entity.UserCoupon;
 import com.company.user.mapper.market.UserCouponMapper;
@@ -58,7 +58,7 @@ public class UserCouponService extends ServiceImpl<UserCouponMapper, UserCoupon>
 		Map<String, Object> params = Maps.newHashMap();
 		params.put("userCouponId", userCoupon.getId());
 		params.put("userId", userId);
-		messageSender.sendFanoutMessage(params, FanoutConstants.SEND_COUPON.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.SEND_COUPON.EXCHANGE);
 	}
 
 	public Integer updateStatus(Integer id, String oldStatus, String newStatus) {

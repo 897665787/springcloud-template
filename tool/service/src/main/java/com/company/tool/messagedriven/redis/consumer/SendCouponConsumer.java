@@ -1,6 +1,6 @@
 package com.company.tool.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class SendCouponConsumer {
 
     @Bean
     public Object registerCouponReceiveConsumer(RedisMessageListenerContainer container, MessageListener couponReceiveMessageListener) {
-        String channel = FanoutConstants.SEND_COUPON.EXCHANGE;
+        String channel = BroadcastConstants.SEND_COUPON.EXCHANGE;
         container.addMessageListener(couponReceiveMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -65,7 +65,7 @@ public class SendCouponConsumer {
 
     @Bean
     public Object registerCouponTouseConsumer(RedisMessageListenerContainer container, MessageListener couponTouseMessageListener) {
-        String channel = FanoutConstants.SEND_COUPON.EXCHANGE;
+        String channel = BroadcastConstants.SEND_COUPON.EXCHANGE;
         container.addMessageListener(couponTouseMessageListener, new ChannelTopic(channel));
         return new Object();
     }
@@ -89,7 +89,7 @@ public class SendCouponConsumer {
 
     @Bean
     public Object registerCouponExpireConsumer(RedisMessageListenerContainer container, MessageListener couponExpireMessageListener) {
-        String channel = FanoutConstants.SEND_COUPON.EXCHANGE;
+        String channel = BroadcastConstants.SEND_COUPON.EXCHANGE;
         container.addMessageListener(couponExpireMessageListener, new ChannelTopic(channel));
         return new Object();
     }

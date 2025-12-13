@@ -25,7 +25,7 @@ import com.company.common.api.Result;
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.response.SysUserPasswordResp;
@@ -53,7 +53,7 @@ public class AccountController {
 	private VerifyCodeFeign verifyCodeFeign;
 	@Autowired
 	private MessageSender messageSender;
-	
+
 	@Value("${token.name}")
 	private String headerToken;
 
@@ -84,7 +84,7 @@ public class AccountController {
 		if (!sysUserPasswordResp.getCanUse()) {
 			return Result.fail(sysUserPasswordResp.getPasswordTips());
 		}
-		
+
 		if (!md5Password.equals(sysUserPasswordResp.getPassword())) {
 			return Result.fail("密码错误");
 		}
@@ -102,7 +102,7 @@ public class AccountController {
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
 			tokenValue = tokenPrefix + " " + tokenValue;
 		}
-		
+
 		publishLoginEvent(sysUserId, device, account);
 
 		LoginResp resp = new LoginResp();
@@ -119,9 +119,9 @@ public class AccountController {
 		params.put("account", account);
 		params.put("loginTime", LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
-		messageSender.sendFanoutMessage(params, FanoutConstants.SYS_USER_LOGIN.EXCHANGE);
+		messageSender.sendBroadcastMessage(params, BroadcastConstants.SYS_USER_LOGIN.EXCHANGE);
 	}
-	
+
 	@RequireLogin
 	@PostMapping(value = "/logout")
 	public Result<String> logout(HttpServletRequest request) {

@@ -7,7 +7,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import com.company.gateway.gracefulshutdown.messagedriven.strategy.StrategyConstants;
-import com.company.gateway.messagedriven.constants.FanoutConstants;
+import com.company.gateway.messagedriven.constants.BroadcastConstants;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.messagedriven.springevent.event.MessageEvent;
 import com.company.gateway.messagedriven.springevent.utils.ConsumerUtils;
@@ -20,7 +20,7 @@ public class RefreshListener {
 	public void refresh(MessageEvent event) {
 		String jsonStrMsg = event.getJsonStrMsg();
 		String exchange = event.getExchange();
-		if (!FanoutConstants.DEPLOY.EXCHANGE.equals(exchange)) {
+		if (!BroadcastConstants.DEPLOY.EXCHANGE.equals(exchange)) {
 			return;
 		}
 		Map<String, Object> headers = event.getHeaders();

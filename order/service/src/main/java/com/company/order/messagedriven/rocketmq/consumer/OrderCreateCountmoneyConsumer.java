@@ -1,6 +1,6 @@
 package com.company.order.messagedriven.rocketmq.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.framework.messagedriven.rocketmq.utils.ConsumerUtils;
@@ -17,8 +17,8 @@ import java.util.Map;
 
 @Component
 @RocketMQMessageListener(
-        topic = FanoutConstants.ORDER_CREATE.EXCHANGE,
-        consumerGroup = FanoutConstants.ORDER_CREATE.COUNTMONEY_QUEUE
+        topic = BroadcastConstants.ORDER_CREATE.EXCHANGE,
+        consumerGroup = BroadcastConstants.ORDER_CREATE.COUNTMONEY_QUEUE
 )
 @Slf4j
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)

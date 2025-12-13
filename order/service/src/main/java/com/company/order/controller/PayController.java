@@ -1,45 +1,19 @@
 package com.company.order.controller;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.framework.lock.annotation.Lock;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.company.common.api.Result;
-import com.company.framework.util.JsonUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.lock.LockClient;
+import com.company.framework.lock.annotation.Lock;
 import com.company.framework.messagedriven.MessageSender;
+import com.company.framework.messagedriven.properties.MessagedrivenProperties;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.enums.OrderPayRefundEnum;
 import com.company.order.api.feign.PayFeign;
-import com.company.order.api.request.PayCloseReq;
-import com.company.order.api.request.PayNotifyReq;
-import com.company.order.api.request.PayRefundReq;
-import com.company.order.api.request.PayReq;
-import com.company.order.api.request.PayResultReq;
-import com.company.order.api.request.PayTimeoutReq;
-import com.company.order.api.request.RefundReq;
-import com.company.order.api.request.RefundResultReq;
-import com.company.order.api.request.ToPayReq;
-import com.company.order.api.response.PayCloseResp;
-import com.company.order.api.response.PayOrderQueryResp;
-import com.company.order.api.response.PayRefundQueryResp;
-import com.company.order.api.response.PayRefundResp;
-import com.company.order.api.response.PayResp;
+import com.company.order.api.request.*;
+import com.company.order.api.response.*;
 import com.company.order.entity.OrderPay;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.messagedriven.Constants;
@@ -52,9 +26,21 @@ import com.company.order.service.OrderPayService;
 import com.company.tool.api.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.google.common.collect.Maps;
-
-import cn.hutool.core.date.LocalDateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 收银台
@@ -69,6 +55,9 @@ public class PayController implements PayFeign {
 
 	@Autowired
 	private MessageSender messageSender;
+
+	@Autowired
+	private MessagedrivenProperties messagedrivenProperties;
 
 	@Autowired
 	private OrderPayRefundService orderPayRefundService;
@@ -302,7 +291,7 @@ public class PayController implements PayFeign {
 		params.put("merchantNo", payOrderQuery.getMerchantNo());
 		params.put("tradeNo", payOrderQuery.getTradeNo());
 
-		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
+		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
 
 		return Result.success(null, "支付成功");
@@ -345,8 +334,8 @@ public class PayController implements PayFeign {
 			delay = (int) LocalDateTimeUtil.between(now, minPayCloseTime, ChronoUnit.SECONDS);
 		}
 
-		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, Constants.EXCHANGE.XDELAYED,
-				Constants.QUEUE.XDELAYED.KEY, delay);
+		messageSender.sendDelayMessage(StrategyConstants.PAY_CLOSE_STRATEGY, params, messagedrivenProperties.getExchange().getXdelayed(),
+				messagedrivenProperties.getQueue().getXdelayed().getKey(), delay);
 
 		return Result.success();
 	}
@@ -554,8 +543,8 @@ public class PayController implements PayFeign {
 		params.put("merchantNo", payRefundQuery.getMerchantNo());
 		params.put("tradeNo", payRefundQuery.getTradeNo());
 
-		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, Constants.EXCHANGE.DIRECT,
-				Constants.QUEUE.COMMON.KEY);
+		messageSender.sendNormalMessage(StrategyConstants.REFUND_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
+				messagedrivenProperties.getQueue().getCommon().getKey());
 
 		return Result.success(null, "退款成功");
 	}

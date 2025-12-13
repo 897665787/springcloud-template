@@ -1,6 +1,6 @@
 package com.company.user.messagedriven.redis.consumer;
 
-import com.company.framework.messagedriven.constants.FanoutConstants;
+import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.messagedriven.redis.utils.ConsumerUtils;
@@ -41,7 +41,7 @@ public class DeviceInfoConsumer {
 
     @Bean
     public Object registerDeviceInfoConsumer(RedisMessageListenerContainer container, MessageListener deviceInfoMessageListener) {
-        String channel = FanoutConstants.DEVICE_INFO.EXCHANGE;
+        String channel = BroadcastConstants.DEVICE_INFO.EXCHANGE;
         container.addMessageListener(deviceInfoMessageListener, new ChannelTopic(channel));
         return new Object();
     }
