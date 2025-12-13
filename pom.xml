@@ -15,6 +15,12 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
 
+        <!-- 统一管理boot-starter jar版本 -->
+        <boot-starter-common.version>1.0.0${version.suffix}</boot-starter-common.version>
+        <boot-starter-datasource.version>1.0.0${version.suffix}</boot-starter-datasource.version>
+        <boot-starter-token.version>1.0.0${version.suffix}</boot-starter-token.version>
+        <boot-starter-encryptbody.version>1.0.0${version.suffix}</boot-starter-encryptbody.version>
+
         <!-- 统一管理api jar版本 -->
         <tool-api.version>1.0.0${version.suffix}</tool-api.version>
         <user-api.version>1.0.0${version.suffix}</user-api.version>
@@ -42,6 +48,8 @@
 		<module>gateway</module>
 		<module>config</module><!-- 替代组件：nacos、apollo -->
 		<module>monitor</module>
+		<!-- starter组件 -->
+        <module>boot-starter</module>
 		<!-- 内部微服务 -->
 		<module>common</module><!-- 公共代码 -->
 		<module>framework</module><!-- 框架代码 -->
@@ -122,6 +130,36 @@
 	                </execution>
 	            </executions>
 	        </plugin>
+            <!--构建过程中，将占位符替换为实际值-->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.7.0</version>
+                <configuration>
+                    <!-- 是否将生成的扁平化POM设置为项目文件 -->
+                    <updatePomFile>true</updatePomFile>
+                    <!-- 扁平化模式，常用的是处理占位符 -->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <!-- 绑定到process-resources阶段，自动执行flatten目标 -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- 清理生成的文件 -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 	</build>
 

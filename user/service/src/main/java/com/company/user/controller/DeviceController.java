@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @RestController
-@RequestMapping("/userinfo")
+@RequestMapping("/device")
 public class DeviceController implements DeviceFeign {
 
     @Autowired
@@ -32,6 +32,9 @@ public class DeviceController implements DeviceFeign {
         }
 
         DeviceInfo deviceInfo = deviceInfoMapper.selectByDeviceid(deviceid);
+        if (deviceInfo == null) {
+            return Result.success(false);
+        }
         long seconds = LocalDateTimeUtil.between(deviceInfo.getTime(), LocalDateTime.now(), ChronoUnit.SECONDS);
         if (seconds > onlineSeconds) {
             return Result.success(false);

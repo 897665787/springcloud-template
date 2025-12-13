@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.company</groupId>
+		<artifactId>boot-starter</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+    <version>${boot-starter-encryptbody.version}</version>
+	<artifactId>boot-starter-encryptbody</artifactId>
+	<packaging>jar</packaging>
+
+	<description>encryptbody starter代码</description>
+
+	<dependencies>
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>template-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- 请求参数解密、响应值加密，源码：https://gitee.com/licoy/encrypt-body-spring-boot-starter -->
+        <dependency>
+            <groupId>cn.licoy</groupId>
+            <artifactId>encrypt-body-spring-boot-starter</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+	</dependencies>
+</project>

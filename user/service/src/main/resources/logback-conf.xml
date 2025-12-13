@@ -3,26 +3,6 @@
 	<!--引用框架日志 -->
 	<include resource="logback-conf-framework.xml" />
 
-	<!-- 自定义日志打印，比如调整orm查询数据库的日志级别 -->
-    <!-- com.baomidou.mybatisplus.plugins.PerformanceInterceptor会打印sql，所以这里注释掉
-	<logger name="com.company.user.mapper" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-		<appender-ref ref="ERROR_FILE" />
-	</logger>
-	 -->
-	
-	<!-- 打印SQL性能分析拦截器日志 -->
-	<logger name="com.company.user.database.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-		<appender-ref ref="ERROR_FILE" />
-	</logger>
-	
-	<!-- 打印动态数据源切换日志 -->
-	<logger name="com.baomidou.dynamic.datasource" level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-		<appender-ref ref="ERROR_FILE" />
-	</logger>
+    <!--引用数据源日志 -->
+    <include resource="logback-conf-datasource.xml" />
 </configuration>

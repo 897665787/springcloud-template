@@ -1,7 +1,7 @@
 package com.company.app.filter;
 
-import com.company.app.token.TokenService;
-import com.company.app.util.TokenValueUtil;
+import com.company.token.TokenService;
+import com.company.token.util.TokenValueUtil;
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;

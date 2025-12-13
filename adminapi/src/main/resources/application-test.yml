@@ -8,8 +8,3 @@ template:
     permission: true
   mock:
     time: true
-
-# Token 配置
-token:
-  # 密钥
-  secret: ff6204jknz
