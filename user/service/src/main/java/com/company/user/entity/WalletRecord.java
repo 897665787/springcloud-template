@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName("bu_wallet_record")
+@TableName("wallet_record")
 public class WalletRecord {
 	/**
 	 * ID
@@ -24,7 +24,7 @@ public class WalletRecord {
 	 */
 	private String uniqueCode;
 	/**
-	 * bu_wallet.id
+	 * wallet.id
 	 */
 	private Integer walletId;
 	/**

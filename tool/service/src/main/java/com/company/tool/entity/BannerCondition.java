@@ -9,17 +9,17 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_banner_condition")
+@TableName("banner_condition")
 public class BannerCondition {
 	private Integer id;
 
 	/**
-	 * mk_banner.id
+	 * banner.id
 	 */
 	private Integer bannerId;
 
 	/**
-	 * 展示条件(bean名称,mk_banner_show_condition.bean_name)
+	 * 展示条件(bean名称,banner_show_condition.bean_name)
 	 */
 	private String showCondition;
 	/**

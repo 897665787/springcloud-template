@@ -9,17 +9,17 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_coupon_grant")
+@TableName("coupon_grant")
 public class CouponGrant {
 	private Integer id;
 
 	/**
-	 * mk_coupon_template.id
+	 * coupon_template.id
 	 */
 	private Integer couponTemplateId;
 
 	/**
-	 * mk_coupon_template.name
+	 * coupon_template.name
 	 */
 	private String name;
 

@@ -8,7 +8,7 @@ import com.company.order.entity.AliActivityNotify;
 
 public interface AliActivityNotifyMapper extends BaseMapper<AliActivityNotify> {
 
-	@Update("update bu_ali_activity_notify set remark = #{remark} where id = #{id}")
+	@Update("update ali_activity_notify set remark = #{remark} where id = #{id}")
 	int updateRemarkById(@Param("remark") String remark, @Param("id") Integer id);
 
 }

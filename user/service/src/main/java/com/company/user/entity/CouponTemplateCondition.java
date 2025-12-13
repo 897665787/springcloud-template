@@ -9,17 +9,17 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_coupon_template_condition")
+@TableName("coupon_template_condition")
 public class CouponTemplateCondition {
 	private Integer id;
 
 	/**
-	 * mk_coupon_template.id
+	 * coupon_template.id
 	 */
 	private Integer couponTemplateId;
 
 	/**
-	 * 使用条件(bean名称,mk_coupon_use_condition.bean_name)
+	 * 使用条件(bean名称,coupon_use_condition.bean_name)
 	 */
 	private String useCondition;
 	/**

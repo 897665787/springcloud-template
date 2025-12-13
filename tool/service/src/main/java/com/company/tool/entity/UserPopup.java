@@ -9,12 +9,12 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_user_popup")
+@TableName("user_popup")
 public class UserPopup {
 	private Integer id;
 
 	/**
-	 * bu_user_info.id
+	 * user_info.id
 	 */
 	private Integer userId;
 

@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@TableName("bu_wx_pay")
+@TableName("wx_pay")
 @Data
 @Accessors(chain = true)
 public class WxPay {

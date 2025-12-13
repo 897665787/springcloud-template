@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_coupon_use_condition")
+@TableName("coupon_use_condition")
 public class CouponUseCondition {
 	private Integer id;
 

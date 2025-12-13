@@ -1,9 +1,9 @@
 
 -- ----------------------------
--- Table structure for bu_order_pay
+-- Table structure for order_pay
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_order_pay`;
-CREATE TABLE `bu_order_pay` (
+DROP TABLE IF EXISTS `order_pay`;
+CREATE TABLE `order_pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `order_code` varchar(32) NOT NULL COMMENT '订单编号',
   `business_type` varchar(16) NOT NULL COMMENT '业务类型(nomal:普通下单,kill:秒杀下单,member:购买会员)',
@@ -24,10 +24,10 @@ CREATE TABLE `bu_order_pay` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='订单支付表';
 
 -- ----------------------------
--- Table structure for bu_order_pay_refund
+-- Table structure for order_pay_refund
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_order_pay_refund`;
-CREATE TABLE `bu_order_pay_refund` (
+DROP TABLE IF EXISTS `order_pay_refund`;
+CREATE TABLE `order_pay_refund` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `refund_order_code` varchar(32) NOT NULL COMMENT '退款订单编号',
   `order_code` varchar(32) NOT NULL COMMENT '订单编号',
@@ -48,10 +48,10 @@ CREATE TABLE `bu_order_pay_refund` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='订单支付退款表';
 
 -- ----------------------------
--- Table structure for bu_pay_notify
+-- Table structure for pay_notify
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_pay_notify`;
-CREATE TABLE `bu_pay_notify` (
+DROP TABLE IF EXISTS `pay_notify`;
+CREATE TABLE `pay_notify` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `method` varchar(8) NOT NULL COMMENT '支付方式(ali:支付宝,wx:微信,ios:苹果,quick:云闪付)',
   `notify_data` varchar(2048) DEFAULT NULL COMMENT '通知数据',
@@ -63,10 +63,10 @@ CREATE TABLE `bu_pay_notify` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付通知表';
 
 -- ----------------------------
--- Table structure for bu_financial_flow
+-- Table structure for financial_flow
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_financial_flow`;
-CREATE TABLE `bu_financial_flow` (
+DROP TABLE IF EXISTS `financial_flow`;
+CREATE TABLE `financial_flow` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `order_code` varchar(32) NOT NULL COMMENT '订单编号',
   `trade_no` varchar(64) NOT NULL COMMENT '渠道订单号',
@@ -85,10 +85,10 @@ CREATE TABLE `bu_financial_flow` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='财务流水表';
 
 -- ----------------------------
--- Table structure for bu_pay_refund_apply
+-- Table structure for pay_refund_apply
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_pay_refund_apply`;
-CREATE TABLE `bu_pay_refund_apply` (
+DROP TABLE IF EXISTS `pay_refund_apply`;
+CREATE TABLE `pay_refund_apply` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `order_code` varchar(32) NOT NULL COMMENT '退款订单号',
   `old_order_code` varchar(32) NOT NULL COMMENT '原订单号',
@@ -108,10 +108,10 @@ CREATE TABLE `bu_pay_refund_apply` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='退款申请表';
 
 -- ----------------------------
--- Table structure for bu_inner_callback
+-- Table structure for inner_callback
 -- ----------------------------
-DROP TABLE IF EXISTS `bu_inner_callback`;
-CREATE TABLE `bu_inner_callback` (
+DROP TABLE IF EXISTS `inner_callback`;
+CREATE TABLE `inner_callback` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `url` varchar(128) NOT NULL COMMENT '回调地址',
   `json_params` varchar(2048) DEFAULT NULL COMMENT 'JSON参数',

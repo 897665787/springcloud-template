@@ -10,17 +10,17 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_user_coupon")
+@TableName("user_coupon")
 public class UserCoupon {
 	private Integer id;
 
 	/**
-	 * bu_user_info.id
+	 * user_info.id
 	 */
 	private Integer userId;
 
 	/**
-	 * mk_coupon_template.id
+	 * coupon_template.id
 	 */
 	private Integer couponTemplateId;
 

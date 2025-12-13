@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_coupon_template")
+@TableName("coupon_template")
 public class CouponTemplate {
 	private Integer id;
 

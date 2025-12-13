@@ -11,10 +11,10 @@ import com.company.user.entity.MemberBuyOrder;
 
 public interface MemberBuyOrderMapper extends BaseMapper<MemberBuyOrder> {
 
-	@Select("select * from bu_member_buy_order where order_code = #{orderCode}")
+	@Select("select * from member_buy_order where order_code = #{orderCode}")
 	MemberBuyOrder selectByOrderCode(@Param("orderCode") String orderCode);
 
-	@Update("update bu_member_buy_order set refund_service_amount = #{refundServiceAmount} where order_code = #{orderCode}")
+	@Update("update member_buy_order set refund_service_amount = #{refundServiceAmount} where order_code = #{orderCode}")
 	Integer updateRefundServiceAmountByOrderCode(@Param("refundServiceAmount") BigDecimal refundServiceAmount,
 			@Param("orderCode") String orderCode);
 }

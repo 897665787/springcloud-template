@@ -14,7 +14,7 @@ import lombok.Data;
  * 订单商品
  */
 @Data
-@TableName("bu_order_product")
+@TableName("order_product")
 public class OrderProduct {
 	/**
 	 * ID

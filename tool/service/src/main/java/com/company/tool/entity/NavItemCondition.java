@@ -9,17 +9,17 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_nav_item_condition")
+@TableName("nav_item_condition")
 public class NavItemCondition {
 	private Integer id;
 
 	/**
-	 * mk_navItem.id
+	 * navItem.id
 	 */
 	private Integer navItemId;
 
 	/**
-	 * 展示条件(bean名称,mk_nav_item_show_condition.bean_name)
+	 * 展示条件(bean名称,nav_item_show_condition.bean_name)
 	 */
 	private String showCondition;
 	/**

@@ -13,8 +13,8 @@ import com.company.tool.entity.UserPopup;
 public interface UserPopupMapper extends BaseMapper<UserPopup> {
 
 	@Select("select p.*"
-			+ " from mk_user_popup p"
-			+ " left join mk_popup_log pl on pl.business_id = p.id and pl.business_type = #{businessType.code}"
+			+ " from user_popup p"
+			+ " left join popup_log pl on pl.business_id = p.id and pl.business_type = #{businessType.code}"
 			+ " where"
 			+ " p.user_id = #{userId}"
 			+ " and p.begin_time < #{time} and p.end_time > #{time}"
@@ -26,6 +26,6 @@ public interface UserPopupMapper extends BaseMapper<UserPopup> {
 			@Param("businessType") PopupEnum.LogBusinessType businessType, @Param("status") PopupEnum.Status status,
 			@Param("time") LocalDateTime time);
 
-	@Select("select * from mk_user_popup where user_id = #{userId} and title = #{title}")
+	@Select("select * from user_popup where user_id = #{userId} and title = #{title}")
 	List<UserPopup> selectByUserIdTitle(@Param("userId") Integer userId, @Param("title") String title);
 }

@@ -12,7 +12,7 @@ import com.company.tool.entity.Banner;
 
 public interface BannerMapper extends BaseMapper<Banner> {
 
-	@Select("select * from mk_banner"
+	@Select("select * from banner"
 			+ " where"
 			+ " begin_time < #{time} and end_time > #{time}"
 			+ " and status = #{status.code}"

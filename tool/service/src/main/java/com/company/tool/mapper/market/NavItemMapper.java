@@ -12,7 +12,7 @@ import com.company.tool.entity.NavItem;
 
 public interface NavItemMapper extends BaseMapper<NavItem> {
 
-	@Select("select * from mk_nav_item"
+	@Select("select * from nav_item"
 			+ " where"
 			+ " begin_time < #{time} and end_time > #{time}"
 			+ " and status = #{status.code}"

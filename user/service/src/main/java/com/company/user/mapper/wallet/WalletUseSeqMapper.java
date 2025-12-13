@@ -12,23 +12,23 @@ import com.company.user.api.enums.WalletEnum;
 import com.company.user.entity.WalletUseSeq;
 
 public interface WalletUseSeqMapper extends BaseMapper<WalletUseSeq> {
-	@Select("select * from bu_wallet_use_seq where unique_code=#{uniqueCode} limit 1")
+	@Select("select * from wallet_use_seq where unique_code=#{uniqueCode} limit 1")
 	WalletUseSeq selectByUniqueCode(@Param("uniqueCode") String uniqueCode);
 
 	List<WalletUseSeq> selectLeftByUserIdTypeList(@Param("userId") Integer userId,
 			@Param("typeList") List<WalletEnum.Type> typeList);
 
-	@Update("update bu_wallet_use_seq set left_amount = left_amount - #{reduceAmount},remark = #{remark} where id = #{id} and left_amount >= #{reduceAmount}")
+	@Update("update wallet_use_seq set left_amount = left_amount - #{reduceAmount},remark = #{remark} where id = #{id} and left_amount >= #{reduceAmount}")
 	Integer decreaseLeftAmount(@Param("id") Integer id, @Param("reduceAmount") BigDecimal reduceAmount,
 			@Param("remark") String remark);
 
 	List<WalletUseSeq> selectUseByUserIdTypeList(@Param("userId") Integer userId,
 			@Param("typeList") List<WalletEnum.Type> typeList);
 	
-//	@Select("select * from bu_wallet_use_seq where order_code=#{orderCode} order by id desc")
+//	@Select("select * from wallet_use_seq where order_code=#{orderCode} order by id desc")
 //	List<WalletUseSeq> selectByOrderCode(@Param("orderCode") String orderCode);
 
-	@Update("update bu_wallet_use_seq set left_amount = left_amount + #{returnAmount},remark = #{remark} where id = #{id}")
+	@Update("update wallet_use_seq set left_amount = left_amount + #{returnAmount},remark = #{remark} where id = #{id}")
 	Integer returnLeftAmount(@Param("id") Integer id, @Param("returnAmount") BigDecimal returnAmount,
 			@Param("remark") String remark);
 }

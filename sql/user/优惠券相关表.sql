@@ -1,5 +1,5 @@
 -- 优惠券
-CREATE TABLE `mk_coupon_use_condition` (
+CREATE TABLE `coupon_use_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `bean_name` varchar(64) NOT NULL DEFAULT '' COMMENT 'bean名称(UseCondition的实现类)',
   `descrpition` varchar(255) DEFAULT NULL COMMENT '描述',
@@ -11,7 +11,7 @@ CREATE TABLE `mk_coupon_use_condition` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='营销-优惠券使用条件';
 
 
-CREATE TABLE `mk_coupon_template` (
+CREATE TABLE `coupon_template` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '优惠券名称',
   `max_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '最大优惠金额(元)',
@@ -31,10 +31,10 @@ CREATE TABLE `mk_coupon_template` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='优惠券模板';
 
 
-CREATE TABLE `mk_coupon_template_condition` (
+CREATE TABLE `coupon_template_condition` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `coupon_template_id` int(11) NOT NULL COMMENT 'mk_coupon_template.id',
-  `use_condition` varchar(32) NOT NULL DEFAULT '' COMMENT '使用条件(bean名称,mk_coupon_use_condition.bean_name)',
+  `coupon_template_id` int(11) NOT NULL COMMENT 'coupon_template.id',
+  `use_condition` varchar(32) NOT NULL DEFAULT '' COMMENT '使用条件(bean名称,coupon_use_condition.bean_name)',
   `use_condition_value` varchar(255) DEFAULT '' COMMENT '使用条件值',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -45,10 +45,10 @@ CREATE TABLE `mk_coupon_template_condition` (
 
 
 
-CREATE TABLE `mk_user_coupon` (
+CREATE TABLE `user_coupon` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `user_id` int(11) NOT NULL COMMENT 'bu_user_info.id',
-  `coupon_template_id` int(11) NOT NULL COMMENT 'mk_coupon_template.id',
+  `user_id` int(11) NOT NULL COMMENT 'user_info.id',
+  `coupon_template_id` int(11) NOT NULL COMMENT 'coupon_template.id',
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '优惠券名称',
   `max_amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '最大优惠金额',
   `discount` decimal(12,2) NOT NULL DEFAULT '1.00' COMMENT '折扣',
@@ -66,10 +66,10 @@ CREATE TABLE `mk_user_coupon` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='营销-用户优惠券';
 
 
-CREATE TABLE `mk_coupon_grant` (
+CREATE TABLE `coupon_grant` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `coupon_template_id` int(11) NOT NULL COMMENT 'mk_coupon_template.id',
-  `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'mk_coupon_template.name',
+  `coupon_template_id` int(11) NOT NULL COMMENT 'coupon_template.id',
+  `name` varchar(128) NOT NULL DEFAULT '' COMMENT 'coupon_template.name',
   `total_num` int(11) NOT NULL DEFAULT '0' COMMENT '发放量',
   `actual_num` int(11) NOT NULL DEFAULT '0' COMMENT '实际发放量',
   `grant_time` datetime NOT NULL COMMENT '发放时间',

@@ -9,17 +9,17 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_popup_condition")
+@TableName("popup_condition")
 public class PopupCondition {
 	private Integer id;
 
 	/**
-	 * mk_popup.id
+	 * popup.id
 	 */
 	private Integer popupId;
 
 	/**
-	 * 弹窗条件(bean名称,mk_pop_condition.bean_name)
+	 * 弹窗条件(bean名称,pop_condition.bean_name)
 	 */
 	private String popCondition;
 	/**

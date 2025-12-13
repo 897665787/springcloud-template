@@ -12,7 +12,7 @@ import com.company.tool.entity.Popup;
 
 public interface PopupMapper extends BaseMapper<Popup> {
 
-	@Select("select * from mk_popup"
+	@Select("select * from popup"
 			+ " where"
 			+ " begin_time < #{time} and end_time > #{time}"
 			+ " and status = #{status.code}"

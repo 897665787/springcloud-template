@@ -52,8 +52,8 @@ public interface PopupEnum {
 	
 	@AllArgsConstructor
 	enum LogBusinessType {
-		// 业务类型(popup:mk_popup,user_popup:mk_user_popup)
-		POPUP("popup", "mk_popup"), USER_POPUP("user_popup", "mk_user_popup");
+		// 业务类型(popup:popup,user_popup:user_popup)
+		POPUP("popup", "popup"), USER_POPUP("user_popup", "user_popup");
 		
 		@Getter
 		private String code;

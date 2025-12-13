@@ -11,10 +11,10 @@ import com.company.user.entity.RechargeOrder;
 
 public interface RechargeOrderMapper extends BaseMapper<RechargeOrder> {
 
-	@Select("select * from bu_recharge_order where order_code = #{orderCode}")
+	@Select("select * from recharge_order where order_code = #{orderCode}")
 	RechargeOrder selectByOrderCode(@Param("orderCode") String orderCode);
 
-	@Update("update bu_recharge_order set refund_service_amount = #{refundServiceAmount} where order_code = #{orderCode}")
+	@Update("update recharge_order set refund_service_amount = #{refundServiceAmount} where order_code = #{orderCode}")
 	Integer updateRefundServiceAmountByOrderCode(@Param("refundServiceAmount") BigDecimal refundServiceAmount,
 			@Param("orderCode") String orderCode);
 }

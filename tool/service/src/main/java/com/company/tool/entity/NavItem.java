@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@TableName("mk_nav_item")
+@TableName("nav_item")
 public class NavItem {
 	private Integer id;
 

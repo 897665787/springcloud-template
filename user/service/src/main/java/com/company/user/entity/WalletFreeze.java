@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-@TableName("bu_wallet_freeze")
+@TableName("wallet_freeze")
 public class WalletFreeze {
 	/**
 	 * ID
@@ -28,7 +28,7 @@ public class WalletFreeze {
 	 */
 	private String orderCode;
 	/**
-	 * bu_wallet.id
+	 * wallet.id
 	 */
 	private Integer walletId;
 	/**
