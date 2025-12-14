@@ -1,6 +1,8 @@
 package com.company.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,4 +24,13 @@ public class UserInfoService extends ServiceImpl<UserInfoMapper, UserInfo> imple
 		System.out.println("userInfo2:" + userInfo2);
 		return userInfo;
 	}
+
+    @Cacheable(value = "user:userinfo:", key = "#id")
+    public UserInfo getCacheById(Integer id) {
+        return this.getById(id);
+    }
+
+    @CacheEvict(value = "user:userinfo:", key = "#id")
+    public void clearCacheById(Integer id) {
+    }
 }

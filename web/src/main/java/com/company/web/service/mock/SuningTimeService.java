@@ -18,4 +18,9 @@ public class SuningTimeService implements TimeService {
 	public String getTime() {
 		return "mock data";
 	}
+
+	@Override
+	public String getCacheTime() {
+		return "mock data";
+	}
 }

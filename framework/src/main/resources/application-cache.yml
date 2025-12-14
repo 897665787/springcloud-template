@@ -1,0 +1,76 @@
+# 下面是环境区分，多个配置以 ‘---’ 分开
+---
+# dev环境配置
+spring:
+  config:
+    activate:
+      on-profile: dev
+  cache:
+    type: caffeine # 可选: redis, caffeine, simple, none（详见org.springframework.boot.autoconfigure.cache.CacheType），默认none
+    # redis配置
+    redis:
+      timeToLive: 10m         # 默认TTL，单位ms
+      cacheNullValues: true   # 是否缓存null值
+      useKeyPrefix: true      # 使用key前缀
+      keyPrefix:              # 全局key前缀
+      enableStatistics: false # 是否统计
+    # caffeine配置
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m  # Caffeine规范
+
+---
+# test环境配置
+spring:
+  config:
+    activate:
+      on-profile: test
+  cache:
+    type: redis # 可选: redis, caffeine, simple, none（详见org.springframework.boot.autoconfigure.cache.CacheType），默认none
+    # redis配置
+    redis:
+      timeToLive: 10m         # 默认TTL，单位ms
+      cacheNullValues: true   # 是否缓存null值
+      useKeyPrefix: true      # 使用key前缀
+      keyPrefix:              # 全局key前缀
+      enableStatistics: false # 是否统计
+    # caffeine配置
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m  # Caffeine规范
+
+---
+# pre环境配置
+spring:
+  config:
+    activate:
+      on-profile: pre
+  cache:
+    type: redis # 可选: redis, caffeine, simple, none（详见org.springframework.boot.autoconfigure.cache.CacheType），默认none
+    # redis配置
+    redis:
+      timeToLive: 10m         # 默认TTL，单位ms
+      cacheNullValues: true   # 是否缓存null值
+      useKeyPrefix: true      # 使用key前缀
+      keyPrefix:              # 全局key前缀
+      enableStatistics: false # 是否统计
+    # caffeine配置
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m  # Caffeine规范
+
+---
+# prod环境配置
+spring:
+  config:
+    activate:
+      on-profile: prod,prod-zone1,prod-zone2
+  cache:
+    type: redis # 可选: redis, caffeine, simple, none（详见org.springframework.boot.autoconfigure.cache.CacheType），默认none
+    # redis配置
+    redis:
+      timeToLive: 10m         # 默认TTL，单位ms
+      cacheNullValues: true   # 是否缓存null值
+      useKeyPrefix: true      # 使用key前缀
+      keyPrefix:              # 全局key前缀
+      enableStatistics: false # 是否统计
+    # caffeine配置
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m  # Caffeine规范

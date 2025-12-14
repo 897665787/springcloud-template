@@ -167,6 +167,25 @@
 		    <version>3.12.0</version><!-- 最新版是3.32.0，存在客户端与服务端不兼容问题，高版本会导致redisson初始化很慢 -->
 		</dependency>
 
+        <!-- 缓存 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+		<!-- redis中间件缓存 -->
+        <!-- 已有redis依赖
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        -->
+		<!-- caffeine本地缓存 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <!-- 缓存 -->
+
 		<!-- Canal -->
 		<dependency>
 			<groupId>top.javatool</groupId>
@@ -217,7 +236,13 @@
 			<artifactId>javers-core</artifactId>
 			<version>6.12.0</version>
 		</dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.12.0</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

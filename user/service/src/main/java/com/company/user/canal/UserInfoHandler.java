@@ -3,6 +3,7 @@ package com.company.user.canal;
 import com.company.framework.util.JsonUtil;
 import com.company.user.cache.UserInfoCache;
 import com.company.user.entity.UserInfo;
+import com.company.user.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,8 @@ public class UserInfoHandler implements EntryHandler<UserInfo> {
 
     @Autowired
     private UserInfoCache userInfoCache;
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Override
     public void delete(UserInfo t) {
@@ -33,5 +36,7 @@ public class UserInfoHandler implements EntryHandler<UserInfo> {
         log.info("更新操作，更新前: {},更新后: {}", JsonUtil.toJsonString(before), JsonUtil.toJsonString(after));
         userInfoCache.del(after.getId());
         userInfoCache.getById(after.getId());
+
+        userInfoService.clearCacheById(after.getId());
     }
 }
