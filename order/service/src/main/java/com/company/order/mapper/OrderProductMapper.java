@@ -22,6 +22,6 @@ public interface OrderProductMapper extends BaseMapper<OrderProduct> {
 	List<OrderProduct> selectByOrderCodeAndStoreId(@Param("orderCode") String orderCode,
 			@Param("storeId") String storeId);
 
-	@Select("select ifnull(sum(number), 0) from `lssq-takeout`.order_product where product_code = #{productCode} and create_time > #{beginTime}")
+	@Select("select ifnull(sum(number), 0) from order_product where product_code = #{productCode} and create_time > #{beginTime}")
 	Integer countByProductCode(@Param("productCode") String productCode, @Param("beginTime") Date beginTime);
 }
