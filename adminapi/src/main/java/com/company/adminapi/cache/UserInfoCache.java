@@ -1,10 +1,11 @@
 package com.company.adminapi.cache;
 
-import com.company.framework.util.JsonUtil;
 import com.company.framework.cache.ICache;
+import com.company.framework.util.JsonUtil;
 import com.company.user.api.feign.UserInfoFeign;
 import com.company.user.api.response.UserInfoResp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,4 +27,8 @@ public class UserInfoCache {
 		}, UserInfoResp.class);
 	}
 
+	@Cacheable(value = "adminapi:userinfo", key = "#id")
+	public UserInfoResp getById2(Integer id) {
+		return userInfoFeign.getById(id).dataOrThrow();
+	}
 }

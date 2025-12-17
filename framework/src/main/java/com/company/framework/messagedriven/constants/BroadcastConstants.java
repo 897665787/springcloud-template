@@ -2,6 +2,8 @@ package com.company.framework.messagedriven.constants;
 
 /**
  * 广播事件常量
+ * 为什么广播消息不配置到application-messagedriven.yml？
+ * 因为广播不是针对某个服务，而是针对所有服务，使用常量管理起来更加清晰
  */
 public interface BroadcastConstants {
 

@@ -3,6 +3,7 @@ package com.company.tool.canal;
 import com.company.framework.util.JsonUtil;
 import com.company.tool.cache.AppVersionCache;
 import com.company.tool.entity.AppVersion;
+import com.company.tool.service.AppVersionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,11 +17,14 @@ public class AppVersionHandler implements EntryHandler<AppVersion> {
 
     @Autowired
     private AppVersionCache appVersionCache;
+    @Autowired
+    private AppVersionService appVersionService;
 
     @Override
     public void delete(AppVersion t) {
         log.info("删除操作: {}", JsonUtil.toJsonString(t));
         appVersionCache.del(t.getAppCode());
+        appVersionService.delLastByAppCodeCache(t.getAppCode());
     }
 
     @Override
@@ -33,5 +37,8 @@ public class AppVersionHandler implements EntryHandler<AppVersion> {
         log.info("更新操作，更新前: {},更新后: {}", JsonUtil.toJsonString(before), JsonUtil.toJsonString(after));
         appVersionCache.del(after.getAppCode());
         appVersionCache.selectLastByAppCode(after.getAppCode());
+
+        appVersionService.delLastByAppCodeCache(after.getAppCode());
+        appVersionService.selectLastByAppCodeCache(after.getAppCode());
     }
 }
