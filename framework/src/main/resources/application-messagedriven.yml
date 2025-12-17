@@ -1,4 +1,4 @@
-# 消息驱动 配置
+# 消息驱动 配置（专用于服务自产自销，广播消息配置在BroadcastConstants）
 messagedriven:
   prefix: ${spring.application.name}
   exchange:
