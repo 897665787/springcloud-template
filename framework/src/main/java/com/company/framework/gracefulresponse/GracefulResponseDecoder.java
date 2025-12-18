@@ -1,61 +1,70 @@
 package com.company.framework.gracefulresponse;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-
+import com.company.common.util.JsonUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.feiniaojin.gracefulresponse.GracefulResponseException;
+import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import feign.FeignException;
+import feign.Response;
+import feign.Util;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomizer;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 
-import com.company.common.util.JsonUtil;
-import com.company.framework.gracefulresponse.exception.BusinessGRException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.feiniaojin.gracefulresponse.defaults.DefaultConstants;
-
-import feign.FeignException;
-import feign.Response;
-import feign.Util;
+import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class GracefulResponseDecoder extends SpringDecoder {
-	public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters) {
-		super(messageConverters);
-	}
 
-	public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters,
-                                   ObjectProvider<HttpMessageConverterCustomizer> customizers) {
-		super(messageConverters, customizers);
-	}
+    private GracefulResponseProperties gracefulResponseProperties;
 
-	@Override
-	public Object decode(final Response response, Type type) throws IOException, FeignException {
-		String typeName = type.getTypeName();
-		if (true) {
-			// 解析响应体并转换为 BaseResponse<T>
-			String json = Util.toString(response.body().asReader());
+    public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters, GracefulResponseProperties gracefulResponseProperties) {
+        super(messageConverters);
+        this.gracefulResponseProperties = gracefulResponseProperties;
+    }
 
-			JsonNode jsonNode = JsonUtil.toJsonNode(json);// 确保json格式正确
-			String code = jsonNode.get("code").asText();
-			if (!DefaultConstants.DEFAULT_SUCCESS_CODE.equals(code)) {
-				String msg = jsonNode.get("msg").asText();
-//				FeignException.errorStatus("", response);
-//				throw new FeignException(response.status(), msg);
-				throw new BusinessGRException(Integer.valueOf(code), msg);
-			}
+    public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters, ObjectProvider<HttpMessageConverterCustomizer> customizers, GracefulResponseProperties gracefulResponseProperties) {
+        super(messageConverters, customizers);
+        this.gracefulResponseProperties = gracefulResponseProperties;
+    }
 
-			JsonNode data = jsonNode.get("data");
+    @Override
+    public Object decode(final Response response, Type type) throws IOException, FeignException {
+        String responseBodyStr = Util.toString(response.body().asReader());
+        JsonNode responseJson = JsonUtil.toJsonNode(responseBodyStr);
+        if (responseJson == null) {
+            return super.decode(response, type);
+        }
+        // 是否包含code和msg字段或者是否包含code和data字段
+        if (!(responseJson.has("code") && (responseJson.has("msg") || responseJson.has("data")))) {
+            return super.decode(response, type);
+        }
 
-			String jsonString = JsonUtil.toJsonString(data);
-			try {
-				Class<?> aClass1 = Class.forName(typeName);
-				System.out.println("Class: " + aClass1.getName());
-				Object entity = JsonUtil.toEntity(jsonString, aClass1);
-				return entity;
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
-			}
-		}
-		return super.decode(response, type);
-	}
+        String code = responseJson.get("code").asText();
+        if (StringUtils.isBlank(code)) {
+            return super.decode(response, type);
+        }
+
+        // 是GracefulResponse包装
+        String defaultSuccessCode = gracefulResponseProperties.getDefaultSuccessCode();
+        if (!defaultSuccessCode.equals(code)) {
+            GracefulResponseExceptionContext.setException(new GracefulResponseException(code, responseJson.get("msg").asText()));
+            return null;
+        }
+        JsonNode dataNode = responseJson.get("data");
+        if (dataNode == null) {
+            return null;
+        }
+        String dataJsonStr = JsonUtil.toJsonString(dataNode);
+        try {
+            String typeName = type.getTypeName();
+            Class<?> clazz = Class.forName(typeName);
+            return JsonUtil.toEntity(dataJsonStr, clazz);
+        } catch (ClassNotFoundException e) {
+            return super.decode(response, type);
+        }
+    }
 }

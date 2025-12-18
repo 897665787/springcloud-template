@@ -18,7 +18,7 @@ eureka:
     # 1.放开配置eureka.instance.metadata-map.developer={userId}设置为登录用户ID
     # 2.bootstrap.yml设置spring.profiles.active=dev
   client:
-    enabled: false # 是否启用Eureka客户端，默认true
+    enabled: true # 是否启用Eureka客户端，默认true
     register-with-eureka: true # 注册到Eureka Server，默认true
     fetch-registry: true # 从Eureka Server获取注册信息，默认true
     service-url: # 设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用,分隔

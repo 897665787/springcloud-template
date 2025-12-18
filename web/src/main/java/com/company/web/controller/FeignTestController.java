@@ -27,7 +27,14 @@ public class FeignTestController {
 
     @GetMapping(value = "/getparam")
     public OrderDetailResp getparam(String orderCode) {
-        return feignTestFeign.getparam(orderCode);
+//        if (true) {
+//            return new OrderDetailResp();
+//        }
+//        if (true) {
+//            GracefulResponse.raiseException("2222", "1111111111111111");
+//        }
+        OrderDetailResp getparam = feignTestFeign.getparam(orderCode);
+        return getparam;
     }
 
     @GetMapping(value = "/postbody")

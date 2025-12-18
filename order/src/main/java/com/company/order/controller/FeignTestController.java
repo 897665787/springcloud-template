@@ -1,17 +1,15 @@
 package com.company.order.controller;
 
-import java.math.BigDecimal;
-
-import com.company.common.exception.BusinessException;
-import com.company.framework.gracefulresponse.exception.BusinessGRException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
-
+import com.feiniaojin.gracefulresponse.GracefulResponse;
+import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 @RestController
 @Slf4j
@@ -29,9 +27,11 @@ public class FeignTestController implements FeignTestFeign {
 	}
 
 	@Override
+//	@ExcludeFromGracefulResponse
 	public OrderDetailResp getparam(String orderCode) {
 		if (true) {
-			throw new BusinessGRException("aaaaaaaaaaaaaaaaaaaaa");
+			GracefulResponse.raiseException("333", "aaaaaaaaaaaaaaaaaaaaa");
+//			return null;
 		}
 		OrderDetailResp resp = new OrderDetailResp();
 		resp.setOrderCode(orderCode);

@@ -36,5 +36,5 @@ encrypt:
     des-key: 1468657f04e24e4d8c43f1b8b4032984 #DES加解密秘钥
 
 # graceful-response
-graceful-response:
-  print-exception-in-global-advice: true
+#graceful-response:
+#  print-exception-in-global-advice: true
