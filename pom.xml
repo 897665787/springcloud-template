@@ -66,6 +66,7 @@
 		<module>adminapi</module><!-- 管理后台，前后端分离，与admin二选一 -->
 		<module>openapi</module>
 		<module>job</module><!-- 流量来自xxl-job-admin -->
+		<module>code-generate</module><!-- 代码生成模块 -->
 	</modules>
 
 	<dependencyManagement>
