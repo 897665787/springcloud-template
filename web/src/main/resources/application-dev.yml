@@ -21,3 +21,7 @@ knife4j:
 developer:
   enabled: true
   headers: x-deviceid,x-current-user-id
+
+# graceful-response 配置
+graceful-response:
+  print-exception-in-global-advice: false

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/feignTest")
 @Slf4j
@@ -26,26 +28,50 @@ public class FeignTestController {
     private RestTemplate restTemplate;
 
     @GetMapping(value = "/getnoparam")
-    public Result<com.company.web.resp.OrderDetailResp> getnoparam() {
-		OrderDetailResp orderDetailResp = feignTestFeign.getnoparam().dataOrThrow();
+    public com.company.web.resp.OrderDetailResp getnoparam() {
+		OrderDetailResp orderDetailResp = feignTestFeign.getnoparam();
 		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
-		return Result.success(resp);
+		return resp;
     }
 
-    @GetMapping(value = "/getparam")
-    public Result<com.company.web.resp.OrderDetailResp> getparam(String orderCode) {
-        Result result = restTemplate.getForObject("http://template-order/feignTest/getparam?orderCode=" + orderCode, Result.class);
+    @GetMapping(value = "/getnoparam2")
+    public com.company.web.resp.OrderDetailResp getnoparam2() {
+        com.company.web.resp.OrderDetailResp resp = restTemplate.getForObject("http://template-order/feignTest/getnoparam", com.company.web.resp.OrderDetailResp.class);
+        return resp;
+    }
+
+    @GetMapping(value = "/getnoparamList")
+    public List<com.company.web.resp.OrderDetailResp>  getnoparamList() {
+        List<OrderDetailResp> orderDetailRespList = feignTestFeign.getnoparamList();
+        List<com.company.web.resp.OrderDetailResp> respList = PropertyUtils.copyArrayProperties(orderDetailRespList, com.company.web.resp.OrderDetailResp.class);
+        return respList;
+    }
+
+    @GetMapping(value = "/getnoparamList2")
+    public List<com.company.web.resp.OrderDetailResp> getnoparamList2() {
+        List<com.company.web.resp.OrderDetailResp> result = restTemplate.getForObject("http://template-order/feignTest/getnoparamList", List.class);
         log.info("result:{}", JsonUtil.toJsonString(result));
         return result;
 
-//		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode).dataOrThrow();
+//		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode);
 //		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
-//		return Result.success(resp);
+//		return resp;
+    }
+
+    @GetMapping(value = "/getparam")
+    public com.company.web.resp.OrderDetailResp getparam(String orderCode) {
+        com.company.web.resp.OrderDetailResp result = restTemplate.getForObject("http://template-order/feignTest/getparam?orderCode=" + orderCode, com.company.web.resp.OrderDetailResp.class);
+        log.info("result:{}", JsonUtil.toJsonString(result));
+        return result;
+
+//		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode);
+//		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
+//		return resp;
     }
 
     @GetMapping(value = "/postbody")
-    public Result<com.company.web.resp.OrderDetailResp> postbody(@RequestBody RegisterOrderReq registerOrderReq) {
-        Result result = restTemplate.postForObject("http://template-order/feignTest/postbody",registerOrderReq, Result.class);
+    public com.company.web.resp.OrderDetailResp postbody(@RequestBody RegisterOrderReq registerOrderReq) {
+        com.company.web.resp.OrderDetailResp result = restTemplate.postForObject("http://template-order/feignTest/postbody",registerOrderReq, com.company.web.resp.OrderDetailResp.class);
         log.info("result:{}", JsonUtil.toJsonString(result));
         return result;
 

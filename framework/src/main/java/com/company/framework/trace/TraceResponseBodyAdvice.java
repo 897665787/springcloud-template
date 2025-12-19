@@ -20,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * 响应数据增加traceId
  */
-@Order(1000)
+@Order(2000)
 @ControllerAdvice
 @Slf4j
 @RestControllerAdvice(basePackages = {CommonConstants.BASE_PACKAGE}) // 注意哦，这里要加上需要扫描的包
