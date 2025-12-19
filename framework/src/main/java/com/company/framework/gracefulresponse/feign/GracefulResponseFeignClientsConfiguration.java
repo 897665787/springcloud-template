@@ -1,5 +1,7 @@
 package com.company.framework.gracefulresponse.feign;
 
+import com.company.framework.gracefulresponse.converter.GracefulResponseHttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feiniaojin.gracefulresponse.EnableGracefulResponse;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import feign.codec.Decoder;
@@ -12,6 +14,7 @@ import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomize
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 /**
  * 参考FeignClientsConfiguration
@@ -28,4 +31,10 @@ public class GracefulResponseFeignClientsConfiguration {
     public Decoder feignDecoder(ObjectFactory<HttpMessageConverters> messageConverters, ObjectProvider<HttpMessageConverterCustomizer> customizers, GracefulResponseProperties gracefulResponseProperties) {
         return new OptionalDecoder(new ResponseEntityDecoder(new GracefulResponseDecoder(messageConverters, customizers, gracefulResponseProperties)));
     }
+
+//    @Bean
+//    GracefulResponseHttpMessageConverter gracefulResponseHttpMessageConverter() {
+//        GracefulResponseHttpMessageConverter converter = new GracefulResponseHttpMessageConverter();
+//        return converter;
+//    }
 }
