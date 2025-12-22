@@ -1,10 +1,12 @@
 package com.company.order.controller;
 
 import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.gracefulresponse.feign.GracefulResponseFeignExceptionAspect;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
+import com.feiniaojin.gracefulresponse.GracefulResponse;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +20,17 @@ import java.util.List;
 @RequestMapping("/feignTest")
 public class FeignTestController implements FeignTestFeign {
 
+	private final GracefulResponseFeignExceptionAspect gracefulResponseFeignExceptionAspect;
+
+	public FeignTestController(GracefulResponseFeignExceptionAspect gracefulResponseFeignExceptionAspect) {
+		this.gracefulResponseFeignExceptionAspect = gracefulResponseFeignExceptionAspect;
+	}
+
 	@Override
 	public OrderDetailResp getnoparam() {
+		if (true) {
+			GracefulResponse.raiseException("500", "测试feign异常");
+		}
 		OrderDetailResp resp = new OrderDetailResp();
 		resp.setOrderCode("123456");
 		resp.setOrderType("normal");

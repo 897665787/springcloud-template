@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.feiniaojin.gracefulresponse.GracefulResponse;
+import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -47,27 +49,27 @@ public class GracefulResponseHttpMessageConverter2 extends MappingJackson2HttpMe
     }
 
     @Override
+    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException {
+        JavaType javaType = getJavaType(type, contextClass);
+        // return readJavaType(javaType, inputMessage);
+        try {
+            return gracefulResponseValue(inputMessage, javaType);
+        } catch (IOException ignored) {
+        }
+        return super.read(type, contextClass, inputMessage);
+    }
+
+    @Override
     protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage)
         throws IOException, HttpMessageNotReadableException {
         JavaType javaType = getJavaType(clazz, null);
         // return readJavaType(javaType, inputMessage);
         try {
             return gracefulResponseValue(inputMessage, javaType);
-        } catch (Exception ignored) {
+        } catch (IOException ignored) {
         }
         return super.readInternal(clazz, inputMessage);
-    }
-
-    @Override
-    public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage)
-        throws IOException, HttpMessageNotReadableException {
-        JavaType javaType = getJavaType(type, contextClass);
-        // return readJavaType(javaType, inputMessage);
-        try {
-            return gracefulResponseValue(inputMessage, javaType);
-        } catch (Exception ignored) {
-        }
-        return super.read(type, contextClass, inputMessage);
     }
 
     private Object gracefulResponseValue(HttpInputMessage inputMessage, JavaType javaType) throws IOException {
@@ -75,36 +77,37 @@ public class GracefulResponseHttpMessageConverter2 extends MappingJackson2HttpMe
         InputStream inputStream = inputMessage.getBody();
         JsonNode responseJson = objectMapper.readTree(inputStream);
         if (responseJson == null) {
-            throw new RuntimeException("responseJson is null");
+            throw new IOException("responseJson is null");
         }
-
+        Pair<Boolean, Object> pair = null;
+        Boolean key = pair.getKey();
+        Object value = pair.getValue();
         Response response = newEmptyInstance(responseJson, objectMapper, inputStream);
         if (response == null) {
-            throw new RuntimeException("response is null");
+            throw new IOException("response is null");
         }
         ResponseStatus status = response.getStatus();
         if (status == null) {
-            throw new RuntimeException("status is null");
+            throw new IOException("status is null");
         }
 
         // 是否包含code字段
         String code = status.getCode();
         if (!StringUtils.hasText(code)) {
-            throw new RuntimeException("code is null");
+            throw new IOException("code is null");
         }
 
         // 是否包含msg字段或者data字段
         String msg = status.getMsg();
         Object data = response.getPayload();
         if (!StringUtils.hasText(msg) || data == null) {
-            throw new RuntimeException("msg or data is null");
+            throw new IOException("msg or data is null");
         }
 
         // 是GracefulResponse包装
         String defaultSuccessCode = gracefulResponseProperties.getDefaultSuccessCode();
         if (!defaultSuccessCode.equals(code)) {
-            // 这里如果抛异常，就会被feign拦截掉。所以将异常设置到上下文，后续使用GracefulResponseFeignExceptionAspect切面处理异常抛出
-            GracefulResponseExceptionContext.setException(new GracefulResponseException(code, responseJson.get("msg").asText()));
+            GracefulResponse.raiseException(code, msg);
             return null;
         }
         return objectMapper.readValue(objectMapper.writeValueAsString(data), javaType);
