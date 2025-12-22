@@ -68,71 +68,71 @@ public class GracefulResponseHttpMessageConverter extends AbstractGenericHttpMes
         return readJsonObject(clazz, inputMessage);
     }
 
+//    private Object readJsonObject(Class<?> clazz, HttpInputMessage inputMessage) throws IOException {
+//        InputStream inputStream = inputMessage.getBody();
+//        String responseBodyStr = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+//
+//        Response response = null;
+//        String responseClassFullName = gracefulResponseProperties.getResponseClassFullName();
+//        if (StringUtils.isNotBlank(responseClassFullName)) {
+//            Class<?> cresponseClass = null;
+//            try {
+//                cresponseClass = Class.forName(responseClassFullName);
+//            } catch (ClassNotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
+//            response = (Response) JsonUtil.toEntity(responseBodyStr, cresponseClass);
+//        } else {
+//            Integer responseStyle = gracefulResponseProperties.getResponseStyle();
+//            if (responseStyle == null || responseStyle == 0) {
+//                response = JsonUtil.toEntity(responseBodyStr, DefaultResponseImplStyle0.class);
+//            } else {
+//                response = JsonUtil.toEntity(responseBodyStr, DefaultResponseImplStyle1.class);
+//            }
+//        }
+//        if (response == null) {
+//            return null;
+//        }
+//        ResponseStatus status = response.getStatus();
+//        if (status == null) {
+//            return null;
+//        }
+//        String code = status.getCode();
+//        String msg = status.getMsg();
+//        Object data = response.getPayload();
+//
+//        // 是否包含code和msg字段或者是否包含code和data字段
+//        if (!(StringUtils.isNotBlank(code) && (StringUtils.isNotBlank(msg) || data != null))) {
+//            return toClassObject(responseJson, clazz);
+//        }
+//        if (StringUtils.isBlank(code)) {
+//            return toClassObject(responseJson, clazz);
+//        }
+//
+//        // 是GracefulResponse包装
+//        String defaultSuccessCode = gracefulResponseProperties.getDefaultSuccessCode();
+//        if (!defaultSuccessCode.equals(code)) {
+//            // 这里如果抛异常，就会被feign拦截掉。所以将异常设置到上下文，后续使用GracefulResponseFeignExceptionAspect切面处理异常抛出
+//            GracefulResponseExceptionContext.setException(new GracefulResponseException(code, responseJson.get("msg").asText()));
+//            return toClassObject(responseJson, clazz);
+//        }
+//        if (data == null) {
+//            return toClassObject(responseJson, clazz);
+//        }
+//        return toClassObject(dataNode, clazz);
+//    }
+//
+//    private Object toClassObject2(String bodyStr, Class<?> clazz) {
+//        if (dataNode.isObject()) {
+//            return JsonUtil.toEntity(bodyStr, clazz);
+//        }
+//        if (dataNode.isArray()) {
+//            return JsonUtil.toList(bodyStr, clazz);
+//        }
+//        return null;
+//    }
+
     private Object readJsonObject(Class<?> clazz, HttpInputMessage inputMessage) throws IOException {
-        InputStream inputStream = inputMessage.getBody();
-        String responseBodyStr = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-
-        Response response = null;
-        String responseClassFullName = gracefulResponseProperties.getResponseClassFullName();
-        if (StringUtils.isNotBlank(responseClassFullName)) {
-            Class<?> cresponseClass = null;
-            try {
-                cresponseClass = Class.forName(responseClassFullName);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-            response = (Response) JsonUtil.toEntity(responseBodyStr, cresponseClass);
-        } else {
-            Integer responseStyle = gracefulResponseProperties.getResponseStyle();
-            if (responseStyle == null || responseStyle == 0) {
-                response = JsonUtil.toEntity(responseBodyStr, DefaultResponseImplStyle0.class);
-            } else {
-                response = JsonUtil.toEntity(responseBodyStr, DefaultResponseImplStyle1.class);
-            }
-        }
-        if (response == null) {
-            return null;
-        }
-        ResponseStatus status = response.getStatus();
-        if (status == null) {
-            return null;
-        }
-        String code = status.getCode();
-        String msg = status.getMsg();
-        Object data = response.getPayload();
-
-        // 是否包含code和msg字段或者是否包含code和data字段
-        if (!(StringUtils.isNotBlank(code) && (StringUtils.isNotBlank(msg) || data != null))) {
-            return toClassObject(responseJson, clazz);
-        }
-        if (StringUtils.isBlank(code)) {
-            return toClassObject(responseJson, clazz);
-        }
-
-        // 是GracefulResponse包装
-        String defaultSuccessCode = gracefulResponseProperties.getDefaultSuccessCode();
-        if (!defaultSuccessCode.equals(code)) {
-            // 这里如果抛异常，就会被feign拦截掉。所以将异常设置到上下文，后续使用GracefulResponseFeignExceptionAspect切面处理异常抛出
-            GracefulResponseExceptionContext.setException(new GracefulResponseException(code, responseJson.get("msg").asText()));
-            return toClassObject(responseJson, clazz);
-        }
-        if (data == null) {
-            return toClassObject(responseJson, clazz);
-        }
-        return toClassObject(dataNode, clazz);
-    }
-
-    private Object toClassObject2(String bodyStr, Class<?> clazz) {
-        if (dataNode.isObject()) {
-            return JsonUtil.toEntity(bodyStr, clazz);
-        }
-        if (dataNode.isArray()) {
-            return JsonUtil.toList(bodyStr, clazz);
-        }
-        return null;
-    }
-
-    private Object readJsonObject2(Class<?> clazz, HttpInputMessage inputMessage) throws IOException {
         InputStream inputStream = inputMessage.getBody();
         String responseBodyStr = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         JsonNode responseJson = JsonUtil.toJsonNode(responseBodyStr);

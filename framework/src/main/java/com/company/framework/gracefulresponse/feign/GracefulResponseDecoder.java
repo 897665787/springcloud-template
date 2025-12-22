@@ -27,12 +27,14 @@ public class GracefulResponseDecoder extends SpringDecoder {
 
     private final GracefulResponseProperties gracefulResponseProperties;
 
-    public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters, GracefulResponseProperties gracefulResponseProperties) {
+    public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters,
+        GracefulResponseProperties gracefulResponseProperties) {
         super(messageConverters);
         this.gracefulResponseProperties = gracefulResponseProperties;
     }
 
-    public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters, ObjectProvider<HttpMessageConverterCustomizer> customizers, GracefulResponseProperties gracefulResponseProperties) {
+    public GracefulResponseDecoder(ObjectFactory<HttpMessageConverters> messageConverters,
+        ObjectProvider<HttpMessageConverterCustomizer> customizers, GracefulResponseProperties gracefulResponseProperties) {
         super(messageConverters, customizers);
         this.gracefulResponseProperties = gracefulResponseProperties;
     }
@@ -75,7 +77,7 @@ public class GracefulResponseDecoder extends SpringDecoder {
             if (dataNode.isArray()) {
                 if (type instanceof ParameterizedType) {
                     // 处理List<T>泛型，获取T真正的class
-                    ParameterizedType parameterizedType = (ParameterizedType) type;
+                    ParameterizedType parameterizedType = (ParameterizedType)type;
                     Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                     if (actualTypeArguments.length > 0) {
                         typeName = actualTypeArguments[0].getTypeName();

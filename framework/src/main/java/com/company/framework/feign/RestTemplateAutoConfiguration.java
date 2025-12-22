@@ -3,6 +3,7 @@ package com.company.framework.feign;
 import com.company.framework.gracefulresponse.converter.GracefulResponseHttpMessageConverter;
 import com.company.framework.gracefulresponse.converter.GracefulResponseHttpMessageConverter2;
 import com.company.framework.trace.TraceManager;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -56,7 +57,7 @@ public class RestTemplateAutoConfiguration {
 	@LoadBalanced // 启用负载，注册在注册中心上的实例有效 需要 通过服务名访问
 //	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
-	public RestTemplate restTemplate(TraceManager traceManager, GracefulResponseProperties gracefulResponseProperties) {
+	public RestTemplate restTemplate(TraceManager traceManager, ObjectMapper objectMapper, GracefulResponseProperties gracefulResponseProperties) {
         TraceRestTemplate traceRestTemplate = new TraceRestTemplate(httpRequestFactory(), traceManager);
         List<HttpMessageConverter<?>> messageConverters = traceRestTemplate.getMessageConverters();
         int i = 0;
@@ -66,8 +67,8 @@ public class RestTemplateAutoConfiguration {
             }
             i++;
         }
-        messageConverters.add(0, new GracefulResponseHttpMessageConverter(gracefulResponseProperties));// 插入到第一个
-//        messageConverters.add(0, new GracefulResponseHttpMessageConverter2(gracefulResponseProperties));// 插入到第一个
+//        messageConverters.add(0, new GracefulResponseHttpMessageConverter(gracefulResponseProperties));// 插入到第一个
+        messageConverters.add(0, new GracefulResponseHttpMessageConverter2(objectMapper, gracefulResponseProperties));// 插入到第一个
         return traceRestTemplate;
     }
 
