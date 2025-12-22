@@ -8,12 +8,16 @@ import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -49,9 +53,17 @@ public class FeignTestController {
 
     @GetMapping(value = "/getnoparamList2")
     public List<com.company.web.resp.OrderDetailResp> getnoparamList2() {
-        List<com.company.web.resp.OrderDetailResp> result = restTemplate.getForObject("http://template-order/feignTest/getnoparamList", List.class);
-        log.info("result:{}", JsonUtil.toJsonString(result));
-        return result;
+        ResponseEntity<List<com.company.web.resp.OrderDetailResp>> response = restTemplate.exchange(
+                "http://template-order/feignTest/getnoparamList",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<com.company.web.resp.OrderDetailResp>>() {}
+        );
+        return response.getBody();
+
+//        com.company.web.resp.OrderDetailResp[] result = restTemplate.getForObject("http://template-order/feignTest/getnoparamList", com.company.web.resp.OrderDetailResp[].class);
+//        log.info("result:{}", JsonUtil.toJsonString(result));
+//        return Arrays.asList(result);
 
 //		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode);
 //		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
