@@ -57,19 +57,19 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 		if (data == null) {
 			return data;
 		}
-		if (!(data instanceof Result)) {
-			// 返回自定义类型不增加sign字段
-			return data;
-		}
+//		if (!(data instanceof Result)) {
+//			// 返回自定义类型不增加sign字段
+//			return data;
+//		}
 
-        Object result = data;
-		if (!result.successCode()) {
-			return data;
-		}
-		Object data2 = result.getData();
-		if (data2 == null) {
-			return data;
-		}
+//        Object result = data;
+//		if (!result.successCode()) {
+//			return data;
+//		}
+//		Object data2 = result.getData();
+//		if (data2 == null) {
+//			return data;
+//		}
 
 		HttpHeaders headers = request.getHeaders();
 		String appid = headers.getFirst("appid");
@@ -90,6 +90,7 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 			return data;
 		}
 
+		Object data2 = data;
 		String sign4md5 = null;
 		if (isBeanObj(data2)) {
 			// 对象类型
