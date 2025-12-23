@@ -6,18 +6,15 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.feiniaojin.gracefulresponse.GracefulResponse;
-import javafx.util.Pair;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
 
-import com.company.framework.gracefulresponse.context.GracefulResponseExceptionContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.feiniaojin.gracefulresponse.GracefulResponse;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.data.Response;
@@ -25,6 +22,9 @@ import com.feiniaojin.gracefulresponse.data.ResponseStatus;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseImplStyle0;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseImplStyle1;
 import com.feiniaojin.gracefulresponse.defaults.DefaultResponseStatus;
+
+import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * GracefulResponse HttpMessageConverter，用于处理GracefulResponse框架返回的数据格式
@@ -53,9 +53,9 @@ public class GracefulResponseHttpMessageConverter2 extends MappingJackson2HttpMe
             throws IOException, HttpMessageNotReadableException {
         JavaType javaType = getJavaType(type, contextClass);
         // return readJavaType(javaType, inputMessage);
-        try {
-            return gracefulResponseValue(inputMessage, javaType);
-        } catch (IOException ignored) {
+        Pair<Boolean, Object> pair = gracefulResponseValue(inputMessage, javaType);
+        if (pair.getKey()) {
+            return pair.getValue();
         }
         return super.read(type, contextClass, inputMessage);
     }
@@ -65,52 +65,53 @@ public class GracefulResponseHttpMessageConverter2 extends MappingJackson2HttpMe
         throws IOException, HttpMessageNotReadableException {
         JavaType javaType = getJavaType(clazz, null);
         // return readJavaType(javaType, inputMessage);
-        try {
-            return gracefulResponseValue(inputMessage, javaType);
-        } catch (IOException ignored) {
+        Pair<Boolean, Object> pair = gracefulResponseValue(inputMessage, javaType);
+        if (pair.getKey()) {
+            return pair.getValue();
         }
         return super.readInternal(clazz, inputMessage);
     }
 
-    private Object gracefulResponseValue(HttpInputMessage inputMessage, JavaType javaType) throws IOException {
+    private Pair<Boolean, Object> gracefulResponseValue(HttpInputMessage inputMessage, JavaType javaType) throws IOException {
         ObjectMapper objectMapper = getObjectMapper();
         InputStream inputStream = inputMessage.getBody();
         JsonNode responseJson = objectMapper.readTree(inputStream);
+
         if (responseJson == null) {
-            throw new IOException("responseJson is null");
+            return new Pair<>(false, null);
         }
-        Pair<Boolean, Object> pair = null;
-        Boolean key = pair.getKey();
-        Object value = pair.getValue();
         Response response = newEmptyInstance(responseJson, objectMapper, inputStream);
         if (response == null) {
-            throw new IOException("response is null");
+            return new Pair<>(false, null);
         }
         ResponseStatus status = response.getStatus();
         if (status == null) {
-            throw new IOException("status is null");
+            return new Pair<>(false, null);
         }
 
         // 是否包含code字段
         String code = status.getCode();
         if (!StringUtils.hasText(code)) {
-            throw new IOException("code is null");
+            return new Pair<>(false, null);
         }
 
         // 是否包含msg字段或者data字段
         String msg = status.getMsg();
         Object data = response.getPayload();
-        if (!StringUtils.hasText(msg) || data == null) {
-            throw new IOException("msg or data is null");
+        if (!StringUtils.hasText(msg) && data == null) {
+            return new Pair<>(false, null);
         }
 
         // 是GracefulResponse包装
         String defaultSuccessCode = gracefulResponseProperties.getDefaultSuccessCode();
         if (!defaultSuccessCode.equals(code)) {
             GracefulResponse.raiseException(code, msg);
-            return null;
+            return new Pair<>(false, null);
         }
-        return objectMapper.readValue(objectMapper.writeValueAsString(data), javaType);
+        if (data == null) {
+            return new Pair<>(true, null);
+        }
+        return new Pair<>(true, objectMapper.readValue(objectMapper.writeValueAsString(data), javaType));
     }
 
     public Response newEmptyInstance(JsonNode responseJson, ObjectMapper objectMapper, InputStream inputStream) {
