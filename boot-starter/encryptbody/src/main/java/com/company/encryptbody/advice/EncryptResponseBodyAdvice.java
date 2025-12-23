@@ -106,39 +106,6 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 		if (body == null) {
 			return null;
 		}
-
-		// 尝试处理Result封装类型
-//		if (body instanceof Result) {
-//			? result = (?) body;
-//			Object data = result.getData();
-//			if (data == null) {
-//				return result;
-//			}
-//			// 获取泛型类型
-//			ResolvableType resolvableType = ResolvableType.forMethodParameter(returnType);
-//			Class<?> genericType = resolvableType.getGeneric(0).resolve();
-//			if (genericType == null) {
-//				return result;
-//			}
-//			//  从泛型对象方法上
-//			if (genericType.isAnnotationPresent(FieldBody.class)) {
-//				// 紧加密字段
-//				this.eachClassField(data, genericType);
-//				return result;
-//			} else {
-//				// 加密整个实体
-//				EncryptAnnotationInfoBean genericAnnotation = this.getEncryptAnnotation(genericType);
-//				if (genericAnnotation == null) {
-//					return result;
-//				}
-//
-//				// 加密数据并设置回Result
-//				String str = CommonUtils.convertToStringOrJson(data, objectMapper);
-//				String encryptedStr =  switchEncrypt(str, genericAnnotation);
-//				return encryptedStr).setCode(result.getCode()).setMessage(result.getMessage();
-//			}
-//		}
-
 		String str = CommonUtils.convertToStringOrJson(body, objectMapper);
 		response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
 		Method method = returnType.getMethod();
