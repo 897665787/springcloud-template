@@ -1,5 +1,7 @@
 package com.company.framework.globalresponse;
 
+import com.feiniaojin.gracefulresponse.GracefulResponse;
+
 /**
  * 异常工具类（建议使用该工具类抛出业务异常，方便灵活切换异常实现类）
  *
@@ -16,7 +18,8 @@ public class ExceptionUtil {
     }
 
     public static void throwException(String message) {
-        throw new BusinessException(message); // 不带参数的业务异常
+//        throw new BusinessException(message); // 不带参数的业务异常
+        GracefulResponse.raiseException("1", message);
 //        throw new ArgsBusinessException(message); // 带参数的业务异常
     }
 

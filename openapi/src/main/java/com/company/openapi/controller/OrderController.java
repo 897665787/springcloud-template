@@ -7,13 +7,8 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.company.common.api.Result;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.openapi.req.CreateOrderReq;
 import com.google.common.collect.Maps;
@@ -36,45 +31,45 @@ public class OrderController {
 	 * 测试无参
 	 */
 	@GetMapping("/info")
-	public Result<?> info() {
+	public Map<String, String> info() {
 		Map<String, String> result = Maps.newHashMap();
 		result.put("name", "获取本appid对应的信息");
-		return Result.success(result);
+        return result;
 	}
 
 	/**
 	 * 测试url参数
 	 */
 	@GetMapping("/get")
-	public Result<?> get(@NotEmpty(message = "订单号不能为空") String orderCode) {
+	public Map<String, String> get(@NotEmpty(message = "订单号不能为空") String orderCode) {
 		Map<String, String> result = Maps.newHashMap();
 		result.put("orderCode", orderCode);
 		result.put("productCode", "2222222");
 		result.put("orderid", "" + sequenceGenerator.nextId());
-		return Result.success(result);
+        return result;
 	}
 	
 	/**
 	 * 测试body参数
 	 */
 	@PostMapping("/create")
-	public Result<?> create(@Valid @RequestBody CreateOrderReq createOrderReq) {
+	public Map<String, String> create(@Valid @RequestBody CreateOrderReq createOrderReq) {
 		Map<String, String> result = Maps.newHashMap();
 		result.put("orderCode", createOrderReq.getOrderCode());
 		result.put("productCode", createOrderReq.getProductCode());
 		result.put("orderid", "" + sequenceGenerator.nextId());
-		return Result.success(result);
+        return result;
 	}
 	
 	/**
 	 * 测试form参数
 	 */
 	@PostMapping("/create2")
-	public Result<?> create2(CreateOrderReq createOrderReq) {
+	public Map<String, String> create2(CreateOrderReq createOrderReq) {
 		Map<String, String> result = Maps.newHashMap();
 		result.put("orderCode", createOrderReq.getOrderCode());
 		result.put("productCode", createOrderReq.getProductCode());
 		result.put("orderid", "" + sequenceGenerator.nextId());
-		return Result.success(result);
+		return result;
 	}
 }
