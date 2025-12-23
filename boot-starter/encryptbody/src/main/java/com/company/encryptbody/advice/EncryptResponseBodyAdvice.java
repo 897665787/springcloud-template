@@ -17,6 +17,7 @@ import com.company.common.api.Result;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
@@ -54,7 +55,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
 	private final EncryptBodyConfig config;
 
-//	@Autowired
+	@Autowired
 	public EncryptResponseBodyAdvice(ObjectMapper objectMapper, EncryptBodyConfig config) {
 		this.objectMapper = objectMapper;
 		this.config = config;
