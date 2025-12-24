@@ -37,7 +37,25 @@ public class OrderController {
         return result;
 	}
 
-	/**
+    /**
+     * 测试无参
+     */
+    @GetMapping("/info2")
+    public String info2() {
+        // 不建议返回String，建议使用实体类包装
+        return "获取本appid对应的信息";
+    }
+
+    /**
+     * 测试无参
+     */
+    @GetMapping("/info3")
+    public Integer info3() {
+        // 不建议返回Integer，建议使用实体类包装
+        return 1;
+    }
+
+    /**
 	 * 测试url参数
 	 */
 	@GetMapping("/get")
@@ -72,4 +90,5 @@ public class OrderController {
 		result.put("orderid", "" + sequenceGenerator.nextId());
 		return result;
 	}
+
 }
