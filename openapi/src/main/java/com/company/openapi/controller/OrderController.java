@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
+import com.company.openapi.resp.CreateOrderResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -65,8 +66,20 @@ public class OrderController {
 		result.put("productCode", "2222222");
 		result.put("orderid", "" + sequenceGenerator.nextId());
         return result;
-	}
-	
+    }
+
+    /**
+     * 测试url参数
+     */
+    @GetMapping("/get-entity")
+    public CreateOrderResp get2(@NotEmpty(message = "订单号不能为空") String orderCode) {
+        CreateOrderResp resp = new CreateOrderResp();
+        resp.setOrderCode(orderCode);
+        resp.setProductCode("2222222");
+        resp.setOrderid("" + sequenceGenerator.nextId());
+        return resp;
+    }
+
 	/**
 	 * 测试body参数
 	 */

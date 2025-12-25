@@ -26,12 +26,12 @@ import com.company.openapi.util.SignUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 /**
- * 对响应的Result.data下面的字段进行加签
+ * 对响应的内容进行加签
  */
 @Order(90)
 @RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
-public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
+public class SignResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 	@Autowired
 	private SignConfiguration signConfiguration;
 
@@ -82,9 +82,8 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
         // 对象类型
         Map<String, Object> data2Map = BeanUtil.beanToMap(data);
         String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, data2Map, "", appsecret);
-        Map<String, Object> resultMap = BeanUtil.beanToMap(data);
-        resultMap.put("sign", sign4md5);
-        return resultMap;
+        data2Map.put("sign", sign4md5);
+        return data2Map;
 	}
 
 	/**
