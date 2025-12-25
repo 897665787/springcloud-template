@@ -15,6 +15,8 @@ import com.company.framework.util.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.Objects;
+
 /**
  * 根据code为响应值添加status字段,code=0:true,code=其他:false
  */
@@ -37,9 +39,9 @@ public class StatusResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 			dataStr = JsonUtil.toJsonString(data);
 		}
 		JsonNode resultNode = JsonUtil.toJsonNode(dataStr);
-		int code = resultNode.get("code").asInt();
+		String code = resultNode.get("code").asText();
 		ObjectNode putResultNode = (ObjectNode) resultNode;
-		putResultNode.put("status", code == ResultCode.SUCCESS.getCode());
+		putResultNode.put("status", Objects.equals(code, ResultCode.SUCCESS.getCode()));
 		return putResultNode;
 	}
 }

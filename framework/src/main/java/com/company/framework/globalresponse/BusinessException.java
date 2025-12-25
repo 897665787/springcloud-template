@@ -11,7 +11,7 @@ import com.company.common.exception.ResultException;
 public class BusinessException extends ResultException {
     private static final long serialVersionUID = 1L;
 
-    protected BusinessException(Integer code, String message) {
+    protected BusinessException(String code, String message) {
         super(code, message);
     }
 

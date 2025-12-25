@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class Result<T> {
-    private Integer code;// 响应码
+    private String code;// 响应码
     private String message;// 响应信息
     private T data;// 数据
 
@@ -31,7 +31,7 @@ public class Result<T> {
         return new Result<T>().setResultCode(ResultCode.SUCCESS).setMessage(message).setData(data);
     }
 
-    public static <T> Result<T> fail(Integer code, String message) {
+    public static <T> Result<T> fail(String code, String message) {
         return new Result<T>().setCode(code).setMessage(message);
     }
 

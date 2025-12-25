@@ -14,7 +14,7 @@
 //    @Getter
 //    private Object[] args;
 //
-//    protected ArgsBusinessException(Integer code, String message, Object... args) {
+//    protected ArgsBusinessException(String code, String message, Object... args) {
 //        super(code, message);
 //        this.args = args;
 //    }

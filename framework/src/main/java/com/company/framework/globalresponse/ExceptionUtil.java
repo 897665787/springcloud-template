@@ -25,10 +25,10 @@ public class ExceptionUtil {
 //        throw new ArgsBusinessException(message); // 带参数的业务异常
     }
 
-    public static void throwException(Integer code, String message, Object... args) {
+    public static void throwException(String code, String message, Object... args) {
 //        throw new BusinessException(code, message); // 不带参数的业务异常【不建议使用】
 //        throw new ArgsBusinessException(code, message, args); // 带参数的业务异常
-        throw new GracefulResponseArgsException(null, message, args);
+        throw new GracefulResponseArgsException(code, message, args);
     }
 
     public static void throwException(String message, Object... args) {
