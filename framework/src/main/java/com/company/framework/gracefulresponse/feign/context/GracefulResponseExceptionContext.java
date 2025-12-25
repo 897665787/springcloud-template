@@ -1,4 +1,4 @@
-package com.company.framework.gracefulresponse.context;
+package com.company.framework.gracefulresponse.feign.context;
 
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 

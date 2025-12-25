@@ -1,6 +1,6 @@
 package com.company.framework.gracefulresponse.feign;
 
-import com.company.framework.gracefulresponse.context.GracefulResponseExceptionContext;
+import com.company.framework.gracefulresponse.feign.context.GracefulResponseExceptionContext;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import lombok.extern.slf4j.Slf4j;
