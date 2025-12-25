@@ -1,4 +1,4 @@
-package com.company.framework.gracefulresponse.extend.advice.context;
+package com.company.framework.globalresponse.gracefulresponse.extend.advice.context;
 
 public class GracefulResponseExceptionArgsContext {
     private static final ThreadLocal<Object[]> ARGS_THREAD_LOCAL = new ThreadLocal<>();

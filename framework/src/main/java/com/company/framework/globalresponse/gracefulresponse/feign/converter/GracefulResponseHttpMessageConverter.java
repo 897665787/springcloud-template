@@ -1,4 +1,4 @@
-package com.company.framework.gracefulresponse.feign.converter;
+package com.company.framework.globalresponse.gracefulresponse.feign.converter;
 
 import java.io.IOException;
 import java.io.InputStream;

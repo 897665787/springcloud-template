@@ -1,6 +1,6 @@
-package com.company.framework.gracefulresponse.feign;
+package com.company.framework.globalresponse.gracefulresponse.feign;
 
-import com.company.framework.gracefulresponse.feign.context.GracefulResponseExceptionContext;
+import com.company.framework.globalresponse.gracefulresponse.feign.context.GracefulResponseExceptionContext;
 import com.company.framework.util.JsonUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;

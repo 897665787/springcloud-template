@@ -1,7 +1,7 @@
-package com.company.framework.gracefulresponse.extend.advice;
+package com.company.framework.globalresponse.gracefulresponse.extend.advice;
 
-import com.company.framework.gracefulresponse.extend.GracefulResponseArgsException;
-import com.company.framework.gracefulresponse.extend.advice.context.GracefulResponseExceptionArgsContext;
+import com.company.framework.globalresponse.ArgsBusinessException;
+import com.company.framework.globalresponse.gracefulresponse.extend.advice.context.GracefulResponseExceptionArgsContext;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.advice.AbstractControllerAdvice;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.*;
@@ -47,15 +47,15 @@ public class ArgsExceptionAdvice extends AbstractControllerAdvice
 
     @Override
     public Response process(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
-        if (exception instanceof GracefulResponseArgsException) {
-            GracefulResponseArgsException dataException = (GracefulResponseArgsException) exception;
-            ResponseStatus statusLine = fromGracefulResponseExceptionInstance(dataException);
+        if (exception instanceof ArgsBusinessException) {
+            ArgsBusinessException argsBusinessException = (ArgsBusinessException) exception;
+            ResponseStatus statusLine = fromGracefulResponseExceptionInstance(argsBusinessException);
             return responseFactory.newInstance(statusLine);
         }
         throw new UnsupportedOperationException();
     }
 
-    private ResponseStatus fromGracefulResponseExceptionInstance(GracefulResponseArgsException exception) {
+    private ResponseStatus fromGracefulResponseExceptionInstance(ArgsBusinessException exception) {
         String code = exception.getCode();
         if (code == null) {
             code = properties.getDefaultErrorCode();
@@ -66,14 +66,14 @@ public class ArgsExceptionAdvice extends AbstractControllerAdvice
     }
 
     @Override
-    @ExceptionHandler(value = GracefulResponseArgsException.class)
+    @ExceptionHandler(value = ArgsBusinessException.class)
     public Object exceptionHandler(Exception exception) {
         return super.exceptionHandler(exception);
     }
 
     @Override
     public boolean shouldApplyTo(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception exception) {
-        return exception instanceof GracefulResponseArgsException;
+        return exception instanceof ArgsBusinessException;
     }
 }
 

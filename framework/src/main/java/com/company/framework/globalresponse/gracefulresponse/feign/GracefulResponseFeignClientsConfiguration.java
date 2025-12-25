@@ -1,6 +1,6 @@
-package com.company.framework.gracefulresponse.feign;
+package com.company.framework.globalresponse.gracefulresponse.feign;
 
-import com.company.framework.gracefulresponse.feign.converter.GracefulResponseHttpMessageConverter;
+import com.company.framework.globalresponse.gracefulresponse.feign.converter.GracefulResponseHttpMessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.ObjectProvider;
