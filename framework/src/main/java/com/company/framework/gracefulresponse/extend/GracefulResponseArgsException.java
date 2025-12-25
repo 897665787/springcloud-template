@@ -1,4 +1,4 @@
-package com.company.framework.gracefulresponse;
+package com.company.framework.gracefulresponse.extend;
 
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 

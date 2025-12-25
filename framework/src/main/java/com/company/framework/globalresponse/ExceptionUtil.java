@@ -1,6 +1,6 @@
 package com.company.framework.globalresponse;
 
-import com.company.framework.gracefulresponse.GracefulResponseArgsException;
+import com.company.framework.gracefulresponse.extend.GracefulResponseArgsException;
 import com.feiniaojin.gracefulresponse.GracefulResponse;
 
 /**

@@ -1,7 +1,7 @@
-package com.company.framework.gracefulresponse.advice;
+package com.company.framework.gracefulresponse.extend.advice;
 
-import com.company.framework.gracefulresponse.GracefulResponseArgsException;
-import com.company.framework.gracefulresponse.advice.context.GracefulResponseExceptionArgsContext;
+import com.company.framework.gracefulresponse.extend.GracefulResponseArgsException;
+import com.company.framework.gracefulresponse.extend.advice.context.GracefulResponseExceptionArgsContext;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.advice.AbstractControllerAdvice;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.*;

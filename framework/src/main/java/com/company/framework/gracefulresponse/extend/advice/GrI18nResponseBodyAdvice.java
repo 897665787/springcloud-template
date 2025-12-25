@@ -1,6 +1,6 @@
-package com.company.framework.gracefulresponse.advice;
+package com.company.framework.gracefulresponse.extend.advice;
 
-import com.company.framework.gracefulresponse.advice.context.GracefulResponseExceptionArgsContext;
+import com.company.framework.gracefulresponse.extend.advice.context.GracefulResponseExceptionArgsContext;
 import com.company.framework.message.IMessage;
 import com.feiniaojin.gracefulresponse.advice.AbstractResponseBodyAdvice;
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdvicePredicate;
