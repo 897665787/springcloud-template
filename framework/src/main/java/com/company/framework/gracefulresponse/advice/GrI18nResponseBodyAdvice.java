@@ -1,5 +1,6 @@
 package com.company.framework.gracefulresponse.advice;
 
+import com.company.framework.gracefulresponse.context.GracefulResponseExceptionArgsContext;
 import com.company.framework.message.IMessage;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.advice.AbstractResponseBodyAdvice;
@@ -7,7 +8,6 @@ import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdv
 import com.feiniaojin.gracefulresponse.advice.lifecycle.response.ResponseBodyAdviceProcessor;
 import com.feiniaojin.gracefulresponse.data.Response;
 import com.feiniaojin.gracefulresponse.data.ResponseStatus;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -33,28 +33,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @ControllerAdvice
 @Order(2000)
-@ConditionalOnMissingBean(com.feiniaojin.gracefulresponse.advice.GrI18nResponseBodyAdvice.class)
+//@ConditionalOnMissingBean(com.feiniaojin.gracefulresponse.advice.GrI18nResponseBodyAdvice.class)
 public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice implements ResponseBodyAdvicePredicate, ResponseBodyAdviceProcessor {
 
-    private static final String[] EMPTY_ARRAY = new String[0];
+//    private static final String[] EMPTY_ARRAY = new String[0];
 
-    @Resource
-    private GracefulResponseProperties properties;
+//    @Resource
+//    private GracefulResponseProperties properties;
 
+//    @Resource
+//    private MessageSource grMessageSource;
     @Resource
-    private MessageSource grMessageSource;
-    @Autowired
     private IMessage imessage;
 
     @Override
     public Object process(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Response) {
             Response res = (Response) body;
-            Locale locale = LocaleContextHolder.getLocale();
+//            Locale locale = LocaleContextHolder.getLocale();
             ResponseStatus bodyStatus = res.getStatus();
 //            String code = bodyStatus.getCode();
             String msg = bodyStatus.getMsg();
-            String renderMsg = imessage.getMessage(msg, EMPTY_ARRAY, null, locale);
+            // 这里处理ArgsExceptionAdvice.fromGracefulResponseExceptionInstance记录的args，需要处理好参数替换，再响应给前端
+            Object[] args = GracefulResponseExceptionArgsContext.getAndRemoveArgs();
+            String renderMsg = imessage.getMessage(msg, args);
             //有国际化配置的才会替换，否则使用默认配置的
             if (StringUtils.hasText(renderMsg)) {
                 bodyStatus.setMsg(renderMsg);

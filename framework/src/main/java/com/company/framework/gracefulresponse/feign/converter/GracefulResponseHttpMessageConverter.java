@@ -1,4 +1,4 @@
-package com.company.framework.gracefulresponse.converter;
+package com.company.framework.gracefulresponse.feign.converter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
  * GracefulResponse HttpMessageConverter，用于处理GracefulResponse框架返回的数据格式
  */
 @Slf4j
-public class GracefulResponseHttpMessageConverter2 extends MappingJackson2HttpMessageConverter {
+public class GracefulResponseHttpMessageConverter extends MappingJackson2HttpMessageConverter {
 
     private static final Integer RESPONSE_STYLE_0 = 0;
 
@@ -38,12 +38,12 @@ public class GracefulResponseHttpMessageConverter2 extends MappingJackson2HttpMe
 
     private final GracefulResponseProperties gracefulResponseProperties;
 
-    public GracefulResponseHttpMessageConverter2(GracefulResponseProperties gracefulResponseProperties) {
+    public GracefulResponseHttpMessageConverter(GracefulResponseProperties gracefulResponseProperties) {
         this.gracefulResponseProperties = gracefulResponseProperties;
     }
 
-    public GracefulResponseHttpMessageConverter2(ObjectMapper objectMapper,
-        GracefulResponseProperties gracefulResponseProperties) {
+    public GracefulResponseHttpMessageConverter(ObjectMapper objectMapper,
+                                                GracefulResponseProperties gracefulResponseProperties) {
         super(objectMapper);
         this.gracefulResponseProperties = gracefulResponseProperties;
     }

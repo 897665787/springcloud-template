@@ -12,7 +12,7 @@ GracefulResponse 模块是基于 GracefulResponse 框架构建的统一响应处
 - 可自定义成功和失败的响应码及提示信息
 
 ### 2. HTTP 消息转换
-- 通过 [GracefulResponseHttpMessageConverter](converter/GracefulResponseHttpMessageConverter.java#L32-L144) 和 [GracefulResponseHttpMessageConverter2](converter/GracefulResponseHttpMessageConverter2.java#L33-L151) 处理 HTTP 请求/响应转换
+- 通过 [GracefulResponseHttpMessageConverter](feign/converter/GracefulResponseHttpMessageConverter.java#L32-L144) 和 [GracefulResponseHttpMessageConverter2](converter/GracefulResponseHttpMessageConverter2.java#L33-L151) 处理 HTTP 请求/响应转换
 - 自动解析远程服务返回的统一响应格式
 - 提取实际业务数据并转换为预期类型
 

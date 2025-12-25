@@ -1,10 +1,8 @@
 package com.company.framework.feign;
 
-import com.company.framework.gracefulresponse.converter.GracefulResponseHttpMessageConverter;
-import com.company.framework.gracefulresponse.converter.GracefulResponseHttpMessageConverter2;
-import com.company.framework.trace.TraceManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -20,13 +18,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import com.company.framework.trace.TraceManager;
 
 @Configuration
 public class RestTemplateAutoConfiguration {
@@ -59,22 +53,12 @@ public class RestTemplateAutoConfiguration {
 	@LoadBalanced // 启用负载，注册在注册中心上的实例有效 需要 通过服务名访问
 //	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
-	public RestTemplate restTemplate(TraceManager traceManager, ObjectMapper objectMapper, GracefulResponseProperties gracefulResponseProperties) {
+	public RestTemplate restTemplate(TraceManager traceManager) {
         RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
         interceptors.add(new TraceHeaderClientHttpRequestInterceptor(traceManager));
         interceptors.add(new RestTemplateLoggerClientHttpRequestInterceptor());
         restTemplate.setInterceptors(interceptors);
-        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
-        int i = 0;
-        for (HttpMessageConverter<?> messageConverter : messageConverters) {
-            if (messageConverter instanceof MappingJackson2HttpMessageConverter) {
-                break;
-            }
-            i++;
-        }
-//        messageConverters.add(0, new GracefulResponseHttpMessageConverter(gracefulResponseProperties));// 插入到第一个
-        messageConverters.add(0, new GracefulResponseHttpMessageConverter2(objectMapper, gracefulResponseProperties));// 插入到第一个
         return restTemplate;
     }
 

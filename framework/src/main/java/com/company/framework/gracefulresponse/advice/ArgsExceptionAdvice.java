@@ -1,6 +1,7 @@
 package com.company.framework.gracefulresponse.advice;
 
 import com.company.framework.gracefulresponse.GracefulResponseArgsException;
+import com.company.framework.gracefulresponse.context.GracefulResponseExceptionArgsContext;
 import com.company.framework.message.IMessage;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
 import com.feiniaojin.gracefulresponse.advice.AbstractControllerAdvice;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author JQ棣
  */
-@Order(190)
+@Order(195)
 @ControllerAdvice
 public class ArgsExceptionAdvice extends AbstractControllerAdvice
     implements ControllerAdvicePredicate, ControllerAdviceProcessor, ControllerAdviceHttpProcessor {
@@ -31,16 +32,13 @@ public class ArgsExceptionAdvice extends AbstractControllerAdvice
     private ResponseFactory responseFactory;
     private GracefulResponseProperties properties;
     private ResponseStatusFactory responseStatusFactory;
-    private IMessage imessage;
 
     public ArgsExceptionAdvice(BeforeControllerAdviceProcess beforeControllerAdviceProcess, @Lazy RejectStrategy rejectStrategy,
-        ResponseFactory responseFactory, GracefulResponseProperties properties, ResponseStatusFactory responseStatusFactory,
-        IMessage imessage) {
+        ResponseFactory responseFactory, GracefulResponseProperties properties, ResponseStatusFactory responseStatusFactory) {
 
         this.responseFactory = responseFactory;
         this.properties = properties;
         this.responseStatusFactory = responseStatusFactory;
-        this.imessage = imessage;
 
         setRejectStrategy(rejectStrategy);
         setControllerAdviceProcessor(this);
@@ -63,8 +61,9 @@ public class ArgsExceptionAdvice extends AbstractControllerAdvice
         if (code == null) {
             code = properties.getDefaultErrorCode();
         }
-        String msg = imessage.getMessage(exception.getMsg(), exception.getArgs());
-        return responseStatusFactory.newInstance(code, msg);
+        // 记录异常中的args到上下文，后续会在GrI18nResponseBodyAdvice.process统一处理msg
+        GracefulResponseExceptionArgsContext.setArgs(exception.getArgs());
+        return responseStatusFactory.newInstance(code, exception.getMsg());
     }
 
     @Override
