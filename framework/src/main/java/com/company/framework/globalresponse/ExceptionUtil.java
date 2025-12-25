@@ -1,5 +1,6 @@
 package com.company.framework.globalresponse;
 
+import com.company.framework.gracefulresponse.GracefulResponseArgsException;
 import com.feiniaojin.gracefulresponse.GracefulResponse;
 
 /**
@@ -12,24 +13,27 @@ public class ExceptionUtil {
     private ExceptionUtil() {
     }
 
-    public static void throwException(Integer code, String message) {
-        throw new BusinessException(code, message); // 不带参数的业务异常
+    public static void throwException(String code, String message) {
+//        throw new BusinessException(code, message); // 不带参数的业务异常
+        GracefulResponse.raiseException(code, message);
 //        throw new ArgsBusinessException(code, message); // 带参数的业务异常
     }
 
     public static void throwException(String message) {
 //        throw new BusinessException(message); // 不带参数的业务异常
-        GracefulResponse.raiseException("1", message);
+        GracefulResponse.raiseException(null, message);
 //        throw new ArgsBusinessException(message); // 带参数的业务异常
     }
 
     public static void throwException(Integer code, String message, Object... args) {
 //        throw new BusinessException(code, message); // 不带参数的业务异常【不建议使用】
-        throw new ArgsBusinessException(code, message, args); // 带参数的业务异常
+//        throw new ArgsBusinessException(code, message, args); // 带参数的业务异常
+        throw new GracefulResponseArgsException(null, message, args);
     }
 
     public static void throwException(String message, Object... args) {
 //        throw new BusinessException(message); // 不带参数的业务异常【不建议使用】
-        throw new ArgsBusinessException(message, args); // 带参数的业务异常
+//        throw new ArgsBusinessException(message, args); // 带参数的业务异常
+        throw new GracefulResponseArgsException(message, args);
     }
 }

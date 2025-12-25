@@ -23,3 +23,5 @@ graceful-response:
   # 设置是否将原生异常错误信息detailMessage字段填充到Response的msg中
   # 默认为false，即不打开
   origin-exception-using-detail-message: false
+  # 配置i18n，默认为false，固定为false，使用自定义的i18n实现
+  i18n: false
