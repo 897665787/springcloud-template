@@ -2,6 +2,7 @@ package com.company.im.api.feign.fallback;
 
 import com.company.common.api.ResultCode;
 import com.company.common.exception.ResultException;
+import com.company.common.fallback.FallbackUtil;
 import feign.FeignException;
 import feign.Request;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,6 @@ public class ThrowExceptionFallback<Object> implements FallbackFactory<Object> {
         } else {
             log.error("fallback error,message:{}", e.getMessage());
         }
-        throw new ResultException(ResultCode.API_FUSING.getCode(), ResultCode.API_FUSING.getMessage());
+        return FallbackUtil.create();
     }
 }

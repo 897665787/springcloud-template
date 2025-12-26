@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+@Deprecated // 使用GracefulResponse框架处理
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -51,9 +52,5 @@ public class Result<T> {
             throw new ResultException(code, message);
         }
         return data;
-    }
-
-    public static <T> T onFallbackError() {
-        throw new ResultException(ResultCode.API_FUSING.getCode(), ResultCode.API_FUSING.getMessage());
     }
 }

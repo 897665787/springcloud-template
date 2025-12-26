@@ -3,15 +3,12 @@ package com.company.tool.api.feign.fallback;
 import java.util.Collections;
 import java.util.List;
 
-import com.company.common.api.Result;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-
 
 import com.company.tool.api.feign.NavFeign;
 import com.company.tool.api.request.NavReq;
 import com.company.tool.api.response.NavResp;
-
-import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class NavFeignFallback implements FallbackFactory<NavFeign> {

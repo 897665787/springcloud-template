@@ -1,18 +1,15 @@
 package com.company.tool.api.feign.fallback;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.company.common.api.Result;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-
+import com.company.common.fallback.FallbackUtil;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.tool.api.request.SubscribeSendReq;
-
-import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
@@ -23,17 +20,17 @@ public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
 
 			@Override
 			public List<String> selectTemplateCodeByGroup(String group) {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 
 			@Override
 			public Void grant(SubscribeGrantReq subscribeGrantReq) {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 
 			@Override
 			public Void send(SubscribeSendReq subscribeSendReq) {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 
 			@Override
@@ -43,12 +40,12 @@ public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
 
 			@Override
 			public Void exePreTimeSend(Integer id) {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 
 			@Override
 			public Void syncTemplate() {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 
 		};

@@ -1,17 +1,14 @@
 package com.company.tool.api.feign.fallback;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.company.common.api.Result;
+import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-
+import com.company.common.fallback.FallbackUtil;
 import com.company.tool.api.feign.SmsFeign;
 import com.company.tool.api.request.SendSmsReq;
-
-import org.springframework.cloud.openfeign.FallbackFactory;
 
 @Component
 public class SmsFeignFallback implements FallbackFactory<SmsFeign> {
@@ -27,12 +24,12 @@ public class SmsFeignFallback implements FallbackFactory<SmsFeign> {
 
 			@Override
 			public Void exePreTimeSend(Integer id) {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 
 			@Override
 			public Void send(SendSmsReq sendSmsReq) {
-				return Result.onFallbackError();
+				return FallbackUtil.create();
 			}
 		};
 	}
