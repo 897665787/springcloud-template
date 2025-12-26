@@ -1,5 +1,6 @@
 package com.company.tool.api.feign.fallback;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.company.common.api.Result;
@@ -20,7 +21,7 @@ public class NavFeignFallback implements FallbackFactory<NavFeign> {
 		return new NavFeign() {
 			@Override
 			public List<NavResp> list(NavReq navReq) {
-				return Result.onFallbackError();
+                return Collections.emptyList();// 降级返回空列表
 			}
 		};
 	}

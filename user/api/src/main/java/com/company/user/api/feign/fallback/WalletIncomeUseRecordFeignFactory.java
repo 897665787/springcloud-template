@@ -8,6 +8,7 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +24,7 @@ public class WalletIncomeUseRecordFeignFactory implements FallbackFactory<Wallet
 
             @Override
             public List<Integer> selectId4Expire(Integer limit) {
-                return new ArrayList<>();// 降级返回空列表
+                return Collections.emptyList();// 降级返回空列表
             }
 
             @Override

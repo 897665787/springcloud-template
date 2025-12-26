@@ -82,7 +82,7 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
             @Override
             public List<OrderResp> page(Integer current, Integer size, StatusEnum status) {
-                return new ArrayList<>();// 降级返回空列表
+                return Collections.emptyList();// 降级返回空列表
             }
 
 			@Override
@@ -92,12 +92,12 @@ public class OrderFeignFallback implements FallbackFactory<OrderFeign> {
 
 			@Override
 			public List<String> select4OverSendSuccess(Integer limit) {
-                return new ArrayList<>();// 降级返回空列表
+                return Collections.emptyList();// 降级返回空列表
 			}
 			
 			@Override
 			public List<String> select4OverWaitReview(Integer limit) {
-                return new ArrayList<>();// 降级返回空列表
+                return Collections.emptyList();// 降级返回空列表
 			}
 
 			@Override

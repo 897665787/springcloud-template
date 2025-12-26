@@ -53,7 +53,6 @@ public class PopupController {
 	 */
 	@RequestMapping("/display")
 	public Void display(Integer popupLogId) {
-		popupFeign.remarkPopupLog(popupLogId, "mini展示弹窗");
-		return null;
+        return popupFeign.remarkPopupLog(popupLogId, "mini展示弹窗");
 	}
 }

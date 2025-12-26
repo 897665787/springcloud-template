@@ -1,5 +1,6 @@
 package com.company.tool.api.feign;
 
+import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 import com.company.tool.api.constant.Constants;
-import com.company.tool.api.feign.fallback.VerifyCodeFeignFallback;
 import com.company.tool.api.response.CaptchaResp;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/verifyCode", fallbackFactory = VerifyCodeFeignFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/verifyCode", fallbackFactory = ThrowExceptionFallback.class)
 public interface VerifyCodeFeign {
 
 	/**

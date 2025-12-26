@@ -1,6 +1,7 @@
 package com.company.tool.api.feign.fallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.company.common.api.Result;
@@ -21,7 +22,7 @@ public class EmailFeignFallback implements FallbackFactory<EmailFeign> {
 
 			@Override
 			public List<Integer> select4PreTimeSend(Integer limit) {
-				return new ArrayList<>();// 降级返回空列表
+				return Collections.emptyList();// 降级返回空列表
 			}
 
 			@Override
