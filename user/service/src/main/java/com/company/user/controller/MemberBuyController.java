@@ -14,6 +14,7 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
+import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum;
 import com.company.user.api.enums.WalletEnum.Type;
@@ -322,7 +323,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				payNotifyReq.setPayAmount(finalNeedPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
 				payNotifyReq.setAttach(finalPayAttach);
-				Void buyNotifyResult = buyNotify(payNotifyReq);
+                RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
 			});
 			return new MemberBuyOrderResp().setNeedPay(false);
@@ -358,7 +359,7 @@ public class MemberBuyController implements MemberBuyFeign {
 	 * @return
 	 */
 	@PostMapping("/buyNotify")
-	public Void buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
+	public RetryerResp buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
 
@@ -369,7 +370,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq);
 			if (!cancelByTimeout) {
 				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
-				return null;
+				return RetryerResp.end();
 			}
 
 			MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
@@ -392,7 +393,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
 
-			return null;
+			return RetryerResp.end();
 		}
 
 		MemberBuyOrder memberBuyOrder = memberBuyOrderService.selectByOrderCode(orderCode);
@@ -405,7 +406,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
-			return null;
+			return RetryerResp.end();
 		}
 
 		// 可能存在订单已经因超时取消了，但用户又支付了的场景，所以订单可以由‘已关闭’变为‘已支付’，所以关闭订单的逻辑需要反着处理一次
@@ -483,7 +484,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				// 余额不足扣减,得卡主订单,同时告警
 				log.warn("余额不足扣减,leftMainAmount:{},sumNeedUseChargeGiftAmount:{}", leftMainAmount,
 						sumNeedUseChargeGiftAmount);
-				return null;
+				return RetryerResp.end();
 			}
 
 			String uniqueCode = orderCode;
@@ -498,7 +499,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			Integer affect = freezeMainChargeGiftWallet.outcome(uniqueCode, walletId, amount, attachMap);
 			if (affect == 0) {// 如果钱包出账失败,得卡主订单,同时告警
 				log.warn("支付回调后钱包余额扣减失败，存在资损风险,orderCode:{}", orderCode);
-				return null;
+				return RetryerResp.end();
 			}
 		}
 
@@ -513,7 +514,7 @@ public class MemberBuyController implements MemberBuyFeign {
 		// 修改‘订单中心’数据
 		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
 
-		return null;
+		return RetryerResp.end();
 	}
 
 	/**

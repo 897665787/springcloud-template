@@ -13,6 +13,7 @@ import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.response.PayResp;
+import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.WalletEnum.Type;
 import com.company.user.api.feign.RechargeOrderFeign;
@@ -147,7 +148,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 				payNotifyReq.setOrderCode(orderCode);
 				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
-				Void buyNotifyResult = buyNotify(payNotifyReq);
+                RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
 			});
 			return new RechargeOrderResp().setNeedPay(false);
@@ -183,7 +184,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 	 * @return
 	 */
 	@PostMapping("/buyNotify")
-	public Void buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
+	public RetryerResp buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
 
@@ -194,10 +195,10 @@ public class RechargeOrderController implements RechargeOrderFeign {
 			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq);
 			if (!cancelByTimeout) {
 				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
-				return null;
+				return RetryerResp.end();
 			}
 
-			return null;
+            return RetryerResp.end();
 		}
 
 		// 支付成功
@@ -209,7 +210,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
-			return null;
+            return RetryerResp.end();
 		}
 
 		// 发布‘支付成功’事件
@@ -242,7 +243,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 		// 修改‘订单中心’数据
 		orderFeign.finish(new OrderFinishReq().setOrderCode(orderCode).setFinishTime(time));
 
-		return null;
+        return RetryerResp.end();
 	}
 
 	/**

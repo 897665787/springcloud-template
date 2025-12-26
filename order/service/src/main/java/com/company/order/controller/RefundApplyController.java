@@ -1,6 +1,7 @@
 package com.company.order.controller;
 
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.util.JsonUtil;
@@ -15,6 +16,7 @@ import com.company.order.api.request.PayRefundReq;
 import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.PayRefundApply;
 import com.company.order.mapper.PayRefundApplyMapper;
+import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,7 +155,7 @@ public class RefundApplyController implements RefundApplyFeign {
 				refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 				refundNotifyReq.setRefundAll(true);
 
-				Void refundNotifyResult = this.refundNotify(refundNotifyReq);
+                RetryerResp refundNotifyResult = this.refundNotify(refundNotifyReq);
 				log.info("refundNotify:{}", JsonUtil.toJsonString(refundNotifyResult));
 				// 后续逻辑 ----------> refundNotify
 			});
@@ -169,16 +171,18 @@ public class RefundApplyController implements RefundApplyFeign {
 		payRefundReq.setAttach(payRefundApply.getAttach());
 		payRefundReq.setRefundAmount(amount);
 
-		Void result = payFeign.refund(payRefundReq);
-		if (!result.successCode()) {
-			// 申请退款失败
-			remark = Utils.rightRemark(remark, result.getMessage());
-			payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_FAIL, remark,
-					payRefundApply.getId());
-			orderRefundApplyEventMessage(false, result.getMessage(), payRefundApply.getOldOrderCode(),
-					payRefundApply.getOrderCode(), payRefundApply.getAttach(), null, null, null, null);
-			ExceptionUtil.throwException("申请退款失败");
-		}
+        try {
+            payFeign.refund(payRefundReq);
+        } catch (Exception e) {
+            // 申请退款失败
+            remark = Utils.rightRemark(remark, e.getMessage());
+            payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_FAIL, remark,
+                payRefundApply.getId());
+            orderRefundApplyEventMessage(false, e.getMessage(), payRefundApply.getOldOrderCode(), payRefundApply.getOrderCode(),
+                payRefundApply.getAttach(), null, null, null, null);
+            ExceptionUtil.throwException("申请退款失败");
+        }
+
 		// 申请退款成功
 		remark = Utils.rightRemark(remark, PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS.getDesc());
 		payRefundApplyMapper.updateRefundStatusRemarkById(PayRefundApplyEnum.RefundStatus.APPLY_SUCCESS, remark,
@@ -194,7 +198,7 @@ public class RefundApplyController implements RefundApplyFeign {
 	 * @return
 	 */
 	@PostMapping("/refundNotify")
-	public Void refundNotify(@RequestBody RefundNotifyReq refundNotifyReq) {
+	public RetryerResp refundNotify(@RequestBody RefundNotifyReq refundNotifyReq) {
 		String refundOrderCode = refundNotifyReq.getRefundOrderCode();
 		PayRefundApply payRefundApply = payRefundApplyMapper.selectByOrderCode(refundOrderCode);
 
@@ -206,7 +210,7 @@ public class RefundApplyController implements RefundApplyFeign {
 			orderRefundApplyEventMessage(false, refundNotifyReq.getMessage(), refundNotifyReq.getOrderCode(),
 					refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getPayAmount(), refundNotifyReq.getThisRefundAmount(),
 					refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
-			return null;
+            return RetryerResp.end();
 		}
 
 		// 退款成功
@@ -216,7 +220,7 @@ public class RefundApplyController implements RefundApplyFeign {
 		orderRefundApplyEventMessage(true, refundNotifyReq.getMessage(), refundNotifyReq.getOrderCode(),
 				refundOrderCode, refundNotifyReq.getAttach(), refundNotifyReq.getPayAmount(), refundNotifyReq.getThisRefundAmount(),
 				refundNotifyReq.getTotalRefundAmount(), refundNotifyReq.getRefundAll());
-		return null;
+        return RetryerResp.end();
 	}
 
     /**

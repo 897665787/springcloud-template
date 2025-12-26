@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -547,27 +548,17 @@ public class OrderController implements OrderFeign {
 		log.info("请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject), JsonUtil.toJsonString(paramObject));
 		long start = System.currentTimeMillis();
 		try {
-			HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject);
-			@SuppressWarnings("rawtypes")
-			ResponseEntity<Result> responseEntity = restTemplate.postForEntity(url, httpEntity, Result.class);
-			if (responseEntity.getStatusCode() == HttpStatus.OK) {
-				@SuppressWarnings("unchecked")
-				Object result = responseEntity.getBody();
-				log.info("{}ms,结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
-				remark = result.getMessage();
-				if (result.successCode()) {
-					return result.getData();
-				}
-			} else {
-				remark = "响应码:" + responseEntity.getStatusCodeValue();
-			}
+            HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject);
+            Object result = restTemplate.postForObject(url, httpEntity, Object.class);
+            log.info("{}ms,结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
+            return result;
 		} catch (Exception e) {
 			log.error("{}ms,异常", System.currentTimeMillis() - start, e);
 			remark = ExceptionUtils.getMessage(e);
 		}
-		Map<String, String> dataMap = Maps.newHashMap();
-		dataMap.put("message", remark);
-		return dataMap;
+        Map<String, String> dataMap = Maps.newHashMap();
+        dataMap.put("message", remark);
+        return dataMap;
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import com.company.order.api.feign.PayFeign;
 import com.company.order.api.request.*;
 import com.company.order.api.request.OrderReq.ProductReq;
 import com.company.order.api.response.PayResp;
+import com.company.tool.api.response.RetryerResp;
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.DistributeOrderFeign;
 import com.company.user.api.request.DistributeBuyOrderReq;
@@ -208,7 +209,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				payNotifyReq.setOrderCode(orderCode);
 				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
-				Void buyNotifyResult = buyNotify(payNotifyReq);
+                RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
 				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
 			});
 			return new DistributeBuyOrderResp().setNeedPay(false);
@@ -240,7 +241,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 	 * @return
 	 */
 	@PostMapping("/buyNotify")
-	public Void buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
+	public RetryerResp buyNotify(@RequestBody PayNotifyReq payNotifyReq) {
 		String orderCode = payNotifyReq.getOrderCode();
 		LocalDateTime time = payNotifyReq.getTime();
 
@@ -254,7 +255,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				userCouponService.updateStatus(userCouponId, "used", "nouse");
 			}
 
-			return null;
+			return RetryerResp.end();
 		}
 
 		// 支付成功
@@ -272,7 +273,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
 			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
-			return null;
+			return RetryerResp.end();
 		}
 
     	// 发布‘支付成功’事件
@@ -280,7 +281,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 		params.put("orderCode", orderCode);
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.DISTRIBUTE_PAY_SUCCESS.EXCHANGE);
 
-		return null;
+		return RetryerResp.end();
 	}
 
 	/**

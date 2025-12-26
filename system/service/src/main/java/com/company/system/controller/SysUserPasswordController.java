@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
+import com.company.tool.api.response.RetryerResp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -131,13 +132,13 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 	 * 提醒密码过期(使用restTemplate的方式调用)
 	 */
 	@PostMapping("/remindPasswordExpire")
-	public Void remindPasswordExpire(@RequestBody RemindPasswordExpireReq remindPasswordExpireReq) {
+	public RetryerResp remindPasswordExpire(@RequestBody RemindPasswordExpireReq remindPasswordExpireReq) {
 		Integer sysUserId = remindPasswordExpireReq.getSysUserId();
 		Integer sysUserPasswordId = remindPasswordExpireReq.getSysUserPasswordId();
 		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
 		if (!sysUserPasswordId.equals(sysUserPassword.getId())) {
 			// 最新密码已经不是该密码了
-			return null;
+            return RetryerResp.end();
 		}
 
 		// 发送时间调到（09:00~18:30）工作时间内
@@ -185,6 +186,6 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 			sendEmailReq.setOverTime(overTime);
 			smsFeign.send(sendEmailReq);
 		}
-		return null;
+        return RetryerResp.end();
 	}
 }
