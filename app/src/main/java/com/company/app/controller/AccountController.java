@@ -108,8 +108,7 @@ public class AccountController {
 			ExceptionUtil.throwException("手机号未注册，请前往注册！");
 		}
 
-        String verifyCode = verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.LOGIN);
-        return Collections.singletonMap("verifyCode", verifyCode);
+        return verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.LOGIN);
 	}
 
 	@PostMapping(value = "/login/mobile")
@@ -158,7 +157,7 @@ public class AccountController {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-            return Collections.singletonMap("tip", "登出成功");
+            return Collections.singletonMap("value", "登出成功");
 		}
 
 		String device = tokenService.invalid(token);
@@ -171,6 +170,6 @@ public class AccountController {
 		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
-        return Collections.singletonMap("tip", "登出成功");
+        return Collections.singletonMap("value", "登出成功");
 	}
 }

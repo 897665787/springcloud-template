@@ -81,8 +81,7 @@ public class AccountController {
 
 		String password = loginReq.getPassword();
 		String md5Password = PassWordUtil.md5(password);
-		SysUserPasswordResp sysUserPasswordResp = sysUserPasswordFeign.getBySysUserId(sysUserResp.getId())
-				;
+        SysUserPasswordResp sysUserPasswordResp = sysUserPasswordFeign.getBySysUserId(sysUserResp.getId());
 		if (!sysUserPasswordResp.getCanUse()) {
 			ExceptionUtil.throwException(sysUserPasswordResp.getPasswordTips());
 		}
@@ -130,11 +129,11 @@ public class AccountController {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-            return Collections.singletonMap("tip", "登出成功");
+            return Collections.singletonMap("value", "登出成功");
 		}
 
 		tokenService.invalid(token);
 
-        return Collections.singletonMap("tip", "登出成功");
+        return Collections.singletonMap("value", "登出成功");
 	}
 }

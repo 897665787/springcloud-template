@@ -8,6 +8,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Map;
+
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/qrcode", fallbackFactory = ThrowExceptionFallback.class)
 public interface QrcodeFeign {
 
@@ -18,7 +20,7 @@ public interface QrcodeFeign {
 	 * @return 小程序码图片链接
 	 */
 	@PostMapping(value = "/wxaCode2upload")
-	String wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq);
+    Map<String, String> wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq);
 
 	/**
 	 * 获取小程序码（建议优先使用wxaCode2upload，除非上传图片到服务器有性能问题）

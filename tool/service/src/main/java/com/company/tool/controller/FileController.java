@@ -1,6 +1,5 @@
 package com.company.tool.controller;
 
-
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.ClientUploadReq;
 import com.company.tool.api.request.UploadReq;
@@ -13,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/file")
@@ -46,9 +48,8 @@ public class FileController implements FileFeign {
 	}
 
 	@Override
-	public String presignedUrl(String fileKey) {
+	public Map<String, String> presignedUrl(String fileKey) {
 		String presignedUrl = uploadService.presignedUrl(fileKey);
-		return presignedUrl;
+		return Collections.singletonMap("value", presignedUrl);
 	}
-
 }

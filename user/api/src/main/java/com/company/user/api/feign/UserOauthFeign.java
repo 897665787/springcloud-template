@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/useroauth", fallbackFactory = ThrowExceptionFallback.class)
 public interface UserOauthFeign {
 
@@ -19,11 +21,11 @@ public interface UserOauthFeign {
 			@RequestParam("identifier") String identifier);
 
 	@RequestMapping("/selectIdentifier")
-	String selectIdentifier(@RequestParam("userId") Integer userId,
-			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
+    Map<String, String> selectIdentifier(@RequestParam("userId") Integer userId,
+                                         @RequestParam("identityType") UserOauthEnum.IdentityType identityType);
 
 	@RequestMapping("/selectCertificate")
-	String selectCertificate(@RequestParam("userId") Integer userId,
+    Map<String, String> selectCertificate(@RequestParam("userId") Integer userId,
 			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
 	
 	@RequestMapping("/bindOauth")

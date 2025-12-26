@@ -48,7 +48,7 @@ public class FileController {
 			// 客户端使用presignedUrl上传文件
 			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
 			log.info("result:{}", result);
-            return Collections.singletonMap("fileKey", fileKey);
+            return Collections.singletonMap("value", fileKey);
 		} catch (IOException e) {
 			log.error("IOException", e);
 			ExceptionUtil.throwException("文件上传失败");
@@ -72,7 +72,6 @@ public class FileController {
      */
 	@GetMapping("/url")
 	public Map<String, String> url(String fileKey) {
-        String url = fileFeign.presignedUrl(fileKey);
-        return Collections.singletonMap("url", url);
+        return fileFeign.presignedUrl(fileKey);
 	}
 }

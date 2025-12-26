@@ -1,5 +1,7 @@
 package com.company.tool.controller;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,10 @@ public class QrcodeController implements QrcodeFeign {
 	private UploadService uploadService;
 
 	@Override
-	public String wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq) {
+	public Map<String, String> wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq) {
 		byte[] bytes = getWxaCodeBytes(wxaCodeReq);
 		String fileKey = uploadService.upload(bytes);
-		return fileKey;
+        return Collections.singletonMap("value", fileKey);
 	}
 
 	@Override

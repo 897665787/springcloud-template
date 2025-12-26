@@ -69,12 +69,12 @@ public class AliNotifyController implements AliNotifyFeign {
 					AliConstants.CHARSET, AliConstants.SIGNTYPE);
 			if (!signVerified) {
 				payNotifyMapper.updateRemarkById("验签失败", payNotify.getId());
-				return Collections.singletonMap("message", "fail");
+				return Collections.singletonMap("value", "fail");
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-            return Collections.singletonMap("message", "fail");
+            return Collections.singletonMap("value", "fail");
 		}
 
 		String tradeStatus = aliParams.get("trade_status");
@@ -155,7 +155,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-                return Collections.singletonMap("message", "success");
+                return Collections.singletonMap("value", "success");
 			}
 
 			// MQ异步处理
@@ -219,7 +219,7 @@ public class AliNotifyController implements AliNotifyFeign {
 			if (affect == 0) {
 				// 订单回调已处理完成，无需重复处理
 				payNotifyMapper.updateRemarkById("订单回调已处理完成，无需重复处理", payNotify.getId());
-                return Collections.singletonMap("message", "success");
+                return Collections.singletonMap("value", "success");
 			}
 
 			// MQ异步处理
@@ -237,6 +237,6 @@ public class AliNotifyController implements AliNotifyFeign {
 			messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 					Constants.QUEUE.PAY_NOTIFY.KEY);
 		}
-        return Collections.singletonMap("message", "success");
+        return Collections.singletonMap("value", "success");
 	}
 }

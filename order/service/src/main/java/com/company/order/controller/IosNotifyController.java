@@ -85,12 +85,12 @@ public class IosNotifyController implements IosNotifyFeign {
 			boolean correctSignature = checkSignature(sortMap);
             if (!correctSignature) {
             	payNotifyMapper.updateRemarkById("验签失败", payNotify.getId());
-                return Collections.singletonMap("message", "fail");
+                return Collections.singletonMap("value", "fail");
             }
 		} catch (Exception e) {
 			log.error(">>>解析回调参数异常，直接返回", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-            return Collections.singletonMap("message", "fail");
+            return Collections.singletonMap("value", "fail");
 		}
 
         String tradeId = iosParams.get("tradeId");
@@ -162,7 +162,7 @@ public class IosNotifyController implements IosNotifyFeign {
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
-        return Collections.singletonMap("message", "success");
+        return Collections.singletonMap("value", "success");
 	}
 
 

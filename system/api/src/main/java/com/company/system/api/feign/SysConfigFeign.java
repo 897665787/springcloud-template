@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysConfig", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysConfigFeign {
@@ -37,7 +38,7 @@ public interface SysConfigFeign {
 	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
 	@GetMapping("/getValueByCode")
-	String getValueByCode(@RequestParam("code") String code);
+    Map<String, String> getValueByCode(@RequestParam("code") String code);
 
 	@PostMapping("/updateValueByCode")
 	Boolean updateValueByCode(@RequestParam("value") String value, @RequestParam("code") String code);

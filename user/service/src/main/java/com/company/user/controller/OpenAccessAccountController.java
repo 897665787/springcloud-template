@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.user.api.feign.OpenAccessAccountFeign;
 import com.company.user.service.OpenAccessAccountService;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/openAccessAccount")
 public class OpenAccessAccountController implements OpenAccessAccountFeign {
@@ -16,8 +19,8 @@ public class OpenAccessAccountController implements OpenAccessAccountFeign {
 	private OpenAccessAccountService openAccessAccountService;
 
 	@Override
-	public String getAppKeyByAppid(String appid) {
+	public Map<String, String> getAppKeyByAppid(String appid) {
 		String appKey = openAccessAccountService.getAppKeyByAppid(appid);
-		return appKey;
+        return Collections.singletonMap("value", "appKey");
 	}
 }

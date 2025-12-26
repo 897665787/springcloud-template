@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.company.tool.api.constant.Constants;
 import com.company.tool.api.response.CaptchaResp;
 
+import java.util.Map;
+
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/verifyCode", fallbackFactory = ThrowExceptionFallback.class)
 public interface VerifyCodeFeign {
 
@@ -21,7 +23,7 @@ public interface VerifyCodeFeign {
 	 * @return
 	 */
 	@PostMapping("/sms")
-	String sms(@RequestParam("mobile") String mobile, @RequestParam("type") String type);
+    Map<String, String> sms(@RequestParam("mobile") String mobile, @RequestParam("type") String type);
 	
 	/**
 	 * 邮件验证码
@@ -31,7 +33,7 @@ public interface VerifyCodeFeign {
 	 * @return
 	 */
 	@PostMapping("/email")
-	String email(@RequestParam("email") String email, @RequestParam("type") String type);
+    Map<String, String> email(@RequestParam("email") String email, @RequestParam("type") String type);
 	
 	/**
 	 * 图形验证码

@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,7 +26,7 @@ public class FileController {
 	private FileFeign fileFeign;
 
 	@PostMapping("/upload")
-	public String upload(@RequestParam("file") MultipartFile file) {
+	public Map<String, String> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
@@ -46,7 +48,7 @@ public class FileController {
 			// 客户端使用presignedUrl上传文件
 			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
 			log.info("result:{}", result);
-			return fileKey;
+			return Collections.singletonMap("value", fileKey);
 		} catch (IOException e) {
 			log.error("IOException", e);
 			ExceptionUtil.throwException("文件上传失败");
@@ -68,8 +70,8 @@ public class FileController {
 	 * @param fileKey
 	 * @return
 	 */
-	@GetMapping("/url")
-	public String url(String fileKey) {
-		return fileFeign.presignedUrl(fileKey);
-	}
+    @GetMapping("/url")
+    public Map<String, String> url(String fileKey) {
+        return fileFeign.presignedUrl(fileKey);
+    }
 }

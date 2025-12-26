@@ -3,6 +3,7 @@ package com.company.system.controller;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Map;
 
 import com.company.tool.api.response.RetryerResp;
@@ -98,9 +99,9 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 	}
 
 	@Override
-	public String getPasswordBySysUserId(Integer sysUserId) {
+	public Map<String, String> getPasswordBySysUserId(Integer sysUserId) {
 		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
-		return sysUserPassword.getPassword();
+        return Collections.singletonMap("value", sysUserPassword.getPassword());
 	}
 
 	@Override

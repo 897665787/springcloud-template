@@ -16,6 +16,9 @@ import com.company.user.api.response.UserOauthResp;
 import com.company.user.entity.UserOauth;
 import com.company.user.mapper.user.UserOauthMapper;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/useroauth")
 public class UserOauthController implements UserOauthFeign {
@@ -31,15 +34,15 @@ public class UserOauthController implements UserOauthFeign {
 	}
 
 	@Override
-	public String selectIdentifier(Integer userId, UserOauthEnum.IdentityType identityType) {
+	public Map<String, String> selectIdentifier(Integer userId, UserOauthEnum.IdentityType identityType) {
 		UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, identityType);
-		return userOauth.getIdentifier();
+        return Collections.singletonMap("value", userOauth.getIdentifier());
 	}
 
 	@Override
-	public String selectCertificate(Integer userId, UserOauthEnum.IdentityType identityType) {
+	public Map<String, String> selectCertificate(Integer userId, UserOauthEnum.IdentityType identityType) {
 		UserOauth userOauth = userOauthMapper.selectByUserIdIdentityType(userId, identityType);
-		return userOauth.getCertificate();
+        return Collections.singletonMap("value", userOauth.getCertificate());
 	}
 
 	@Override

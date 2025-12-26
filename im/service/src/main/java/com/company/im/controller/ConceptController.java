@@ -33,7 +33,7 @@ public class ConceptController {
         } else {
             concept.send(new UserMessage(message, toUserId));
         }
-        return Collections.singletonMap("message", "message");
+        return Collections.singletonMap("value", "message");
     }
 
     @RequestMapping("/path")
@@ -44,7 +44,7 @@ public class ConceptController {
         } else {
             concept.send(new PathMessage(message, path));
         }
-        return Collections.singletonMap("message", "message");
+        return Collections.singletonMap("value", "message");
     }
 
     @RequestMapping("/group")
@@ -55,6 +55,6 @@ public class ConceptController {
         } else {
             concept.send(new GroupMessage(message, group));
         }
-        return Collections.singletonMap("message", "message");
+        return Collections.singletonMap("value", "message");
     }
 }

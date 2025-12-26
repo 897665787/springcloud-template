@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysDictData", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysDictDataFeign {
@@ -40,5 +41,5 @@ public interface SysDictDataFeign {
 	List<SysDictDataResp> getByType(@RequestParam("type") String type);
 
 	@GetMapping("/getValueByTypeCode")
-	String getValueByTypeCode(@RequestParam("type") String type, @RequestParam("code") String code);
+    Map<String, String> getValueByTypeCode(@RequestParam("type") String type, @RequestParam("code") String code);
 }

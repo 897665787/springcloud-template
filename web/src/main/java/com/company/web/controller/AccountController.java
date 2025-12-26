@@ -78,7 +78,7 @@ public class AccountController {
 	private String tokenPrefix;
 
 	@GetMapping(value = "/reg/verify/email")
-	public String regVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
+	public Map<String, String> regVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
 		if (!RegexUtil.checkEmail(email)) {
             ExceptionUtil.throwException("邮箱格式错误");
 		}
@@ -125,14 +125,13 @@ public class AccountController {
 	}
 
 	@GetMapping(value = "/reg/verify/mobile")
-	public String regVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
+	public Map<String, String> regVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
 		if (!RegexUtil.checkMobile(mobile)) {
 			ExceptionUtil.throwException("手机号格式错误");
 		}
 
 		String identifier = mobile;
-		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
-				;
+        UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier);
 		if (userOauthResp != null) {
 			ExceptionUtil.throwException("手机号已注册，可以直接登录！");
 		}
@@ -174,7 +173,7 @@ public class AccountController {
 	}
 
 	@GetMapping(value = "/login/verify/email")
-	public String loginVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
+	public Map<String, String> loginVerifyByEmail(@NotBlank(message = "邮箱不能为空") String email) {
 		if (!RegexUtil.checkEmail(email)) {
 			ExceptionUtil.throwException("邮箱格式错误");
 		}
@@ -210,7 +209,7 @@ public class AccountController {
 	}
 
 	@GetMapping(value = "/login/verify/mobile")
-	public String loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
+	public Map<String, String> loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
 		if (!RegexUtil.checkMobile(mobile)) {
 			ExceptionUtil.throwException("手机号格式错误");
 		}

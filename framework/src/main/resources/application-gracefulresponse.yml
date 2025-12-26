@@ -19,7 +19,10 @@ graceful-response:
   default-validate-error-code:
   # 例外包路径(支持数字, *和**通配符匹配)，该包路径下的controller将被忽略处理
   exclude-packages:
-#    - com.lizhiadmin.pro.module.*.controller
+    - org.springframework.boot.actuate.*
+    - springfox.**
+  exclude-urls:
+    - /**/api-docs/**
   # 设置是否将原生异常错误信息detailMessage字段填充到Response的msg中
   # 默认为false，即不打开
   origin-exception-using-detail-message: false

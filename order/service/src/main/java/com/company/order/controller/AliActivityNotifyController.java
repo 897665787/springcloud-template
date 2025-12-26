@@ -363,18 +363,18 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 					AliActivityConstants.CHARSET, AliActivityConstants.SIGNTYPE);
 			if (!signVerified) {
 				aliActivityNotifyMapper.updateRemarkById("验签失败", aliActivityNotify.getId());
-				return Collections.singletonMap("message", "fail");
+				return Collections.singletonMap("value", "fail");
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			aliActivityNotifyMapper.updateRemarkById(e.getMessage(), aliActivityNotify.getId());
-			return Collections.singletonMap("message", "fail");
+			return Collections.singletonMap("value", "fail");
 		}
 
 		String msgMethod = aliParams.get("msg_method");
 		FromMessage fromMessage = FromMessageBeanFactory.of(msgMethod);
 		fromMessage.handle(aliActivityNotify.getId(), aliParams);
 
-        return Collections.singletonMap("message", "success");
+        return Collections.singletonMap("value", "success");
 	}
 }

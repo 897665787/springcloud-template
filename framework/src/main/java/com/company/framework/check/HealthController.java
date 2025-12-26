@@ -11,6 +11,6 @@ import java.util.Map;
 public class HealthController {
 	@GetMapping("/health")
 	public Map<String, String> health() {
-        return Collections.singletonMap("health", "success");
+        return Collections.singletonMap("value", "success");
 	}
 }

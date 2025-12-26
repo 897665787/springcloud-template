@@ -33,7 +33,7 @@ public class TioController {
 		} else {
 			Tio.sendToUser(bootstrap.getServerTioConfig(), toUserId, WsResponse.fromText(message, "utf-8"));
 		}
-        return Collections.singletonMap("message", message);
+        return Collections.singletonMap("value", message);
 	}
 
 	@RequestMapping("/group")
@@ -44,6 +44,6 @@ public class TioController {
 		} else {
 			Tio.sendToGroup(bootstrap.getServerTioConfig(), group, WsResponse.fromText(message, "utf-8"));
 		}
-        return Collections.singletonMap("message", message);
+        return Collections.singletonMap("value", message);
 	}
 }

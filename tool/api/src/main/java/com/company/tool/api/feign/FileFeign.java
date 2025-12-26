@@ -1,18 +1,19 @@
 package com.company.tool.api.feign;
 
-import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
-import com.company.tool.api.request.ClientUploadReq;
-import com.company.tool.api.response.ClientUploadResp;
+import java.util.Map;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.tool.api.constant.Constants;
+import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
+import com.company.tool.api.request.ClientUploadReq;
 import com.company.tool.api.request.UploadReq;
+import com.company.tool.api.response.ClientUploadResp;
 import com.company.tool.api.response.UploadResp;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/file", fallbackFactory = ThrowExceptionFallback.class)
 public interface FileFeign {
@@ -50,5 +51,5 @@ public interface FileFeign {
      * @return 预签名链接
      */
     @GetMapping(value = "/presignedUrl")
-    String presignedUrl(@RequestParam("fileKey") String fileKey);
+    Map<String, String> presignedUrl(@RequestParam("fileKey") String fileKey);
 }

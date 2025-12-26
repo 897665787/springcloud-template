@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +48,12 @@ public class TestController {
 	private PopupFeign popupFeign;
 
 	@GetMapping("/verifyCodeSms")
-	public String verifyCodeSms(String mobile, String type) {
+	public Map<String, String> verifyCodeSms(String mobile, String type) {
 		return verifyCodeFeign.sms(mobile, type);
 	}
 
 	@GetMapping("/webhook")
-	public String webhook() {
+	public Map<String, String> webhook() {
 		Map<String, String> templateParamMap = Maps.newHashMap();
 		templateParamMap.put("time", DateUtil.now());
 		templateParamMap.put("orderCode", "d222222222222");
@@ -73,7 +74,7 @@ public class TestController {
 	}
 	
 	@PostMapping("/upload")
-	public String upload(@RequestParam("file") MultipartFile file) {
+	public Map<String, String> upload(@RequestParam("file") MultipartFile file) {
 		String name = file.getName();
 		String originalFilename = file.getOriginalFilename();
 		String contentType = file.getContentType();
@@ -95,7 +96,7 @@ public class TestController {
 			// 客户端使用presignedUrl上传文件
 			String result = HttpRequest.put(presignedUrl).body(IOUtils.toByteArray(inputStream)).execute().body();
 			log.info("result:{}", result);
-			return fileKey;
+            return Collections.singletonMap("value", fileKey);
 		} catch (IOException e) {
 			log.error("IOException", e);
 			ExceptionUtil.throwException("文件上传失败");

@@ -1,6 +1,7 @@
 package com.company.tool.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
@@ -36,7 +37,7 @@ public class VerifyCodeController implements VerifyCodeFeign {
 	private AsyncEmailSender asyncEmailSender;
 	
 	@Override
-	public String sms(String mobile, String type) {
+	public Map<String, String> sms(String mobile, String type) {
 		VerifyCode verifyCode = verifyCodeService.selectLastByCertificateType(mobile, type);
 		if (verifyCode != null) {
 			if (VerifyCodeEnum.Status.UN_USE == VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
@@ -60,11 +61,11 @@ public class VerifyCodeController implements VerifyCodeFeign {
 
 		asyncSmsSender.send(mobile, templateParamMap, SmsEnum.Type.VERIFYCODE, planSendTime, overTime);
 
-		return "验证码发送成功";
+        return Collections.singletonMap("value", "验证码发送成功");
 	}
 
 	@Override
-	public String email(String email, String type) {
+	public Map<String, String> email(String email, String type) {
 		VerifyCode verifyCode = verifyCodeService.selectLastByCertificateType(email, type);
 		if (verifyCode != null) {
 			if (VerifyCodeEnum.Status.UN_USE == VerifyCodeEnum.Status.of(verifyCode.getStatus())) {
@@ -88,7 +89,7 @@ public class VerifyCodeController implements VerifyCodeFeign {
 
 		asyncEmailSender.send(email, templateParamMap, EmailEnum.Type.VERIFYCODE, planSendTime, overTime);
 
-		return "验证码发送成功";
+        return Collections.singletonMap("value", "验证码发送成功");
 	}
 	
 	@Override

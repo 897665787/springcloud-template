@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+
 @FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/sysUserPassword", fallbackFactory = ThrowExceptionFallback.class)
 public interface SysUserPasswordFeign {
 
@@ -18,7 +20,7 @@ public interface SysUserPasswordFeign {
 	SysUserPasswordResp getBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
 
 	@GetMapping("/getPasswordBySysUserId")
-	String getPasswordBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
+    Map<String, String> getPasswordBySysUserId(@RequestParam("sysUserId") Integer sysUserId);
 
 	@PostMapping("/saveNewPassword")
 	Void saveNewPassword(@RequestBody SaveNewPasswordReq saveNewPasswordReq);

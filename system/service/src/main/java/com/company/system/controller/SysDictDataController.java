@@ -1,6 +1,8 @@
 package com.company.system.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.company.system.api.request.RemoveReq;
 import org.apache.commons.lang3.StringUtils;
@@ -118,9 +120,9 @@ public class SysDictDataController implements SysDictDataFeign {
 	}
 
 	@Override
-	public String getValueByTypeCode(String type, String code) {
+	public Map<String, String> getValueByTypeCode(String type, String code) {
 		String value = sysDictDataService.getValueByTypeCode(type, code);
-		return value;
+        return Collections.singletonMap("value", value);
 	}
 
 }
