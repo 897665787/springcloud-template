@@ -16,7 +16,7 @@ public class MysqlPasswordRepository implements PasswordRepository {
 	@Override
 	public boolean checkPassword(String userId, String password) {
 		String passwordDB = userOauthFeign.selectCertificate(Integer.valueOf(userId), UserOauthEnum.IdentityType.MOBILE)
-				.dataOrThrow();
+				;
 		String md5Password = PassWordUtil.md5(password);
 		return md5Password.equals(passwordDB);
 	}

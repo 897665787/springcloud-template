@@ -1,6 +1,6 @@
 package com.company.tool.controller;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.ClientUploadReq;
 import com.company.tool.api.request.UploadReq;
@@ -21,33 +21,33 @@ public class FileController implements FileFeign {
 	private UploadService uploadService;
 
 	@Override
-	public Result<UploadResp> upload(@RequestBody UploadReq uploadReq) {
+	public UploadResp upload(@RequestBody UploadReq uploadReq) {
 		if (uploadReq.getBytes().length == 0) {
-			return Result.fail("请选择文件");
+			ExceptionUtil.throwException("请选择文件");
 		}
 
 		String fileKey = uploadService.upload(uploadReq.getBytes(), uploadReq.getBasePath(), uploadReq.getFileName());
 
 		UploadResp resp = new UploadResp();
 		resp.setFileKey(fileKey);
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<ClientUploadResp> clientUpload(@RequestBody ClientUploadReq clientUploadReq) {
+	public ClientUploadResp clientUpload(@RequestBody ClientUploadReq clientUploadReq) {
 		String basePath = clientUploadReq.getBasePath();
 		String fileName = clientUploadReq.getFileName();
 		ClientUploadResult clientUploadResult = uploadService.clientUpload(basePath, fileName);
 		ClientUploadResp resp = new ClientUploadResp();
 		resp.setFileKey(clientUploadResult.getFileKey());
 		resp.setPresignedUrl(clientUploadResult.getPresignedUrl());
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<String> presignedUrl(String fileKey) {
+	public String presignedUrl(String fileKey) {
 		String presignedUrl = uploadService.presignedUrl(fileKey);
-		return Result.success(presignedUrl);
+		return presignedUrl;
 	}
 
 }

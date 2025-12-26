@@ -25,7 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HttpContextUtil;
 import com.company.framework.util.JsonUtil;
 

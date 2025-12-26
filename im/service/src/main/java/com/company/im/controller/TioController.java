@@ -9,7 +9,7 @@ import org.tio.core.Tio;
 import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.starter.TioWebSocketServerBootstrap;
 
-import com.company.common.api.Result;
+
 import com.company.framework.util.IpUtil;
 
 @RestController
@@ -23,24 +23,24 @@ public class TioController {
 	private TioWebSocketServerBootstrap bootstrap;
 
 	@RequestMapping("/toUser")
-	public Result<?> tiosend(String toUserId, String msg) {
+	public String tiosend(String toUserId, String msg) {
 		String message = IpUtil.getHostIp() + ":" + port + " " + msg;
 		if (StringUtils.isBlank(toUserId)) {
 			Tio.sendToAll(bootstrap.getServerTioConfig(), WsResponse.fromText(message, "utf-8"));
 		} else {
 			Tio.sendToUser(bootstrap.getServerTioConfig(), toUserId, WsResponse.fromText(message, "utf-8"));
 		}
-		return Result.success(message);
+		return message;
 	}
 
 	@RequestMapping("/group")
-	public Result<?> tiogroup(String group, String msg) {
+	public String tiogroup(String group, String msg) {
 		String message = IpUtil.getHostIp() + ":" + port + " " + msg;
 		if (StringUtils.isBlank(group)) {
 			Tio.sendToAll(bootstrap.getServerTioConfig(), WsResponse.fromText(message, "utf-8"));
 		} else {
 			Tio.sendToGroup(bootstrap.getServerTioConfig(), group, WsResponse.fromText(message, "utf-8"));
 		}
-		return Result.success(message);
+		return message;
 	}
 }

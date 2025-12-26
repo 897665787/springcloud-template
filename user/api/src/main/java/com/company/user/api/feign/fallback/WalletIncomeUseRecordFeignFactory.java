@@ -1,5 +1,6 @@
 package com.company.user.api.feign.fallback;
 
+
 import com.company.common.api.Result;
 import com.company.user.api.feign.WalletIncomeUseRecordFeign;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,12 @@ public class WalletIncomeUseRecordFeignFactory implements FallbackFactory<Wallet
         return new WalletIncomeUseRecordFeign() {
 
             @Override
-            public Result<List<Integer>> selectId4Expire(Integer limit) {
-                return Result.success(new ArrayList<>());// 降级返回空列表
+            public List<Integer> selectId4Expire(Integer limit) {
+                return new ArrayList<>();// 降级返回空列表
             }
 
             @Override
-            public Result<Boolean> update4Expire(Integer id) {
+            public Boolean update4Expire(Integer id) {
                 return Result.onFallbackError();
             }
 

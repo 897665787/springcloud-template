@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserOauthFeign {
 
 	@RequestMapping("/selectOauth")
-	Result<UserOauthResp> selectOauth(@RequestParam("identityType") UserOauthEnum.IdentityType identityType,
+	UserOauthResp selectOauth(@RequestParam("identityType") UserOauthEnum.IdentityType identityType,
 			@RequestParam("identifier") String identifier);
 
 	@RequestMapping("/selectIdentifier")
-	Result<String> selectIdentifier(@RequestParam("userId") Integer userId,
+	String selectIdentifier(@RequestParam("userId") Integer userId,
 			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
 
 	@RequestMapping("/selectCertificate")
-	Result<String> selectCertificate(@RequestParam("userId") Integer userId,
+	String selectCertificate(@RequestParam("userId") Integer userId,
 			@RequestParam("identityType") UserOauthEnum.IdentityType identityType);
 	
 	@RequestMapping("/bindOauth")
-	Result<Boolean> bindOauth(@RequestBody UserOauthReq userInfoReq);
+	Boolean bindOauth(@RequestBody UserOauthReq userInfoReq);
 
 }

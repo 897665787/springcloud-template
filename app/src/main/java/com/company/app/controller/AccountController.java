@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +27,7 @@ import com.company.app.req.LoginByWeixinAppReq;
 import com.company.app.resp.LoginResp;
 import com.company.token.TokenService;
 import com.company.token.util.TokenValueUtil;
-import com.company.common.api.Result;
+
 import com.company.framework.util.RegexUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
@@ -70,14 +71,14 @@ public class AccountController {
 	private String tokenPrefix;
 
 	@PostMapping(value = "/login/weixinapp")
-	public Result<LoginResp> loginByMobile(@Valid @RequestBody LoginByWeixinAppReq loginByWeixinAppReq) {
+	public LoginResp loginByMobile(@Valid @RequestBody LoginByWeixinAppReq loginByWeixinAppReq) {
 		String wxcode = loginByWeixinAppReq.getWxcode();
 
 		String userId = null;
 		try {
 			userId = weixinAppLoginClient.login(null, null, wxcode);
 		} catch (LoginException e) {
-			return Result.fail(e.getMessage());
+			ExceptionUtil.throwException(e.getMessage());
 		}
 
 		LoginResp loginResp = new LoginResp();
@@ -85,33 +86,33 @@ public class AccountController {
 			// 用户ID为null代表未登录成功，一般是指通过authcode没有找到对应的用户，需要通过XxxCodeBind来注册用户账号
 			loginResp.setNeedBind(true);
 			loginResp.setBindCode(wxcode);
-			return Result.success(loginResp);
+			return loginResp;
 		}
 
 		loginResp.setNeedBind(false);
 		loginResp.setToken(token(userId));
 
-		return Result.success(loginResp);
+		return loginResp;
 	}
 
 	@GetMapping(value = "/login/verify/mobile")
-	public Result<String> loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
+	public String loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
 		if (!RegexUtil.checkMobile(mobile)) {
-			return Result.fail("手机号格式错误");
+			ExceptionUtil.throwException("手机号格式错误");
 		}
 
 		String identifier = mobile;
 		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
-				.dataOrThrow();
+				;
 		if (userOauthResp == null) {
-			return Result.fail("手机号未注册，请前往注册！");
+			ExceptionUtil.throwException("手机号未注册，请前往注册！");
 		}
 
 		return verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.LOGIN);
 	}
 
 	@PostMapping(value = "/login/mobile")
-	public Result<LoginResp> loginByMobile(@Valid @RequestBody LoginByMobileReq loginByMobileReq) {
+	public LoginResp loginByMobile(@Valid @RequestBody LoginByMobileReq loginByMobileReq) {
 		String mobile = loginByMobileReq.getMobile();
 		String code = loginByMobileReq.getCode();
 		String bindCode = loginByMobileReq.getBindCode();
@@ -121,14 +122,14 @@ public class AccountController {
 		try {
 			userId = mobileCodeBindLoginClient.login(identifier, code, bindCode);
 		} catch (LoginException e) {
-			return Result.fail(e.getMessage());
+			ExceptionUtil.throwException(e.getMessage());
 		}
 
 		LoginResp loginResp = new LoginResp();
 		loginResp.setNeedBind(false);
 		loginResp.setToken(token(userId));
 
-		return Result.success(loginResp);
+		return loginResp;
 	}
 
 	private String token(String userId) {
@@ -152,11 +153,11 @@ public class AccountController {
 
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public Result<String> logout(HttpServletRequest request) {
+	public String logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return Result.success("登出成功");
+			return "登出成功";
 		}
 
 		String device = tokenService.invalid(token);
@@ -169,6 +170,6 @@ public class AccountController {
 		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
-		return Result.success("登出成功");
+		return "登出成功";
 	}
 }

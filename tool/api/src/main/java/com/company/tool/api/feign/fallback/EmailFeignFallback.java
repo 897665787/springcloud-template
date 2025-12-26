@@ -3,9 +3,10 @@ package com.company.tool.api.feign.fallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.company.common.api.Result;
 import org.springframework.stereotype.Component;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.EmailFeign;
 import com.company.tool.api.request.SendEmailReq;
 
@@ -19,17 +20,17 @@ public class EmailFeignFallback implements FallbackFactory<EmailFeign> {
 		return new EmailFeign() {
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
-				return Result.success(new ArrayList<>());// 降级返回空列表
+			public List<Integer> select4PreTimeSend(Integer limit) {
+				return new ArrayList<>();// 降级返回空列表
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
+			public Void exePreTimeSend(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> send(SendEmailReq sendEmailReq) {
+			public Void send(SendEmailReq sendEmailReq) {
 				return Result.onFallbackError();
 			}
 		};

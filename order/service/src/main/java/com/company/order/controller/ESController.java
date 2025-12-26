@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.es.dto.EsTestDto;
@@ -75,7 +75,7 @@ public class ESController {
 		ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/createIndiceMapping.xml");
 		String createIndiceMapping = clientUtil.createIndiceMapping(indexName, "mapping4lsq.candi_test_v2");
 		// 查看索引结构：http://172.20.33.24:8705/lsq.candi_test_v2/_mapping?pretty
-		return Result.success(createIndiceMapping);
+		return createIndiceMapping;
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ESController {
 		ClientInterface clientUtil = ElasticSearchHelper.getConfigRestClientUtil("esmapper/updateIndiceMapping.xml");
 		String updateIndiceMapping = clientUtil.updateIndiceMapping(indexName + "/_mapping",
 				"mapping4lsq.candi_test_v2");
-		return Result.success(updateIndiceMapping);
+		return updateIndiceMapping;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class ESController {
 	public Object dropIndice(String indexName) {
 		ClientInterface clientUtil = ElasticSearchHelper.getRestClientUtil();
 		String dropIndice = clientUtil.dropIndice(indexName);
-		return Result.success(dropIndice);
+		return dropIndice;
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class ESController {
 		// 1.索引不存在会自动创建索引并且会添加文档
 		// 2.文档已存在会更新文档，根据@ESId注解的字段作唯一
 		String addDocument = clientUtil.addDocument(indexName, estestdto);
-		return Result.success(addDocument);
+		return addDocument;
 	}
 
 	@GetMapping(value = "/getDocumentById")
@@ -162,7 +162,7 @@ public class ESController {
 		// clientUtil.deleteDocuments(indexName, new String[] { "1", "2", "3"
 		// });
 
-		return Result.success(deleteDocument);
+		return deleteDocument;
 	}
 
 	@GetMapping(value = "/queryAll")

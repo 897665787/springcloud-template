@@ -3,9 +3,10 @@ package com.company.tool.api.feign.fallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.company.common.api.Result;
 import org.springframework.stereotype.Component;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.tool.api.request.SubscribeSendReq;
@@ -20,32 +21,32 @@ public class SubscribeFeignFallback implements FallbackFactory<SubscribeFeign> {
 		return new SubscribeFeign() {
 
 			@Override
-			public Result<List<String>> selectTemplateCodeByGroup(String group) {
+			public List<String> selectTemplateCodeByGroup(String group) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> grant(SubscribeGrantReq subscribeGrantReq) {
+			public Void grant(SubscribeGrantReq subscribeGrantReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> send(SubscribeSendReq subscribeSendReq) {
+			public Void send(SubscribeSendReq subscribeSendReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
-				return Result.success(new ArrayList<>());// 降级返回空列表
+			public List<Integer> select4PreTimeSend(Integer limit) {
+				return new ArrayList<>();// 降级返回空列表
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
+			public Void exePreTimeSend(Integer id) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> syncTemplate() {
+			public Void syncTemplate() {
 				return Result.onFallbackError();
 			}
 

@@ -1,6 +1,6 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
+
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.cache.ICache;
 import com.company.framework.constant.HeaderConstants;
@@ -44,19 +44,19 @@ public class ApiController {
 	private TimeService timeService;
 
 	@GetMapping(value = "/beans")
-	public Result<Map<?,?>> beans() {
+	public Map<?,?> beans() {
 		ApplicationContext context = SpringContextUtil.getContext();
 		String[] beanDefinitionNames = context.getBeanDefinitionNames();
 		Map<String, Object> map = Maps.newHashMap();
 		map.put("beanDefinitionNames", beanDefinitionNames);
-		return Result.success(map);
+		return map;
 	}
 
 	@Autowired
 	private ICache cache;
 
 	@GetMapping(value = "/timestr")
-	public Result<String> timestr() {
+	public String timestr() {
 		String string1 = cache.get("aaaaaaa", () -> {
 //			int a = 1/0;
 			return ""+System.currentTimeMillis();
@@ -69,7 +69,7 @@ public class ApiController {
 //			return ""+System.currentTimeMillis();
 //		});
 //		System.out.println(string2);
-		return Result.success(timeService.getTime());
+		return timeService.getTime();
 	}
 
 	@Autowired
@@ -78,38 +78,38 @@ public class ApiController {
 	private Integer maxPoolSize;
 
     @GetMapping(value = "/info")
-    public Result<Map<String, Object>> info() {
+    public Map<String, Object> info() {
         Map<String, Object> map = Maps.newHashMap();
         map.put("threadPoolProperties", threadPoolProperties);
         map.put("maxPoolSize", maxPoolSize);
-        return Result.success(map);
+        return map;
     }
 
 	@RequireLogin
 	@GetMapping(value = "/getOrderById")
-	public Result<Order4Resp> getOrderById(String orderCode) {
+	public Order4Resp getOrderById(String orderCode) {
 //		if (true)
 //			ExceptionUtil.throwException(1, "aaaaaaaaaaa");
-//        Result<OrderDetailResp> detail = orderFeign.detail(orderCode);
-        Order4Resp order4RespResult = orderFeign.selectByOrderCode(orderCode).dataOrThrow();
-        return Result.success(order4RespResult);
+//        OrderDetailResp detail = orderFeign.detail(orderCode);
+        Order4Resp order4RespResult = orderFeign.selectByOrderCode(orderCode);
+        return order4RespResult;
 	}
 
 	@GetMapping(value = "/getUserById")
-	public Result<com.company.web.resp.UserResp> getUserById(Long id) {
-//		Result<UserResp> byId = userFeign.getById(1L);
+	public com.company.web.resp.UserResp getUserById(Long id) {
+//		UserResp byId = userFeign.getById(1L);
 
 		UserResp userResp = new UserResp();
 		userResp.setId(1L);
 		userResp.setStatus(1);
-		Result<UserResp> byId = Result.success(userResp);
+		UserResp byId = userResp;
 		System.out.println("byId:"+JsonUtil.toJsonString(byId));
-		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId.dataOrThrow(), com.company.web.resp.UserResp.class);
-		return Result.success(resp);
+		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId, com.company.web.resp.UserResp.class);
+		return resp;
 	}
 
 	@GetMapping(value = "/getInt")
-	public Result<Integer> getInt(HttpServletRequest request) {
+	public Integer getInt(HttpServletRequest request) {
 		String thname = Thread.currentThread().getName();
 		System.out.println(thname+" "+"ApiController platform():" + HeaderContextUtil.platform());
 		System.out.println(thname+" "+"ApiController httpContextHeader():" + HeaderContextUtil.httpContextHeader());
@@ -137,56 +137,56 @@ public class ApiController {
 //			System.err.println(thname2+" "+"ApiController execute platform():" + HeaderContextUtil.platform());
 ////			System.out.println(thname2+" "+"ApiController execute httpContextHeader():" + HeaderContextUtil.httpContextHeader());
 //		});
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/getString")
-	public Result<String> getString() {
-		return Result.success("addddddd");
+	public String getString() {
+		return "addddddd";
 	}
 
 	@GetMapping(value = "/time")
-	public Result<Date> time() {
-		return Result.success(new Date());
+	public Date time() {
+		return new Date();
 	}
 
 	@GetMapping(value = "/onoff")
-	public Result<OrderResp> onoff() {
+	public OrderResp onoff() {
 		for (int i = 0; i < 3000; i++) {
-//			Result<OrderResp> byId = orderFeign.getById((long)i);
+//			OrderResp byId = orderFeign.getById((long)i);
 //			log.info("onoff:{}",byId);
 		}
-		return Result.success(new OrderResp());
+		return new OrderResp();
 	}
 
 	@GetMapping(value = "/send")
-	public Result<String> send() {
-		return Result.success("{}");
+	public String send() {
+		return "{}";
 	}
 
 	@Autowired
 	SequenceGenerator sequenceGenerator;
 
 	@GetMapping(value = "/retryGet")
-	public Result<OrderResp> retryGet(Long id) {
+	public OrderResp retryGet(Long id) {
 		log.info("retryGet");
-//		Result<OrderResp> byId = orderFeign.retryGet(id);
+//		OrderResp byId = orderFeign.retryGet(id);
 //		log.info("retryGet:{}", byId);
 //		return byId;
-		return Result.success();
+		return null;
 	}
 
 	@GetMapping(value = "/retryPost")
-	public Result<OrderResp> retryPost(Long id) {
+	public OrderResp retryPost(Long id) {
 		log.info("retryPost");
-//		Result<OrderResp> byId = orderFeign.retryPost(new OrderReq().setId(id));
+//		OrderResp byId = orderFeign.retryPost(new OrderReq().setId(id));
 //		log.info("retryPost:{}", byId);
 //		return byId;
-		return Result.success();
+		return null;
 	}
 
 	@GetMapping(value = "/threadpool")
-	public Result<Integer> threadpool() {
+	public Integer threadpool() {
 		System.out.println("executor:"+executor);
 		for (int i = 0; i < 3; i++) {
 			int n = i;
@@ -200,11 +200,11 @@ public class ApiController {
 			});
 			System.out.println("submit:"+n);
 		}
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/threadpooltask")
-	public Result<Integer> threadpooltask() {
+	public Integer threadpooltask() {
 		System.out.println("executor:"+executor);
 		for (int i = 0; i < 3; i++) {
 			int n = i;
@@ -220,11 +220,11 @@ public class ApiController {
 		}
 
 //		executor.getActiveCount();
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/log")
-	public Result<Integer> log() {
+	public Integer log() {
 		long start = System.currentTimeMillis();
 		for (int i = 0; i < 1; i++) {
 			try{
@@ -238,6 +238,6 @@ public class ApiController {
 		long end = System.currentTimeMillis();
 		System.out.println("cost:"+(end-start));
 		log.info("cost:{}", (end-start));
-		return Result.success(1);
+		return 1;
 	}
 }

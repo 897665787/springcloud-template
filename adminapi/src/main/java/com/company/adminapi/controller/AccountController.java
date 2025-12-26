@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.token.util.TokenValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import com.company.adminapi.req.LoginReq;
 import com.company.adminapi.resp.LoginResp;
 import com.company.token.TokenService;
 import com.company.adminapi.util.PassWordUtil;
-import com.company.common.api.Result;
+
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.messagedriven.MessageSender;
@@ -61,38 +62,38 @@ public class AccountController {
 	private String tokenPrefix;
 
 	@GetMapping(value = "/captcha")
-	public Result<CaptchaResp> captcha() {
+	public CaptchaResp captcha() {
 		return verifyCodeFeign.captcha(Constants.VerifyCodeType.ADMIN_LOGIN);
 	}
 
 	@PostMapping(value = "/login")
-	public Result<LoginResp> login(@Valid @RequestBody LoginReq loginReq) {
+	public LoginResp login(@Valid @RequestBody LoginReq loginReq) {
 		String account = loginReq.getAccount();
-		SysUserResp sysUserResp = sysUserFeign.getByAccount(account).dataOrThrow();
+		SysUserResp sysUserResp = sysUserFeign.getByAccount(account);
 		if (sysUserResp == null) {
-			return Result.fail("账号不存在");
+			ExceptionUtil.throwException("账号不存在");
 		}
 
 		if (!"ON".equalsIgnoreCase(sysUserResp.getStatus())) {
-			return Result.fail("账号已停用");
+			ExceptionUtil.throwException("账号已停用");
 		}
 
 		String password = loginReq.getPassword();
 		String md5Password = PassWordUtil.md5(password);
 		SysUserPasswordResp sysUserPasswordResp = sysUserPasswordFeign.getBySysUserId(sysUserResp.getId())
-				.dataOrThrow();
+				;
 		if (!sysUserPasswordResp.getCanUse()) {
-			return Result.fail(sysUserPasswordResp.getPasswordTips());
+			ExceptionUtil.throwException(sysUserPasswordResp.getPasswordTips());
 		}
 
 		if (!md5Password.equals(sysUserPasswordResp.getPassword())) {
-			return Result.fail("密码错误");
+			ExceptionUtil.throwException("密码错误");
 		}
 
 		Boolean verifyPass = verifyCodeFeign
-				.verify(Constants.VerifyCodeType.ADMIN_LOGIN, loginReq.getUuid(), loginReq.getCode()).dataOrThrow();
+				.verify(Constants.VerifyCodeType.ADMIN_LOGIN, loginReq.getUuid(), loginReq.getCode());
 		if (!verifyPass) {
-			return Result.fail("验证码错误");
+			ExceptionUtil.throwException("验证码错误");
 		}
 
 		Integer sysUserId = sysUserResp.getId();
@@ -108,7 +109,7 @@ public class AccountController {
 		LoginResp resp = new LoginResp();
 		resp.setToken(tokenValue);
 		resp.setTips(sysUserPasswordResp.getPasswordTips());
-		return Result.success(resp);
+		return resp;
 	}
 
 	// 发布登录事件
@@ -124,15 +125,15 @@ public class AccountController {
 
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public Result<String> logout(HttpServletRequest request) {
+	public String logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return Result.success("登出成功");
+			return "登出成功";
 		}
 
 		tokenService.invalid(token);
 
-		return Result.success("登出成功");
+		return "登出成功";
 	}
 }

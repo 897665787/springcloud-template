@@ -1,6 +1,6 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
+
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.feign.FeignTestFeign;
@@ -31,7 +31,7 @@ public class ContextController {
 	private RestTemplate restTemplate;
 
 	@GetMapping(value = "/thread")
-	public Result<Integer> thread() {
+	public Integer thread() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
 		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
 
@@ -43,11 +43,11 @@ public class ContextController {
 			}).start();
 		}
 		log.info("log end");
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/threadpooltask")
-	public Result<Integer> threadpooltask() {
+	public Integer threadpooltask() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
 		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
 
@@ -59,11 +59,11 @@ public class ContextController {
 			});
 		}
 		log.info("log end");
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/forkjoin")
-	public Result<Integer> forkjoin() {
+	public Integer forkjoin() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
 		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
 
@@ -79,11 +79,11 @@ public class ContextController {
 
 		log.info("strList:{}", strList);
 
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/completablefuture")
-	public Result<Integer> completablefuture() {
+	public Integer completablefuture() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
 		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
 
@@ -101,26 +101,26 @@ public class ContextController {
 			list2.add(item);
 		}
 		CompletableFuture.allOf(list2.toArray(new CompletableFuture[0])).join();
-		return Result.success(1);
+		return 1;
 	}
 
 	@GetMapping(value = "/feign")
-	public Result<Integer> feign() {
+	public Integer feign() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
 		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
 
 		for (int i = 0; i < 5; i++) {
 			int n = i;
 			executor.submit(() -> {
-//				Result<OrderDetailResp> result = feignTestFeign.context();
+//				OrderDetailResp result = feignTestFeign.context();
 //				log.info("{} feignTestFeign.context:{}", n, JsonUtil.toJsonString(result));
 
-				Result result = restTemplate.getForObject("http://template-order/feignTest/context", Result.class);
+                OrderDetailResp result = restTemplate.getForObject("http://template-order/feignTest/context", OrderDetailResp.class);
 				log.info("result:{}", JsonUtil.toJsonString(result));
 				return result;
 			});
 		}
 		log.info("log end");
-		return Result.success(1);
+		return 1;
 	}
 }

@@ -1,5 +1,6 @@
 package com.company.framework.globalresponse;
 
+
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.common.exception.ResultException;

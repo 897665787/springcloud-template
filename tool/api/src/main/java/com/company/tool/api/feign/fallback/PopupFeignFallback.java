@@ -1,8 +1,9 @@
 package com.company.tool.api.feign.fallback;
 
+import com.company.common.api.Result;
 import org.springframework.stereotype.Component;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.BestPopupReq;
 import com.company.tool.api.request.CancelUserPopupReq;
@@ -18,22 +19,22 @@ public class PopupFeignFallback implements FallbackFactory<PopupFeign> {
 	public PopupFeign create(final Throwable e) {
 		return new PopupFeign() {
 			@Override
-			public Result<BestPopupResp> bestPopup(BestPopupReq bestPopupReq) {
+			public BestPopupResp bestPopup(BestPopupReq bestPopupReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> createUserPopup(CreateUserPopupReq createUserPopupReq) {
+			public Void createUserPopup(CreateUserPopupReq createUserPopupReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> cancelUserPopup(CancelUserPopupReq cancelUserPopupReq) {
+			public Void cancelUserPopup(CancelUserPopupReq cancelUserPopupReq) {
 				return Result.onFallbackError();
 			}
 
 			@Override
-			public Result<Void> remarkPopupLog(Integer popupLogId, String remark) {
+			public Void remarkPopupLog(Integer popupLogId, String remark) {
 				return Result.onFallbackError();
 			}
 		};

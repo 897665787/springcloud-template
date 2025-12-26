@@ -2,7 +2,7 @@ package com.company.web.controller;
 
 import cn.licoy.encryptbody.annotation.encrypt.EncryptBody;
 import cn.licoy.encryptbody.enums.EncryptBodyMethod;
-import com.company.common.api.Result;
+
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
@@ -33,9 +33,9 @@ public class EncryptController {
 //			ExceptionUtil.throwException("asdasd");
 //		}
 
-		Result<Order4Resp> result = orderFeign.selectByOrderCode("666");
+		Order4Resp result = orderFeign.selectByOrderCode("666");
 		System.out.println("byId:"+JsonUtil.toJsonString(result));
-		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(result.dataOrThrow(), com.company.web.resp.UserResp.class);
+		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(result, com.company.web.resp.UserResp.class);
 		return resp;
 	}
 

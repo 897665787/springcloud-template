@@ -3,9 +3,10 @@ package com.company.tool.api.feign.fallback;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.company.common.api.Result;
 import org.springframework.stereotype.Component;
 
-import com.company.common.api.Result;
+
 import com.company.tool.api.feign.WebhookFeign;
 
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -18,12 +19,12 @@ public class WebhookFeignFallback implements FallbackFactory<WebhookFeign> {
 		return new WebhookFeign() {
 
 			@Override
-			public Result<List<Integer>> select4PreTimeSend(Integer limit) {
-				return Result.success(new ArrayList<>());// 降级返回空列表
+			public List<Integer> select4PreTimeSend(Integer limit) {
+				return new ArrayList<>();// 降级返回空列表
 			}
 
 			@Override
-			public Result<Void> exePreTimeSend(Integer id) {
+			public Void exePreTimeSend(Integer id) {
 				return Result.onFallbackError();
 			}
 		};

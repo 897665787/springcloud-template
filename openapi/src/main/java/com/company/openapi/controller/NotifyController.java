@@ -35,18 +35,18 @@ public class NotifyController {
 
 	@PostMapping(value = "/wxPay", produces = MediaType.APPLICATION_XML_VALUE)
 	public String wxPay(@RequestBody String xmlString) {
-		return wxNotifyFeign.wxPayNotify(xmlString).dataOrThrow();
+		return wxNotifyFeign.wxPayNotify(xmlString);
 	}
 
 	@PostMapping(value = "/wxPayRefund", produces = MediaType.APPLICATION_XML_VALUE)
 	public String wxPayRefund(@RequestBody String xmlString) {
-		return wxNotifyFeign.wxPayRefundNotify(xmlString).dataOrThrow();
+		return wxNotifyFeign.wxPayRefundNotify(xmlString);
 	}
 
 	@PostMapping(value = "/aliPay")
 	public String aliPay(HttpServletRequest request) {
 		Map<String, String> params = WebUtil.getReqParam(request);
-		return aliNotifyFeign.aliPayNotify(params).dataOrThrow();
+		return aliNotifyFeign.aliPayNotify(params);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class NotifyController {
 	@PostMapping("/spiOrderSend")
 	public SpiOrderSendNotifyResp spiOrderSend(HttpServletRequest request) {
 		Map<String, String> params = WebUtil.getReqParam(request);
-		return aliActivityNotifyFeign.spiOrderSendNotify(params).dataOrThrow();
+		return aliActivityNotifyFeign.spiOrderSendNotify(params);
 	}
 
 	/**
@@ -64,6 +64,6 @@ public class NotifyController {
 	@PostMapping("/from")
 	public String from(HttpServletRequest request) {
 		Map<String, String> params = WebUtil.getReqParam(request);
-		return aliActivityNotifyFeign.fromNotify(params).dataOrThrow();
+		return aliActivityNotifyFeign.fromNotify(params);
 	}
 }

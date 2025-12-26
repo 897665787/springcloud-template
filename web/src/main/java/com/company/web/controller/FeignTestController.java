@@ -1,6 +1,6 @@
 package com.company.web.controller;
 
-import com.company.common.api.Result;
+
 import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.FeignTestFeign;
@@ -87,8 +87,8 @@ public class FeignTestController {
         log.info("result:{}", JsonUtil.toJsonString(result));
         return result;
 
-//        OrderDetailResp orderDetailResp = feignTestFeign.postbody(registerOrderReq).dataOrThrow();
+//        OrderDetailResp orderDetailResp = feignTestFeign.postbody(registerOrderReq);
 //		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
-//		return Result.success(resp);
+//		return resp;
     }
 }

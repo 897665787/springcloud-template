@@ -1,7 +1,7 @@
 package com.company.tool.retry;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import com.company.common.api.Result;
+
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
@@ -117,7 +117,7 @@ public class FeignRetryer {
 					Result.class);
 			if (responseEntity.getStatusCode() == HttpStatus.OK) {
 				@SuppressWarnings("unchecked")
-				Result<Boolean> result = responseEntity.getBody();
+				Boolean result = responseEntity.getBody();
 				log.info("{}ms,调用结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
 				remark = result.getMessage();
 				if (result.successCode()) {

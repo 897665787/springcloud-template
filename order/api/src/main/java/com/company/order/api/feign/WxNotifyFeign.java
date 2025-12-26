@@ -1,6 +1,6 @@
 package com.company.order.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.order.api.constant.Constants;
 import com.company.order.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,7 +14,7 @@ public interface WxNotifyFeign {
 	 * 微信支付回调
 	 */
 	@PostMapping("/wxPayNotify")
-	Result<String> wxPayNotify(@RequestBody String xmlString);
+	String wxPayNotify(@RequestBody String xmlString);
 	
 	/**
 	 * 退款回调
@@ -23,5 +23,5 @@ public interface WxNotifyFeign {
 	 * @return
 	 */
 	@PostMapping("/wxPayRefundNotify")
-	Result<String> wxPayRefundNotify(@RequestBody String xmlString);
+	String wxPayRefundNotify(@RequestBody String xmlString);
 }

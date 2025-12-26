@@ -1,6 +1,6 @@
 package com.company.user.api.feign;
 
-import com.company.common.api.Result;
+
 import com.company.user.api.constant.Constants;
 import com.company.user.api.feign.fallback.ThrowExceptionFallback;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface OpenAccessAccountFeign {
 
 	@RequestMapping("/getAppKeyByAppid")
-	Result<String> getAppKeyByAppid(@RequestParam("appid") String appid);
+	String getAppKeyByAppid(@RequestParam("appid") String appid);
 }

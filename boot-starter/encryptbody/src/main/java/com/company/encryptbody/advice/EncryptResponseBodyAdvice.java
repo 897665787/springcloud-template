@@ -13,7 +13,7 @@ import cn.licoy.encryptbody.exception.EncryptBodyFailException;
 import cn.licoy.encryptbody.exception.EncryptMethodNotFoundException;
 import cn.licoy.encryptbody.util.CommonUtils;
 import cn.licoy.encryptbody.util.ShaEncryptUtil;
-import com.company.common.api.Result;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
