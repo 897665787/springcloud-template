@@ -1,6 +1,7 @@
 package com.company.adminapi.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -125,15 +126,15 @@ public class AccountController {
 
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public String logout(HttpServletRequest request) {
+    public Map<String, String> logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return "登出成功";
+            return Collections.singletonMap("tip", "登出成功");
 		}
 
 		tokenService.invalid(token);
 
-		return "登出成功";
+        return Collections.singletonMap("tip", "登出成功");
 	}
 }

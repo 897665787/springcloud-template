@@ -2,6 +2,7 @@ package com.company.app.controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,19 +97,19 @@ public class AccountController {
 	}
 
 	@GetMapping(value = "/login/verify/mobile")
-	public String loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
+	public Map<String, String> loginVerifyByMobile(@NotBlank(message = "手机号不能为空") String mobile) {
 		if (!RegexUtil.checkMobile(mobile)) {
 			ExceptionUtil.throwException("手机号格式错误");
 		}
 
-		String identifier = mobile;
-		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
-				;
+        String identifier = mobile;
+        UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier);
 		if (userOauthResp == null) {
 			ExceptionUtil.throwException("手机号未注册，请前往注册！");
 		}
 
-		return verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.LOGIN);
+        String verifyCode = verifyCodeFeign.sms(mobile, Constants.VerifyCodeType.LOGIN);
+        return Collections.singletonMap("verifyCode", verifyCode);
 	}
 
 	@PostMapping(value = "/login/mobile")
@@ -153,11 +154,11 @@ public class AccountController {
 
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public String logout(HttpServletRequest request) {
+	public Map<String, String> logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return "登出成功";
+            return Collections.singletonMap("tip", "登出成功");
 		}
 
 		String device = tokenService.invalid(token);
@@ -170,6 +171,6 @@ public class AccountController {
 		params.put("time", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
-		return "登出成功";
+        return Collections.singletonMap("tip", "登出成功");
 	}
 }

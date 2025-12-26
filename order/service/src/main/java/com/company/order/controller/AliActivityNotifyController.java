@@ -42,10 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -330,7 +327,7 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 	 * </pre>
 	 */
 	@Override
-	public String fromNotify(@RequestBody Map<String, String> aliParams) {
+	public Map<String, String> fromNotify(@RequestBody Map<String, String> aliParams) {
 		/**
 		 * <pre>
 		{
@@ -366,18 +363,18 @@ public class AliActivityNotifyController implements AliActivityNotifyFeign {
 					AliActivityConstants.CHARSET, AliActivityConstants.SIGNTYPE);
 			if (!signVerified) {
 				aliActivityNotifyMapper.updateRemarkById("验签失败", aliActivityNotify.getId());
-				return "fail";
+				return Collections.singletonMap("message", "fail");
 			}
 		} catch (AlipayApiException e) {
 			log.error(">>>解析支付宝回调参数异常，直接返回", e);
 			aliActivityNotifyMapper.updateRemarkById(e.getMessage(), aliActivityNotify.getId());
-			return "fail";
+			return Collections.singletonMap("message", "fail");
 		}
 
 		String msgMethod = aliParams.get("msg_method");
 		FromMessage fromMessage = FromMessageBeanFactory.of(msgMethod);
 		fromMessage.handle(aliActivityNotify.getId(), aliParams);
 
-		return "success";
+        return Collections.singletonMap("message", "success");
 	}
 }

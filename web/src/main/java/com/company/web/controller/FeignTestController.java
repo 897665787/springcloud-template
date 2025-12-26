@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/feignTest")
@@ -36,6 +37,21 @@ public class FeignTestController {
 		OrderDetailResp orderDetailResp = feignTestFeign.getnoparam();
 		com.company.web.resp.OrderDetailResp resp = PropertyUtils.copyProperties(orderDetailResp, com.company.web.resp.OrderDetailResp.class);
 		return resp;
+    }
+
+    @GetMapping(value = "/getnoparam33")
+    public Optional<Integer> getnoparam33() {
+        return Optional.ofNullable(1);
+    }
+
+    @GetMapping(value = "/getnoparam44")
+    public Integer getnoparam44() {
+        return 1;
+    }
+
+    @GetMapping(value = "/getnoparam55")
+    public String getnoparam55() {
+        return "11111111111111";
     }
 
     @GetMapping(value = "/getnoparam2")

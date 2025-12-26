@@ -16,5 +16,5 @@ public interface AliNotifyFeign {
 	 * 支付宝支付回调
 	 */
 	@PostMapping("/aliPayNotify")
-	String aliPayNotify(@RequestBody Map<String, String> params);
+    Map<String, String> aliPayNotify(@RequestBody Map<String, String> params);
 }

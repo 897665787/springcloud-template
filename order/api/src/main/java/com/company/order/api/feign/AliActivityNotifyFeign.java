@@ -22,5 +22,5 @@ public interface AliActivityNotifyFeign {
 	 * 支付宝营销活动FROM回调
 	 */
 	@PostMapping("/fromNotify")
-	String fromNotify(@RequestBody Map<String, String> params);
+    Map<String, String> fromNotify(@RequestBody Map<String, String> params);
 }

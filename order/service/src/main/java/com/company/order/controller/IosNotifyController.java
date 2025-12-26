@@ -27,10 +27,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 // 待完善
 @Slf4j
@@ -62,7 +59,7 @@ public class IosNotifyController implements IosNotifyFeign {
     private String bundleId;
 
 	@Override
-	public String iosPayNotify(@RequestBody Map<String, String> iosParams) {
+	public Map<String, String> iosPayNotify(@RequestBody Map<String, String> iosParams) {
 		/**
 		 * <pre>
 		{
@@ -88,12 +85,12 @@ public class IosNotifyController implements IosNotifyFeign {
 			boolean correctSignature = checkSignature(sortMap);
             if (!correctSignature) {
             	payNotifyMapper.updateRemarkById("验签失败", payNotify.getId());
-				return "fail";
+                return Collections.singletonMap("message", "fail");
             }
 		} catch (Exception e) {
 			log.error(">>>解析回调参数异常，直接返回", e);
 			payNotifyMapper.updateRemarkById(e.getMessage(), payNotify.getId());
-			return "fail";
+            return Collections.singletonMap("message", "fail");
 		}
 
         String tradeId = iosParams.get("tradeId");
@@ -165,7 +162,7 @@ public class IosNotifyController implements IosNotifyFeign {
 
 		messageSender.sendNormalMessage(StrategyConstants.PAY_NOTIFY_STRATEGY, params, messagedrivenProperties.getExchange().getDirect(),
 				Constants.QUEUE.PAY_NOTIFY.KEY);
-		return "success";
+        return Collections.singletonMap("message", "success");
 	}
 
 

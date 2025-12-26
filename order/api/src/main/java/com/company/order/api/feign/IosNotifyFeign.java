@@ -16,5 +16,5 @@ public interface IosNotifyFeign {
 	 * 支付回调
 	 */
 	@PostMapping("/iosPayNotify")
-	String iosPayNotify(@RequestBody Map<String, String> params);
+    Map<String, String> iosPayNotify(@RequestBody Map<String, String> params);
 }
