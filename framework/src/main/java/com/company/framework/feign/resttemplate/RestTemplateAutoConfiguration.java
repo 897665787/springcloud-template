@@ -1,6 +1,8 @@
-package com.company.framework.feign;
+package com.company.framework.feign.resttemplate;
 
-import com.company.framework.trace.TraceManager;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
@@ -14,8 +16,11 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+
+import com.company.framework.trace.TraceManager;
 
 @Configuration
 public class RestTemplateAutoConfiguration {
@@ -49,7 +54,12 @@ public class RestTemplateAutoConfiguration {
 //	@SentinelRestTemplate(blockHandler = "handleException", blockHandlerClass = ExceptionUtil.class)
 	@Bean("restTemplate")
 	public RestTemplate restTemplate(TraceManager traceManager) {
-		return new TraceRestTemplate(httpRequestFactory(), traceManager);
-	}
+        RestTemplate restTemplate = new RestTemplate(httpRequestFactory());
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+        interceptors.add(new TraceHeaderClientHttpRequestInterceptor(traceManager));
+        interceptors.add(new RestTemplateLoggerClientHttpRequestInterceptor());
+        restTemplate.setInterceptors(interceptors);
+        return restTemplate;
+    }
 
 }

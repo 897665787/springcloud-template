@@ -1,5 +1,16 @@
 package com.company.framework.discovery.nacos.gracefulshutdown;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.Cache;
+import org.springframework.cloud.loadbalancer.cache.LoadBalancerCacheManager;
+import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
+import org.springframework.stereotype.Component;
+
 import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
@@ -7,17 +18,8 @@ import com.company.framework.context.SpringContextUtil;
 import com.company.framework.gracefulshutdown.ServerListRefresher;
 import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.Cache;
-import org.springframework.cloud.loadbalancer.cache.DefaultLoadBalancerCacheManager;
-import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
-import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * nacos服务列表刷新
@@ -148,7 +150,7 @@ public class NacosRefresher implements ServerListRefresher {
              * DiscoveryClient.getInstances
              * </pre>
              */
-            DefaultLoadBalancerCacheManager cacheManager = SpringContextUtil.getBean(DefaultLoadBalancerCacheManager.class);
+            LoadBalancerCacheManager cacheManager = SpringContextUtil.getBean(LoadBalancerCacheManager.class);
             Cache cache = cacheManager.getCache(CachingServiceInstanceListSupplier.SERVICE_INSTANCE_CACHE_NAME);
 
             log.info("{},cache before:{}", application, JsonUtil.toJsonString(cache.get(application, List.class)));

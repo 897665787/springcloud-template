@@ -3,8 +3,10 @@ package com.company.system.controller;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Map;
 
+import com.company.tool.api.response.RetryerResp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.request.RemindPasswordExpireReq;
 import com.company.system.api.request.SaveNewPasswordReq;
@@ -61,14 +63,14 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 	private Integer expireDays;
 
 	@Override
-	public Result<SysUserPasswordResp> getBySysUserId(Integer sysUserId) {
+	public SysUserPasswordResp getBySysUserId(Integer sysUserId) {
 		SysUserPasswordResp resp = new SysUserPasswordResp();
 
 		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
 		if (sysUserPassword == null) {
 			resp.setCanUse(false);
 			resp.setPasswordTips("密码未配置");
-			return Result.success(resp);
+			return resp;
 		}
 
 		LocalDateTime now = LocalDateTime.now();
@@ -79,7 +81,7 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 			if (days < remindDays) {// 7天内过期
 				resp.setPasswordTips("您的密码还有" + (days + 1) + "天过期，请及时更改密码");
 			}
-			return Result.success(resp);
+			return resp;
 		}
 
 		// 密码过期后，再给3次登录机会，登录后修改密码
@@ -88,22 +90,22 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 			resp.setPassword(sysUserPassword.getPassword());
 			resp.setPasswordTips("您的密码已过期，未修改密码之前，您还能登录系统"
 					+ (maxExpireLoginTimes - sysUserPassword.getExpireLoginTimes() - 1) + "次，请及时更改密码");
-			return Result.success(resp);
+			return resp;
 		}
 
 		resp.setCanUse(false);
 		resp.setPasswordTips("密码已过期，请联系管理员重置");
-		return Result.success(resp);
+		return resp;
 	}
 
 	@Override
-	public Result<String> getPasswordBySysUserId(Integer sysUserId) {
+	public Map<String, String> getPasswordBySysUserId(Integer sysUserId) {
 		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
-		return Result.success(sysUserPassword.getPassword());
+        return Collections.singletonMap("value", sysUserPassword.getPassword());
 	}
 
 	@Override
-	public Result<Void> saveNewPassword(SaveNewPasswordReq saveNewPasswordReq) {
+	public Void saveNewPassword(SaveNewPasswordReq saveNewPasswordReq) {
 		SysUserPassword sysUserPassword = new SysUserPassword();
 		sysUserPassword.setSysUserId(saveNewPasswordReq.getSysUserId());
 		sysUserPassword.setPassword(saveNewPasswordReq.getPassword());
@@ -124,20 +126,20 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 				.build();
 		retryerFeign.call(retryerInfoReq);
 
-		return Result.success();
+		return null;
 	}
 
 	/**
 	 * 提醒密码过期(使用restTemplate的方式调用)
 	 */
 	@PostMapping("/remindPasswordExpire")
-	public Result<Void> remindPasswordExpire(@RequestBody RemindPasswordExpireReq remindPasswordExpireReq) {
+	public RetryerResp remindPasswordExpire(@RequestBody RemindPasswordExpireReq remindPasswordExpireReq) {
 		Integer sysUserId = remindPasswordExpireReq.getSysUserId();
 		Integer sysUserPasswordId = remindPasswordExpireReq.getSysUserPasswordId();
 		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
 		if (!sysUserPasswordId.equals(sysUserPassword.getId())) {
 			// 最新密码已经不是该密码了
-			return Result.success();
+            return RetryerResp.end();
 		}
 
 		// 发送时间调到（09:00~18:30）工作时间内
@@ -170,7 +172,7 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 			sendEmailReq.setType(EmailEnum.Type.REMIND_PASSWORD_EXPIRE);
 			sendEmailReq.setPlanSendTime(planSendTime);
 			sendEmailReq.setOverTime(overTime);
-			emailFeign.send(sendEmailReq).dataOrThrow();
+			emailFeign.send(sendEmailReq);
 		}
 
 		String phonenumber = sysUser.getPhonenumber();
@@ -183,8 +185,8 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 			sendEmailReq.setType(SmsEnum.Type.REMIND_PASSWORD_EXPIRE);
 			sendEmailReq.setPlanSendTime(planSendTime);
 			sendEmailReq.setOverTime(overTime);
-			smsFeign.send(sendEmailReq).dataOrThrow();
+			smsFeign.send(sendEmailReq);
 		}
-		return Result.success();
+        return RetryerResp.end();
 	}
 }

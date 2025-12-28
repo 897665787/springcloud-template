@@ -16,7 +16,7 @@ public class UserInfoIdUidConverter implements ConverterDataSource {
 		UserInfoFeign userInfoFeign = SpringContextUtil.getBean(UserInfoFeign.class);
 
 		Set<Integer> userIdSet = fieldValueSet.stream().map(v -> (Integer) v).collect(Collectors.toSet());
-		Map<Integer, String> idUidMap = userInfoFeign.mapUidById(userIdSet).dataOrThrow();
+		Map<Integer, String> idUidMap = userInfoFeign.mapUidById(userIdSet);
 
 		return idUidMap.entrySet().stream().collect(Collectors.toMap(k -> k.getKey(), Map.Entry::getValue));
 	}

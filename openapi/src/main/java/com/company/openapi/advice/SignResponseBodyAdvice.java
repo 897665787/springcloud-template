@@ -2,7 +2,6 @@ package com.company.openapi.advice;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,7 +18,6 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.company.common.api.Result;
 import com.company.framework.constant.CommonConstants;
 import com.company.openapi.annotation.NoSign;
 import com.company.openapi.config.SignConfiguration;
@@ -28,12 +26,12 @@ import com.company.openapi.util.SignUtil;
 import cn.hutool.core.bean.BeanUtil;
 
 /**
- * 对响应的Result.data下面的字段进行加签
+ * 对响应的内容进行加签
  */
 @Order(90)
 @RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
-public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
+public class SignResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 	@Autowired
 	private SignConfiguration signConfiguration;
 
@@ -57,19 +55,6 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 		if (data == null) {
 			return data;
 		}
-		if (!(data instanceof Result)) {
-			// 返回自定义类型不增加sign字段
-			return data;
-		}
-
-		Result<?> result = (Result<?>) data;
-		if (!result.successCode()) {
-			return data;
-		}
-		Object data2 = result.getData();
-		if (data2 == null) {
-			return data;
-		}
 
 		HttpHeaders headers = request.getHeaders();
 		String appid = headers.getFirst("appid");
@@ -90,19 +75,15 @@ public class SignBodyResultAdvice implements ResponseBodyAdvice<Object> {
 			return data;
 		}
 
-		String sign4md5 = null;
-		if (isBeanObj(data2)) {
-			// 对象类型
-			Map<String, Object> data2Map = BeanUtil.beanToMap(data2);
-			sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, data2Map, "", appsecret);
-		} else {
-			// 简单类型
-			String bodyStr = String.valueOf(data2);
-			sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, Collections.emptyMap(), bodyStr, appsecret);
-		}
-		Map<String, Object> resultMap = BeanUtil.beanToMap(data);
-		resultMap.put("sign", sign4md5);
-		return resultMap;
+        if (!isBeanObj(data)) {
+            // 简单类型
+            return data;
+        }
+        // 对象类型
+        Map<String, Object> data2Map = BeanUtil.beanToMap(data);
+        String sign4md5 = SignUtil.generate(appid, timestampLong, noncestr, data2Map, "", appsecret);
+        data2Map.put("sign", sign4md5);
+        return data2Map;
 	}
 
 	/**

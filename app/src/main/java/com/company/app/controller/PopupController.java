@@ -4,11 +4,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.company.tool.api.response.BestPopupResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.common.api.Result;
+
 import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.PopupFeign;
 import com.company.tool.api.request.BestPopupReq;
@@ -29,7 +30,7 @@ public class PopupController {
 	 * 用户最优的弹窗(前端唯一入口)
 	 */
 	@RequestMapping("/best")
-	public Result<?> best(HttpServletRequest request) {
+	public BestPopupResp best(HttpServletRequest request) {
 		BestPopupReq bestPopupReq = new BestPopupReq();
 		
 		Map<String, String> runtimeAttach = WebUtil.getReqParam(request);
@@ -51,8 +52,7 @@ public class PopupController {
 	 * 前端确认展示了弹窗
 	 */
 	@RequestMapping("/display")
-	public Result<?> display(Integer popupLogId) {
-		popupFeign.remarkPopupLog(popupLogId, "mini展示弹窗");
-		return Result.success();
+	public Void display(Integer popupLogId) {
+        return popupFeign.remarkPopupLog(popupLogId, "mini展示弹窗");
 	}
 }

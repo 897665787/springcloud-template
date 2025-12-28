@@ -1,18 +1,20 @@
 package com.company.framework.discovery.eureka.gracefulshutdown;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.Cache;
+import org.springframework.cloud.loadbalancer.cache.LoadBalancerCacheManager;
+import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
+import org.springframework.stereotype.Component;
+
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.gracefulshutdown.ServerListRefresher;
 import com.company.framework.util.JsonUtil;
 import com.netflix.discovery.DiscoveryClient;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.Cache;
-import org.springframework.cloud.loadbalancer.cache.DefaultLoadBalancerCacheManager;
-import org.springframework.cloud.loadbalancer.core.CachingServiceInstanceListSupplier;
-import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Method;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * eureka服务列表刷新
@@ -69,7 +71,7 @@ public class EurekaRefresher implements ServerListRefresher {
              * DiscoveryClient.getInstances
              * </pre>
              */
-            DefaultLoadBalancerCacheManager cacheManager = SpringContextUtil.getBean(DefaultLoadBalancerCacheManager.class);
+            LoadBalancerCacheManager cacheManager = SpringContextUtil.getBean(LoadBalancerCacheManager.class);
             Cache cache = cacheManager.getCache(CachingServiceInstanceListSupplier.SERVICE_INSTANCE_CACHE_NAME);
 
             log.info("{},cache before:{}", application, JsonUtil.toJsonString(cache.get(application, List.class)));

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -55,4 +56,11 @@ public class WebConfig implements WebMvcConfigurer {
 		String classNames = addClassNameList.stream().collect(Collectors.joining("->"));
 		log.info("load interceptors,{}", classNames);
 	}
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (HttpMessageConverter<?> item : converters) {
+            log.info("{} {}", item.getClass().getSimpleName(), item.getSupportedMediaTypes());
+        }
+    }
 }

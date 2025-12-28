@@ -1,5 +1,6 @@
 package com.company.framework.globalresponse;
 
+
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.framework.message.IMessage;
@@ -16,7 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  * 全局异常处理器
  */
 @Slf4j
-@RestControllerAdvice
+//@RestControllerAdvice
+@Deprecated // 替换为GracefulResponse框架处理
 public class UnauthorizedExceptionHandler {
 	@Autowired
 	private IMessage imessage;
@@ -26,7 +28,7 @@ public class UnauthorizedExceptionHandler {
 	 */
 	@ExceptionHandler(UnauthorizedException.class)
 	public Result<?> unauthorized(UnauthorizedException e, HttpServletRequest request, HttpServletResponse response,
-								  HandlerMethod handler) {
+                                  HandlerMethod handler) {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);// 可根据前端需求看是否使用http状态码来表示未登录，如果要使用状态码200，则注释掉该行代码
 		ResultCode resultCode = ResultCode.UNAUTHORIZED;
 		return Result.fail(resultCode.getCode(), imessage.getMessage(resultCode.getMessage()));

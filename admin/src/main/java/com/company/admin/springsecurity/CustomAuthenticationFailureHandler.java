@@ -25,7 +25,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
         String exceptionMsg = exception.getMessage();
-        Integer code = ResultCode.FAIL.getCode();
+        String code = ResultCode.FAIL.getCode();
         String msg = ResultCode.FAIL.getMessage();
 
         if (exception instanceof UsernameNotFoundException) {
