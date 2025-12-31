@@ -19,10 +19,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component(FromMessageBeanFactory.MESSAGE_CREATED)
+@RequiredArgsConstructor
 public class AlipayMarketingActivityCreatedMessage implements FromMessage {
 
-	@Autowired
-	private AliActivityNotifyMapper aliActivityNotifyMapper;
+	private final AliActivityNotifyMapper aliActivityNotifyMapper;
 
 	@Override
 	public void handle(Integer payNotifyId, Map<String, String> aliParams) {

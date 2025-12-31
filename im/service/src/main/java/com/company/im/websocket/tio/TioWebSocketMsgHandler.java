@@ -17,6 +17,7 @@ import org.tio.websocket.server.handler.IWsMsgHandler;
 import com.company.framework.util.JsonUtil;
 import com.company.im.websocket.dto.WsMsg;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -24,10 +25,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class TioWebSocketMsgHandler implements IWsMsgHandler {
 
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	/**
 	 * 握手

@@ -13,14 +13,16 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 重试定时器
  */
 @Component
+@RequiredArgsConstructor
 public class RetryerService {
 
-	@Autowired
-	private RetryerFeign retryerFeign;
+	private final RetryerFeign retryerFeign;
 
 	@XxlJob("retryerHandler")
 	public ReturnT<String> retryerHandler() throws Exception {

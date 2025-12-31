@@ -7,10 +7,10 @@ import com.company.common.exception.ResultException;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.message.IMessage;
 import com.company.framework.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
@@ -43,10 +43,10 @@ import java.util.stream.Collectors;
 @Slf4j
 //@RestControllerAdvice
 @Deprecated // 替换为GracefulResponse框架处理
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-    @Autowired
-    private IMessage imessage;
+    private final IMessage imessage;
 
     /**
      * 参数业务异常

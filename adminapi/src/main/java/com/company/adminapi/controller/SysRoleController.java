@@ -13,7 +13,7 @@ import com.company.system.api.feign.SysRoleFeign;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.system.api.response.SysRoleResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +25,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysRole")
+@RequiredArgsConstructor
 public class SysRoleController {
 
-	@Autowired
-	private SysRoleFeign sysRoleFeign;
+	private final SysRoleFeign sysRoleFeign;
 
 	@RequirePermissions("system:sysRole:query")
 	@GetMapping("/page")

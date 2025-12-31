@@ -6,13 +6,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 
 import com.company.openapi.resp.CreateOrderResp;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.openapi.req.CreateOrderReq;
 import com.google.common.collect.Maps;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * demo
@@ -23,10 +24,10 @@ import com.google.common.collect.Maps;
 @Validated
 @RestController
 @RequestMapping("/order")
+@RequiredArgsConstructor
 public class OrderController {
 
-	@Autowired
-	private SequenceGenerator sequenceGenerator;
+	private final SequenceGenerator sequenceGenerator;
 
 	/**
 	 * 测试无参

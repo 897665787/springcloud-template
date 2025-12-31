@@ -7,7 +7,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.admin.service.security.SecResourceService;
 
 import com.company.admin.entity.security.SecResource;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 2017/11/3.
  */
 @Controller
+@RequiredArgsConstructor
 public class SecResourceController {
 
-    @Autowired
-    private SecResourceService secResourceService;
+    private final SecResourceService secResourceService;
 
     //region Admin
     @RequestMapping(value = "/admin/system/secResource", method = RequestMethod.GET)

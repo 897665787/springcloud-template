@@ -27,15 +27,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component(StrategyConstants.PAY_NOTIFY_STRATEGY)
+@RequiredArgsConstructor
 public class PayNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 
-	@Autowired
-	private OrderPayService orderPayService;
-	@Autowired
-	private RetryerFeign retryerFeign;
+	private final OrderPayService orderPayService;
+	private final RetryerFeign retryerFeign;
 
-	@Autowired
-	private FinancialFlowService financialFlowService;
+	private final FinancialFlowService financialFlowService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +21,14 @@ import com.company.admin.util.XSTreeUtil;
  * @date 2018/9/22
  */
 @Service
+@RequiredArgsConstructor
 public class ConfigCategoryService {
 
-    @Autowired
-    private ConfigCategoryDao configCategoryDao;
+    private final ConfigCategoryDao configCategoryDao;
 
-    @Autowired
-    private ConfigDao configDao;
+    private final ConfigDao configDao;
 
-    @Autowired
-    private SecResourceService secResourceService;
+    private final SecResourceService secResourceService;
 
     public ConfigCategory findById(Long id) {
         ConfigCategory existedConfigCategory = configCategoryDao.findById(id);

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,12 +36,11 @@ import com.company.system.api.response.SysUserResp;
 @RequireLogin
 @RestController
 @RequestMapping("/sysUser")
+@RequiredArgsConstructor
 public class SysUserController {
 
-	@Autowired
-	private SysUserFeign sysUserFeign;
-	@Autowired
-	private SysUserPasswordFeign sysUserPasswordFeign;
+	private final SysUserFeign sysUserFeign;
+	private final SysUserPasswordFeign sysUserPasswordFeign;
 
 	@RespConverter(field = "createBy", newField = "createByNickname", dataSource = SysUserIdNicknameConverter.class)
 	@RespConverter(field = "updateBy", newField = "updateByNickname", dataSource = SysUserIdNicknameConverter.class)

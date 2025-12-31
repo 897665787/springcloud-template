@@ -1,7 +1,7 @@
 package com.company.admin.service.user.wallet;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.user.wallet.WalletPackageDao;
  * Created by JQ棣 on 2018/11/13.
  */
 @Service
+@RequiredArgsConstructor
 public class WalletPackageService {
 
-	@Autowired
-	private WalletPackageDao walletPackageDao;
+	private final WalletPackageDao walletPackageDao;
 
 	public void save(WalletPackage walletPackage) {
 		WalletPackage existedPackage = walletPackageDao.get(walletPackage);

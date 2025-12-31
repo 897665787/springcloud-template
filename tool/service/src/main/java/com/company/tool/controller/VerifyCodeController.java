@@ -28,13 +28,11 @@ import cn.hutool.core.util.RandomUtil;
 
 @RestController
 @RequestMapping(value = "/verifyCode")
+@RequiredArgsConstructor
 public class VerifyCodeController implements VerifyCodeFeign {
-	@Autowired
-	private VerifyCodeService verifyCodeService;
-	@Autowired
-	private AsyncSmsSender asyncSmsSender;
-	@Autowired
-	private AsyncEmailSender asyncEmailSender;
+	private final VerifyCodeService verifyCodeService;
+	private final AsyncSmsSender asyncSmsSender;
+	private final AsyncEmailSender asyncEmailSender;
 	
 	@Override
 	public Map<String, String> sms(String mobile, String type) {

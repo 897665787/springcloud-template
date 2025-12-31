@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,13 +24,12 @@ import com.company.admin.util.XSTreeUtil;
  * Created by JQ棣 on 2017/10/27.
  */
 @Service
+@RequiredArgsConstructor
 public class SecRoleService {
 
-    @Autowired
-    private SecRoleDao secRoleDao;
+    private final SecRoleDao secRoleDao;
 
-    @Autowired
-    private SecResourceService secResourceService;
+    private final SecResourceService secResourceService;
 
     public void save(SecRole secRole) {
         SecRole criteria = new SecRole();

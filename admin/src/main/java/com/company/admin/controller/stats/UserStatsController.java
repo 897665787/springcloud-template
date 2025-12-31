@@ -8,7 +8,7 @@ import com.company.admin.entity.stats.StatsCond;
 
 import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +26,10 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin/stats/user")
+@RequiredArgsConstructor
 public class UserStatsController {
 
-	@Autowired
-	private UserStatsService userStatsService;
+	private final UserStatsService userStatsService;
 
 	/**
 	 * 用户统计首页

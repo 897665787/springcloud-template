@@ -7,7 +7,7 @@ import com.company.admin.mapper.article.ArticleDao;
 import com.company.admin.util.XSTreeUtil;
 import com.company.admin.util.XSUuidUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +20,12 @@ import java.util.stream.Collectors;
  * Created by JQ棣 on 2017/10/28.
  */
 @Service
+@RequiredArgsConstructor
 public class ArticleCategoryService {
 
-    @Autowired
-    private ArticleCategoryDao articleCategoryDao;
+    private final ArticleCategoryDao articleCategoryDao;
 
-    @Autowired
-    private ArticleDao articleDao;
+    private final ArticleDao articleDao;
 
     public void save(ArticleCategory articleCategory) {
         ArticleCategory existent = new ArticleCategory();

@@ -8,7 +8,7 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -25,21 +25,18 @@ import com.company.admin.util.XSUuidUtil;
  * Created by JQ棣 on 2017/10/26.
  */
 @Service
+@RequiredArgsConstructor
 public class ImageService {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
-    @Autowired
-    private ImageDao imageDao;
+    private final ImageDao imageDao;
 
-    @Autowired
-    private ImageCategoryService imageCategoryService;
+    private final ImageCategoryService imageCategoryService;
 
-    @Autowired
-    private ImageCategoryDao imageCategoryDao;
+    private final ImageCategoryDao imageCategoryDao;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
     public void save(Image image) {
         image.setId(XSUuidUtil.generate());

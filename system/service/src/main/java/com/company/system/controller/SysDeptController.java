@@ -21,10 +21,10 @@ import com.company.system.service.SysDeptService;
 
 @RestController
 @RequestMapping("/sysDept")
+@RequiredArgsConstructor
 public class SysDeptController implements SysDeptFeign {
 
-	@Autowired
-	private SysDeptService sysDeptService;
+	private final SysDeptService sysDeptService;
 
 	private QueryWrapper<SysDept> toQueryWrapper(Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 		QueryWrapper<SysDept> queryWrapper = new QueryWrapper<>();

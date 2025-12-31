@@ -3,6 +3,7 @@ package com.company.gateway.messagedriven.rocketmq.aspect;
 import com.company.gateway.messagedriven.rocketmq.RocketMQAutoConfiguration;
 import com.company.gateway.messagedriven.constants.HeaderConstants;
 import com.company.gateway.trace.TraceManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.aspectj.lang.JoinPoint;
@@ -22,9 +23,9 @@ import java.util.Map;
 @Aspect
 @Component
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
+@RequiredArgsConstructor
 public class TraceAspect {
-    @Autowired
-    private TraceManager traceManager;
+    private final TraceManager traceManager;
 
     // 执行之前塞入日志ID，用于追踪整个执行链路
     @Before("execution(* org.apache.rocketmq.spring.core.RocketMQListener+.onMessage(org.apache.rocketmq.common.message.MessageExt)) && @within(org.apache.rocketmq.spring.annotation.RocketMQMessageListener)")

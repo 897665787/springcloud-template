@@ -8,7 +8,7 @@ import com.company.admin.service.security.SecOrganizationService;
 
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -24,10 +24,10 @@ import java.util.List;
  * Created by JQ棣 on 2017/11/5.
  */
 @Controller
+@RequiredArgsConstructor
 public class SecOrganizationController {
 
-    @Autowired
-    private SecOrganizationService secOrganizationService;
+    private final SecOrganizationService secOrganizationService;
 
     //region Admin
     @RequestMapping(value = "/admin/system/secOrganization", method = RequestMethod.GET)

@@ -5,7 +5,7 @@ package com.company.admin.controller.system;
 import com.company.admin.service.system.ConfigCategoryService;
 
 import com.company.admin.entity.system.ConfigCategory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +22,10 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/admin/system/configCategory")
+@RequiredArgsConstructor
 public class ConfigCategoryController {
 
-    @Autowired
-    private ConfigCategoryService configCategoryService;
+    private final ConfigCategoryService configCategoryService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index() {

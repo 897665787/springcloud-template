@@ -11,8 +11,8 @@ import javax.validation.constraints.NotBlank;
 
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -45,25 +45,18 @@ import com.jqdi.easylogin.spring.boot.starter.LoginType;
 @Validated
 @RestController
 @RequestMapping("/account")
+@RequiredArgsConstructor
 public class AccountController {
 
-	@Autowired
-	private UserOauthFeign userOauthFeign;
+	private final UserOauthFeign userOauthFeign;
 
-	@Autowired
-	private TokenService tokenService;
-	@Autowired
-	private MessageSender messageSender;
-	@Autowired
-	private VerifyCodeFeign verifyCodeFeign;
+	private final TokenService tokenService;
+	private final MessageSender messageSender;
+	private final VerifyCodeFeign verifyCodeFeign;
 
-	@Autowired
-	@Qualifier(LoginType.WEIXIN_APP)
-	private LoginClient weixinAppLoginClient;
+	private final LoginClient weixinAppLoginClient;
 
-	@Autowired
-	@Qualifier(LoginType.MOBILE_CODE_BIND)
-	private LoginClient mobileCodeBindLoginClient;
+	private final LoginClient mobileCodeBindLoginClient;
 
 	@Value("${token.name}")
 	private String headerToken;

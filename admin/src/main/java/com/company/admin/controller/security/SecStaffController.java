@@ -6,7 +6,7 @@ import com.company.admin.service.security.SecStaffService;
 import com.company.admin.entity.security.SecOrganization;
 import com.company.admin.entity.security.SecRole;
 import com.company.admin.entity.security.SecStaff;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -25,10 +25,10 @@ import java.util.List;
  * Created by JQ棣 on 2017/11/6.
  */
 @Controller
+@RequiredArgsConstructor
 public class SecStaffController {
 
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecStaffService secStaffService;
 
     @RequestMapping(value = "/admin/system/secStaff", method = RequestMethod.GET)
     public String indexList(Model model, SecStaff secStaff) throws JsonProcessingException {

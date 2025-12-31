@@ -5,6 +5,7 @@ import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.trace.TraceManager;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.producer.SendResult;
@@ -21,12 +22,11 @@ import java.util.Map;
 @Slf4j
 @Component
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
+@RequiredArgsConstructor
 public class RocketmqMessageSender implements MessageSender {
 
-    @Autowired
-    private RocketMQTemplate rocketMQTemplate;
-    @Autowired
-    private TraceManager traceManager;
+    private final RocketMQTemplate rocketMQTemplate;
+    private final TraceManager traceManager;
 
     @Override
     public void sendNormalMessage(String strategyName, Object toJson, String topic, String tag) {

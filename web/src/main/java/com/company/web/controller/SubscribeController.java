@@ -5,25 +5,24 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.util.WebUtil;
 import com.company.tool.api.feign.SubscribeFeign;
 import com.company.tool.api.request.SubscribeGrantReq;
 import com.company.web.req.GrantReq;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/subscribe")
+@RequiredArgsConstructor
 public class SubscribeController {
 
-	@Autowired
-	private SubscribeFeign subscribeFeign;
+	private final SubscribeFeign subscribeFeign;
 
 	/**
 	 * 获取订阅组

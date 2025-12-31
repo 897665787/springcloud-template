@@ -1,6 +1,6 @@
 package com.company.admin.controller.system;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,10 +19,10 @@ import java.util.List;
  * Created by JQ棣 on 2017/11/13.
  */
 @Controller
+@RequiredArgsConstructor
 public class ProvinceController {
 
-    @Autowired
-    private ProvinceService provinceService;
+    private final ProvinceService provinceService;
 
     @RequestMapping(value = "/admin/system/province", method = RequestMethod.GET)
     public String index(Model model, Province province) {

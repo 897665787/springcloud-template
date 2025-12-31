@@ -1,7 +1,7 @@
 package com.company.admin.service.user.vip;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.user.vip.VipPackageDao;
  * Created by JQ棣 on 2018/11/14.
  */
 @Service
+@RequiredArgsConstructor
 public class VipPackageService {
 
-	@Autowired
-	private VipPackageDao vipPackageDao;
+	private final VipPackageDao vipPackageDao;
 
 	public void save(VipPackage vipPackage) {
 		VipPackage existent = vipPackageDao.get(vipPackage);

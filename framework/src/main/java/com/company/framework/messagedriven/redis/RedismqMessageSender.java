@@ -6,6 +6,7 @@ import com.company.framework.messagedriven.redis.delay.DelayQueueComponent;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Conditional;
@@ -22,14 +23,12 @@ import java.util.Map;
 @Slf4j
 @Component
 @Conditional(RedisMQAutoConfiguration.RedisMQCondition.class)
+@RequiredArgsConstructor
 public class RedismqMessageSender implements MessageSender {
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private DelayQueueComponent delayQueueComponent;
-    @Autowired
-    private TraceManager traceManager;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final DelayQueueComponent delayQueueComponent;
+    private final TraceManager traceManager;
 
     @Override
     public void sendNormalMessage(String strategyName, Object toJson, String exchange, String routingKey) {

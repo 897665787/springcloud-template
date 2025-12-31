@@ -1,6 +1,6 @@
 package com.company.admin.controller.system;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -21,10 +21,10 @@ import java.util.List;
  * Created by JQ棣 on 2018/05/30.
  */
 @Controller
+@RequiredArgsConstructor
 public class DistrictController {
 
-    @Autowired
-    private DistrictService districtService;
+    private final DistrictService districtService;
 
     @RequestMapping(value = "/admin/system/district", method = RequestMethod.GET)
     @Pagination

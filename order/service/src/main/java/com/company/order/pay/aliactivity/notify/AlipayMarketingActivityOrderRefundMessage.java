@@ -38,31 +38,22 @@ import java.util.Map;
  */
 @Slf4j
 @Component(FromMessageBeanFactory.ORDERMESSAGE_REFUNDED)
+@RequiredArgsConstructor
 public class AlipayMarketingActivityOrderRefundMessage implements FromMessage {
 
-	@Autowired
-	private AliActivityPayMapper aliActivityPayMapper;
-	@Autowired
-	private AliActivityPayRefundMapper aliActivityPayRefundMapper;
+	private final AliActivityPayMapper aliActivityPayMapper;
+	private final AliActivityPayRefundMapper aliActivityPayRefundMapper;
 
-	@Autowired
-	private AliActivityNotifyMapper aliActivityNotifyMapper;
+	private final AliActivityNotifyMapper aliActivityNotifyMapper;
 
-	@Autowired
-	private MessageSender messageSender;
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
+	private final MessageSender messageSender;
+	private final MessagedrivenProperties messagedrivenProperties;
 
-	@Autowired
-	private SequenceGenerator sequenceGenerator;
-	@Autowired
-	private PayRefundApplyMapper payRefundApplyMapper;
-	@Autowired
-	private OrderPayService orderPayService;
-	@Autowired
-	private OrderPayRefundService orderPayRefundService;
-	@Autowired
-	private FinancialFlowService financialFlowService;
+	private final SequenceGenerator sequenceGenerator;
+	private final PayRefundApplyMapper payRefundApplyMapper;
+	private final OrderPayService orderPayService;
+	private final OrderPayRefundService orderPayRefundService;
+	private final FinancialFlowService financialFlowService;
 
 	@Override
 	public void handle(Integer payNotifyId, Map<String, String> aliParams) {

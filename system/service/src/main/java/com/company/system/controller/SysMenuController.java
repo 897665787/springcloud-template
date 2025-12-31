@@ -29,12 +29,11 @@ import com.company.system.service.SysRoleService;
 
 @RestController
 @RequestMapping("/sysMenu")
+@RequiredArgsConstructor
 public class SysMenuController implements SysMenuFeign {
 
-	@Autowired
-	private SysMenuService sysMenuService;
-	@Autowired
-	private SysRoleService sysRoleService;
+	private final SysMenuService sysMenuService;
+	private final SysRoleService sysRoleService;
 
 	private QueryWrapper<SysMenu> toQueryWrapper(Integer parentId, String menuName, String menuType, String status,
 												 Integer visible, String perms, String createTimeStart, String createTimeEnd) {

@@ -49,19 +49,16 @@ import java.util.Date;
  */
 @Slf4j
 @Component(PayFactory.ALI_PAYCLIENT)
+@RequiredArgsConstructor
 public class AliPayClient extends BasePayClient {
 
 	private static final String PAY_URL = "https://openapi.alipay.com/gateway.do";
 	private static final String PAY_CALLBACK_URL = "/notify/aliPay";
 
-	@Autowired
-	private AliPayConfiguration aliPayConfiguration;
-	@Autowired
-	private AliPayMapper aliPayMapper;
-	@Autowired
-	private AliPayRefundMapper aliPayRefundMapper;
-	@Autowired
-	private AsyncTaskExecutor executor;
+	private final AliPayConfiguration aliPayConfiguration;
+	private final AliPayMapper aliPayMapper;
+	private final AliPayRefundMapper aliPayRefundMapper;
+	private final AsyncTaskExecutor executor;
 
 	@Value("${template.domain}")
 	private String domain;

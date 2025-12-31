@@ -3,7 +3,7 @@ package com.company.admin.service.system;
 import java.util.List;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -15,10 +15,10 @@ import com.company.admin.mapper.system.DistrictDao;
  * Created by JQ棣 on 2018/05/30.
  */
 @Service
+@RequiredArgsConstructor
 public class DistrictService {
 
-    @Autowired
-    private DistrictDao districtDao;
+    private final DistrictDao districtDao;
 
     public void save(District district) {
         if (null == district.getCity() || null == district.getCity().getId()) {

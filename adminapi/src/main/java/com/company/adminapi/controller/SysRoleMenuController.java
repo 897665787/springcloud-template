@@ -12,7 +12,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysRoleMenuFeign;
 import com.company.system.api.request.SysRoleMenuReq;
 import com.company.system.api.response.SysRoleMenuResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +24,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysRoleMenu")
+@RequiredArgsConstructor
 public class SysRoleMenuController {
 
-	@Autowired
-	private SysRoleMenuFeign sysRoleMenuFeign;
+	private final SysRoleMenuFeign sysRoleMenuFeign;
 
 	@RequirePermissions("system:sysRoleMenu:query")
 	@GetMapping("/page")

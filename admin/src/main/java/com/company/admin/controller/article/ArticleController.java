@@ -10,7 +10,7 @@ import com.company.admin.annotation.Pagination;
 import com.company.admin.entity.article.Article;
 import com.company.admin.entity.article.ArticleCategory;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -24,12 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/admin/content/article/article")
+@RequiredArgsConstructor
 public class ArticleController {
 
-    @Autowired
-    private ArticleService articleService;
-    @Autowired
-    private ArticleCategoryService articleCategoryService;
+    private final ArticleService articleService;
+    private final ArticleCategoryService articleCategoryService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     @Pagination

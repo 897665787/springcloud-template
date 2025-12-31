@@ -1,7 +1,7 @@
 package com.company.admin.service.system;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.system.VersionDao;
  * Created by JQ棣 on 11/1/17.
  */
 @Service
+@RequiredArgsConstructor
 public class VersionService {
 
-    @Autowired
-    VersionDao versionDao;
+    private final VersionDao versionDao;
 
     public void save(Version version) {
         Version existent = new Version();

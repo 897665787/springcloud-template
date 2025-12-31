@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -22,15 +22,14 @@ import com.fasterxml.jackson.databind.JsonNode;
  * Created by JQ棣 on 2018/11/21.
  */
 @Service
+@RequiredArgsConstructor
 public class BankCardService {
 
 	public static final Logger logger = LoggerFactory.getLogger(BankCardService.class);
 
-	@Autowired
-	private BankCardDao bankCardDao;
+	private final BankCardDao bankCardDao;
 
-	@Autowired
-	private ConfigService configService;
+	private final ConfigService configService;
 
 	public void save(BankCard bankCard) {
 		String verityType = configService.findByKey("verifyBankCard", "1");

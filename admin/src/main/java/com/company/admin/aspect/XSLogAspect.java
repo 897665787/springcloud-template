@@ -6,13 +6,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,12 +27,12 @@ import com.company.framework.util.JsonUtil;
  */
 @Service
 @Aspect
+@RequiredArgsConstructor
 public class XSLogAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(XSLogAspect.class);
 
-    @Autowired(required = false)
-    private XSLogHandler xsLogHandler;
+    private final XSLogHandler xsLogHandler;
 
     @Around("@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController)")
     public Object doAroud(JoinPoint joinPoint) throws Throwable {

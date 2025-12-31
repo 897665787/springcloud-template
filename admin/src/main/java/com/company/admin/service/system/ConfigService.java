@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -26,16 +26,14 @@ import com.company.admin.service.security.SecStaffService;
  * @date 2018/9/22
  */
 @Service
+@RequiredArgsConstructor
 public class ConfigService {
 
-    @Autowired
-    private ConfigDao configDao;
+    private final ConfigDao configDao;
 
-    @Autowired
-    private ConfigCategoryService configCategoryService;
+    private final ConfigCategoryService configCategoryService;
     
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecStaffService secStaffService;
 
     public Config findById(Long id) {
         Config existedConfig = configDao.findById(id);

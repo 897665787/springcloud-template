@@ -1,6 +1,7 @@
 package com.company.job.aspect;
 
 import com.company.framework.trace.TraceManager;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -17,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class TraceAspect {
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	// 在jobHander执行之前塞入日志ID，用于追踪整个执行链路
 	@Before("@annotation(com.xxl.job.core.handler.annotation.XxlJob)")

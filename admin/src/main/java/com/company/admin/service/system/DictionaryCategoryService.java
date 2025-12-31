@@ -3,8 +3,8 @@ package com.company.admin.service.system;
 import java.util.List;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,13 +18,12 @@ import com.company.admin.mapper.system.DictionaryDao;
  * @date 2018/9/22
  */
 @Service
+@RequiredArgsConstructor
 public class DictionaryCategoryService {
 
-    @Autowired
-    private DictionaryCategoryDao dictionaryCategoryDao;
+    private final DictionaryCategoryDao dictionaryCategoryDao;
 
-    @Autowired
-    private DictionaryDao dictionaryDao;
+    private final DictionaryDao dictionaryDao;
 
     public DictionaryCategory findById(Long id) {
         DictionaryCategory existedDictionaryCategory = dictionaryCategoryDao.findById(id);

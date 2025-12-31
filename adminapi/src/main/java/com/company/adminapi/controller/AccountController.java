@@ -9,8 +9,8 @@ import javax.validation.Valid;
 
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.token.util.TokenValueUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,18 +43,14 @@ import cn.hutool.core.date.LocalDateTimeUtil;
  */
 @RestController
 @RequestMapping("/account")
+@RequiredArgsConstructor
 public class AccountController {
 
-	@Autowired
-	private SysUserFeign sysUserFeign;
-	@Autowired
-	private SysUserPasswordFeign sysUserPasswordFeign;
-	@Autowired
-	private TokenService tokenService;
-	@Autowired
-	private VerifyCodeFeign verifyCodeFeign;
-	@Autowired
-	private MessageSender messageSender;
+	private final SysUserFeign sysUserFeign;
+	private final SysUserPasswordFeign sysUserPasswordFeign;
+	private final TokenService tokenService;
+	private final VerifyCodeFeign verifyCodeFeign;
+	private final MessageSender messageSender;
 
 	@Value("${token.name}")
 	private String headerToken;

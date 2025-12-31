@@ -6,8 +6,8 @@ import com.company.framework.lock.annotation.Lock;
 import com.company.framework.util.JsonUtil;
 import com.company.order.api.request.RegisterOrderReq;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +18,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/lock")
 @Slf4j
+@RequiredArgsConstructor
 public class LockController {
-    @Autowired
-    private LockClient lockClient;
+    private final LockClient lockClient;
 
     @Lock("lock:getnoparam")
     @GetMapping(value = "/getnoparam")

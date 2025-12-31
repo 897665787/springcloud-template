@@ -15,6 +15,7 @@ import com.company.framework.messagedriven.springevent.delay.DelayQueueComponent
 import com.company.framework.messagedriven.springevent.delay.DelayedConsumer;
 import com.company.framework.messagedriven.springevent.event.MessageEvent;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -25,14 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "message-driven", havingValue = "springevent")
+@RequiredArgsConstructor
 public class SpringEventMessageSender implements MessageSender {
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
-	@Autowired
-	private DelayQueueComponent delayQueueComponent;
-	@Autowired
-	private TraceManager traceManager;
+	private final ApplicationEventPublisher applicationEventPublisher;
+	private final DelayQueueComponent delayQueueComponent;
+	private final TraceManager traceManager;
 
 	@Override
 	public void sendNormalMessage(String strategyName, Object toJson, String exchange, String routingKey) {

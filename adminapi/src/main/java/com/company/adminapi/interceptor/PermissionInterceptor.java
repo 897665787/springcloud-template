@@ -5,9 +5,9 @@ import com.company.framework.constant.CommonConstants.InterceptorOrdered;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.system.api.feign.SysUserRoleFeign;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -25,11 +25,10 @@ import java.util.Enumeration;
 @Slf4j
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "permission", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
 public class PermissionInterceptor implements AsyncHandlerInterceptor {
 
-	@Lazy // 与feign扫描有冲突，构成循环依赖，所以加@Lazy
-	@Autowired
-	private SysUserRoleFeign sysUserRoleFeign;
+	private final SysUserRoleFeign sysUserRoleFeign;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

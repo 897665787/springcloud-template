@@ -5,23 +5,22 @@ import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.trace.TraceManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
+@RequiredArgsConstructor
 public class RabbitmqMessageSender implements MessageSender {
 
-	@Autowired
-	private RabbitTemplate rabbitTemplate;
-	@Autowired
-	private TraceManager traceManager;
+	private final RabbitTemplate rabbitTemplate;
+	private final TraceManager traceManager;
 
 	@Override
 	public void sendNormalMessage(String strategyName, Object toJson, String exchange, String routingKey) {

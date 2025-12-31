@@ -26,11 +26,10 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class BannerShowService {
-	@Autowired
-	private BannerService bannerService;
-	@Autowired
-	private BannerConditionService bannerConditionService;
+	private final BannerService bannerService;
+	private final BannerConditionService bannerConditionService;
 
 	/**
 	 * <pre>

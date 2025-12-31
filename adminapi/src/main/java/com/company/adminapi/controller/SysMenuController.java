@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,10 +39,10 @@ import com.company.system.api.response.SysMenuResp;
 @Validated
 @RestController
 @RequestMapping("/sysMenu")
+@RequiredArgsConstructor
 public class SysMenuController {
 
-	@Autowired
-	private SysMenuFeign sysMenuFeign;
+	private final SysMenuFeign sysMenuFeign;
 
 	@RequirePermissions("system:sysMenu:query")
 	@GetMapping("/page")

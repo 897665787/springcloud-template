@@ -3,8 +3,8 @@ package com.company.web.controller;
 
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +14,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/cache")
+@RequiredArgsConstructor
 @Slf4j
 public class CacheController {
 
-	@Autowired
-	private TimeService timeService;
+	private final TimeService timeService;
 
 	@Cacheable(value = "getById", key = "#id")
 	@GetMapping(value = "/getById")

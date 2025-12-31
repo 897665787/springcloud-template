@@ -17,10 +17,10 @@ import com.company.tool.email.AsyncEmailSender;
 
 @RestController
 @RequestMapping(value = "/email")
+@RequiredArgsConstructor
 public class EmailController implements EmailFeign {
 
-	@Autowired
-	private AsyncEmailSender asyncEmailSender;
+	private final AsyncEmailSender asyncEmailSender;
 
 	@Override
 	public List<Integer> select4PreTimeSend(Integer limit) {

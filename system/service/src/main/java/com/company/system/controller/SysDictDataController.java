@@ -25,10 +25,10 @@ import com.company.system.service.SysDictDataService;
 
 @RestController
 @RequestMapping("/sysDictData")
+@RequiredArgsConstructor
 public class SysDictDataController implements SysDictDataFeign {
 
-	@Autowired
-	private SysDictDataService sysDictDataService;
+	private final SysDictDataService sysDictDataService;
 
 	private QueryWrapper<SysDictData> toQueryWrapper(String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 		QueryWrapper<SysDictData> queryWrapper = new QueryWrapper<>();

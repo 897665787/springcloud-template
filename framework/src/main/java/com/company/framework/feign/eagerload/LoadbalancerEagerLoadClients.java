@@ -1,8 +1,8 @@
 package com.company.framework.feign.eagerload;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "spring.cloud.loadbalancer.eager-load.clients")
+@RequiredArgsConstructor
 public class LoadbalancerEagerLoadClients implements CommandLineRunner {
 
-    @Autowired
-    private LoadBalancerClient loadBalancerClient;
+    private final LoadBalancerClient loadBalancerClient;
 
     @Value("${spring.cloud.loadbalancer.eager-load.clients:}")
     private String clients;

@@ -1,6 +1,6 @@
 package com.company.admin.controller.system;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -17,10 +17,10 @@ import com.company.admin.service.system.VersionService;
  * Created by JQ棣 on 11/1/17.
  */
 @Controller
+@RequiredArgsConstructor
 public class VersionController {
 
-    @Autowired
-    private VersionService versionService;
+    private final VersionService versionService;
 
     @RequestMapping(value = "/admin/system/version", method = RequestMethod.GET)
     public String index(Model model, Version version) {

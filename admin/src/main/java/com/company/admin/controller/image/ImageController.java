@@ -1,6 +1,6 @@
 package com.company.admin.controller.image;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -20,13 +20,12 @@ import com.company.framework.util.JsonUtil;
  * Created by JQ棣 on 2017/10/26.
  */
 @Controller
+@RequiredArgsConstructor
 public class ImageController {
 
-    @Autowired
-    private ImageService imageService;
+    private final ImageService imageService;
 
-    @Autowired
-    private ImageCategoryService imageCategoryService;
+    private final ImageCategoryService imageCategoryService;
 
     @RequestMapping(value = "/admin/content/image", method = RequestMethod.GET)
     public String index(Model model, Image image) throws Exception {

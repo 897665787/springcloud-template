@@ -4,7 +4,7 @@ package com.company.web.controller;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.message.IMessage;
 import com.google.common.collect.Maps;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +14,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/i8n")
+@RequiredArgsConstructor
 public class I18nController {
-    @Autowired
-    private IMessage message;
+    private final IMessage message;
 
     @GetMapping(value = "/accept-language")
     public Map<String, String> acceptLanguage() {

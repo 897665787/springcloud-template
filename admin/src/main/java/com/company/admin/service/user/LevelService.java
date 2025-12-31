@@ -4,7 +4,7 @@ import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.Level;
 import com.company.admin.mapper.user.LevelDao;
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +14,10 @@ import java.util.List;
  * Created by JQ棣 on 2018/06/21.
  */
 @Service
+@RequiredArgsConstructor
 public class LevelService {
 
-    @Autowired
-    private LevelDao levelDao;
+    private final LevelDao levelDao;
 
 
     public void save(Level level) {

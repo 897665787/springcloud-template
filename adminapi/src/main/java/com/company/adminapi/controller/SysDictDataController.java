@@ -13,7 +13,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysDictDataFeign;
 import com.company.system.api.request.SysDictDataReq;
 import com.company.system.api.response.SysDictDataResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +26,10 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 @RequestMapping("/sysDictData")
+@RequiredArgsConstructor
 public class SysDictDataController {
 
-	@Autowired
-	private SysDictDataFeign sysDictDataFeign;
+	private final SysDictDataFeign sysDictDataFeign;
 
 	@RequirePermissions("system:sysDictData:query")
 	@GetMapping("/page")

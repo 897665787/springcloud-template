@@ -25,10 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OrderService extends ServiceImpl<OrderMapper, Order> implements IService<Order> {
 
-	@Autowired
-	private OrderMapper orderMapper;
+	private final OrderMapper orderMapper;
 
 	public List<Order> pageByUserIdAndStatus(Page<Order> page, Integer userId, OrderEnum.StatusEnum status) {
 		return orderMapper.pageByUserIdAndStatus(page, userId, status);

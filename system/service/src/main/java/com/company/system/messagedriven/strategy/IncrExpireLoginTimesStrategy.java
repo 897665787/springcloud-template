@@ -18,10 +18,10 @@ import cn.hutool.core.date.LocalDateTimeUtil;
  * 增加过期后登录次数
  */
 @Component(StrategyConstants.INCR_EXPIRELOGINTIMES_STRATEGY)
+@RequiredArgsConstructor
 public class IncrExpireLoginTimesStrategy implements BaseStrategy<Map<String, Object>> {
 
-	@Autowired
-	private SysUserPasswordService sysUserPasswordService;
+	private final SysUserPasswordService sysUserPasswordService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {

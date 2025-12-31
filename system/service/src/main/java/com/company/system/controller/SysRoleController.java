@@ -26,12 +26,11 @@ import com.company.system.service.SysRoleService;
 
 @RestController
 @RequestMapping("/sysRole")
+@RequiredArgsConstructor
 public class SysRoleController implements SysRoleFeign {
 
-	@Autowired
-	private SysRoleService sysRoleService;
-	@Autowired
-	private SysRoleMenuService sysRoleMenuService;
+	private final SysRoleService sysRoleService;
+	private final SysRoleMenuService sysRoleMenuService;
 
 	private QueryWrapper<SysRole> toQueryWrapper(String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();

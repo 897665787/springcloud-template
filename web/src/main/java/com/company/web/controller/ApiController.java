@@ -16,6 +16,7 @@ import com.company.order.api.response.OrderResp;
 import com.company.user.api.response.UserResp;
 import com.company.web.service.TimeService;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,48 +35,44 @@ import java.util.concurrent.Future;
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@RequiredArgsConstructor
 public class ApiController {
 
-	@Autowired
-	private OrderFeign orderFeign;
-	@Autowired
-	private AsyncTaskExecutor executor;
-	@Autowired
-	private TimeService timeService;
+	private final OrderFeign orderFeign;
+	private final AsyncTaskExecutor executor;
+	private final TimeService timeService;
+	private final ICache cache;
+	private final ThreadPoolProperties threadPoolProperties;
+	private final SequenceGenerator sequenceGenerator;
 
-	@GetMapping(value = "/beans")
-	public Map<?,?> beans() {
-		ApplicationContext context = SpringContextUtil.getContext();
-		String[] beanDefinitionNames = context.getBeanDefinitionNames();
-		Map<String, Object> map = Maps.newHashMap();
-		map.put("beanDefinitionNames", beanDefinitionNames);
-		return map;
-	}
+	@Value("${template.threadpool.maxPoolSize}")
+	private Integer maxPoolSize;
 
-	@Autowired
-	private ICache cache;
+    @GetMapping(value = "/beans")
+    public Map<?,?> beans() {
+        ApplicationContext context = SpringContextUtil.getContext();
+        String[] beanDefinitionNames = context.getBeanDefinitionNames();
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("beanDefinitionNames", beanDefinitionNames);
+        return map;
+    }
 
-	@GetMapping(value = "/timestr")
-	public String timestr() {
-		String string1 = cache.get("aaaaaaa", () -> {
+    @GetMapping(value = "/timestr")
+    public String timestr() {
+        String string1 = cache.get("aaaaaaa", () -> {
 //			int a = 1/0;
-			return ""+System.currentTimeMillis();
+            return ""+System.currentTimeMillis();
 //			return null;
-		});
-		System.out.println(string1);
+        });
+        System.out.println(string1);
 
 //		String string2 = RedisUtils.get("aaaaaaa", () -> {
 ////			int a = 1/0;
 //			return ""+System.currentTimeMillis();
 //		});
 //		System.out.println(string2);
-		return timeService.getTime();
-	}
-
-	@Autowired
-	private ThreadPoolProperties threadPoolProperties;
-	@Value("${template.threadpool.maxPoolSize}")
-	private Integer maxPoolSize;
+        return timeService.getTime();
+    }
 
     @GetMapping(value = "/info")
     public Map<String, Object> info() {
@@ -163,9 +160,6 @@ public class ApiController {
 	public String send() {
 		return "{}";
 	}
-
-	@Autowired
-	SequenceGenerator sequenceGenerator;
 
 	@GetMapping(value = "/retryGet")
 	public OrderResp retryGet(Long id) {

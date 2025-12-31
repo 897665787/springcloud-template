@@ -22,10 +22,10 @@ import com.company.system.service.SysLogininfoService;
 
 @RestController
 @RequestMapping("/sysLogininfo")
+@RequiredArgsConstructor
 public class SysLogininfoController implements SysLogininfoFeign {
 
-	@Autowired
-	private SysLogininfoService sysLogininfoService;
+	private final SysLogininfoService sysLogininfoService;
 
 	private QueryWrapper<SysLogininfo> toQueryWrapper(Integer sysUserId, String loginTimeStart, String loginTimeEnd, String account, String device, String platform, String operator, String version, String deviceid, String channel, String ip, String address, String source, String lang, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysLogininfo> queryWrapper = new QueryWrapper<>();

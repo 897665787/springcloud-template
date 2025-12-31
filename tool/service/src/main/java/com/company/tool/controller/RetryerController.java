@@ -15,10 +15,10 @@ import com.company.tool.retry.RetryerInfo;
 
 @RestController
 @RequestMapping(value = "/retryer")
+@RequiredArgsConstructor
 public class RetryerController implements RetryerFeign {
 
-	@Autowired
-	private FeignRetryer feignRetryer;
+	private final FeignRetryer feignRetryer;
 
 	@Override
 	public Void call(@RequestBody RetryerInfoReq req) {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +20,10 @@ import com.company.admin.util.XSTreeUtil;
  * Created by JQ棣 on 2017/10/27.
  */
 @Service
+@RequiredArgsConstructor
 public class SecOrganizationService {
 
-    @Autowired
-    private SecOrganizationDao secOrganizationDao;
+    private final SecOrganizationDao secOrganizationDao;
 
     public void save(SecOrganization secOrganization) {
         SecOrganization criteria = new SecOrganization();

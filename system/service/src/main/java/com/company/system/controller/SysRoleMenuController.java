@@ -22,10 +22,10 @@ import com.company.system.service.SysRoleMenuService;
 
 @RestController
 @RequestMapping("/sysRoleMenu")
+@RequiredArgsConstructor
 public class SysRoleMenuController implements SysRoleMenuFeign {
 
-	@Autowired
-	private SysRoleMenuService sysRoleMenuService;
+	private final SysRoleMenuService sysRoleMenuService;
 
 	private QueryWrapper<SysRoleMenu> toQueryWrapper(Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRoleMenu> queryWrapper = new QueryWrapper<>();

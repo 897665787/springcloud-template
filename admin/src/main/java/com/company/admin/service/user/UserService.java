@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -27,10 +27,10 @@ import com.company.framework.context.HttpContextUtil;
  * Created by JQ棣 on 2018/05/28.
  */
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
-	@Autowired
-	private UserDao userDao;
+	private final UserDao userDao;
 
 	public void save(User user) {
 		User existent = userDao.getByMobile(user.getMobile());

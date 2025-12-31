@@ -15,13 +15,14 @@ import com.company.order.pay.PayFactory;
 import com.company.order.pay.core.PayClient;
 import com.company.order.service.OrderPayService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component(StrategyConstants.PAY_CLOSE_STRATEGY)
+@RequiredArgsConstructor
 public class PayCloseStrategy implements BaseStrategy<Map<String, Object>> {
-	@Autowired
-	private OrderPayService orderPayService;
+	private final OrderPayService orderPayService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {

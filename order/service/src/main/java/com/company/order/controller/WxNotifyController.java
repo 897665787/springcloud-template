@@ -25,6 +25,7 @@ import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.util.SignUtils;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,24 +43,19 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "/wxnotify")
+@RequiredArgsConstructor
 public class WxNotifyController implements WxNotifyFeign {
 
-	@Autowired
-	private WxPayMapper wxPayMapper;
-	@Autowired
-	private WxPayRefundMapper wxPayRefundMapper;
+	private final WxPayMapper wxPayMapper;
+	private final WxPayRefundMapper wxPayRefundMapper;
 
-	@Autowired
-	private PayNotifyMapper payNotifyMapper;
+	private final PayNotifyMapper payNotifyMapper;
 
-	@Autowired
-	private MessageSender messageSender;
+	private final MessageSender messageSender;
 	
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
+	private final MessagedrivenProperties messagedrivenProperties;
 
-	@Autowired
-	private WxPayConfiguration wxPayConfiguration;
+	private final WxPayConfiguration wxPayConfiguration;
 	
 	/**
 	 * 微信只有支付成功才会回调

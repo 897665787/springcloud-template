@@ -3,8 +3,8 @@ package com.company.framework.autoconfigure;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -21,13 +21,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-	@Autowired(required = false)
-	private List<HandlerInterceptor> interceptorList;// 注册为bean的拦截器，直接new的装配不到
+	private final List<HandlerInterceptor> interceptorList;// 注册为bean的拦截器，直接new的装配不到
 
-	@Autowired(required = false)
-	private List<WebMvcConfigurer> webMvcConfigurerList;
+	private final List<WebMvcConfigurer> webMvcConfigurerList;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

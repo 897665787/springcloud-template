@@ -1,6 +1,6 @@
 package com.company.adminapi.messagedriven.strategy;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.adminapi.messagedriven.strategy.dto.SysOperLogDto;
@@ -9,10 +9,10 @@ import com.company.system.api.feign.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 
 @Component(StrategyConstants.SAVE_OPERLOG_STRATEGY)
+@RequiredArgsConstructor
 public class SaveOperLogStrategy implements BaseStrategy<SysOperLogDto> {
 
-	@Autowired
-	private SysOperLogFeign sysOperLogFeign;
+	private final SysOperLogFeign sysOperLogFeign;
 
 	@Override
 	public void doStrategy(SysOperLogDto params) {

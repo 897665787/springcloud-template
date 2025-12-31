@@ -2,6 +2,7 @@ package com.company.framework.messagedriven.redis.gracefulshutdown;
 
 import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Conditional;
@@ -16,10 +17,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Conditional(RedisMQAutoConfiguration.RedisMQCondition.class)
+@RequiredArgsConstructor
 public class RedisConsumerComponent implements ConsumerComponent {
 
-    @Autowired
-    private RedisMessageListenerContainer redisMessageListenerContainer;
+    private final RedisMessageListenerContainer redisMessageListenerContainer;
 
     @Override
     public void preStop() {

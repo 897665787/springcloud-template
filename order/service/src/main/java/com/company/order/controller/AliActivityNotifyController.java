@@ -31,6 +31,7 @@ import com.company.order.pay.aliactivity.notify.FromMessage;
 import com.company.order.pay.aliactivity.notify.FromMessageBeanFactory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,20 +49,17 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping(value = "/aliactivitynotify")
+@RequiredArgsConstructor
 public class AliActivityNotifyController implements AliActivityNotifyFeign {
-	@Autowired
-	private AliActivityNotifyMapper aliActivityNotifyMapper;
 
-	@Autowired
-	private AliActivityPayMapper aliActivityPayMapper;
+	private final AliActivityNotifyMapper aliActivityNotifyMapper;
 
-	@Autowired
-	private MessageSender messageSender;
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
+	private final AliActivityPayMapper aliActivityPayMapper;
 
-	@Autowired
-	private AliActivityPayConfiguration aliActivityPayConfiguration;
+	private final MessageSender messageSender;
+	private final MessagedrivenProperties messagedrivenProperties;
+
+	private final AliActivityPayConfiguration aliActivityPayConfiguration;
 
 	@Value("${aliactivitynotify.useVoucherCodeUrl:false}")
 	private Boolean useVoucherCodeUrl;

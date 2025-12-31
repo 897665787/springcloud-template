@@ -5,7 +5,7 @@ package com.company.admin.controller.system;
 import com.company.admin.service.system.DictionaryService;
 
 import com.company.admin.entity.system.Dictionary;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +22,10 @@ import javax.validation.constraints.NotNull;
 
 
 @RequestMapping("/admin/system/dictData")
+@RequiredArgsConstructor
 public class DictionaryController {
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
     @PostMapping("/save")
     public Void save(@Validated(Dictionary.Save.class) Dictionary dictionary) {

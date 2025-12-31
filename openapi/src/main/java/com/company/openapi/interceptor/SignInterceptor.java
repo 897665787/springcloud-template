@@ -23,14 +23,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
 public class SignInterceptor extends HandlerInterceptorAdapter {
 
-	@Autowired
-	private SignConfiguration signConfiguration;
-	@Autowired
-	private ICache cache;
+	private final SignConfiguration signConfiguration;
+	private final ICache cache;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)

@@ -13,10 +13,10 @@ import com.company.order.mapper.FinancialFlowMapper;
 import com.company.order.mapper.OrderPayMapper;
 
 @Service
+@RequiredArgsConstructor
 public class FinancialFlowService extends ServiceImpl<FinancialFlowMapper, FinancialFlow> {
 
-	@Autowired
-	private OrderPayMapper orderPayMapper;
+	private final OrderPayMapper orderPayMapper;
 	
 	public void mchOutAccount(String orderCode, String tradeNo, BigDecimal amount, OrderPayEnum.Method tradeWayEnum,
 			String merchantNo) {

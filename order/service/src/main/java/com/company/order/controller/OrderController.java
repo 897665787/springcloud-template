@@ -61,19 +61,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
 @RequestMapping("/order")
+@RequiredArgsConstructor
 public class OrderController implements OrderFeign {
 
-	@Autowired
-	private OrderService orderService;
-	@Autowired
-	private OrderProductService orderProductService;
-	@Autowired
-	private PayRefundApplyMapper payRefundApplyMapper;
+	private final OrderService orderService;
+	private final OrderProductService orderProductService;
+	private final PayRefundApplyMapper payRefundApplyMapper;
 
 	@Override
 	public Void registerOrder(@RequestBody RegisterOrderReq registerOrderReq) {
@@ -540,8 +539,7 @@ public class OrderController implements OrderFeign {
 		return data;
 	}
 
-	@Autowired
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
 
 	private Object postRestTemplate(String url, Object paramObject) {
 		String remark = null;

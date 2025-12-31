@@ -48,19 +48,16 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component(PayFactory.WX_PAYCLIENT)
+@RequiredArgsConstructor
 public class WxPayClient extends BasePayClient {
 
 	private static final String PAY_CALLBACK_URL = "/notify/wxPay";
 	private static final String REFUND_CALLBACK_URL = "/notify/wxPayRefund";
 
-	@Autowired
-	private WxPayConfiguration wxPayConfiguration;
-	@Autowired
-	private WxPayMapper wxPayMapper;
-	@Autowired
-	private WxPayRefundMapper wxPayRefundMapper;
-	@Autowired
-	private AsyncTaskExecutor executor;
+	private final WxPayConfiguration wxPayConfiguration;
+	private final WxPayMapper wxPayMapper;
+	private final WxPayRefundMapper wxPayRefundMapper;
+	private final AsyncTaskExecutor executor;
 
 	@Value("${template.domain}")
 	private String domain;

@@ -7,8 +7,8 @@ import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
 import com.company.web.messagedriven.strategy.StrategyConstants;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,11 +18,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/mq")
 @Slf4j
+@RequiredArgsConstructor
 public class MqController {
-	@Autowired
-	private MessageSender messageSender;
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
+	private final MessageSender messageSender;
+	private final MessagedrivenProperties messagedrivenProperties;
 
 	@GetMapping(value = "/sendNormalMessage")
 	public String sendNormalMessage(String message) {

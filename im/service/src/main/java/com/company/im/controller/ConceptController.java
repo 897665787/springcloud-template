@@ -15,15 +15,17 @@ import com.github.linyuzai.connection.loadbalance.core.extension.PathMessage;
 import com.github.linyuzai.connection.loadbalance.core.extension.UserMessage;
 import com.github.linyuzai.connection.loadbalance.websocket.concept.WebSocketLoadBalanceConcept;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/concept")
+@RequiredArgsConstructor
 public class ConceptController {
 
     @Value("${server.port:0}")
     private String port;
 
-    @Autowired(required = false)
-    private WebSocketLoadBalanceConcept concept;
+    private final WebSocketLoadBalanceConcept concept;
 
     @RequestMapping("/toUser")
     public Map<String, String> conceptsend(String toUserId, String msg) {

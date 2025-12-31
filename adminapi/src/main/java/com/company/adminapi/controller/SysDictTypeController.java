@@ -12,7 +12,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysDictTypeFeign;
 import com.company.system.api.request.SysDictTypeReq;
 import com.company.system.api.response.SysDictTypeResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +24,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysDictType")
+@RequiredArgsConstructor
 public class SysDictTypeController {
 
-	@Autowired
-	private SysDictTypeFeign sysDictTypeFeign;
+	private final SysDictTypeFeign sysDictTypeFeign;
 
 	@RequirePermissions("system:sysDictType:query")
 	@GetMapping("/page")

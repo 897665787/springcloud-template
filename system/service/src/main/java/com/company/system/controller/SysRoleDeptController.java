@@ -20,10 +20,10 @@ import com.company.system.service.SysRoleDeptService;
 
 @RestController
 @RequestMapping("/sysRoleDept")
+@RequiredArgsConstructor
 public class SysRoleDeptController implements SysRoleDeptFeign {
 
-	@Autowired
-	private SysRoleDeptService sysRoleDeptService;
+	private final SysRoleDeptService sysRoleDeptService;
 
 	private QueryWrapper<SysRoleDept> toQueryWrapper(Integer roleId, Integer deptId) {
 		QueryWrapper<SysRoleDept> queryWrapper = new QueryWrapper<>();

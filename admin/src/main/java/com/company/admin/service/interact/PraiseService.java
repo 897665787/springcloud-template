@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.interact.PraiseNum;
@@ -17,9 +17,9 @@ import com.google.common.collect.Maps;
  * Created by JQ棣 on 2018/05/21.
  */
 @Service
+@RequiredArgsConstructor
 public class PraiseService {
-	@Autowired
-	private PraiseNumDao praiseNumDao;
+	private final PraiseNumDao praiseNumDao;
 
 	public Map<Long, Integer> mapNumber(Integer module, List<Long> relativeIdList) {
 		List<PraiseNum> praiseNumList = praiseNumDao.listByRelativeIdList(module, relativeIdList);

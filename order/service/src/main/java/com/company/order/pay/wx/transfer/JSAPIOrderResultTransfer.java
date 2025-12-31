@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
  * 微信小程序支付
  */
 @Component(OrderResultTransfer.BEAN_NAME_PREFIX + TradeType.JSAPI)
+@RequiredArgsConstructor
 public class JSAPIOrderResultTransfer implements OrderResultTransfer {
 
-	@Autowired
-	private WxPayConfiguration wxPayConfiguration;
+	private final WxPayConfiguration wxPayConfiguration;
 	
 	@Override
 	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,

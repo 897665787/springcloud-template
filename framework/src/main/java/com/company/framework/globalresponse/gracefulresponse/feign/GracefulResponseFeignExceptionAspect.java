@@ -3,10 +3,10 @@ package com.company.framework.globalresponse.gracefulresponse.feign;
 import com.company.framework.globalresponse.gracefulresponse.feign.context.GracefulResponseExceptionContext;
 import com.feiniaojin.gracefulresponse.GracefulResponseException;
 import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class GracefulResponseFeignExceptionAspect {
 
-    @Autowired
-    private GracefulResponseProperties gracefulResponseProperties;
+    private final GracefulResponseProperties gracefulResponseProperties;
 
     /**
      * 在Feign调用返回后

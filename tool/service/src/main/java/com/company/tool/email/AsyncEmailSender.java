@@ -33,16 +33,13 @@ import cn.hutool.core.date.DateUtil;
  * 邮件发送器（异步）
  */
 @Component
+@RequiredArgsConstructor
 public class AsyncEmailSender {
 
-	@Autowired
-	private MessageSender messageSender;
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
-	@Autowired
-	private EmailTaskService emailTaskService;
-	@Autowired
-	private EmailTaskDetailService emailTaskDetailService;
+	private final MessageSender messageSender;
+	private final MessagedrivenProperties messagedrivenProperties;
+	private final EmailTaskService emailTaskService;
+	private final EmailTaskDetailService emailTaskDetailService;
 
 	public void send0(List<String> emailList, EmailEnum.Type type) {
 		Map<String, String> emptyMap = Maps.newHashMap();

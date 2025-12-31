@@ -1,6 +1,6 @@
 package com.company.admin.controller.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -17,10 +17,10 @@ import com.company.admin.service.user.LevelService;
  * Created by JQ棣 on 2018/06/21.
  */
 @Controller
+@RequiredArgsConstructor
 public class LevelController {
 
-    @Autowired
-    private LevelService levelService;
+    private final LevelService levelService;
 
     @RequestMapping(value = "/admin/user/level", method = RequestMethod.GET)
     public String index(Model model, Level level) {

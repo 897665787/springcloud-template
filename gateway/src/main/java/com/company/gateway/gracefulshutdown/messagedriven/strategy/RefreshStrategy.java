@@ -2,6 +2,7 @@ package com.company.gateway.gracefulshutdown.messagedriven.strategy;
 
 import com.company.gateway.gracefulshutdown.ServerListRefresher;
 import com.company.gateway.messagedriven.BaseStrategy;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,9 @@ import java.util.Map;
 
 @Slf4j
 @Component(StrategyConstants.REFRESH_STRATEGY)
+@RequiredArgsConstructor
 public class RefreshStrategy implements BaseStrategy<Map<String, Object>> {
-	@Autowired(required = false)
-	private ServerListRefresher serverListRefresher;
+	private final ServerListRefresher serverListRefresher;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {

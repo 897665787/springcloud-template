@@ -27,14 +27,12 @@ import com.company.tool.service.market.UserPopupService;
 
 @RestController
 @RequestMapping("/popup")
+@RequiredArgsConstructor
 public class PopupController implements PopupFeign {
 
-	@Autowired
-	private PopService popService;
-	@Autowired
-	private UserPopupService userPopupService;
-	@Autowired
-	private PopupLogService popupLogService;
+	private final PopService popService;
+	private final UserPopupService userPopupService;
+	private final PopupLogService popupLogService;
 
 	@Override
 	public BestPopupResp bestPopup(@RequestBody BestPopupReq bestPopupReq) {

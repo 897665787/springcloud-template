@@ -4,7 +4,7 @@ package com.company.admin.controller.user.wallet;
 
 import com.company.admin.entity.user.wallet.Withdrawal;
 import com.company.admin.service.user.wallet.WithdrawalService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,10 +18,10 @@ import com.company.admin.annotation.Pagination;
  * Created by JQ棣 on 2018/11/23.
  */
 @Controller
+@RequiredArgsConstructor
 public class WithdrawalController {
 
-	@Autowired
-	private WithdrawalService withdrawalService;
+	private final WithdrawalService withdrawalService;
 
 	@RequestMapping(value = "/admin/user/withdrawal", method = RequestMethod.GET)
 	@Pagination

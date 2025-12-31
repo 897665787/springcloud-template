@@ -1,7 +1,7 @@
 package com.company.admin.service.loan;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.loan.ProductTipsDao;
  * Created by JQ棣 on 2018/11/20.
  */
 @Service
+@RequiredArgsConstructor
 public class ProductTipsService {
 
-    @Autowired
-    private ProductTipsDao productTipsDao;
+    private final ProductTipsDao productTipsDao;
 
     public void save(ProductTips productTips) {
         productTipsDao.save(productTips);

@@ -12,7 +12,6 @@ public class AliActivityPayConfiguration {
 	
     private final AliActivityPayProperties properties;
 
-    @Autowired
     public AliActivityPayConfiguration(AliActivityPayProperties properties) {
         this.properties = properties;
     }

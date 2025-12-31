@@ -12,7 +12,7 @@ import com.company.web.req.DecryptEntityReq;
 import com.company.web.req.DecryptFieldReq;
 import com.company.web.resp.EncryptEntityResp;
 import com.company.web.resp.EncryptFieldResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +22,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/encrypt")
+@RequiredArgsConstructor
 public class EncryptController {
 
-	@Autowired
-	private OrderFeign orderFeign;
+	private final OrderFeign orderFeign;
 
 	@PostMapping(value = "/post-body-row")
 	public com.company.web.resp.UserResp postbodyrow(@RequestBody Map<String, Object> param) {

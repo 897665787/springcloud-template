@@ -7,7 +7,7 @@ import com.company.admin.service.system.DictionaryService;
 
 import com.company.admin.entity.system.Dictionary;
 import com.company.admin.entity.system.DictionaryCategory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -24,13 +24,12 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/admin/system/dict")
+@RequiredArgsConstructor
 public class DictionaryCategoryController {
 
-    @Autowired
-    private DictionaryCategoryService dictionaryCategoryService;
+    private final DictionaryCategoryService dictionaryCategoryService;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
     @RequestMapping("")
     public String list(DictionaryCategory dictionaryCategory, Model model) {

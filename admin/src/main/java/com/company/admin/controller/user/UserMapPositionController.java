@@ -8,7 +8,7 @@ import com.company.admin.annotation.Pagination;
 
 import com.company.admin.entity.user.User;
 import com.company.admin.entity.user.UserMapPosition;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -21,13 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 2018/11/20.
  */
 @Controller
+@RequiredArgsConstructor
 public class UserMapPositionController {
 
-    @Autowired
-    private UserMapPositionService userMapPositionService;
+    private final UserMapPositionService userMapPositionService;
 
-    @Autowired
-    private ConfigService configService;
+    private final ConfigService configService;
 
     @RequestMapping(value = "/admin/user/userMapPosition", method = RequestMethod.GET)
     @Pagination

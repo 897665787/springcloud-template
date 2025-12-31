@@ -18,6 +18,7 @@ import com.company.order.entity.PayRefundApply;
 import com.company.order.mapper.PayRefundApplyMapper;
 import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -31,19 +32,16 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/refundApply")
+@RequiredArgsConstructor
 public class RefundApplyController implements RefundApplyFeign {
 
-	@Autowired
-	private PayRefundApplyMapper payRefundApplyMapper;
+	private final PayRefundApplyMapper payRefundApplyMapper;
 
-	@Autowired
-	private MessageSender messageSender;
+	private final MessageSender messageSender;
 
-	@Autowired
-	private PayFeign payFeign;
+	private final PayFeign payFeign;
 
-	@Autowired
-	private AsyncTaskExecutor executor;
+	private final AsyncTaskExecutor executor;
 
 	/**
 	 * 退款申请

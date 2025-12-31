@@ -38,20 +38,16 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 
 @RestController
 @RequestMapping("/sysUserPassword")
+@RequiredArgsConstructor
 public class SysUserPasswordController implements SysUserPasswordFeign {
 	private static final String NOTIFY_URL_REMINDPASSWORDEXPIRE = com.company.system.api.constant.Constants
 			.feignUrl("/sysUserPassword/remindPasswordExpire");
 
-	@Autowired
-	private SysUserPasswordService sysUserPasswordService;
-	@Autowired
-	private SysUserService sysUserService;
-	@Autowired
-	private RetryerFeign retryerFeign;
-	@Autowired
-	private EmailFeign emailFeign;
-	@Autowired
-	private SmsFeign smsFeign;
+	private final SysUserPasswordService sysUserPasswordService;
+	private final SysUserService sysUserService;
+	private final RetryerFeign retryerFeign;
+	private final EmailFeign emailFeign;
+	private final SmsFeign smsFeign;
 
 	@Value("${sys.password.maxExpireLoginTimes:3}")
 	private Integer maxExpireLoginTimes;

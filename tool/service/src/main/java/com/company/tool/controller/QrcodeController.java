@@ -25,12 +25,11 @@ import com.company.tool.qrcode.dto.LineColorParam;
  */
 @RestController
 @RequestMapping("/qrcode")
+@RequiredArgsConstructor
 public class QrcodeController implements QrcodeFeign {
 
-	@Autowired
-	private WxaCodeService wxaCodeService;
-	@Autowired
-	private UploadService uploadService;
+	private final WxaCodeService wxaCodeService;
+	private final UploadService uploadService;
 
 	@Override
 	public Map<String, String> wxaCode2upload(@RequestBody WxaCodeReq wxaCodeReq) {

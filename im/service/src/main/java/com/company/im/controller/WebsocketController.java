@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/websocket")
+@RequiredArgsConstructor
 public class WebsocketController implements WebsocketFeign {
-    @Autowired
-    private WebSocketLoadBalanceConcept concept;
+    private final WebSocketLoadBalanceConcept concept;
 
     @Override
     public Void sendToAll(@RequestBody AllReq allReq) {

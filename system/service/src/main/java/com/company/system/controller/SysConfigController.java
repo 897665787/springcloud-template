@@ -25,10 +25,10 @@ import com.company.system.service.SysConfigService;
 
 @RestController
 @RequestMapping("/sysConfig")
+@RequiredArgsConstructor
 public class SysConfigController implements SysConfigFeign {
 
-	@Autowired
-	private SysConfigService sysConfigService;
+	private final SysConfigService sysConfigService;
 
 	private QueryWrapper<SysConfig> toQueryWrapper(String name, String code, String value, String configRemark) {
 		QueryWrapper<SysConfig> queryWrapper = new QueryWrapper<>();

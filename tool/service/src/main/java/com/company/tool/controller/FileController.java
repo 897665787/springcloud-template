@@ -18,10 +18,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/file")
+@RequiredArgsConstructor
 public class FileController implements FileFeign {
 
-	@Autowired
-	private UploadService uploadService;
+	private final UploadService uploadService;
 
 	@Override
 	public UploadResp upload(@RequestBody UploadReq uploadReq) {

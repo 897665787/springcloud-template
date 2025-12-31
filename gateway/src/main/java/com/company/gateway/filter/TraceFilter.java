@@ -12,20 +12,21 @@ import com.company.gateway.constant.CommonConstants;
 import com.company.gateway.constant.HeaderConstants;
 import com.company.gateway.trace.TraceManager;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 /**
  * 对客户端请求添加追踪ID
  */
 @Component
+@RequiredArgsConstructor
 public class TraceFilter implements GlobalFilter, Ordered {
 
 	static {
 		System.setProperty("log4j2.isThreadContextMapInheritable", "true");
 	}
 
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	@Override
 	public int getOrder() {

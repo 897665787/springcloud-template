@@ -2,6 +2,7 @@ package com.company.job.gracefulshutdown;
 
 import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class XxlJobConsumerComponent implements ConsumerComponent {
 
-    @Autowired
-    private XxlJobSpringExecutor xxlJobExecutor;
+    private final XxlJobSpringExecutor xxlJobExecutor;
 
     @Override
     public void preStop() {

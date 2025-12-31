@@ -19,6 +19,8 @@ import com.company.order.api.feign.WxNotifyFeign;
 import com.company.order.api.response.SpiOrderSendNotifyResp;
 import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 接收第三方回调请求
  */
@@ -26,14 +28,12 @@ import com.feiniaojin.gracefulresponse.api.ExcludeFromGracefulResponse;
 @NoSign // 第三方回调请求有自己的验签，所以这里跳过验签，由后续业务进行验签
 @RestController
 @RequestMapping(value = "/notify")
+@RequiredArgsConstructor
 public class NotifyController {
 
-	@Autowired
-	private WxNotifyFeign wxNotifyFeign;
-	@Autowired
-	private AliNotifyFeign aliNotifyFeign;
-	@Autowired
-	private AliActivityNotifyFeign aliActivityNotifyFeign;
+	private final WxNotifyFeign wxNotifyFeign;
+	private final AliNotifyFeign aliNotifyFeign;
+	private final AliActivityNotifyFeign aliActivityNotifyFeign;
 
 	@PostMapping(value = "/wxPay", produces = MediaType.APPLICATION_XML_VALUE)
 	public String wxPay(@RequestBody String xmlString) {

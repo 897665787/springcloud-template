@@ -13,11 +13,13 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class SubscribeService {
 
-	@Autowired
-	private SubscribeFeign subscribeFeign;
+	private final SubscribeFeign subscribeFeign;
 
 	@XxlJob("subscribeHandler")
 	public ReturnT<String> subscribeHandler() {

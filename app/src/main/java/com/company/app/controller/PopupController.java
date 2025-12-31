@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.company.tool.api.response.BestPopupResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,10 +21,10 @@ import com.company.tool.api.request.BestPopupReq;
  */
 @RestController
 @RequestMapping("/popup")
+@RequiredArgsConstructor
 public class PopupController {
 
-	@Autowired
-	private PopupFeign popupFeign;
+	private final PopupFeign popupFeign;
 
 	/**
 	 * 用户最优的弹窗(前端唯一入口)

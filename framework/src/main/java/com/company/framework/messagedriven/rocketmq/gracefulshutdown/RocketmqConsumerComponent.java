@@ -3,6 +3,7 @@ package com.company.framework.messagedriven.rocketmq.gracefulshutdown;
 
 import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.rocketmq.RocketMQAutoConfiguration;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import java.util.List;
 @Slf4j
 @Component
 @Conditional(RocketMQAutoConfiguration.RocketMQCondition.class)
+@RequiredArgsConstructor
 public class RocketmqConsumerComponent implements ConsumerComponent {
 
-    @Autowired
-    private List<DefaultRocketMQListenerContainer> defaultRocketMQListenerContainerList;
+    private final List<DefaultRocketMQListenerContainer> defaultRocketMQListenerContainerList;
 
     @Override
     public void preStop() {

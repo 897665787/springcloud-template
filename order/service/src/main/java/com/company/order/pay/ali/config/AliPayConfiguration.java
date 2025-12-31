@@ -12,7 +12,6 @@ public class AliPayConfiguration {
 
     private AliPayProperties properties;
 
-    @Autowired
     public AliPayConfiguration(AliPayProperties properties) {
         this.properties = properties;
     }

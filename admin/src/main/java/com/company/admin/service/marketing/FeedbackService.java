@@ -1,7 +1,7 @@
 package com.company.admin.service.marketing;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.marketing.FeedbackDao;
  * Created by JQ棣 on 11/1/17.
  */
 @Service
+@RequiredArgsConstructor
 public class FeedbackService {
 
-    @Autowired
-    FeedbackDao feedbackDao;
+    private final FeedbackDao feedbackDao;
 
     public void remove(Feedback feedback) {
         Feedback existent = get(feedback);

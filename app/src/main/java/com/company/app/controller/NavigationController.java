@@ -14,8 +14,8 @@ import com.company.tool.api.response.NavResp;
 import com.company.user.api.enums.UserOauthEnum;
 import com.company.user.api.feign.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,14 +31,12 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/navigation")
+@RequiredArgsConstructor
 public class NavigationController {
 
-	@Autowired
-	private NavFeign navFeign;
-	@Autowired
-	private BannerFeign bannerFeign;
-	@Autowired
-	private UserOauthFeign userOauthFeign;
+	private final NavFeign navFeign;
+	private final BannerFeign bannerFeign;
+	private final UserOauthFeign userOauthFeign;
 
 	/**
 	 * 金刚位列表

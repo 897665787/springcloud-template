@@ -14,7 +14,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysLogininfoFeign;
 import com.company.system.api.request.SysLogininfoReq;
 import com.company.system.api.response.SysLogininfoResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +26,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysLogininfo")
+@RequiredArgsConstructor
 public class SysLogininfoController {
 
-	@Autowired
-	private SysLogininfoFeign sysLogininfoFeign;
+	private final SysLogininfoFeign sysLogininfoFeign;
 
 	@RespConverter(field = "sysUserId", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysLogininfo:query")

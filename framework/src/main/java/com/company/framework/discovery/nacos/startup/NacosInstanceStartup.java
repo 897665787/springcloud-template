@@ -6,8 +6,8 @@ import com.company.framework.gracefulshutdown.InstanceStartup;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +21,11 @@ import java.util.Map;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "spring.cloud.nacos.discovery.enabled", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
 public class NacosInstanceStartup implements InstanceStartup {
-    @Autowired
-    private NacosRegistration registration;
+    private final NacosRegistration registration;
 
-    @Autowired
-    private MessageSender messageSender;
+    private final MessageSender messageSender;
 
     @Override
     public void startup() {

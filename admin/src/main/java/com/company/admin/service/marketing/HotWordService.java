@@ -1,7 +1,7 @@
 package com.company.admin.service.marketing;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.marketing.HotWordDao;
  * Created by JQ棣 on 2018/11/07.
  */
 @Service
+@RequiredArgsConstructor
 public class HotWordService {
 
-    @Autowired
-    private HotWordDao hotWordDao;
+    private final HotWordDao hotWordDao;
 
     public void save(HotWord hotWord) {
         hotWordDao.save(hotWord);

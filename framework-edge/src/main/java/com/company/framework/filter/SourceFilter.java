@@ -5,6 +5,7 @@ import com.company.framework.constant.HeaderConstants;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -27,10 +28,10 @@ import java.util.Map;
  */
 @Component
 @Order(CommonConstants.FilterOrdered.SOURCE)
+@RequiredArgsConstructor
 public class SourceFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private MessageSender messageSender;
+	private final MessageSender messageSender;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

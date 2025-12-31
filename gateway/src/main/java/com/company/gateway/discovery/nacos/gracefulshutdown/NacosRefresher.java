@@ -19,6 +19,7 @@ import com.company.gateway.gracefulshutdown.ServerListRefresher;
 import com.company.gateway.util.JsonUtil;
 import com.google.common.collect.Lists;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,10 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "spring.cloud.nacos.discovery.enabled", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
 public class NacosRefresher implements ServerListRefresher {
 
-    @Autowired
-    private NacosDiscoveryProperties nacosProperties;
+    private final NacosDiscoveryProperties nacosProperties;
 
     @Override
     public void refresh(String type, String application, String ip, int port) {

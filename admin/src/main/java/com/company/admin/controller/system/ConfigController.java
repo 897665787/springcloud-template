@@ -7,7 +7,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -28,10 +28,10 @@ import com.company.admin.service.system.ConfigService;
  */
 @Controller
 @RequestMapping("/admin/system/config")
+@RequiredArgsConstructor
 public class ConfigController {
 
-    @Autowired
-    private ConfigService configService;
+    private final ConfigService configService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index(Model model, Long categoryParentId) {

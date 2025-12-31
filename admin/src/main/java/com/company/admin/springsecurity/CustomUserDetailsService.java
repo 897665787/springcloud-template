@@ -3,7 +3,7 @@ package com.company.admin.springsecurity;
 import com.company.admin.entity.security.SecResource;
 import com.company.admin.entity.security.SecStaff;
 import com.company.admin.service.security.SecStaffService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,10 +19,10 @@ import java.util.Collection;
  * 系统用户登录
  */
 @Component
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-	@Autowired
-	private SecStaffService secStaffService;
+	private final SecStaffService secStaffService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

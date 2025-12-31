@@ -5,7 +5,7 @@ package com.company.admin.controller.system;
 import com.company.admin.service.system.AppInitService;
 
 import com.company.admin.entity.system.AppInit;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 2017/11/13.
  */
 @Controller
+@RequiredArgsConstructor
 public class AppInitController {
 
-    @Autowired
-    private AppInitService appInitService;
+    private final AppInitService appInitService;
 
     @RequestMapping(value = "/admin/system/appInit", method = RequestMethod.GET)
     public String index(Model model, AppInit appInit) {

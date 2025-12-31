@@ -6,9 +6,9 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.tool.api.feign.FileFeign;
 import com.company.tool.api.request.ClientUploadReq;
 import com.company.tool.api.response.ClientUploadResp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,10 +20,10 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/file")
+@RequiredArgsConstructor
 public class FileController {
 
-	@Autowired
-	private FileFeign fileFeign;
+	private final FileFeign fileFeign;
 
 	@PostMapping("/upload")
 	public Map<String, String> upload(@RequestParam("file") MultipartFile file) {

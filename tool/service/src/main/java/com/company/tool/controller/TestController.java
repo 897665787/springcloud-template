@@ -34,18 +34,14 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/test")
+@RequiredArgsConstructor
 public class TestController {
 
-	@Autowired
-	private FileFeign fileFeign;
-	@Autowired
-	private VerifyCodeController verifyCodeFeign;
-	@Autowired
-	private AsyncSmsSender asyncSmsSender;
-	@Autowired
-	private AsyncWebhookSender asyncWebhookSender;
-	@Autowired
-	private PopupFeign popupFeign;
+	private final FileFeign fileFeign;
+	private final VerifyCodeController verifyCodeFeign;
+	private final AsyncSmsSender asyncSmsSender;
+	private final AsyncWebhookSender asyncWebhookSender;
+	private final PopupFeign popupFeign;
 
 	@GetMapping("/verifyCodeSms")
 	public Map<String, String> verifyCodeSms(String mobile, String type) {

@@ -2,7 +2,7 @@ package com.company.admin.controller.interact;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +19,9 @@ import com.company.admin.entity.interact.Demo;
  */
 @Controller
 @Deprecated
+@RequiredArgsConstructor
 public class DemoController {
-	@Autowired
-	private DemoService demoService;
+	private final DemoService demoService;
 	
 	@RequestMapping(value = "/admin/interact/demo", method = RequestMethod.GET)
 	@Pagination

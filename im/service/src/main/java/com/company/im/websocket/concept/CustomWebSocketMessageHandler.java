@@ -17,13 +17,14 @@ import com.github.linyuzai.connection.loadbalance.core.extension.UserSelector;
 import com.github.linyuzai.connection.loadbalance.core.message.Message;
 import com.github.linyuzai.connection.loadbalance.websocket.concept.WebSocketMessageHandler;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CustomWebSocketMessageHandler implements WebSocketMessageHandler {
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	@Override
 	public void onMessage(Message message, Connection connection, ConnectionLoadBalanceConcept concept) {

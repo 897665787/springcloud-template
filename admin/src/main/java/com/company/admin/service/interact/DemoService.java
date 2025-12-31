@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -19,15 +19,13 @@ import com.google.common.collect.Lists;
  */
 @Deprecated
 @Service
+@RequiredArgsConstructor
 public class DemoService {
 	private static final Logger logger = LoggerFactory.getLogger(DemoService.class);
 
-	@Autowired
-	private CommentService commentService;
-	@Autowired
-	private PraiseService praiseService;
-	@Autowired
-	private CollectService collectService;
+	private final CommentService commentService;
+	private final PraiseService praiseService;
+	private final CollectService collectService;
 
 	public XSPageModel<Demo> listAndCount(Demo condition) {
 		List<Demo> list = Lists.newArrayList(new Demo().setId(1L).setUserId("userid1"),

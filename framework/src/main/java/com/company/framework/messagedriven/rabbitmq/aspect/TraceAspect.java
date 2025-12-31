@@ -2,6 +2,7 @@ package com.company.framework.messagedriven.rabbitmq.aspect;
 
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
 import com.company.framework.trace.TraceManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -9,7 +10,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
+@RequiredArgsConstructor
 public class TraceAspect {
 
-    @Autowired
-    private TraceManager traceManager;
+    private final TraceManager traceManager;
 
     // 执行之前塞入日志ID，用于追踪整个执行链路
     @Before("@annotation(org.springframework.amqp.rabbit.annotation.RabbitListener)")

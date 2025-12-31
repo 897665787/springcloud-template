@@ -3,6 +3,7 @@ package com.company.framework.messagedriven.rabbitmq.gracefulshutdown;
 
 import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.rabbitmq.RabbitMQAutoConfiguration;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @Conditional(RabbitMQAutoConfiguration.RabbitMQCondition.class)
+@RequiredArgsConstructor
 public class RabbitmqConsumerComponent implements ConsumerComponent {
 
-    @Autowired
-    private RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
+    private final RabbitListenerEndpointRegistry rabbitListenerEndpointRegistry;
 
     @Override
     public void preStop() {

@@ -29,16 +29,13 @@ import com.company.system.service.SysUserRoleService;
 
 @RestController
 @RequestMapping("/sysUserRole")
+@RequiredArgsConstructor
 public class SysUserRoleController implements SysUserRoleFeign {
 
-	@Autowired
-	private SysUserRoleService sysUserRoleService;
-	@Autowired
-	private SysRoleService sysRoleService;
-	@Autowired
-	private SysRoleMenuService sysRoleMenuService;
-	@Autowired
-	private SysMenuService sysMenuService;
+	private final SysUserRoleService sysUserRoleService;
+	private final SysRoleService sysRoleService;
+	private final SysRoleMenuService sysRoleMenuService;
+	private final SysMenuService sysMenuService;
 
 	private QueryWrapper<SysUserRole> toQueryWrapper(Integer userId, Integer roleId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<>();

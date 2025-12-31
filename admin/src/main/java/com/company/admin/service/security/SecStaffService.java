@@ -10,7 +10,7 @@ import com.company.admin.util.XSMd5Util;
 import com.company.admin.util.XSTreeUtil;
 import com.company.admin.util.XSUuidUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +23,12 @@ import java.util.List;
  * Created by JQ棣 on 2017/10/27.
  */
 @Service
+@RequiredArgsConstructor
 public class SecStaffService {
 
-    @Autowired
-    private SecStaffDao secStaffDao;
+    private final SecStaffDao secStaffDao;
 
-    @Autowired
-    private SecResourceDao secResourceDao;
+    private final SecResourceDao secResourceDao;
 
     public void save(SecStaff secStaff) {
         SecStaff existent = secStaffDao.getByUsernameWithoutType(secStaff.getUsername());

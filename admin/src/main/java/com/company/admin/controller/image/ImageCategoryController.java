@@ -7,7 +7,7 @@ import com.company.admin.service.image.ImageCategoryService;
 import com.company.admin.service.system.DictionaryService;
 
 import com.company.admin.entity.image.ImageCategory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -23,13 +23,12 @@ import java.util.List;
  * Created by JQ棣 on 2017/10/23.
  */
 @Controller
+@RequiredArgsConstructor
 public class ImageCategoryController {
 
-    @Autowired
-    private ImageCategoryService imageCategoryService;
+    private final ImageCategoryService imageCategoryService;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
     @RequestMapping(value = "/admin/content/imageCategory", method = RequestMethod.GET)
     public String index(Model model) {

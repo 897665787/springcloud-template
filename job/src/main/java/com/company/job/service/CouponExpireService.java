@@ -15,13 +15,14 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class CouponExpireService {
 
-	@Autowired
-	private CouponFeign couponFeign;
-	@Autowired
-	private SubscribeFeign subscribeFeign;
+	private final CouponFeign couponFeign;
+	private final SubscribeFeign subscribeFeign;
 
 	/**
 	 * 优惠券过期提醒（订阅消息job触发demo）

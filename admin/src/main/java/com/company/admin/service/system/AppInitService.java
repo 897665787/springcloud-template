@@ -5,7 +5,7 @@ import com.company.admin.entity.system.AppInit;
 import com.company.admin.mapper.system.AppInitDao;
 import com.company.admin.util.XSUuidUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +15,10 @@ import java.util.List;
  * Created by JQ棣 on 2017/11/13.
  */
 @Service
+@RequiredArgsConstructor
 public class AppInitService {
 
-    @Autowired
-    private AppInitDao appInitDao;
+    private final AppInitDao appInitDao;
 
     public void save(AppInit appInit) {
         AppInit criteria = new AppInit();

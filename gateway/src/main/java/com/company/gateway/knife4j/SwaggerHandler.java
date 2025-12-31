@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 import springfox.documentation.swagger.web.SecurityConfiguration;
 import springfox.documentation.swagger.web.SecurityConfigurationBuilder;
@@ -19,19 +20,19 @@ import springfox.documentation.swagger.web.UiConfigurationBuilder;
  * 官方文档：https://doc.xiaominfo.com/docs/action/springcloud-gateway
  */
 @RestController
+@RequiredArgsConstructor
 public class SwaggerHandler {
 
-	@Autowired(required = false)
-	private SecurityConfiguration securityConfiguration;
+	private final SecurityConfiguration securityConfiguration;
 
-	@Autowired(required = false)
-	private UiConfiguration uiConfiguration;
+	private final UiConfiguration uiConfiguration;
 
 	private final SwaggerResourcesProvider swaggerResources;
 
-	@Autowired
-	public SwaggerHandler(SwaggerResourcesProvider swaggerResources) {
+	public SwaggerHandler(SwaggerResourcesProvider swaggerResources, SecurityConfiguration securityConfiguration, UiConfiguration uiConfiguration) {
 		this.swaggerResources = swaggerResources;
+		this.securityConfiguration = securityConfiguration;
+		this.uiConfiguration = uiConfiguration;
 	}
 
 	@GetMapping("/swagger-resources/configuration/security")

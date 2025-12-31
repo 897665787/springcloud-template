@@ -13,12 +13,11 @@ import top.javatool.canal.client.handler.EntryHandler;
 @Slf4j
 @Component
 @CanalTable(value = "app_version") // 对应的数据库表名
+@RequiredArgsConstructor
 public class AppVersionHandler implements EntryHandler<AppVersion> {
 
-    @Autowired
-    private AppVersionCache appVersionCache;
-    @Autowired
-    private AppVersionService appVersionService;
+    private final AppVersionCache appVersionCache;
+    private final AppVersionService appVersionService;
 
     @Override
     public void delete(AppVersion t) {

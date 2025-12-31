@@ -17,7 +17,7 @@ import org.apache.commons.digester.Digester;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -36,14 +36,13 @@ import java.util.concurrent.TimeUnit;
  * Created by JQ棣 on 2017/10/27.
  */
 @Service
+@RequiredArgsConstructor
 public class SecResourceService {
 
     private static final Logger logger = LoggerFactory.getLogger(SecResourceService.class);
 
-    @Autowired
-    private SecResourceDao secResourceDao;
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecResourceDao secResourceDao;
+    private final SecStaffService secStaffService;
 
     private Cache<String, Map<String, Map<String, SecResource>>> cache = null;
 

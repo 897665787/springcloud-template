@@ -25,15 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component(StrategyConstants.REFUND_NOTIFY_STRATEGY)
+@RequiredArgsConstructor
 public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 
-	@Autowired
-	private OrderPayRefundService orderPayRefundService;
-	@Autowired
-	private RetryerFeign retryerFeign;
+	private final OrderPayRefundService orderPayRefundService;
+	private final RetryerFeign retryerFeign;
 
-	@Autowired
-	private FinancialFlowService financialFlowService;
+	private final FinancialFlowService financialFlowService;
 
 	@Override
 	public void doStrategy(Map<String, Object> params) {

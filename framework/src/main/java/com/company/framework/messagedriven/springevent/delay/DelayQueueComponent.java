@@ -9,14 +9,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
 @ConditionalOnProperty(prefix = "template.enable", name = "message-driven", havingValue = "springevent")
+@RequiredArgsConstructor
 public class DelayQueueComponent implements CommandLineRunner {
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	private DelayQueue<DelayedConsumer> delayQueue = new DelayQueue<>();
 

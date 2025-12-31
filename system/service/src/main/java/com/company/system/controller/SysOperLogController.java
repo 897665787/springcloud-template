@@ -22,10 +22,10 @@ import com.company.system.service.SysOperLogService;
 
 @RestController
 @RequestMapping("/sysOperLog")
+@RequiredArgsConstructor
 public class SysOperLogController implements SysOperLogFeign {
 
-	@Autowired
-	private SysOperLogService sysOperLogService;
+	private final SysOperLogService sysOperLogService;
 
 	private QueryWrapper<SysOperLog> toQueryWrapper(Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysOperLog> queryWrapper = new QueryWrapper<>();

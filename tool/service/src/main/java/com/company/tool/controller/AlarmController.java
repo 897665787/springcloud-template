@@ -24,14 +24,12 @@ import com.google.common.collect.Lists;
 
 @RestController
 @RequestMapping(value = "/alarm")
+@RequiredArgsConstructor
 public class AlarmController implements AlarmFeign {
 
-	@Autowired
-	private AsyncWebhookSender asyncWebhookSender;
-	@Autowired
-	private AsyncSmsSender asyncSmsSender;
-	@Autowired
-	private AsyncEmailSender asyncEmailSender;
+	private final AsyncWebhookSender asyncWebhookSender;
+	private final AsyncSmsSender asyncSmsSender;
+	private final AsyncEmailSender asyncEmailSender;
 
 	@Override
 	public Void webhook(@RequestBody WebhookAlarmReq webhookAlarmReq) {

@@ -18,12 +18,11 @@ import com.company.order.pay.aliactivity.dto.CouponReceivedBizContent;
  * </pre>
  */
 @Component(FromMessageBeanFactory.MESSAGE_RECEIVED)
+@RequiredArgsConstructor
 public class AlipayMarketingActivityCouponReceivedMessage implements FromMessage {
 
-	@Autowired
-	private AliActivityCouponMapper aliActivityCouponMapper;
-	@Autowired
-	private AliActivityNotifyMapper aliActivityNotifyMapper;
+	private final AliActivityCouponMapper aliActivityCouponMapper;
+	private final AliActivityNotifyMapper aliActivityNotifyMapper;
 
 	@Override
 	public void handle(Integer payNotifyId, Map<String, String> aliParams) {

@@ -27,6 +27,7 @@ import com.company.tool.api.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,25 +50,20 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/pay")
+@RequiredArgsConstructor
 public class PayController implements PayFeign {
 
-	@Autowired
-	private OrderPayService orderPayService;
+	private final OrderPayService orderPayService;
 
-	@Autowired
-	private MessageSender messageSender;
+	private final MessageSender messageSender;
 
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
+	private final MessagedrivenProperties messagedrivenProperties;
 
-	@Autowired
-	private OrderPayRefundService orderPayRefundService;
+	private final OrderPayRefundService orderPayRefundService;
 
-	@Autowired
-	private RetryerFeign retryerFeign;
+	private final RetryerFeign retryerFeign;
 
-	@Autowired
-	private LockClient lockClient;
+	private final LockClient lockClient;
 
 	private static final String NOTIFY_URL_REFUND = com.company.order.api.constant.Constants.feignUrl("/pay/refundWithRetry");
 	private static final String NOTIFY_URL_TIMEOUT = com.company.order.api.constant.Constants.feignUrl("/pay/timeoutWithRetry");

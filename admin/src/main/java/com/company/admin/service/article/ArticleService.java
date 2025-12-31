@@ -5,7 +5,7 @@ import com.company.admin.entity.article.ArticleCategory;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.mapper.article.ArticleDao;
 import com.company.admin.util.XSUuidUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +15,12 @@ import java.util.List;
  * Created by JQ棣 on 2017/10/28.
  */
 @Service
+@RequiredArgsConstructor
 public class ArticleService {
 
-    @Autowired
-    private ArticleDao articleDao;
+    private final ArticleDao articleDao;
 
-    @Autowired
-    private ArticleCategoryService articleCategoryService;
+    private final ArticleCategoryService articleCategoryService;
 
     public void save(Article article) {
         article.setId(XSUuidUtil.generate());

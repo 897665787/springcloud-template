@@ -1,6 +1,6 @@
 package com.company.app.easylogin.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.user.api.enums.UserOauthEnum;
@@ -13,12 +13,11 @@ import com.company.user.api.response.UserOauthResp;
 import com.jqdi.easylogin.core.repository.OauthRepository;
 
 @Component
+@RequiredArgsConstructor
 public class MysqlOauthRepository implements OauthRepository {
 
-	@Autowired
-	private UserInfoFeign userInfoFeign;
-	@Autowired
-	private UserOauthFeign userOauthFeign;
+	private final UserInfoFeign userInfoFeign;
+	private final UserOauthFeign userOauthFeign;
 
 	@Override
 	public String getUserId(String identityType, String identifier) {

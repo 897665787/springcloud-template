@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -18,10 +18,10 @@ import com.company.admin.mapper.system.CityDao;
  * Created by JQ棣 on 2017/11/13.
  */
 @Service
+@RequiredArgsConstructor
 public class CityService {
 
-    @Autowired
-    private CityDao cityDao;
+    private final CityDao cityDao;
 
     public void save(City city) {
         City criteria = new City();

@@ -4,7 +4,7 @@ package com.company.admin.controller.user.vip;
 
 import com.company.admin.entity.user.vip.VipPackage;
 import com.company.admin.service.user.vip.VipPackageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,10 +19,10 @@ import com.company.admin.annotation.Pagination;
  * Created by JQ棣 on 2018/11/14.
  */
 @Controller
+@RequiredArgsConstructor
 public class VipPackageController {
 
-	@Autowired
-	private VipPackageService vipPackageService;
+	private final VipPackageService vipPackageService;
 
 	@RequestMapping(value = "/admin/user/vipPackage", method = RequestMethod.GET)
 	@Pagination

@@ -14,7 +14,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysOperLogFeign;
 import com.company.system.api.request.SysOperLogReq;
 import com.company.system.api.response.SysOperLogResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,10 +26,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysOperLog")
+@RequiredArgsConstructor
 public class SysOperLogController {
 
-	@Autowired
-	private SysOperLogFeign sysOperLogFeign;
+	private final SysOperLogFeign sysOperLogFeign;
 
 	@RespConverter(field = "sysUserId", dataSource = SysUserIdNicknameConverter.class)
 	@RequirePermissions("system:sysOperLog:query")

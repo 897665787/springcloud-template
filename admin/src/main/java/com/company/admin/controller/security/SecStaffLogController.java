@@ -1,6 +1,6 @@
 package com.company.admin.controller.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +16,10 @@ import com.company.admin.service.security.SecStaffLogService;
  * Created by JQ棣 on 2017/11/9.
  */
 @Controller
+@RequiredArgsConstructor
 public class SecStaffLogController {
 
-    @Autowired
-    private SecStaffLogService secStaffLogService;
+    private final SecStaffLogService secStaffLogService;
 
     @RequestMapping(value = "/admin/system/secStaffLog", method = RequestMethod.GET)
     public String indexList(Model model, SecStaffLog secStaff) {

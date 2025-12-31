@@ -3,7 +3,7 @@ package com.company.admin.service.user;
 import com.company.admin.entity.base.XSPageModel;
 import com.company.admin.entity.user.UserMapPosition;
 import com.company.admin.mapper.user.UserMapPositionDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
  * Created by JQ棣 on 2018/11/20.
  */
 @Service
+@RequiredArgsConstructor
 public class UserMapPositionService {
 
-    @Autowired
-    private UserMapPositionDao userMapPositionDao;
+    private final UserMapPositionDao userMapPositionDao;
 
     public void save(UserMapPosition userMapPosition) {
         userMapPositionDao.save(userMapPosition);

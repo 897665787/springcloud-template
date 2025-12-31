@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AppVersionCache {
     private static final String KEY_PATTERN = "tool:appversion:%s";
 
-    @Autowired
-    private ICache cache;
-    @Autowired
-    private AppVersionService appVersionService;
+    private final ICache cache;
+    private final AppVersionService appVersionService;
 
     public UserInfoResp selectLastByAppCode(String appCode) {
         String key = String.format(KEY_PATTERN, appCode);

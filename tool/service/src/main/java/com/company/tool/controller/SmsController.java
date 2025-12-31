@@ -17,10 +17,10 @@ import com.company.tool.sms.AsyncSmsSender;
 
 @RestController
 @RequestMapping(value = "/sms")
+@RequiredArgsConstructor
 public class SmsController implements SmsFeign {
 
-	@Autowired
-	private AsyncSmsSender asyncSmsSender;
+	private final AsyncSmsSender asyncSmsSender;
 
 	@Override
 	public List<Integer> select4PreTimeSend(Integer limit) {

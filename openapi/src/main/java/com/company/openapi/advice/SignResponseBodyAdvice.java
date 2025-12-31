@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -30,10 +30,10 @@ import cn.hutool.core.bean.BeanUtil;
  */
 @Order(90)
 @RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
+@RequiredArgsConstructor
 @ConditionalOnProperty(prefix = "sign", name = "check", havingValue = "true", matchIfMissing = true)
 public class SignResponseBodyAdvice implements ResponseBodyAdvice<Object> {
-	@Autowired
-	private SignConfiguration signConfiguration;
+	private final SignConfiguration signConfiguration;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {

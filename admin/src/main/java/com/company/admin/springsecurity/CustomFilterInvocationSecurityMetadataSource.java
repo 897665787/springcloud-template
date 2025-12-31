@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -19,12 +18,12 @@ import com.company.admin.service.security.SecResourceService;
  * 系统用户请求拦截Service
  */
 @Service("securityMetadataSource")
+@RequiredArgsConstructor
 public class CustomFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomFilterInvocationSecurityMetadataSource.class);
 
-    @Autowired
-    private SecResourceService secResourceService;
+    private final SecResourceService secResourceService;
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {

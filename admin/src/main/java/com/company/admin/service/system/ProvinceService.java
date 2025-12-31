@@ -3,7 +3,7 @@ package com.company.admin.service.system;
 import java.util.List;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -15,10 +15,10 @@ import com.company.admin.mapper.system.ProvinceDao;
  * Created by JQ棣 on 2017/11/13.
  */
 @Service
+@RequiredArgsConstructor
 public class ProvinceService {
 
-    @Autowired
-    private ProvinceDao provinceDao;
+    private final ProvinceDao provinceDao;
 
     public void save(Province province) {
         Province criteria = new Province();

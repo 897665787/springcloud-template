@@ -12,7 +12,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysConfigFeign;
 import com.company.system.api.request.SysConfigReq;
 import com.company.system.api.response.SysConfigResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +24,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysConfig")
+@RequiredArgsConstructor
 public class SysConfigController {
 
-	@Autowired
-	private SysConfigFeign sysConfigFeign;
+	private final SysConfigFeign sysConfigFeign;
 
 	@RequirePermissions("system:sysConfig:query")
 	@GetMapping("/page")

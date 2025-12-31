@@ -12,10 +12,10 @@ import top.javatool.canal.client.handler.EntryHandler;
 @Slf4j
 @Component
 @CanalTable(value = "app_info") // 对应的数据库表名
+@RequiredArgsConstructor
 public class AppInfoHandler implements EntryHandler<AppInfo> {
 
-    @Autowired
-    private AppInfoCache appInfoCache;
+    private final AppInfoCache appInfoCache;
 
     @Override
     public void delete(AppInfo t) {

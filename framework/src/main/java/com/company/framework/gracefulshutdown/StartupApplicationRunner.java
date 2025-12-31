@@ -1,8 +1,8 @@
 package com.company.framework.gracefulshutdown;
 
 import com.company.framework.trace.TraceManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -16,13 +16,12 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class StartupApplicationRunner implements ApplicationRunner {
 
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
-	@Autowired(required = false)
-	private List<InstanceStartup> instanceStartupList;
+	private final List<InstanceStartup> instanceStartupList;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {

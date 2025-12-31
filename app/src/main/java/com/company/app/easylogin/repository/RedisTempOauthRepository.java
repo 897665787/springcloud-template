@@ -1,6 +1,6 @@
 package com.company.app.easylogin.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.cache.ICache;
@@ -8,10 +8,10 @@ import com.jqdi.easylogin.core.model.BindAuthCode;
 import com.jqdi.easylogin.core.repository.OauthTempRepository;
 
 @Component
+@RequiredArgsConstructor
 public class RedisTempOauthRepository implements OauthTempRepository {
 
-	@Autowired
-	private ICache cache;
+	private final ICache cache;
 
 	@Override
 	public void saveBindAuthCode(String authcode, BindAuthCode bindAuthCode) {

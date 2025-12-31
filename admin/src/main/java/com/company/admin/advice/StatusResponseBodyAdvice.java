@@ -2,7 +2,7 @@ package com.company.admin.advice;
 
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -25,9 +25,9 @@ import com.feiniaojin.gracefulresponse.data.ResponseStatus;
  */
 @Order(100)
 @RestControllerAdvice(basePackages = { CommonConstants.BASE_PACKAGE }) // 注意哦，这里要加上需要扫描的包
+@RequiredArgsConstructor
 public class StatusResponseBodyAdvice implements ResponseBodyAdvice<Object> {
-	@Autowired
-	private GracefulResponseProperties gracefulResponseProperties;
+	private final GracefulResponseProperties gracefulResponseProperties;
 
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> aClass) {

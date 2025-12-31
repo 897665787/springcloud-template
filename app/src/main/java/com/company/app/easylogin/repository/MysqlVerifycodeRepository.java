@@ -1,6 +1,6 @@
 package com.company.app.easylogin.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.app.constants.Constants;
@@ -8,10 +8,10 @@ import com.company.tool.api.feign.VerifyCodeFeign;
 import com.jqdi.easylogin.core.repository.VerifycodeRepository;
 
 @Component
+@RequiredArgsConstructor
 public class MysqlVerifycodeRepository implements VerifycodeRepository {
 
-	@Autowired
-	private VerifyCodeFeign verifyCodeFeign;
+	private final VerifyCodeFeign verifyCodeFeign;
 
 	@Override
 	public boolean checkVerifycode(String identifier, String verifyCode) {

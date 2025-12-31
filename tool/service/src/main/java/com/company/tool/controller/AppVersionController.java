@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/appVersion")
+@RequiredArgsConstructor
 public class AppVersionController implements AppVersionFeign {
-    @Autowired
-    private AppVersionService appVersionService;
+    private final AppVersionService appVersionService;
 
     @Override
     public AppVersionCheckResp check(String appCode, String currentVersion) {

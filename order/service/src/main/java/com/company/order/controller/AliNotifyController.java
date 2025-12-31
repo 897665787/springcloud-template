@@ -21,6 +21,7 @@ import com.company.order.pay.ali.AliConstants;
 import com.company.order.pay.ali.config.AliPayConfiguration;
 import com.company.order.pay.ali.config.AliPayProperties;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,24 +35,19 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping(value = "/alinotify")
+@RequiredArgsConstructor
 public class AliNotifyController implements AliNotifyFeign {
 
-	@Autowired
-	private AliPayMapper aliPayMapper;
+	private final AliPayMapper aliPayMapper;
 
-	@Autowired
-	private AliPayRefundMapper aliPayRefundMapper;
+	private final AliPayRefundMapper aliPayRefundMapper;
 
-	@Autowired
-	private PayNotifyMapper payNotifyMapper;
+	private final PayNotifyMapper payNotifyMapper;
 
-	@Autowired
-	private MessageSender messageSender;
-	@Autowired
-	private MessagedrivenProperties messagedrivenProperties;
+	private final MessageSender messageSender;
+	private final MessagedrivenProperties messagedrivenProperties;
 
-	@Autowired
-	private AliPayConfiguration aliPayConfiguration;
+	private final AliPayConfiguration aliPayConfiguration;
 
 	@Override
 	public Map<String, String> aliPayNotify(@RequestBody Map<String, String> aliParams) {

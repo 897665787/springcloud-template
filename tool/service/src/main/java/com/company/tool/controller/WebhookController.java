@@ -12,10 +12,10 @@ import com.company.tool.webhook.AsyncWebhookSender;
 
 @RestController
 @RequestMapping(value = "/webhook")
+@RequiredArgsConstructor
 public class WebhookController implements WebhookFeign {
 
-	@Autowired
-	private AsyncWebhookSender asyncWebhookSender;
+	private final AsyncWebhookSender asyncWebhookSender;
 
 	@Override
 	public List<Integer> select4PreTimeSend(Integer limit) {

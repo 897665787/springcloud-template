@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AppInfoCache {
     private static final String KEY_PATTERN = "tool:appinfo:%s";
 
-    @Autowired
-    private ICache cache;
-    @Autowired
-    private AppInfoMapper appInfoMapper;
+    private final ICache cache;
+    private final AppInfoMapper appInfoMapper;
 
     public UserInfoResp getById(Integer id) {
         String key = String.format(KEY_PATTERN, id);

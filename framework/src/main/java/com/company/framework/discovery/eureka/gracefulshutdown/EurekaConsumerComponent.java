@@ -5,8 +5,8 @@ import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaRegistration;
 import org.springframework.cloud.netflix.eureka.serviceregistry.EurekaServiceRegistry;
@@ -22,15 +22,13 @@ import java.util.Map;
 @Slf4j
 @Component
 @ConditionalOnProperty(name = "eureka.client.enabled", havingValue = "true", matchIfMissing = true)
+@RequiredArgsConstructor
 public class EurekaConsumerComponent implements ConsumerComponent {
 
-    @Autowired
-    private EurekaServiceRegistry serviceRegistry;
-    @Autowired
-    private EurekaRegistration registration;
+    private final EurekaServiceRegistry serviceRegistry;
+    private final EurekaRegistration registration;
 
-    @Autowired
-    private MessageSender messageSender;
+    private final MessageSender messageSender;
 
     @Override
     public void preStop() {

@@ -4,6 +4,7 @@ import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.aspectj.lang.JoinPoint;
@@ -27,9 +28,9 @@ import java.util.Map;
 @Aspect
 @Component
 @Conditional(RedisMQAutoConfiguration.RedisMQCondition.class)
+@RequiredArgsConstructor
 public class TraceAspect {
-    @Autowired
-    private TraceManager traceManager;
+    private final TraceManager traceManager;
 
     // 执行之前塞入日志ID，用于追踪整个执行链路
     @Before("execution(* org.springframework.data.redis.connection.MessageListener+.onMessage(org.springframework.data.redis.connection.Message,byte[]))")

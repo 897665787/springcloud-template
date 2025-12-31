@@ -6,7 +6,7 @@ import com.company.admin.service.marketing.FeedbackService;
 import com.company.admin.annotation.Pagination;
 
 import com.company.admin.entity.marketing.Feedback;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 11/1/17.
  */
 @Controller
+@RequiredArgsConstructor
 public class FeedbackController {
 
-    @Autowired
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
     @RequestMapping(value = "/admin/marketing/feedback", method = RequestMethod.GET)
     @Pagination

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.company.framework.globalresponse.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -25,18 +25,16 @@ import com.company.framework.util.JsonUtil;
  * Created by JQ棣 on 2017/11/2.
  */
 @Service
+@RequiredArgsConstructor
 public class SecStaffLogService implements XSLogHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SecStaffLogService.class);
 
-    @Autowired
-    private SecStaffLogDao secStaffLogDao;
+    private final SecStaffLogDao secStaffLogDao;
 
-    @Autowired
-    private SecResourceService secResourceService;
+    private final SecResourceService secResourceService;
 
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecStaffService secStaffService;
 
     public void save(SecStaffLog secStaffLog) {
         secStaffLogDao.save(secStaffLog);

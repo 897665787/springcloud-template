@@ -1,6 +1,6 @@
 package com.company.admin.service.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -13,10 +13,10 @@ import com.company.admin.mapper.user.UserFollowDao;
  * Created by JQ棣 on 2018/11/10.
  */
 @Service
+@RequiredArgsConstructor
 public class UserFollowService {
 
-	@Autowired
-	private UserFollowDao userFollowDao;
+	private final UserFollowDao userFollowDao;
 	
 	public XSPageModel<User> listAndCount(UserFollow userFollow) {
 		userFollow.setDefaultSort("uf.create_time", "DESC");

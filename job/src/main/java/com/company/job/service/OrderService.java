@@ -16,11 +16,13 @@ import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class OrderService {
 
-	@Autowired
-	private OrderFeign orderFeign;
+	private final OrderFeign orderFeign;
 	
 	/**
 	 * 一段时间内没有收货则自动变为已收货

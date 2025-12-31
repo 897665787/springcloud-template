@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
  * 微信APP支付
  */
 @Component(OrderResultTransfer.BEAN_NAME_PREFIX + TradeType.APP)
+@RequiredArgsConstructor
 public class AppOrderResultTransfer implements OrderResultTransfer {
 
-	@Autowired
-	private WxPayConfiguration wxPayConfiguration;
+	private final WxPayConfiguration wxPayConfiguration;
 	
 	@Override
 	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,

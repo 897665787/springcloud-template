@@ -1,6 +1,6 @@
 package com.company.admin.autoconfigure;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -20,23 +20,17 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
-	private AuthenticationSuccessHandler authenticationSuccessHandler;
-	@Autowired
-	private AuthenticationFailureHandler authenticationFailureHandler;
-	@Autowired
-	private LogoutSuccessHandler logoutSuccessHandler;
-	@Autowired
-	private UserDetailsService userDetailsService;
-	@Autowired
-	private AccessDeniedHandler accessDeniedHandler;
+	private final AuthenticationSuccessHandler authenticationSuccessHandler;
+	private final AuthenticationFailureHandler authenticationFailureHandler;
+	private final LogoutSuccessHandler logoutSuccessHandler;
+	private final UserDetailsService userDetailsService;
+	private final AccessDeniedHandler accessDeniedHandler;
 
-	@Autowired
-	private AccessDecisionManager accessDecisionManager;
-	@Autowired
-	private FilterInvocationSecurityMetadataSource securityMetadataSource;
+	private final AccessDecisionManager accessDecisionManager;
+	private final FilterInvocationSecurityMetadataSource securityMetadataSource;
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

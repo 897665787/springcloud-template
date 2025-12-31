@@ -4,7 +4,7 @@ package com.company.admin.controller.user.wallet;
 
 import com.company.admin.entity.user.wallet.WalletPackage;
 import com.company.admin.service.user.wallet.WalletPackageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,10 +19,10 @@ import com.company.admin.annotation.Pagination;
  * Created by JQ棣 on 2018/11/13.
  */
 @Controller
+@RequiredArgsConstructor
 public class WalletPackageController {
 
-	@Autowired
-	private WalletPackageService walletPackageService;
+	private final WalletPackageService walletPackageService;
 
 	@RequestMapping(value = "/admin/user/walletPackage", method = RequestMethod.GET)
 	@Pagination

@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.stats.StatsCond;
@@ -29,10 +29,10 @@ import com.company.admin.mapper.stats.UserStatsDao;
  * Created by JQ棣 on 2018/06/09.
  */
 @Service
+@RequiredArgsConstructor
 public class UserStatsService {
 
-	@Autowired
-	private UserStatsDao userStatsDao;
+	private final UserStatsDao userStatsDao;
 
 	/**
 	 * 昨日关键指标

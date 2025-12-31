@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.interact.CollectNum;
@@ -17,9 +17,9 @@ import com.google.common.collect.Maps;
  * Created by JQ棣 on 2018/05/21.
  */
 @Service
+@RequiredArgsConstructor
 public class CollectService {
-	@Autowired
-	private CollectNumDao collectNumDao;
+	private final CollectNumDao collectNumDao;
 
 	public Map<Long, Integer> mapNumber(Integer module, List<Long> relativeIdList) {
 		List<CollectNum> collectNumList = collectNumDao.listByRelativeIdList(module,relativeIdList);

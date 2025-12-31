@@ -53,20 +53,16 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component(PayFactory.ALIACTIVITY_PAYCLIENT)
+@RequiredArgsConstructor
 public class AliActivityPayClient extends BasePayClient {
 
 	private static final String PAY_URL = "https://openapi.alipay.com/gateway.do";
 
-	@Autowired
-	private AliActivityPayConfiguration aliActivityPayConfiguration;
-	@Autowired
-	private AliActivityPayMapper aliActivityPayMapper;
-	@Autowired
-	private AliActivityPayRefundMapper aliActivityPayRefundMapper;
-	@Autowired
-	private AliActivityCouponMapper aliActivityCouponMapper;
-	@Autowired
-	private AsyncTaskExecutor executor;
+	private final AliActivityPayConfiguration aliActivityPayConfiguration;
+	private final AliActivityPayMapper aliActivityPayMapper;
+	private final AliActivityPayRefundMapper aliActivityPayRefundMapper;
+	private final AliActivityCouponMapper aliActivityCouponMapper;
+	private final AsyncTaskExecutor executor;
 
 	@Value("${template.mock.aliactivitynotify:false}")
 	private Boolean mockNotify;

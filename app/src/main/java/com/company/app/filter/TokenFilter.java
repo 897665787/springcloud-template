@@ -5,8 +5,8 @@ import com.company.token.util.TokenValueUtil;
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -23,10 +23,10 @@ import java.io.IOException;
  */
 @Component
 @Order(CommonConstants.FilterOrdered.TOKEN)
+@RequiredArgsConstructor
 public class TokenFilter extends OncePerRequestFilter {
 
-	@Autowired
-	private TokenService tokenService;
+	private final TokenService tokenService;
 
 	@Value("${token.name}")
 	private String headerToken;

@@ -15,15 +15,17 @@ import com.company.framework.util.IpUtil;
 import java.util.Collections;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/tio")
+@RequiredArgsConstructor
 public class TioController {
 
 	@Value("${server.port:0}")
 	private String port;
 
-	@Autowired
-	private TioWebSocketServerBootstrap bootstrap;
+	private final TioWebSocketServerBootstrap bootstrap;
 
 	@RequestMapping("/toUser")
 	public Map<String, String> tiosend(String toUserId, String msg) {

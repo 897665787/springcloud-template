@@ -17,6 +17,7 @@ import com.company.order.messagedriven.Constants;
 import com.company.order.messagedriven.strategy.StrategyConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.Maps;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,24 +34,20 @@ import java.util.*;
 @Slf4j
 //@RestController
 @RequestMapping(value = "/iosnotify")
+@RequiredArgsConstructor
 public class IosNotifyController implements IosNotifyFeign {
 
     private static final String SERVER_URL = "https://buy.itunes.apple.com/verifyReceipt";
     private static final String SANDBOX_SERVER_URL = "https://sandbox.itunes.apple.com/verifyReceipt";
 
-	@Autowired
-	private AliPayMapper aliPayMapper;
+	private final AliPayMapper aliPayMapper;
 
-	@Autowired
-	private AliPayRefundMapper aliPayRefundMapper;
+	private final AliPayRefundMapper aliPayRefundMapper;
 
-	@Autowired
-	private PayNotifyMapper payNotifyMapper;
+	private final PayNotifyMapper payNotifyMapper;
 
-	@Autowired
-	private MessageSender messageSender;
-    @Autowired
-    private MessagedrivenProperties messagedrivenProperties;
+	private final MessageSender messageSender;
+    private final MessagedrivenProperties messagedrivenProperties;
 
     @Value("${iOSPay.secretKey}")
     private String secretKey;

@@ -23,6 +23,7 @@ import com.company.gateway.constant.HeaderConstants;
 import com.company.gateway.trace.TraceManager;
 import com.company.gateway.util.IpUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,12 +33,12 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class ResponseFilter implements GlobalFilter, Ordered {
 
 	@Value("${filter.response.enable:true}")
 	private boolean enable;
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	@Override
 	public int getOrder() {

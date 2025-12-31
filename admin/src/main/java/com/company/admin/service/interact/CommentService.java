@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +22,11 @@ import com.google.common.collect.Maps;
  * Created by JQ棣 on 2018/11/09.
  */
 @Service
+@RequiredArgsConstructor
 public class CommentService {
 
-	@Autowired
-	private CommentDao commentDao;
-	@Autowired
-	private CommentNumDao commentNumDao;
+	private final CommentDao commentDao;
+	private final CommentNumDao commentNumDao;
 	
 	@Transactional
 	public void hided(Comment comment) {

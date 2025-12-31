@@ -30,16 +30,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class EmailSenderConsumer {
 
-	@Autowired
-	private EmailTaskService emailTaskService;
-	@Autowired
-	private EmailTaskDetailService emailTaskDetailService;
-	@Autowired
-	private EmailTemplateService emailTemplateService;
-	@Autowired
-	private MailSender mailSender;
+	private final EmailTaskService emailTaskService;
+	private final EmailTaskDetailService emailTaskDetailService;
+	private final EmailTemplateService emailTemplateService;
+	private final MailSender mailSender;
 
 	@Value("${template.enable.closeSendEmail:false}")
 	private Boolean closeSendEmail;// 关闭发送邮件

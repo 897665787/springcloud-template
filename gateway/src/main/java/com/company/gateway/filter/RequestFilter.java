@@ -27,6 +27,7 @@ import com.company.gateway.util.IpUtil;
 import com.company.gateway.util.JsonUtil;
 import com.company.gateway.util.WebUtil;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,9 +37,9 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class RequestFilter implements GlobalFilter, Ordered {
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	@Value("${filter.request.enable:true}")
 	private boolean enable;

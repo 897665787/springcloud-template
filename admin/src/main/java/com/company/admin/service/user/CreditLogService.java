@@ -1,6 +1,6 @@
 package com.company.admin.service.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.company.admin.entity.base.XSPageModel;
@@ -12,10 +12,10 @@ import com.company.admin.mapper.user.CreditLogDao;
  * Created by JQ棣 on 2018/11/12.
  */
 @Service
+@RequiredArgsConstructor
 public class CreditLogService {
 
-	@Autowired
-	private CreditLogDao creditLogDao;
+	private final CreditLogDao creditLogDao;
 
 	public XSPageModel<CreditLog> listAndCount(CreditLog creditLog) {
 		creditLog.setDefaultSort("id", "DESC");

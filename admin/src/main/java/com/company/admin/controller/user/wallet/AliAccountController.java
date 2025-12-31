@@ -5,7 +5,7 @@ package com.company.admin.controller.user.wallet;
 
 import com.company.admin.entity.user.wallet.AliAccount;
 import com.company.admin.service.user.wallet.AliAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 2018/11/21.
  */
 @Controller
+@RequiredArgsConstructor
 public class AliAccountController {
 
-	@Autowired
-	private AliAccountService aliAccountService;
+	private final AliAccountService aliAccountService;
 
 	@RequestMapping(value = "/admin/user/aliAccount/get", method = RequestMethod.POST)
 	@ResponseBody

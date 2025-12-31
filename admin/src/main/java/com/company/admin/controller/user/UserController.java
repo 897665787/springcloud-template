@@ -19,7 +19,7 @@ import com.company.admin.entity.user.wallet.AliAccount;
 import com.company.admin.entity.user.wallet.BankCard;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -37,25 +37,20 @@ import com.company.admin.entity.user.CreditLog;
  * @date 2018/10/27
  */
 @Controller
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private CreditLogService creditLogService;
+    private final CreditLogService creditLogService;
 
-    @Autowired
-    private WalletService walletService;
+    private final WalletService walletService;
 
-    @Autowired
-    private VipService vipService;
+    private final VipService vipService;
 
-    @Autowired
-    private BankCardService bankCardService;
+    private final BankCardService bankCardService;
 
-    @Autowired
-    private AliAccountService alipayService;
+    private final AliAccountService alipayService;
 
     @RequestMapping(value = "/admin/user/list", method = RequestMethod.GET)
     public String index(Model model, User user) {

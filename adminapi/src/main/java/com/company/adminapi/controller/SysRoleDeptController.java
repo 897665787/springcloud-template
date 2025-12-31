@@ -12,7 +12,7 @@ import com.company.framework.util.PropertyUtils;
 import com.company.system.api.feign.SysRoleDeptFeign;
 import com.company.system.api.request.SysRoleDeptReq;
 import com.company.system.api.response.SysRoleDeptResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +24,10 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping("/sysRoleDept")
+@RequiredArgsConstructor
 public class SysRoleDeptController {
 
-	@Autowired
-	private SysRoleDeptFeign sysRoleDeptFeign;
+	private final SysRoleDeptFeign sysRoleDeptFeign;
 
 	@RequirePermissions("system:sysRoleDept:query")
 	@GetMapping("/page")

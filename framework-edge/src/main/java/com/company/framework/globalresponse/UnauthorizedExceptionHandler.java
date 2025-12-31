@@ -4,6 +4,7 @@ package com.company.framework.globalresponse;
 import com.company.common.api.Result;
 import com.company.common.api.ResultCode;
 import com.company.framework.message.IMessage;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 //@RestControllerAdvice
 @Deprecated // 替换为GracefulResponse框架处理
+@RequiredArgsConstructor
 public class UnauthorizedExceptionHandler {
-	@Autowired
-	private IMessage imessage;
+	private final IMessage imessage;
 
 	/**
 	 * 未授权异常

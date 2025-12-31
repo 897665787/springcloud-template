@@ -21,10 +21,10 @@ import com.company.system.service.SysDictTypeService;
 
 @RestController
 @RequestMapping("/sysDictType")
+@RequiredArgsConstructor
 public class SysDictTypeController implements SysDictTypeFeign {
 
-	@Autowired
-	private SysDictTypeService sysDictTypeService;
+	private final SysDictTypeService sysDictTypeService;
 
 	private QueryWrapper<SysDictType> toQueryWrapper(String dictName, String dictType, String status, String dictRemark) {
 		QueryWrapper<SysDictType> queryWrapper = new QueryWrapper<>();

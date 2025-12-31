@@ -6,8 +6,8 @@ import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
 import com.company.order.api.response.OrderDetailResp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +23,13 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/feignTest")
+@RequiredArgsConstructor
 @Slf4j
 public class FeignTestController {
 
-    @Autowired
-    private FeignTestFeign feignTestFeign;
+    private final FeignTestFeign feignTestFeign;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     @GetMapping(value = "/getnoparam")
     public com.company.web.resp.OrderDetailResp getnoparam() {

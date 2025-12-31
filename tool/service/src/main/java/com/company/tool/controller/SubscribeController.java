@@ -40,22 +40,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value = "/subscribe")
+@RequiredArgsConstructor
 public class SubscribeController implements SubscribeFeign {
 
-	@Autowired
-	private SubscribeTemplateGrantService subscribeTemplateGrantService;
-	@Autowired
-	private SubscribeGroupTypeService subscribeGroupTypeService;
-	@Autowired
-	private SubscribeTypeTemplateConfigService subscribeTypeTemplateConfigService;
-	@Autowired
-	private SubscribeTemplateService subscribeTemplateService;
-	@Autowired
-	private AsyncSubscribeSender asyncSubscribeSender;
-	@Autowired
-	private UserOauthFeign userOauthFeign;
-	@Autowired
-	private IMaTool maTool;
+	private final SubscribeTemplateGrantService subscribeTemplateGrantService;
+	private final SubscribeGroupTypeService subscribeGroupTypeService;
+	private final SubscribeTypeTemplateConfigService subscribeTypeTemplateConfigService;
+	private final SubscribeTemplateService subscribeTemplateService;
+	private final AsyncSubscribeSender asyncSubscribeSender;
+	private final UserOauthFeign userOauthFeign;
+	private final IMaTool maTool;
 
 	@Value("${appid.wx.miniapp:1111}")
 	private String appid;

@@ -1,6 +1,6 @@
 package com.company.admin.controller.loan;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -18,10 +18,10 @@ import com.company.admin.service.loan.ProductTipsService;
  * Created by JQ棣 on 2018/11/20.
  */
 @Controller
+@RequiredArgsConstructor
 public class ProductTipsController {
 
-    @Autowired
-    private ProductTipsService productTipsService;
+    private final ProductTipsService productTipsService;
 
     @RequestMapping(value = "/admin/loan/productTips", method = RequestMethod.GET)
     @Pagination

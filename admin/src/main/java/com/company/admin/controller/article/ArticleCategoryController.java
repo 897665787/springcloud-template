@@ -5,7 +5,7 @@ package com.company.admin.controller.article;
 import com.company.admin.service.article.ArticleCategoryService;
 
 import com.company.admin.entity.article.ArticleCategory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +20,9 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/admin/content/article/category")
+@RequiredArgsConstructor
 public class ArticleCategoryController {
-    @Autowired
-    private ArticleCategoryService articleCategoryService;
+    private final ArticleCategoryService articleCategoryService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String index() {

@@ -19,10 +19,10 @@ import com.company.tool.banner.dto.BannerCanShow;
 
 @RestController
 @RequestMapping("/banner")
+@RequiredArgsConstructor
 public class BannerController implements BannerFeign {
 
-	@Autowired
-	private BannerShowService bannerShowService;
+	private final BannerShowService bannerShowService;
 
 	@Override
 	public List<BannerResp> list(@RequestBody BannerReq bannerReq) {

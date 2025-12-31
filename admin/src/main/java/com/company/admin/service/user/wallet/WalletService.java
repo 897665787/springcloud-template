@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,16 +24,14 @@ import com.company.admin.util.XSUuidUtil;
  * @date 2018/11/12
  */
 @Service
+@RequiredArgsConstructor
 public class WalletService {
 
-    @Autowired
-    private WalletHistoryDao walletHistoryDao;
+    private final WalletHistoryDao walletHistoryDao;
 
-    @Autowired
-    private UserDao userDao;
+    private final UserDao userDao;
     
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecStaffService secStaffService;
     
     @Transactional
     public void update(String userId, BigDecimal fee, Integer platform, Integer eventType, String eventId) {

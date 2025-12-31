@@ -21,10 +21,10 @@ import com.company.tool.nav.dto.NavItemCanShow;
 
 @RestController
 @RequestMapping("/nav")
+@RequiredArgsConstructor
 public class NavController implements NavFeign {
 
-	@Autowired
-	private NavShowService navShowService;
+	private final NavShowService navShowService;
 
 	@Override
 	public List<NavResp> list(@RequestBody NavReq navReq) {

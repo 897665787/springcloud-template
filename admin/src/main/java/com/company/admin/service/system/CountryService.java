@@ -3,7 +3,7 @@ package com.company.admin.service.system;
 import java.util.List;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +16,10 @@ import com.company.admin.mapper.system.CountryDao;
  * Created by JQ棣 on 2018/5/3.
  */
 @Service
+@RequiredArgsConstructor
 public class CountryService {
     
-    @Autowired
-    private CountryDao countryDao;
+    private final CountryDao countryDao;
 
     public void save(Country country) {
         try {

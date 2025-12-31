@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -21,16 +21,14 @@ import com.company.admin.service.security.SecStaffService;
  * Created by JQ棣 on 2018/11/23.
  */
 @Service
+@RequiredArgsConstructor
 public class WithdrawalService {
 
-	@Autowired
-	private WithdrawalDao withdrawalDao;
+	private final WithdrawalDao withdrawalDao;
 
-	@Autowired
-	private WalletService walletService;
+	private final WalletService walletService;
 
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecStaffService secStaffService;
     
 	public void remove(Withdrawal withdrawal) {
 		Withdrawal existent = get(withdrawal);

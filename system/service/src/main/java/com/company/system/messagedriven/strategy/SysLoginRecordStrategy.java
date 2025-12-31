@@ -19,12 +19,11 @@ import cn.hutool.core.date.LocalDateTimeUtil;
  * 记录登录日志
  */
 @Component(StrategyConstants.SYS_LOGINRECORD_STRATEGY)
+@RequiredArgsConstructor
 public class SysLoginRecordStrategy implements BaseStrategy<Map<String, Object>> {
 
-	@Autowired
-	private SysLogininfoService sysLogininfoService;
+	private final SysLogininfoService sysLogininfoService;
 
-//	@Autowired
 //	private LocationFeign locationFeign;
 
 	@Override

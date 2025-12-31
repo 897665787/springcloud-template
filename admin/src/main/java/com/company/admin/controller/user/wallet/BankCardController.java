@@ -5,7 +5,7 @@ package com.company.admin.controller.user.wallet;
 
 import com.company.admin.entity.user.wallet.BankCard;
 import com.company.admin.service.user.wallet.BankCardService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 2018/11/21.
  */
 @Controller
+@RequiredArgsConstructor
 public class BankCardController {
 
-	@Autowired
-	private BankCardService bankCardService;
+	private final BankCardService bankCardService;
 
 	@RequestMapping(value = "/admin/user/bankCard/get", method = RequestMethod.POST)
 	@ResponseBody

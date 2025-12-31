@@ -7,6 +7,7 @@ import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import com.company.framework.trace.TraceManager;
 import com.company.framework.util.JsonUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +23,14 @@ import java.util.Set;
 @Slf4j
 @Component
 @Conditional(RedisMQAutoConfiguration.RedisMQCondition.class)
+@RequiredArgsConstructor
 public class DelayQueueComponent implements CommandLineRunner {
     private static final String DELAY_QUEUE = "mq:delay";
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-
-    @Autowired
-    private TraceManager traceManager;
-    @Lazy
-    @Autowired
-    private MessageSender messageSender;
-    @Autowired
-    private LockClient lockClient;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final TraceManager traceManager;
+    private final MessageSender messageSender;
+    private final LockClient lockClient;
 
     public void inqueue(String exchange, String routingKey, String messageJson, long delaySeconds) {
         // 延时消息：存储到 sorted set，使用时间戳作为score

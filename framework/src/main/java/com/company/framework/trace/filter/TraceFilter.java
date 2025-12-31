@@ -4,6 +4,7 @@ import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 import com.company.framework.trace.TraceManager;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -21,14 +22,14 @@ import java.io.IOException;
  */
 @Component
 @Order(CommonConstants.FilterOrdered.TRACE)
+@RequiredArgsConstructor
 public class TraceFilter extends OncePerRequestFilter {
 
 	static {
 		System.setProperty("log4j2.isThreadContextMapInheritable", "true");
 	}
 
-	@Autowired
-	private TraceManager traceManager;
+	private final TraceManager traceManager;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {

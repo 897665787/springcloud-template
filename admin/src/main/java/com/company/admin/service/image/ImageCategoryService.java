@@ -10,7 +10,7 @@ import com.company.admin.util.XSTreeUtil;
 import com.company.admin.util.XSUuidUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +24,14 @@ import java.util.stream.Collectors;
  * Created by JQ棣 on 2017/10/23.
  */
 @Service
+@RequiredArgsConstructor
 public class ImageCategoryService {
 
-    @Autowired
-    private ImageCategoryDao imageCategoryDao;
+    private final ImageCategoryDao imageCategoryDao;
 
-    @Autowired
-    private ImageDao imageDao;
+    private final ImageDao imageDao;
 
-    @Autowired
-    private DictionaryService dictionaryService;
+    private final DictionaryService dictionaryService;
 
     @Transactional
     public void save(ImageCategory imageCategory) {

@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 
 import com.company.framework.globalresponse.ExceptionUtil;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +29,14 @@ import com.google.common.cache.CacheBuilder;
  * @date 2018/9/22
  */
 @Service
+@RequiredArgsConstructor
 public class DictionaryService {
 
     private static final Logger logger = LoggerFactory.getLogger(DictionaryService.class);
 
-    @Autowired
-    private DictionaryDao dictionaryDao;
+    private final DictionaryDao dictionaryDao;
 
-    @Autowired
-    private DictionaryCategoryService dictionaryCategoryService;
+    private final DictionaryCategoryService dictionaryCategoryService;
 
     private Cache<String, Map<String, String>> cache = null;
 

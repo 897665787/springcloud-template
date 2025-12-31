@@ -7,7 +7,7 @@ import com.company.admin.annotation.Pagination;
 
 import com.company.admin.entity.user.User;
 import com.company.admin.entity.user.UserContact;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by JQ棣 on 2018/11/19.
  */
 @Controller
+@RequiredArgsConstructor
 public class UserContactController {
 
-    @Autowired
-    private UserContactService userContactService;
+    private final UserContactService userContactService;
 
     @RequestMapping(value = "/admin/user/userContact", method = RequestMethod.GET)
     @Pagination

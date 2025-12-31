@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -27,12 +27,11 @@ import com.company.admin.service.security.SecStaffService;
  * Created by JQ棣 on 2017/11/5.
  */
 @Controller
+@RequiredArgsConstructor
 public class SecRoleController {
 
-    @Autowired
-    private SecRoleService secRoleService;
-    @Autowired
-    private SecStaffService secStaffService;
+    private final SecRoleService secRoleService;
+    private final SecStaffService secStaffService;
 
     //region Admin
     @RequestMapping(value = "/admin/system/secRole", method = RequestMethod.GET)

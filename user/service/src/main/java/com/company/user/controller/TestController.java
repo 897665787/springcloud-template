@@ -3,7 +3,7 @@ package com.company.user.controller;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +26,11 @@ import com.google.common.collect.Maps;
 
 @RestController
 @RequestMapping("/test")
+@RequiredArgsConstructor
 public class TestController{
 
-	@Autowired
-	private UserInfoService userInfoService;
-	@Autowired
-	private CityMapper cityMapper;
+	private final UserInfoService userInfoService;
+	private final CityMapper cityMapper;
 
 	@GetMapping(value = "/beans")
 	public Map<String, Object> beans() {

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 public class WxPayConfiguration {
 	private WxPayProperties properties;
 
-    @Autowired
     public WxPayConfiguration(WxPayProperties properties) {
     	this.properties = properties;
     }

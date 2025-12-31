@@ -8,7 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,16 +42,13 @@ import com.company.order.api.response.PayResp;
 @RequireLogin
 @RestController
 @RequestMapping("/orderCenter")
+@RequiredArgsConstructor
 public class OrderCenterController {
 
-	@Autowired
-	private OrderFeign orderFeign;
-	@Autowired
-	private PayFeign payFeign;
-	@Autowired
-	private RefundApplyFeign refundApplyFeign;
-	@Autowired
-	private SequenceGenerator sequenceGenerator;
+	private final OrderFeign orderFeign;
+	private final PayFeign payFeign;
+	private final RefundApplyFeign refundApplyFeign;
+	private final SequenceGenerator sequenceGenerator;
 
 	/**
 	 * 分页查询订单列表

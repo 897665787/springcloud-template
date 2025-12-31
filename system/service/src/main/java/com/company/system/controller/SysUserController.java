@@ -29,16 +29,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sysUser")
+@RequiredArgsConstructor
 public class SysUserController implements SysUserFeign {
 
-	@Autowired
-	private SysUserService sysUserService;
-	@Autowired
-	private SysRoleService sysRoleService;
-	@Autowired
-	private SysMenuService sysMenuService;
-	@Autowired
-	private SysUserRoleService sysUserRoleService;
+	private final SysUserService sysUserService;
+	private final SysRoleService sysRoleService;
+	private final SysMenuService sysMenuService;
+	private final SysUserRoleService sysUserRoleService;
 
 	private QueryWrapper<SysUser> toQueryWrapper(String account, String nickname, String email, String phonenumber, String sex, String avatar, String status, Integer deptId, String userRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
