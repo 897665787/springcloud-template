@@ -6,7 +6,7 @@ import com.company.tool.api.feign.AppVersionFeign;
 import com.company.tool.api.response.AppVersionCheckResp;
 import com.company.tool.entity.AppVersion;
 import com.company.tool.service.AppVersionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

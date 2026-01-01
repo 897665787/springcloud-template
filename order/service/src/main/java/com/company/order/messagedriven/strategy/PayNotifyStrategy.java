@@ -5,24 +5,24 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
-import com.company.tool.api.enums.RetryerEnum;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.messagedriven.BaseStrategy;
+import com.company.framework.util.JsonUtil;
 import com.company.order.api.enums.OrderPayEnum;
 import com.company.order.api.request.PayNotifyReq;
 import com.company.order.entity.OrderPay;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayService;
+import com.company.tool.api.enums.RetryerEnum;
 import com.company.tool.api.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.google.common.collect.Lists;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

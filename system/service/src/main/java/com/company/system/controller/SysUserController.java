@@ -19,7 +19,7 @@ import com.company.system.service.SysRoleService;
 import com.company.system.service.SysUserRoleService;
 import com.company.system.service.SysUserService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

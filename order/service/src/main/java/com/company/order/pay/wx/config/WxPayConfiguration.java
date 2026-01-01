@@ -2,7 +2,7 @@ package com.company.order.pay.wx.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +14,7 @@ public class WxPayConfiguration {
     public WxPayConfiguration(WxPayProperties properties) {
     	this.properties = properties;
     }
-    
+
 	public WxPayProperties.PayConfig getPayConfig(String appid) {
 		List<WxPayProperties.PayConfig> payConfigList = properties.getConfigs();
 		for (WxPayProperties.PayConfig payConfig : payConfigList) {

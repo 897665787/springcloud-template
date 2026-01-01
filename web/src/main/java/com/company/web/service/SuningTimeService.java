@@ -1,7 +1,7 @@
 package com.company.web.service;
 
 import com.company.framework.cache.ICache;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import cn.hutool.http.HttpUtil;

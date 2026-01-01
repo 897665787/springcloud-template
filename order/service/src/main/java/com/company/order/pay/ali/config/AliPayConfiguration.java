@@ -2,7 +2,7 @@ package com.company.order.pay.ali.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,7 +15,7 @@ public class AliPayConfiguration {
     public AliPayConfiguration(AliPayProperties properties) {
         this.properties = properties;
     }
-    
+
     public AliPayProperties.PayConfig getPayConfig(String appid) {
 		List<AliPayProperties.PayConfig> payConfigList = properties.getConfigs();
 		for (AliPayProperties.PayConfig payConfig : payConfigList) {

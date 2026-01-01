@@ -1,6 +1,6 @@
 package com.company.web.easylogin.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.tool.api.feign.VerifyCodeFeign;

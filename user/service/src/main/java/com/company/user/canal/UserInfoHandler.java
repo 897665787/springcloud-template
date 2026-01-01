@@ -5,7 +5,7 @@ import com.company.user.cache.UserInfoCache;
 import com.company.user.entity.UserInfo;
 import com.company.user.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.javatool.canal.client.annotation.CanalTable;
 import top.javatool.canal.client.handler.EntryHandler;

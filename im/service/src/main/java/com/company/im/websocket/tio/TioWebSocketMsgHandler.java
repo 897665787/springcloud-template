@@ -2,7 +2,7 @@ package com.company.im.websocket.tio;
 
 import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;

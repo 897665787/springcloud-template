@@ -8,7 +8,7 @@ import com.company.im.api.request.UserReq;
 import com.github.linyuzai.connection.loadbalance.core.extension.GroupMessage;
 import com.github.linyuzai.connection.loadbalance.core.extension.UserMessage;
 import com.github.linyuzai.connection.loadbalance.websocket.concept.WebSocketLoadBalanceConcept;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

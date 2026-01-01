@@ -2,13 +2,13 @@ package com.company.order.pay.aliactivity.notify;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.util.JsonUtil;
 import com.company.order.mapper.AliActivityNotifyMapper;
 import com.company.order.pay.aliactivity.dto.OrderCreateBizContent;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 /**
  * <pre>

@@ -14,7 +14,7 @@ import com.company.tool.mapper.RetryTaskMapper;
 import com.company.tool.retry.strategy.WaitStrategyBeanFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.HttpEntity;

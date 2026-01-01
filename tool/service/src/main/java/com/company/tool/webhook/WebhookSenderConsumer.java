@@ -9,7 +9,7 @@ import java.util.Set;
 
 import com.company.framework.trace.TraceManager;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.util.JsonUtil;

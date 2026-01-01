@@ -6,7 +6,7 @@ import com.company.tool.entity.AppVersion;
 import com.company.tool.mapper.AppVersionMapper;
 import com.company.tool.service.AppVersionService;
 import com.company.user.api.response.UserInfoResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component

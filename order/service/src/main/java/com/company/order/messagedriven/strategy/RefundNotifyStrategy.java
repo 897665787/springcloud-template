@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.company.tool.api.enums.RetryerEnum;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -18,9 +16,11 @@ import com.company.order.api.request.RefundNotifyReq;
 import com.company.order.entity.OrderPayRefund;
 import com.company.order.service.FinancialFlowService;
 import com.company.order.service.OrderPayRefundService;
+import com.company.tool.api.enums.RetryerEnum;
 import com.company.tool.api.feign.RetryerFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -30,7 +30,6 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 
 	private final OrderPayRefundService orderPayRefundService;
 	private final RetryerFeign retryerFeign;
-
 	private final FinancialFlowService financialFlowService;
 
 	@Override
@@ -75,7 +74,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 			log.warn("无回调URL,outRefundNo:{}", outRefundNo);
 			return;
 		}
-		
+
 		RefundNotifyReq refundNotifyReq = new RefundNotifyReq();
 		refundNotifyReq.setSuccess(success);
 		String message = MapUtils.getString(params, "message");
@@ -91,7 +90,7 @@ public class RefundNotifyStrategy implements BaseStrategy<Map<String, Object>> {
 		BigDecimal totalRefundAmount = refundOrderList.stream()
 				.filter(o -> OrderPayRefundEnum.Status.REFUND_SUCCESS == OrderPayRefundEnum.Status.of(o.getStatus()))
 				.map(OrderPayRefund::getRefundAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-		
+
 		refundNotifyReq.setTotalRefundAmount(totalRefundAmount);
 		refundNotifyReq.setRefundAll(totalRefundAmount.compareTo(orderPayRefund.getAmount()) == 0);
 

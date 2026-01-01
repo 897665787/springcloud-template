@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import com.company.framework.messagedriven.constants.HeaderConstants;
 import com.company.framework.trace.TraceManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

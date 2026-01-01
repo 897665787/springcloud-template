@@ -1,7 +1,7 @@
 package com.company.gateway.developer.policy;
 
 import com.company.gateway.developer.policy.impl.DefaultServicePriorityPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.lang.NonNull;
 

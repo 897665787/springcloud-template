@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.company.framework.messagedriven.properties.MessagedrivenProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.util.JsonUtil;

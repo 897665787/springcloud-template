@@ -1,15 +1,16 @@
 package com.company.framework.developer.policy;
 
-import com.company.framework.developer.policy.impl.DefaultServicePriorityPolicy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.lang.NonNull;
-
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.lang.NonNull;
+
+import com.company.framework.developer.policy.impl.DefaultServicePriorityPolicy;
 
 public class ServicePriorityPolicyManager {
     private final List<ServicePriorityPolicy> servicePriorityPolicies;

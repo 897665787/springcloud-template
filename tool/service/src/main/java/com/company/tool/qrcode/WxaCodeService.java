@@ -3,7 +3,7 @@ package com.company.tool.qrcode;
 import java.util.Optional;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

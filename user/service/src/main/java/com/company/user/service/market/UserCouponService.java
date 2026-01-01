@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.service.IService;

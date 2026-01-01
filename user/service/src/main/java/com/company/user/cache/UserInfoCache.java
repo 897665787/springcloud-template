@@ -5,7 +5,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.user.api.response.UserInfoResp;
 import com.company.user.entity.UserInfo;
 import com.company.user.service.UserInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component

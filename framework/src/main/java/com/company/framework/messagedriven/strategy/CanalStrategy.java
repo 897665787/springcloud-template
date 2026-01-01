@@ -4,7 +4,7 @@ import com.alibaba.otter.canal.protocol.FlatMessage;
 import com.company.framework.messagedriven.BaseStrategy;
 import com.company.framework.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import top.javatool.canal.client.handler.MessageHandler;

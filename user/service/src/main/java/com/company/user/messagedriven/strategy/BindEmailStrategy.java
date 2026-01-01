@@ -3,7 +3,7 @@ package com.company.user.messagedriven.strategy;
 import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.messagedriven.BaseStrategy;

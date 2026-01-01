@@ -7,7 +7,7 @@ import com.company.order.pay.wx.config.WxPayProperties;
 import com.company.order.pay.wx.result.WxPayAppOrderResult;
 import com.github.binarywang.wxpay.constant.WxPayConstants.TradeType;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class AppOrderResultTransfer implements OrderResultTransfer {
 
 	private final WxPayConfiguration wxPayConfiguration;
-	
+
 	@Override
 	public Object toPayInfo(String appid, String mchId, String prepayId, String codeUrl,
 			String mwebUrl) {
@@ -34,9 +34,9 @@ public class AppOrderResultTransfer implements OrderResultTransfer {
 
 		WxPayAppOrderResult result = WxPayAppOrderResult.builder().prepayId(prepayId).partnerId(partnerId).appId(appid)
 				.packageValue(packageValue).timeStamp(timestamp).nonceStr(nonceStr).build();
-		
+
 		WxPayProperties.MchConfig mchConfig = wxPayConfiguration.getMchConfig(mchId);
-		
+
 		StringBuffer signStr = new StringBuffer();
         signStr.append("appid=").append(result.getAppId())
                 .append("&noncestr=").append(result.getNonceStr())

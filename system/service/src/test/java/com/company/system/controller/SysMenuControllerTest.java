@@ -3,7 +3,7 @@ package com.company.system.controller;
 import cn.hutool.json.JSONUtil;
 import com.company.system.api.response.RouterResp;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;

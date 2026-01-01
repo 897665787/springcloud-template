@@ -9,7 +9,7 @@ import com.company.openapi.annotation.NoSign;
 import com.company.openapi.config.SignConfiguration;
 import com.company.openapi.util.SignUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;

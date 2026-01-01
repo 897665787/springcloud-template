@@ -4,7 +4,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.tool.cache.AppInfoCache;
 import com.company.tool.entity.AppInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import top.javatool.canal.client.annotation.CanalTable;
 import top.javatool.canal.client.handler.EntryHandler;

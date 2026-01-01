@@ -3,7 +3,7 @@ package com.company.gateway.filter;
 import java.nio.charset.StandardCharsets;
 
 import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

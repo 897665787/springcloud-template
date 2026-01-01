@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.company.framework.globalresponse.ExceptionUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

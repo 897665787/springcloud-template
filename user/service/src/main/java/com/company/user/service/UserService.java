@@ -2,7 +2,7 @@ package com.company.user.service;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,16 +27,16 @@ public class UserService {
 	public User getById(Long id) {
 		User selectById = userMapper.selectById(1);
 		System.out.println("selectById:" + selectById);
-		
+
 		City selectById2 = cityMapper.selectById(1302);
 		System.out.println("selectById2:" + selectById2);
 //		OrderResp orderResp = orderFeign.getById(1L);
 //		System.out.println("orderResp:" + orderResp);
 
-		
+
 //		List<User> selectByName = userMapper.selectByName("江庆棣");
 //		System.out.println("selectByName:" + selectByName);
-		
+
 //		OrderReq orderReq = new OrderReq().setId(3L).setOrderCode(String.valueOf(System.currentTimeMillis()));
 //		OrderResp save = orderFeign.save(orderReq);
 //		System.out.println("save:" + save);
@@ -47,17 +47,17 @@ public class UserService {
 //	@Transactional
 	public void save() {
 //		System.out.println("sqlSessionFactory:" + sqlSessionFactory);
-		
+
 		User user = new User();
 		user.setName("ad").setUsername("basd").setPassword("186027de6ac204029da11c377024350c")
 				.setAvatar("http://demo.ruoyi.vip/img/profile.jpg")
 				.setStatus(0);
 		int insert = userMapper.insert(user);
 		System.out.println("insert:" + insert);
-		
+
 	}
-	
-	
+
+
 	@Transactional(transactionManager = "ds2TransactionManager")
 	public void saveTs() {
 		User user = new User();
@@ -66,11 +66,11 @@ public class UserService {
 				.setStatus(0);
 		int insert = userMapper.insert(user);
 		System.out.println("insert:" + insert);
-		
+
 		City city = new City().setProvinceId(2L).setName("jiang").setStatus(1).setSeq(1).setCreateTime(LocalDateTime.now());
 		int insert2 = cityMapper.insert(city);
 		System.out.println("insert2:" + insert2);
-		
+
 		if(true)
 			throw new RuntimeException("aaaaaaaa");
 	}

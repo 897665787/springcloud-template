@@ -1,6 +1,6 @@
 package com.company.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -19,7 +19,7 @@ public class UserSourceService extends ServiceImpl<UserSourceMapper, UserSource>
 
 	/**
 	 * 根据用户ID查询最新用户来源
-	 * 
+	 *
 	 * @param userId
 	 * @return
 	 */
@@ -50,7 +50,7 @@ public class UserSourceService extends ServiceImpl<UserSourceMapper, UserSource>
 
 	/**
 	 * 根据被邀请人用户id查找邀请人用户id
-	 * 
+	 *
 	 * @param userId
 	 *            用户ID
 	 * @param sourcePrefix

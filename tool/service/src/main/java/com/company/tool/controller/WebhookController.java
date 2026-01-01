@@ -2,7 +2,7 @@ package com.company.tool.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +22,7 @@ public class WebhookController implements WebhookFeign {
 		List<Integer> idList = asyncWebhookSender.select4PreTimeSend(limit);
 		return idList;
 	}
-	
+
 	@Override
 	public Void exePreTimeSend(Integer id) {
 		asyncWebhookSender.exePreTimeSend(id);

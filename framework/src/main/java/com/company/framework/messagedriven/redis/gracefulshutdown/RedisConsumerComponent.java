@@ -4,7 +4,7 @@ import com.company.framework.gracefulshutdown.ConsumerComponent;
 import com.company.framework.messagedriven.redis.RedisMQAutoConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;

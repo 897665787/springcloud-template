@@ -5,7 +5,7 @@ import com.company.framework.util.JsonUtil;
 import com.company.tool.entity.AppInfo;
 import com.company.tool.mapper.AppInfoMapper;
 import com.company.user.api.response.UserInfoResp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -2,7 +2,7 @@ package com.company.order.pay.aliactivity.notify;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.company.framework.util.JsonUtil;

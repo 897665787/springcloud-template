@@ -3,7 +3,7 @@ package com.company.openapi.config;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +33,7 @@ public class SignConfiguration {
 	public Integer getReqValidSeconds() {
 		return properties.getReqValidSeconds();
 	}
-	
+
 	public boolean nonceValid() {
 		return Optional.of(properties.getNonceValid()).orElse(true);
 	}
