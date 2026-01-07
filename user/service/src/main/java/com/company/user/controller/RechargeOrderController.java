@@ -149,7 +149,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
                 RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
-				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
+				log.info("buyNotify:{}", buyNotifyResult);
 			});
 			return new RechargeOrderResp().setNeedPay(false);
 		}
@@ -194,7 +194,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 			OrderCancelReq orderCancelReq = new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time);
 			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq);
 			if (!cancelByTimeout) {
-				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
+				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", orderCancelReq);
 				return RetryerResp.end();
 			}
 
@@ -209,7 +209,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 				.setPayTime(time);
 		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
-			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", orderPaySuccessReq);
             return RetryerResp.end();
 		}
 
@@ -274,7 +274,7 @@ public class RechargeOrderController implements RechargeOrderFeign {
 			PayCloseReq payCloseReq = new PayCloseReq();
 			payCloseReq.setOrderCode(orderCode);
 			Void payCloseResp = payFeign.payClose(payCloseReq);
-			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+			log.info("关闭订单结果:{}", payCloseResp);
 		}
 	}
 

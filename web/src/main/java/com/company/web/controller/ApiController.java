@@ -8,7 +8,6 @@ import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.context.SpringContextUtil;
 import com.company.framework.sequence.SequenceGenerator;
 import com.company.framework.threadpool.ThreadPoolProperties;
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.OrderFeign;
 import com.company.order.api.response.Order4Resp;
@@ -103,7 +102,7 @@ public class ApiController {
 		userResp.setId(1L);
 		userResp.setStatus(1);
 		UserResp byId = userResp;
-		System.out.println("byId:"+JsonUtil.toJsonString(byId));
+		System.out.println("byId:"+byId);
 		com.company.web.resp.UserResp resp = PropertyUtils.copyProperties(byId, com.company.web.resp.UserResp.class);
 		return resp;
 	}

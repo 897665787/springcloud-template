@@ -1,7 +1,6 @@
 package com.company.web.controller;
 
 
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.request.RegisterOrderReq;
@@ -89,7 +88,7 @@ public class FeignTestController {
     @GetMapping(value = "/getparam")
     public com.company.web.resp.OrderDetailResp getparam(String orderCode) {
         com.company.web.resp.OrderDetailResp result = restTemplate.getForObject("http://template-order/feignTest/getparam?orderCode=" + orderCode, com.company.web.resp.OrderDetailResp.class);
-        log.info("result:{}", JsonUtil.toJsonString(result));
+        log.info("result:{}", result);
         return result;
 
 //		OrderDetailResp orderDetailResp = feignTestFeign.getparam(orderCode);
@@ -100,7 +99,7 @@ public class FeignTestController {
     @GetMapping(value = "/postbody")
     public com.company.web.resp.OrderDetailResp postbody(@RequestBody RegisterOrderReq registerOrderReq) {
         com.company.web.resp.OrderDetailResp result = restTemplate.postForObject("http://template-order/feignTest/postbody",registerOrderReq, com.company.web.resp.OrderDetailResp.class);
-        log.info("result:{}", JsonUtil.toJsonString(result));
+        log.info("result:{}", result);
         return result;
 
 //        OrderDetailResp orderDetailResp = feignTestFeign.postbody(registerOrderReq);

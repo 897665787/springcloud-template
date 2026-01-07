@@ -63,7 +63,7 @@ public class FeignTestController implements FeignTestFeign {
 	@Override
 	public OrderDetailResp context() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
-		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		log.info("HeaderContextUtil.headerMap:{}", HeaderContextUtil.headerMap());
 		OrderDetailResp resp = new OrderDetailResp();
 		return resp;
 	}

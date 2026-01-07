@@ -156,7 +156,7 @@ public class RefundApplyController implements RefundApplyFeign {
 				refundNotifyReq.setRefundAll(true);
 
                 RetryerResp refundNotifyResult = this.refundNotify(refundNotifyReq);
-				log.info("refundNotify:{}", JsonUtil.toJsonString(refundNotifyResult));
+				log.info("refundNotify:{}", refundNotifyResult);
 				// 后续逻辑 ----------> refundNotify
 			});
 			return Boolean.TRUE;

@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.es.dto.Brand;
 import com.company.order.es.dto.Brand.Product;
@@ -123,7 +122,7 @@ public class BrandController {
 		long countAll = clientUtil.countAll(indexName);
 		System.out.println("countAll:" + countAll);
 		Brand document = clientUtil.getDocument(indexName, id, Brand.class);
-		System.out.println(JsonUtil.toJsonString(document));
+		System.out.println(document);
 		return document;
 	}
 

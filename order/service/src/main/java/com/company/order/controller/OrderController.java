@@ -530,7 +530,7 @@ public class OrderController implements OrderFeign {
 			orderReq.setProductList(productReqList);
 
 			data = postRestTemplate(subOrderUrl, orderReq);
-			log.info("subOrderUrl:{},orderReq:{},mills:{}", subOrderUrl, JsonUtil.toJsonString(orderReq),
+			log.info("subOrderUrl:{},orderReq:{},mills:{}", subOrderUrl, orderReq,
 					System.currentTimeMillis() - start);
 		} else {
 			Map<String, String> dataMap = Maps.newHashMap();
@@ -545,12 +545,12 @@ public class OrderController implements OrderFeign {
 
 	private Object postRestTemplate(String url, Object paramObject) {
 		String remark = null;
-		log.info("请求地址:{},原参数:{},参数:{}", url, JsonUtil.toJsonString(paramObject), JsonUtil.toJsonString(paramObject));
+		log.info("请求地址:{},原参数:{},参数:{}", url, paramObject, paramObject);
 		long start = System.currentTimeMillis();
 		try {
             HttpEntity<Object> httpEntity = new HttpEntity<>(paramObject);
             Object result = restTemplate.postForObject(url, httpEntity, Object.class);
-            log.info("{}ms,结果:{}", System.currentTimeMillis() - start, JsonUtil.toJsonString(result));
+            log.info("{}ms,结果:{}", System.currentTimeMillis() - start, result);
             return result;
 		} catch (Exception e) {
 			log.error("{}ms,异常", System.currentTimeMillis() - start, e);

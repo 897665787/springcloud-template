@@ -72,7 +72,7 @@ public class AccountController {
 	private String tokenPrefix;
 
 	@PostMapping(value = "/login/weixinapp")
-	public LoginResp loginByMobile(@Valid @RequestBody LoginByWeixinAppReq loginByWeixinAppReq) {
+	public LoginResp loginByWeixinapp(@Valid @RequestBody LoginByWeixinAppReq loginByWeixinAppReq) {
 		String wxcode = loginByWeixinAppReq.getWxcode();
 
 		String userId = null;

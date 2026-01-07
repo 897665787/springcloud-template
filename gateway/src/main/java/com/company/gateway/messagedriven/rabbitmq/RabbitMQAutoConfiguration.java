@@ -58,7 +58,7 @@ public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconf
 			@Override
 			public void confirm(CorrelationData correlationData, boolean ack, String cause) {
 				// publiser-confirm模式可以确保生产者到交换器exchange消息有没有发送成功
-				log.info("correlationData:{},ack:{},cause:{}", JsonUtil.toJsonString(correlationData), ack, cause);
+				log.info("correlationData:{},ack:{},cause:{}", correlationData, ack, cause);
 			}
 		});
 		rabbitTemplate.setReturnCallback(new ReturnCallback() {
@@ -71,7 +71,7 @@ public class RabbitMQAutoConfiguration extends org.springframework.boot.autoconf
 					return;
 				}
 				log.info("message:{},replyCode:{},replyText:{},exchange:{},routingKey:{}",
-						JsonUtil.toJsonString(message), replyCode, replyText, exchange, routingKey);
+						message, replyCode, replyText, exchange, routingKey);
 			}
 		});
 		return new Object();
