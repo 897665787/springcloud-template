@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.company.gateway.messagedriven.constants.BroadcastConstants;
 import com.company.gateway.util.HostUtil;
-import com.company.gateway.util.JsonUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

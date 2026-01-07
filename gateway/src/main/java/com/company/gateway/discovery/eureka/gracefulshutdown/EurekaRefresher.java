@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.company.gateway.context.SpringContextUtil;
 import com.company.gateway.gracefulshutdown.ServerListRefresher;
-import com.company.gateway.util.JsonUtil;
 import com.netflix.discovery.DiscoveryClient;
 
 import lombok.extern.slf4j.Slf4j;

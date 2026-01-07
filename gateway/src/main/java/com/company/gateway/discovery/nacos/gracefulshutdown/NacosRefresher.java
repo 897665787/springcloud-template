@@ -16,7 +16,6 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.company.gateway.context.SpringContextUtil;
 import com.company.gateway.gracefulshutdown.ServerListRefresher;
-import com.company.gateway.util.JsonUtil;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
