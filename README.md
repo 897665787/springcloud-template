@@ -262,4 +262,4 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
  - Knife4j API文档：https://doc.xiaominfo.com
  - 动态数据源：https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter
  - XXL-JOB：https://gitee.com/xuxueli0323/xxl-job
-
+https://gitee.com/ilusymon/auth-server.git
