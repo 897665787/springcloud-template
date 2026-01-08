@@ -192,7 +192,7 @@ public class PayController implements PayFeign {
 		}
 
 		PayCloseResp payCloseResp = payClient.payClose(orderCode);
-		log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+		log.info("关闭订单结果:{}", payCloseResp);
 		if (!payCloseResp.getSuccess()) {
             return RetryerResp.goon(payCloseResp.getMessage());
 		}
@@ -224,7 +224,7 @@ public class PayController implements PayFeign {
 		payNotifyReq.setTime(time);
 		payNotifyReq.setAttach(orderPay.getNotifyAttach());
 
-		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, JsonUtil.toJsonString(payNotifyReq));
+		log.info("超时未支付关闭订单回调,请求地址:{},参数:{}", notifyUrl, payNotifyReq);
 		RetryerInfoReq retryerInfoReq = RetryerInfoReq.builder().feignUrl(notifyUrl).jsonParams(payNotifyReq).build();
 		retryerFeign.call(retryerInfoReq);
 

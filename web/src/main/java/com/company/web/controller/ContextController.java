@@ -2,7 +2,6 @@ package com.company.web.controller;
 
 
 import com.company.framework.context.HeaderContextUtil;
-import com.company.framework.util.JsonUtil;
 import com.company.order.api.feign.FeignTestFeign;
 import com.company.order.api.response.OrderDetailResp;
 import com.google.common.collect.Lists;
@@ -33,13 +32,13 @@ public class ContextController {
 	@GetMapping(value = "/thread")
 	public Integer thread() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
-		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		log.info("HeaderContextUtil.headerMap:{}", HeaderContextUtil.headerMap());
 
 		for (int i = 0; i < 5; i++) {
 			int n = i;
 			new Thread(() -> {
 				log.info("{} HeaderContextUtil.currentUserId:{}", n, HeaderContextUtil.currentUserId());
-				log.info("{} HeaderContextUtil.headerMap:{}", n, JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+				log.info("{} HeaderContextUtil.headerMap:{}", n, HeaderContextUtil.headerMap());
 			}).start();
 		}
 		log.info("log end");
@@ -49,13 +48,13 @@ public class ContextController {
 	@GetMapping(value = "/threadpooltask")
 	public Integer threadpooltask() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
-		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		log.info("HeaderContextUtil.headerMap:{}", HeaderContextUtil.headerMap());
 
 		for (int i = 0; i < 5; i++) {
 			int n = i;
 			executor.submit(() -> {
 				log.info("{} HeaderContextUtil.currentUserId:{}", n, HeaderContextUtil.currentUserId());
-				log.info("{} HeaderContextUtil.headerMap:{}", n, JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+				log.info("{} HeaderContextUtil.headerMap:{}", n, HeaderContextUtil.headerMap());
 			});
 		}
 		log.info("log end");
@@ -65,7 +64,7 @@ public class ContextController {
 	@GetMapping(value = "/forkjoin")
 	public Integer forkjoin() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
-		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		log.info("HeaderContextUtil.headerMap:{}", HeaderContextUtil.headerMap());
 
 		List<Integer> list = Lists.newArrayList(1, 2, 3, 4, 5);
 		log.info("list:{}", list);
@@ -73,7 +72,7 @@ public class ContextController {
 		List<String> strList = list.parallelStream()
 				.map(n -> {
 					log.info("{} HeaderContextUtil.currentUserId:{}", n, HeaderContextUtil.currentUserId());
-					log.info("{} HeaderContextUtil.headerMap:{}", n, JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+					log.info("{} HeaderContextUtil.headerMap:{}", n, HeaderContextUtil.headerMap());
 			return n.toString();
 		}).collect(Collectors.toList());
 
@@ -85,7 +84,7 @@ public class ContextController {
 	@GetMapping(value = "/completablefuture")
 	public Integer completablefuture() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
-		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		log.info("HeaderContextUtil.headerMap:{}", HeaderContextUtil.headerMap());
 
 		List<Integer> list = Lists.newArrayList(1, 2, 3, 4, 5);
 		log.info("list:{}", list);
@@ -95,7 +94,7 @@ public class ContextController {
 			final Integer n = list.get(i);
 			CompletableFuture<String> item = CompletableFuture.supplyAsync(() -> {
 				log.info("{} HeaderContextUtil.currentUserId:{}", n, HeaderContextUtil.currentUserId());
-				log.info("{} HeaderContextUtil.headerMap:{}", n, JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+				log.info("{} HeaderContextUtil.headerMap:{}", n, HeaderContextUtil.headerMap());
 				return n.toString();
 			});
 			list2.add(item);
@@ -107,7 +106,7 @@ public class ContextController {
 	@GetMapping(value = "/feign")
 	public Integer feign() {
 		log.info("HeaderContextUtil.currentUserId:{}", HeaderContextUtil.currentUserId());
-		log.info("HeaderContextUtil.headerMap:{}", JsonUtil.toJsonString(HeaderContextUtil.headerMap()));
+		log.info("HeaderContextUtil.headerMap:{}", HeaderContextUtil.headerMap());
 
 		for (int i = 0; i < 5; i++) {
 			int n = i;
@@ -116,7 +115,7 @@ public class ContextController {
 //				log.info("{} feignTestFeign.context:{}", n, JsonUtil.toJsonString(result));
 
                 OrderDetailResp result = restTemplate.getForObject("http://template-order/feignTest/context", OrderDetailResp.class);
-				log.info("result:{}", JsonUtil.toJsonString(result));
+				log.info("result:{}", result);
 				return result;
 			});
 		}

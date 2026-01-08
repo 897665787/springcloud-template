@@ -61,7 +61,7 @@ springcloud-template 是一个企业级的Spring Cloud微服务架构模板，�
 | Redis                | 跟随Spring Boot |
 | Redisson             | 3.12.0  |
 | Hutool               | 5.8.5  |
-| graceful-response    | 5.0.3-boot2  |
+| Graceful Response    | 5.0.3-boot2  |
 
 ### 模块说明
 
@@ -82,7 +82,7 @@ springcloud-template
      └── deploy -- 优雅发版(可做到用户无感发版，完全不报错，分享：https://www.toutiao.com/article/7136601651804127751)
      └── developer -- 环境流量路由到本机，调试神器（分享：https://www.toutiao.com/article/7514716979333268008）
      └── feign -- Feign请求头数据在微服务间传递（分享：https://www.toutiao.com/article/7126056949267268108）
-     └── globalresponse -- 统一异常处理、响应日志统一打印（分享：https://www.toutiao.com/article/7588770501573591587）
+     └── globalresponse -- 统一异常处理、响应结构（分享：https://www.toutiao.com/article/7588770501573591587）
      └── lock -- 锁设计
      └── message -- 文案国际化
      └── messagedriven -- 消息驱动，实现异步处理生产者
@@ -262,4 +262,4 @@ springcloud-template 开源软件遵循 [Apache 2.0 协议](https://www.apache.o
  - Knife4j API文档：https://doc.xiaominfo.com
  - 动态数据源：https://gitee.com/baomidou/dynamic-datasource-spring-boot-starter
  - XXL-JOB：https://gitee.com/xuxueli0323/xxl-job
-
+ - Graceful Response：https://doc.feiniaojin.com/graceful-response/home.html

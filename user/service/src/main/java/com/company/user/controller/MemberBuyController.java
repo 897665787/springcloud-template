@@ -324,7 +324,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				payNotifyReq.setTime(LocalDateTime.now());
 				payNotifyReq.setAttach(finalPayAttach);
                 RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
-				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
+				log.info("buyNotify:{}", buyNotifyResult);
 			});
 			return new MemberBuyOrderResp().setNeedPay(false);
 		}
@@ -369,7 +369,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			OrderCancelReq orderCancelReq = new OrderCancelReq().setOrderCode(orderCode).setCancelTime(time);
 			Boolean cancelByTimeout = orderFeign.cancelByTimeout(orderCancelReq);
 			if (!cancelByTimeout) {
-				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderCancelReq));
+				log.warn("cancelByTimeout,修改‘订单中心’数据失败:{}", orderCancelReq);
 				return RetryerResp.end();
 			}
 
@@ -405,7 +405,7 @@ public class MemberBuyController implements MemberBuyFeign {
 				.setPayTime(time);
 		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
-			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", orderPaySuccessReq);
 			return RetryerResp.end();
 		}
 
@@ -566,7 +566,7 @@ public class MemberBuyController implements MemberBuyFeign {
 			PayCloseReq payCloseReq = new PayCloseReq();
 			payCloseReq.setOrderCode(orderCode);
 			Void payCloseResp = payFeign.payClose(payCloseReq);
-			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+			log.info("关闭订单结果:{}", payCloseResp);
 		}
 	}
 

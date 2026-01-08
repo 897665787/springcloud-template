@@ -210,7 +210,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				payNotifyReq.setPayAmount(needPayAmount);
 				payNotifyReq.setTime(LocalDateTime.now());
                 RetryerResp buyNotifyResult = buyNotify(payNotifyReq);
-				log.info("buyNotify:{}", JsonUtil.toJsonString(buyNotifyResult));
+				log.info("buyNotify:{}", buyNotifyResult);
 			});
 			return new DistributeBuyOrderResp().setNeedPay(false);
 		}
@@ -272,7 +272,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 				.setPayTime(time);
 		Boolean updateSuccess = orderFeign.paySuccess(orderPaySuccessReq);
 		if (!updateSuccess) {
-			log.warn("paySuccess,修改‘订单中心’数据失败:{}", JsonUtil.toJsonString(orderPaySuccessReq));
+			log.warn("paySuccess,修改‘订单中心’数据失败:{}", orderPaySuccessReq);
 			return RetryerResp.end();
 		}
 
@@ -317,7 +317,7 @@ public class DistributeOrderController implements DistributeOrderFeign {
 			PayCloseReq payCloseReq = new PayCloseReq();
 			payCloseReq.setOrderCode(orderCode);
 			Void payCloseResp = payFeign.payClose(payCloseReq);
-			log.info("关闭订单结果:{}", JsonUtil.toJsonString(payCloseResp));
+			log.info("关闭订单结果:{}", payCloseResp);
 		}
 	}
 

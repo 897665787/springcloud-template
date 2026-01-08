@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.company.gateway.context.SpringContextUtil;
 import com.company.gateway.gracefulshutdown.ServerListRefresher;
-import com.company.gateway.util.JsonUtil;
 import com.netflix.discovery.DiscoveryClient;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +37,13 @@ public class EurekaRefresher implements ServerListRefresher {
     private void refreshRegistry(String application) {
 		try {
             DiscoveryClient client = SpringContextUtil.getBean(DiscoveryClient.class);
-            log.info("{},application before:{}", application, JsonUtil.toJsonString(client.getApplication(application)));
+            log.info("{},application before:{}", application, client.getApplication(application));
 
 			Method method = DiscoveryClient.class.getDeclaredMethod("refreshRegistry");
 			method.setAccessible(true);
 			method.invoke(client);
 			method.setAccessible(false);
-			log.info("{},application after:{}", application, JsonUtil.toJsonString(client.getApplication(application)));
+			log.info("{},application after:{}", application, client.getApplication(application));
 			log.info("refresh registry success!!!");
 		} catch (Exception e) {
 			log.error("refresh registry fail!!!", e);
@@ -74,9 +73,9 @@ public class EurekaRefresher implements ServerListRefresher {
             LoadBalancerCacheManager cacheManager = SpringContextUtil.getBean(LoadBalancerCacheManager.class);
             Cache cache = cacheManager.getCache(CachingServiceInstanceListSupplier.SERVICE_INSTANCE_CACHE_NAME);
 
-            log.info("{},cache before:{}", application, JsonUtil.toJsonString(cache.get(application, List.class)));
+            log.info("{},cache before:{}", application, cache.get(application, List.class));
             cache.evict(application);
-            log.info("{},cache after:{}", application, JsonUtil.toJsonString(cache.get(application, List.class)));
+            log.info("{},cache after:{}", application, cache.get(application, List.class));
             log.info("refresh server list success!!!");
         } catch (Exception e) {
             log.error("refresh server list fail!!!", e);

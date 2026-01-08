@@ -120,8 +120,8 @@ public class RechargeStrategy implements BaseStrategy<Map<String, Object>> {
 				// 冻结的余额无法处理，所以这里只需要用MainChargeGiftWallet的逻辑就行了
 				Integer walletRecordId = mainChargeGiftWallet.outcome(uniqueCode, walletId, amount, attachMap);
 				if (walletRecordId <= 0) {
-					log.warn("{}充值订单退款扣减余额失败,balance:{},amount:{}", JsonUtil.toJsonString(walletId),
-							JsonUtil.toJsonString(balance), JsonUtil.toJsonString(amount));
+					log.warn("{}充值订单退款扣减余额失败,balance:{},amount:{}", walletId,
+							balance, amount);
 				}
 
 				// 扣回wallet_use_seq

@@ -54,7 +54,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         Map<String, Object> errorMap = Maps.newHashMap();
         errorMap.put("status", false);
         errorMap.put("code", code);
-        errorMap.put("message", msg);
+        errorMap.put("msg", msg);
         String errorMsg = JsonUtil.toJsonString(errorMap);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=utf-8");

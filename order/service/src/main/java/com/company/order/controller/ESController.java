@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-import com.company.framework.util.JsonUtil;
 import com.company.framework.util.PropertyUtils;
 import com.company.order.es.dto.EsTestDto;
 import com.github.javafaker.Faker;
@@ -146,7 +145,7 @@ public class ESController {
 		long countAll = clientUtil.countAll(indexName);
 		System.out.println("countAll:" + countAll);
 		EsTestDto document = clientUtil.getDocument(indexName, id, EsTestDto.class);
-		System.out.println(JsonUtil.toJsonString(document));
+		System.out.println(document);
 		return document;
 	}
 

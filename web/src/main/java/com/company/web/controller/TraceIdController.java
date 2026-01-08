@@ -1,7 +1,9 @@
 package com.company.web.controller;
 
 
+import com.company.framework.util.JsonUtil;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
@@ -22,6 +25,22 @@ public class TraceIdController {
 
 	@Autowired
 	private AsyncTaskExecutor executor;
+
+    @GetMapping(value = "/logback-arg-to-json")
+    public Integer logbackArgToJson() {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("aaa", "gggg");
+        map.put("bbb", 123);
+        map.put("ccc", null);
+        log.info("map:{}|{}", map, JsonUtil.toJsonString(map));
+
+        int[] intArr = new int[] {1, 2, 3};
+        log.info("intArr:{}|{}", intArr, JsonUtil.toJsonString(intArr));
+
+        List<Integer> intList = Lists.newArrayList(1, 2, 3);
+        log.info("intList:{}|{}", intList, JsonUtil.toJsonString(intList));
+        return 1;
+    }
 
 	@GetMapping(value = "/thread")
 	public Integer thread() {
