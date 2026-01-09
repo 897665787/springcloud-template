@@ -2,6 +2,7 @@ package com.company.token.jsonwebtoken.util;
 
 import cn.hutool.core.util.RandomUtil;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -46,12 +47,13 @@ public class TokenUtil {
 				// claims 等价于setXxx
 				// .setClaims(claims)
 
-				// 等价于claims
-				.setIssuer(issuer).setSubject(subject).setAudience(audience).setExpiration(expiration)
-				.setNotBefore(not_before).setIssuedAt(issued_at).setId(jti)
+                // 等价于claims
+                .issuer(issuer).subject(subject).audience().add(audience).and().expiration(expiration).notBefore(not_before)
+                .issuedAt(issued_at).id(jti)
 
 				// 签名
-				.signWith(SignatureAlgorithm.HS256, secret).compact();
+                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .compact();
 		return token;
 	}
 
@@ -63,11 +65,8 @@ public class TokenUtil {
 		Claims body = null;
 		boolean expired = false;
 		try {
-			Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-			body = claimsJws.getBody();
-		} catch (SignatureException e) {// token不正确
-			log.error("SignatureException", e);
-			return null;
+            Jws<Claims> claimsJws = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(token);
+			body = claimsJws.getPayload();
 		} catch (ExpiredJwtException e) {// token过期
 			// log.error("ExpiredJwtException", e);
 			body = e.getClaims();
@@ -108,11 +107,8 @@ public class TokenUtil {
 
 		Claims body = null;
 		try {
-			Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-			body = claimsJws.getBody();
-		} catch (SignatureException e) {// token不正确
-			log.error("SignatureException", e);
-			return null;
+            Jws<Claims> claimsJws = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(token);
+            body = claimsJws.getPayload();
 		} catch (ExpiredJwtException e) {// token过期
 			// log.error("ExpiredJwtException", e);
 			body = e.getClaims();
@@ -121,7 +117,7 @@ public class TokenUtil {
 	}
 
     public static void main(String[] args) {
-        String secret = "hxqhjvtam5";// 密钥
+        String secret = "52ae521312f6461083435e045900486e";// 密钥，至少32字节
         String subject = "83848";
         String audience = "APP";// APP MINIP
         Date expiration = DateUtils.addSeconds(new Date(), 5);

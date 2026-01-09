@@ -36,7 +36,7 @@ public class JsonWebTokenService implements TokenService {
         if (claims == null) {
             return null;
         }
-        return claims.getAudience();
+        return claims.getAudience().iterator().next();
     }
 
     @Override

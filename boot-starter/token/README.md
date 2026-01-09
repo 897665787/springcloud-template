@@ -53,7 +53,7 @@ spring:
 ```yaml
 token:
    # 密钥
-   secret: hxqhjvtam5
+   secret: 52ae521312f6461083435e045900486e
 ```
 
 ### 3. 使用 Token 服务

@@ -33,7 +33,7 @@ spring:
       on-profile: dev
 token:
   # 密钥
-  secret: hxqhjvtam5
+  secret: 52ae521312f6461083435e045900486e
 
 ---
 # test环境配置
@@ -43,7 +43,7 @@ spring:
       on-profile: test
 token:
   # 密钥
-  secret: hxqhjvtam5
+  secret: 52ae521312f6461083435e045900486e
 
 ---
 # pre环境配置
@@ -53,7 +53,7 @@ spring:
       on-profile: pre
 token:
   # 密钥
-  secret: btqh5d8ah6
+  secret: a77f70ddf0e64c34a2b96e3ee0c43779
 
 ---
 # prod环境配置
@@ -63,4 +63,4 @@ spring:
       on-profile: prod
 token:
   # 密钥
-  secret: btqh5d8ah6
+  secret: a77f70ddf0e64c34a2b96e3ee0c43779

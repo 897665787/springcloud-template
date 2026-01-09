@@ -45,7 +45,7 @@ public class SaTokenService implements TokenService {
 		try {
 			return StpUtil.getLoginIdAsString();
 		} catch (NotLoginException e) {
-			log.error("NotLoginException:{},{},{}", e, e.getType(), e.getLoginType(), e.getMessage());
+			log.error("NotLoginException:{},{},{}", e.getType(), e.getLoginType(), e.getMessage(), e);
 			return null;
 		}
 	}
