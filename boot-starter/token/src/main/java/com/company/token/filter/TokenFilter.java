@@ -1,10 +1,13 @@
-package com.company.adminapi.filter;
+package com.company.token.filter;
 
-import com.company.token.TokenService;
-import com.company.framework.constant.CommonConstants;
-import com.company.framework.constant.HeaderConstants;
-import com.company.framework.filter.request.HeaderMapRequestWrapper;
-import com.company.token.util.TokenValueUtil;
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.company.token.filter.request.HeaderMapRequestWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,17 +15,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import com.company.token.TokenService;
+import com.company.token.util.TokenValueUtil;
 
 /**
  * token解析，把token转换为USER_ID
  */
 //@Component
-@Order(CommonConstants.FilterOrdered.TOKEN)
+@Order(30)
 public class TokenFilter extends OncePerRequestFilter {
 
 	@Autowired
@@ -53,7 +53,7 @@ public class TokenFilter extends OncePerRequestFilter {
 				userId = StringUtils.EMPTY;// 注：为了防止直接在header设置用户ID，绕过认证，null情况下要设置用户ID为空串
 			}
 		}
-		headerRequest.addHeader(HeaderConstants.HEADER_CURRENT_USER_ID, userId);
+		headerRequest.addHeader("x-current-user-id", userId);
 		chain.doFilter(headerRequest, response);
 	}
 }

@@ -2,6 +2,7 @@ package com.company.token;
 
 import cn.dev33.satoken.jwt.StpLogicJwtForStateless;
 import cn.dev33.satoken.stp.StpLogic;
+import com.company.token.filter.TokenFilter;
 import com.company.token.satoken.SaTokenService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -24,5 +25,11 @@ public class TokenAutoConfiguration {
 //		return new StpLogicJwtForSimple();// Token风格替换，数据记录到redis
 //		return new StpLogicJwtForMixin();// jwt 与 Redis 逻辑混合
         return new StpLogicJwtForStateless();// 完全舍弃Redis，只用jwt
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public TokenFilter tokenFilter() {
+        return new TokenFilter();
     }
 }

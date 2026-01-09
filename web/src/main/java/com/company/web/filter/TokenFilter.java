@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * token解析，把token转换为USER_ID
  */
-@Component
+//@Component
 @Order(CommonConstants.FilterOrdered.TOKEN)
 public class TokenFilter extends OncePerRequestFilter {
 
