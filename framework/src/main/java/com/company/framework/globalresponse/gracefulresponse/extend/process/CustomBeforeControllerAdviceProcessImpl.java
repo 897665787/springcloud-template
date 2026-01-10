@@ -1,0 +1,41 @@
+package com.company.framework.globalresponse.gracefulresponse.extend.process;
+
+import com.feiniaojin.gracefulresponse.GracefulResponseException;
+import com.feiniaojin.gracefulresponse.GracefulResponseProperties;
+import com.feiniaojin.gracefulresponse.advice.lifecycle.exception.BeforeControllerAdviceProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * copy from DefaultBeforeControllerAdviceProcessImpl
+ * 自定义处理前回调，区分异常打印日志
+ *
+ * @author qinyujie
+ */
+@Component
+public class CustomBeforeControllerAdviceProcessImpl implements BeforeControllerAdviceProcess {
+
+    private final Logger logger = LoggerFactory.getLogger(CustomBeforeControllerAdviceProcessImpl.class);
+
+    @Resource
+    private GracefulResponseProperties properties;
+
+    @Override
+    public void call(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex) {
+        if (!(ex instanceof GracefulResponseException)) {
+            // 如果不是GracefulResponseException，则直接打印错误堆栈，方便排查问题
+            logger.error("捕获到未知异常,message=[{}]", ex.getMessage(), ex);
+            return;
+        }
+        if (properties.isPrintExceptionInGlobalAdvice()) {
+//            logger.error("Graceful Response:捕获到异常,message=[{}]", ex.getMessage(), ex);
+            logger.warn("Graceful Response:捕获到异常,message=[{}]", ex.getMessage());// 调整为warn级别，不打印堆栈，降低日志关注度
+        }
+    }
+}

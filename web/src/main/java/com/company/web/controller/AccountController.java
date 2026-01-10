@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.token.util.TokenValueUtil;
+import com.jqdi.easylogin.core.LoginParams;
+import com.jqdi.easylogin.spring.boot.starter.LoginType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -65,10 +67,10 @@ public class AccountController {
 	private VerifyCodeFeign verifyCodeFeign;
 
 	@Autowired
-	@Qualifier("emailPasswordCode")
+	@Qualifier(LoginType.EMAIL_PASSWORD_CODE)
 	private LoginClient emailPasswordCodeLoginClient;
 	@Autowired
-	@Qualifier("mobilePasswordCode")
+	@Qualifier(LoginType.MOBILE_PASSWORD_CODE)
 	private LoginClient mobilePasswordCodeLoginClient;
 
 	@Value("${token.name}")
@@ -196,7 +198,7 @@ public class AccountController {
 		String identifier = email;
 		String userId = null;
 		try {
-			userId = emailPasswordCodeLoginClient.login(identifier, password, code);
+			userId = emailPasswordCodeLoginClient.login(LoginParams.builder().emailPasswordCode(identifier, password, code).build());
 		} catch (LoginException e) {
 			ExceptionUtil.throwException(e.getMessage());
 		}
@@ -233,7 +235,7 @@ public class AccountController {
 		String identifier = mobile;
 		String userId = null;
 		try {
-			userId = mobilePasswordCodeLoginClient.login(identifier, password, code);
+			userId = mobilePasswordCodeLoginClient.login(LoginParams.builder().mobilePasswordCode(identifier, password, code).build());
 		} catch (LoginException e) {
 			ExceptionUtil.throwException(e.getMessage());
 		}

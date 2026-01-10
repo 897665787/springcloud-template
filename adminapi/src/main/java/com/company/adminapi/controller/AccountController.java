@@ -7,34 +7,31 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-import com.company.framework.globalresponse.ExceptionUtil;
-import com.company.token.util.TokenValueUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.company.adminapi.constants.Constants;
 import com.company.adminapi.req.LoginReq;
 import com.company.adminapi.resp.LoginResp;
-import com.company.token.TokenService;
-import com.company.adminapi.util.PassWordUtil;
-
 import com.company.framework.annotation.RequireLogin;
 import com.company.framework.context.HeaderContextUtil;
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
-import com.company.system.api.feign.SysUserFeign;
 import com.company.system.api.feign.SysUserPasswordFeign;
-import com.company.system.api.response.SysUserPasswordResp;
-import com.company.system.api.response.SysUserResp;
+import com.company.system.api.response.SysUserPasswordTipsResp;
+import com.company.token.TokenService;
+import com.company.token.util.TokenValueUtil;
 import com.company.tool.api.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
 import com.google.common.collect.Maps;
+import com.jqdi.easylogin.core.LoginClient;
+import com.jqdi.easylogin.core.LoginParams;
+import com.jqdi.easylogin.core.exception.LoginException;
+import com.jqdi.easylogin.spring.boot.starter.LoginType;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 
@@ -46,8 +43,6 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 public class AccountController {
 
 	@Autowired
-	private SysUserFeign sysUserFeign;
-	@Autowired
 	private SysUserPasswordFeign sysUserPasswordFeign;
 	@Autowired
 	private TokenService tokenService;
@@ -55,6 +50,10 @@ public class AccountController {
 	private VerifyCodeFeign verifyCodeFeign;
 	@Autowired
 	private MessageSender messageSender;
+
+	@Autowired
+	@Qualifier(LoginType.USERNAME_PASSWORD_CODE)
+	private LoginClient loginClient;
 
 	@Value("${token.name}")
 	private String headerToken;
@@ -68,35 +67,21 @@ public class AccountController {
 	}
 
 	@PostMapping(value = "/login")
-	public LoginResp login(@Valid @RequestBody LoginReq loginReq) {
-		String account = loginReq.getAccount();
-		SysUserResp sysUserResp = sysUserFeign.getByAccount(account);
-		if (sysUserResp == null) {
-			ExceptionUtil.throwException("账号不存在");
-		}
+    public LoginResp login(@Valid @RequestBody LoginReq loginReq) {
+        String account = loginReq.getAccount();
+        String sysUserIdStr = null;
+        try {
+            sysUserIdStr = loginClient.login(LoginParams.builder()
+                .usernamePasswordCode(account, loginReq.getPassword(), loginReq.getUuid() + ":" + loginReq.getCode()).build());
+        } catch (LoginException e) {
+            ExceptionUtil.throwException(e.getMessage());
+        }
+        Integer sysUserId = Integer.valueOf(sysUserIdStr);
 
-		if (!"ON".equalsIgnoreCase(sysUserResp.getStatus())) {
-			ExceptionUtil.throwException("账号已停用");
-		}
-
-		String password = loginReq.getPassword();
-		String md5Password = PassWordUtil.md5(password);
-        SysUserPasswordResp sysUserPasswordResp = sysUserPasswordFeign.getBySysUserId(sysUserResp.getId());
-		if (!sysUserPasswordResp.getCanUse()) {
-			ExceptionUtil.throwException(sysUserPasswordResp.getPasswordTips());
-		}
-
-		if (!md5Password.equals(sysUserPasswordResp.getPassword())) {
-			ExceptionUtil.throwException("密码错误");
-		}
-
-		Boolean verifyPass = verifyCodeFeign
-				.verify(Constants.VerifyCodeType.ADMIN_LOGIN, loginReq.getUuid(), loginReq.getCode());
-		if (!verifyPass) {
-			ExceptionUtil.throwException("验证码错误");
-		}
-
-		Integer sysUserId = sysUserResp.getId();
+        SysUserPasswordTipsResp sysUserPasswordTipsResp = sysUserPasswordFeign.getPasswordTipsBySysUserId(sysUserId);
+        if (!sysUserPasswordTipsResp.getCanUse()) {
+            ExceptionUtil.throwException(sysUserPasswordTipsResp.getPasswordTips());
+        }
 
 		String device = "ADMIN"; // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
 		String tokenValue = tokenService.generate(String.valueOf(sysUserId), device);
@@ -106,10 +91,10 @@ public class AccountController {
 
 		publishLoginEvent(sysUserId, device, account);
 
-		LoginResp resp = new LoginResp();
-		resp.setToken(tokenValue);
-		resp.setTips(sysUserPasswordResp.getPasswordTips());
-		return resp;
+        LoginResp resp = new LoginResp();
+        resp.setToken(tokenValue);
+		resp.setTips(sysUserPasswordTipsResp.getPasswordTips());
+        return resp;
 	}
 
 	// 发布登录事件

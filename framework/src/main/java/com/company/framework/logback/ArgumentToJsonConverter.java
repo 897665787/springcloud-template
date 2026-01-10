@@ -1,5 +1,6 @@
 package com.company.framework.logback;
 
+import com.fasterxml.classmate.types.ResolvedObjectType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.helpers.MessageFormatter;
 
@@ -70,8 +71,19 @@ public class ArgumentToJsonConverter extends MessageConverter {
             return true;
         }
         Class<?> clazz = arg.getClass();
-        if (clazz.isPrimitive()) {
+        if (clazz.isPrimitive() || clazz.isEnum()) {
             return true;
+        }
+        if (arg instanceof ResolvedObjectType) {
+            // 处理枚举序列化
+            ResolvedObjectType resolvedObjectType = (ResolvedObjectType)arg;
+            Class<?> erasedType = resolvedObjectType.getErasedType();
+            if (erasedType.isPrimitive() || erasedType.isEnum()) {
+                return true;
+            }
+        }
+        if (Enum.class.isAssignableFrom(clazz)) {
+            System.out.println("对象是枚举类型");
         }
         return arg instanceof CharSequence || arg instanceof Number || arg instanceof Boolean || arg instanceof Character
             || arg instanceof Enum;

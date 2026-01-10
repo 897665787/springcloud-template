@@ -6,7 +6,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Map;
 
-import com.company.tool.api.response.RetryerResp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.system.api.feign.SysUserPasswordFeign;
 import com.company.system.api.request.RemindPasswordExpireReq;
 import com.company.system.api.request.SaveNewPasswordReq;
-import com.company.system.api.response.SysUserPasswordResp;
+import com.company.system.api.response.SysUserPasswordTipsResp;
 import com.company.system.entity.SysUser;
 import com.company.system.entity.SysUserPassword;
 import com.company.system.service.SysUserPasswordService;
@@ -32,6 +31,7 @@ import com.company.tool.api.feign.SmsFeign;
 import com.company.tool.api.request.RetryerInfoReq;
 import com.company.tool.api.request.SendEmailReq;
 import com.company.tool.api.request.SendSmsReq;
+import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
@@ -63,20 +63,25 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 	private Integer expireDays;
 
 	@Override
-	public SysUserPasswordResp getBySysUserId(Integer sysUserId) {
-		SysUserPasswordResp resp = new SysUserPasswordResp();
+	public Map<String, String> getPasswordBySysUserId(Integer sysUserId) {
+        SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
+        if (sysUserPassword == null) {
+            ExceptionUtil.throwException("密码未配置");
+        }
+        return Collections.singletonMap("value", sysUserPassword.getPassword());
+	}
 
-		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
-		if (sysUserPassword == null) {
-			resp.setCanUse(false);
-			resp.setPasswordTips("密码未配置");
-			return resp;
-		}
+    @Override
+    public SysUserPasswordTipsResp getPasswordTipsBySysUserId(Integer sysUserId) {
+        SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
+        if (sysUserPassword == null) {
+            ExceptionUtil.throwException("密码未配置");
+        }
 
+		SysUserPasswordTipsResp resp = new SysUserPasswordTipsResp();
 		LocalDateTime now = LocalDateTime.now();
 		if (sysUserPassword.getExpireTime().compareTo(now) > 0) {// 未过期
 			resp.setCanUse(true);
-			resp.setPassword(sysUserPassword.getPassword());
 			long days = LocalDateTimeUtil.between(now, sysUserPassword.getExpireTime(), ChronoUnit.DAYS);
 			if (days < remindDays) {// 7天内过期
 				resp.setPasswordTips("您的密码还有" + (days + 1) + "天过期，请及时更改密码");
@@ -87,7 +92,6 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 		// 密码过期后，再给3次登录机会，登录后修改密码
 		if (sysUserPassword.getExpireLoginTimes() < maxExpireLoginTimes) {
 			resp.setCanUse(true);
-			resp.setPassword(sysUserPassword.getPassword());
 			resp.setPasswordTips("您的密码已过期，未修改密码之前，您还能登录系统"
 					+ (maxExpireLoginTimes - sysUserPassword.getExpireLoginTimes() - 1) + "次，请及时更改密码");
 			return resp;
@@ -96,13 +100,7 @@ public class SysUserPasswordController implements SysUserPasswordFeign {
 		resp.setCanUse(false);
 		resp.setPasswordTips("密码已过期，请联系管理员重置");
 		return resp;
-	}
-
-	@Override
-	public Map<String, String> getPasswordBySysUserId(Integer sysUserId) {
-		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
-        return Collections.singletonMap("value", sysUserPassword.getPassword());
-	}
+    }
 
 	@Override
 	public Void saveNewPassword(SaveNewPasswordReq saveNewPasswordReq) {

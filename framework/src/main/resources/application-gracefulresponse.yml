@@ -4,7 +4,7 @@ graceful-response:
   # 配置response-class-full-name后，response-style将不再生效
   response-class-full-name:
   # 是否打印异常日志，默认为false
-  print-exception-in-global-advice: false
+  print-exception-in-global-advice: true
   # Response风格，不配置默认为1
   response-style: 1
   # 自定义的成功响应码，不配置则为0

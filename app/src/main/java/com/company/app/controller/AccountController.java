@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
+import com.jqdi.easylogin.core.LoginParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,7 +78,7 @@ public class AccountController {
 
 		String userId = null;
 		try {
-			userId = weixinAppLoginClient.login(null, null, wxcode);
+			userId = weixinAppLoginClient.login(LoginParams.builder().weixinApp(wxcode).build());
 		} catch (LoginException e) {
 			ExceptionUtil.throwException(e.getMessage());
 		}
@@ -120,7 +121,7 @@ public class AccountController {
 		String identifier = mobile;
 		String userId = null;
 		try {
-			userId = mobileCodeBindLoginClient.login(identifier, code, bindCode);
+			userId = mobileCodeBindLoginClient.login(LoginParams.builder().mobileCodeBind(identifier, code, bindCode).build());
 		} catch (LoginException e) {
 			ExceptionUtil.throwException(e.getMessage());
 		}

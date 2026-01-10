@@ -45,7 +45,7 @@
 		<dependency>
 		    <groupId>com.jqdi</groupId>
 		    <artifactId>easy-login-spring-boot-starter</artifactId>
-		    <version>1.0.0</version>
+		    <version>1.0.1</version>
 		</dependency>
 		<!-- 授权登录 -->
 
