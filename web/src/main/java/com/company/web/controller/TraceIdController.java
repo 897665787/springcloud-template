@@ -2,6 +2,7 @@ package com.company.web.controller;
 
 
 import com.company.framework.util.JsonUtil;
+import com.company.web.resp.OrderResp;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,9 @@ public class TraceIdController {
         map.put("aaa", "gggg");
         map.put("bbb", 123);
         map.put("ccc", null);
+		OrderResp orderResp = new OrderResp();
+		orderResp.setOrderCode("123");
+        map.put("orderResp", orderResp);
         log.info("map:{}|{}", map, JsonUtil.toJsonString(map));
 
         int[] intArr = new int[] {1, 2, 3};

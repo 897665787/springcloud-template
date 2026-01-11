@@ -70,22 +70,24 @@ public class ArgumentToJsonConverter extends MessageConverter {
         if (arg == null) {
             return true;
         }
+        // instanceof判断性能更好，所以放在前面判断
+        if (arg instanceof CharSequence || arg instanceof Number || arg instanceof Boolean || arg instanceof Character
+            || arg instanceof Enum) {
+            return true;
+        }
+        // class判断性能次之，所以放在后面判断
         Class<?> clazz = arg.getClass();
         if (clazz.isPrimitive() || clazz.isEnum()) {
             return true;
         }
+        // 枚举序列化，上面的判断枚举会false
         if (arg instanceof ResolvedObjectType) {
-            // 处理枚举序列化
             ResolvedObjectType resolvedObjectType = (ResolvedObjectType)arg;
             Class<?> erasedType = resolvedObjectType.getErasedType();
             if (erasedType.isPrimitive() || erasedType.isEnum()) {
                 return true;
             }
         }
-        if (Enum.class.isAssignableFrom(clazz)) {
-            System.out.println("对象是枚举类型");
-        }
-        return arg instanceof CharSequence || arg instanceof Number || arg instanceof Boolean || arg instanceof Character
-            || arg instanceof Enum;
+        return false;
     }
 }
