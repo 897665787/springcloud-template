@@ -1,20 +1,17 @@
 #!/bin/bash
 
-# 启动脚本（注：需将docker/plugins复制到与本启动脚本同级目录下）
+# 启动脚本
+# 前置准备：
+# 1. 将本脚本复制到‘根目录/template-web/startup.sh’
+# 2. 复制cicd/plugins/到‘根目录/template-web/plugins/’
+# 3. 将template-web.jar上传至‘根目录/template-web/template-web.jar’
 
-# 脚本所在目录
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# 模块名，建议与project.artifactId保持一致
+MODULE="template-web"
+# 端口
+PORT=9010
 
-# 项目根目录 (从bin目录回到web目录)
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-
-# Web服务JAR文件路径
-WEB_JAR="$PROJECT_DIR/target/template-web.jar"
-
-APP_JAR="app.jar"
-
-# 将jar文件添加到容器中并更名为app.jar
-cp -f "$WEB_JAR" "$APP_JAR"
+APP_JAR="$MODULE.jar"
 
 # 检查JAR文件是否存在
 if [ ! -f "$APP_JAR" ]; then
@@ -24,9 +21,12 @@ if [ ! -f "$APP_JAR" ]; then
 fi
 
 # 检查端口是否被占用
-if lsof -Pi :9010 -sTCP:LISTEN -t >/dev/null 2>&1; then
-    echo "警告: 端口9010已被占用"
+if lsof -Pi :"$PORT" -sTCP:LISTEN -t >/dev/null 2>&1; then
+    echo "警告: 端口$PORT已被占用"
 fi
+
+# 获取当前进程的PID
+PID=$$
 
 # JVM参数配置
 JVM_OPTS=""
@@ -60,22 +60,22 @@ JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:GCTimeRatio=9"
 #JVM_OPTS="$JVM_OPTS -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions XX:G1NewSizePercent=5 -XX:G1MaxNewSizePercent=60"
 
 # 输出详细GC日志
-JVM_OPTS="$JVM_OPTS -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -Xloggc:./logs/gc-%p.log"
+JVM_OPTS="$JVM_OPTS -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -Xloggc:./logs/gc-$PID.log"
 # 发生OOM时生成Dump文件
-JVM_OPTS="$JVM_OPTS -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./logs/oom-heapdump-%p.hprof"
+JVM_OPTS="$JVM_OPTS -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./logs/oom-heapdump-$PID.hprof"
 # 发生致命错误时，记录错误信息
-JVM_OPTS="$JVM_OPTS -XX:ErrorFile=./logs/hs_err_pid-%p.log"
+JVM_OPTS="$JVM_OPTS -XX:ErrorFile=./logs/hs_err_pid-$PID.log"
 # 发生致命错误时，记录栈信息、堆信息
-#JVM_OPTS="$JVM_OPTS -XX:OnError=\"jstack %p > ./logs/error-jstack-%p.log;jmap -dump:format=b,file=./logs/error-heapdump-%p.hprof %p\""
+#JVM_OPTS="$JVM_OPTS -XX:OnError=\"jstack $PID > ./logs/error-jstack-$PID.log;jmap -dump:format=b,file=./logs/error-heapdump-$PID.hprof $PID\""
 
 # 阿里TTL，有功能性支持线程池传递上下文
 JVM_OPTS="$JVM_OPTS -javaagent:plugins/ttl/transmittable-thread-local-2.14.5.jar"
 # skywalking日志追踪
 JVM_OPTS="$JVM_OPTS -javaagent:plugins/skywalking-agent/skywalking-agent.jar"
-JVM_OPTS="$JVM_OPTS -Dskywalking.agent.service_name=springcloud-template::template-web"
+JVM_OPTS="$JVM_OPTS -Dskywalking.agent.service_name=springcloud-template::$MODULE"
 JVM_OPTS="$JVM_OPTS -Dskywalking.collector.backend_service=127.0.0.1:11800"
 # jmx监控
-JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=29010:plugins/prometheus/jmx_prometheus_javaagent-config.yaml"
+JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=2$PORT:plugins/prometheus/jmx_prometheus_javaagent-config.yaml"
 
 # 应用参数
 APP_OPTS="
@@ -86,11 +86,13 @@ APP_OPTS="
 # 创建日志目录
 mkdir -p ./logs
 
-echo "正在启动Web服务..."
-echo "JAR文件: $WEB_JAR"
-echo "服务端口: 9010"
+echo "正在启动服务..."
+echo "JAR文件: $APP_JAR"
+echo "服务端口: $PORT"
 
 # 启动应用
-java $JVM_OPTS -jar $APP_JAR $APP_OPTS
+java $JVM_OPTS -XX:OnError="jstack $PID > ./logs/error-jstack-$PID.log;jmap -dump:format=b,file=./logs/error-heapdump-$PID.hprof $PID" -jar $APP_JAR $APP_OPTS
+# 后台启动应用
+#nohup java -Dfile.encoding=utf-8 $JVM_OPTS -jar $APP_JAR $APP_OPTS > "./logs/catalina.out" 2>&1 &
 
 exit $?
