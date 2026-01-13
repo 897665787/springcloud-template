@@ -21,8 +21,10 @@ LOG_PATH="./logs"
 mkdir -p "$LOG_PATH"
 
 # jar位置
-#APP_JAR="$MODULE.jar"
-APP_JAR="app.jar"
+APP_JAR="$MODULE.jar"
+if [ $# -gt 0 ]; then
+    APP_JAR="$1"
+fi
 
 # 检查JAR文件是否存在
 if [ ! -f "$APP_JAR" ]; then
@@ -97,6 +99,7 @@ JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1
 # 应用参数
 APP_OPTS="
 --spring.profiles.active=dev
+--server.port=$PORT
 --logging.file.path=$LOG_PATH
 --eureka.client.service-url.defaultZone=http://localhost:7010/eureka/
 "
