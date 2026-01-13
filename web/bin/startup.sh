@@ -7,17 +7,22 @@
 # 3. 复制cicd/plugins/到‘应用根目录/template-web/plugins/’
 # 4. 将template-web.jar上传至‘应用根目录/template-web/template-web.jar’
 
+# 项目名，建议与项目名保持一致
+PROJECT="springcloud-template"
 # 应用名，建议与spring.application.name保持一致
 MODULE="template-web"
 # 端口，建议与server.port保持一致
 PORT=9010
+JMX_PORT="2$PORT"
 # 日志根目录
 LOG_PATH="./logs"
 
 # 创建日志目录
 mkdir -p "$LOG_PATH"
 
-APP_JAR="$MODULE.jar"
+# jar位置
+#APP_JAR="$MODULE.jar"
+APP_JAR="app.jar"
 
 # 检查JAR文件是否存在
 if [ ! -f "$APP_JAR" ]; then
@@ -67,7 +72,7 @@ JVM_OPTS="$JVM_OPTS -XX:MinMetaspaceFreeRatio=40 -XX:MaxMetaspaceFreeRatio=70"
 # 使用CMS垃圾回收器，在HotSpot JVM中，这个参数的默认值通常是9。这意味着默认情况下，JVM会尝试将垃圾收集的时间限制在总运行时间的1/(1+9) = 10%以下。换句话说，JVM会尽可能地让程序运行时间占到总时间的90%，而将剩余的10%用于垃圾收集。
 JVM_OPTS="$JVM_OPTS -XX:+UseConcMarkSweepGC -XX:GCTimeRatio=9"
 # 使用G1垃圾回收器，预期停顿时间，默认：200ms，新生代最小占比，默认：5%，新生代最大占比，默认：60%
-#JVM_OPTS="$JVM_OPTS -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions XX:G1NewSizePercent=5 -XX:G1MaxNewSizePercent=60"
+#JVM_OPTS="$JVM_OPTS -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=5 -XX:G1MaxNewSizePercent=60"
 
 # 输出详细GC日志
 JVM_OPTS="$JVM_OPTS -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintHeapAtGC -Xloggc:$LOG_PATH/gc-$PID.log"
@@ -83,11 +88,11 @@ JVM_OPTS="$JVM_OPTS -javaagent:plugins/ttl/transmittable-thread-local-2.14.5.jar
 # skywalking日志追踪
 JVM_OPTS="$JVM_OPTS
 -javaagent:plugins/skywalking-agent/skywalking-agent.jar
--Dskywalking.agent.service_name=springcloud-template::$MODULE
+-Dskywalking.agent.service_name=$PROJECT::$MODULE
 -Dskywalking.collector.backend_service=127.0.0.1:11800
 "
 # jmx监控
-JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=2$PORT:plugins/prometheus/jmx_prometheus_javaagent-config.yaml"
+JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=$JMX_PORT:plugins/prometheus/jmx_prometheus_javaagent-config.yaml"
 
 # 应用参数
 APP_OPTS="

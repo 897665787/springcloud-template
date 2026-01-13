@@ -20,6 +20,7 @@ docker build -t template-eureka .
 cd ../gateway
 docker build -t template-gateway .
 cd ../web
+docker build -t template-web .
 
 运行镜像demo：
 docker run --name template-eureka -d -p 7010:7010 template-eureka
