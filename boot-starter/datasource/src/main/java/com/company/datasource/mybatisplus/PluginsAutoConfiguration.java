@@ -28,7 +28,7 @@ public class PluginsAutoConfiguration {
 	 * <pre>
 	 * 性能分析拦截器，用于输出每条 SQL 语句及其执行时间
 	 * 
-	 * 结合logback-conf.xml 
+	 * 结合logback-spring.xml
 	 * <logger name="com.company.database.mybatisplus.plugins.PerformanceInterceptor" level="DEBUG" additivity="false">
 	 * 输出日志
 	 * </pre>
