@@ -4,8 +4,7 @@
 # 前置准备：
 # 1. 准备好服务器根目录'../应用根目录/template-monitor'
 # 2. 将本脚本复制到'应用根目录/template-monitor/startup.sh'
-# 3. 复制cicd/plugins/到'应用根目录/template-monitor/plugins/'
-# 4. 将template-monitor.jar上传至'应用根目录/template-monitor/template-monitor.jar'
+# 3. 将template-monitor.jar上传至'应用根目录/template-monitor/template-monitor.jar'
 
 
 # 应用名，建议与spring.application.name保持一致
