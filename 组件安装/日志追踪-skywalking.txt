@@ -1,4 +1,6 @@
 skywalking下载地址：https://archive.apache.org/dist/skywalking/
+本项目存放于：cicd/plugins/skywalking-agent
+
 启动skywalking服务：
 cd /path/to/apache-skywalking-apm-bin-8.2.0/bin
 ./startup.sh

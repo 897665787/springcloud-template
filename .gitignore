@@ -13,3 +13,5 @@ logs/
 jrebel-classpath-*.jar
 /nacos-server-*
 .flattened-pom.xml
+*/bin/plugins/
+*/bin/*.jar
