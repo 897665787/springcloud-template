@@ -2,16 +2,16 @@
 
 # 启动脚本
 # 前置准备：
-# 1. 准备好服务器根目录'../应用根目录/template-admin'
-# 2. 将本脚本复制到'应用根目录/template-admin/startup.sh'
-# 3. 复制cicd/plugins/到'应用根目录/template-admin/plugins/'
-# 4. 将template-admin.jar上传至'应用根目录/template-admin/template-admin.jar'
+# 1. 准备好服务器根目录'../应用根目录/template-adminapi'
+# 2. 将本脚本复制到'应用根目录/template-adminapi/startup.sh'
+# 3. 复制cicd/plugins/到'应用根目录/template-adminapi/plugins/'
+# 4. 将template-adminapi.jar上传至'应用根目录/template-adminapi/template-adminapi.jar'
 
 
 # 项目名，建议与项目名保持一致
 PROJECT="springcloud-template"
 # 应用名，建议与spring.application.name保持一致
-MODULE="template-admin"
+MODULE="template-adminapi"
 # 环境，该值会赋给spring.profiles.active，可选（dev、test、pre、prod）
 ENV="dev"
 # JMX端口
