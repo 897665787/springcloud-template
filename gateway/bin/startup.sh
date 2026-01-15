@@ -2,15 +2,22 @@
 
 # 启动脚本
 # 前置准备：
-# 1. 准备好服务器根目录'../应用根目录/template-gateway'
-# 2. 将本脚本复制到'应用根目录/template-gateway/startup.sh'
-# 3. 将template-gateway.jar上传至'应用根目录/template-gateway/template-gateway.jar'
+# 1. 准备好服务器根目录‘../应用根目录/template-gateway’
+# 2. 将本脚本复制到‘应用根目录/template-gateway/startup.sh’
+# 3. 复制cicd/plugins/到‘应用根目录/template-gateway/plugins/’
+# 4. 将template-gateway.jar上传至‘应用根目录/template-gateway/template-gateway.jar’
 
 
+# 项目名，建议与项目名保持一致
+PROJECT="springcloud-template"
 # 应用名，建议与spring.application.name保持一致
 MODULE="template-gateway"
 # 环境，该值会赋给spring.profiles.active，可选（dev、test、pre、prod）
 ENV="dev"
+# JMX端口
+JMX_PORT=27020
+# skywalking服务端IP+地址
+SKYWALKING_COLLECTOR_BACKEND_SERVICE=127.0.0.1:11800
 # 日志根目录，建议与logging.file.path保持一致
 LOG_HOME="./logs"
 
@@ -46,7 +53,7 @@ JVM_OPTS="$JVM_OPTS -Djava.security.egd=file:/dev/./urandom"
 JVM_OPTS="$JVM_OPTS -Xms512M -Xmx2048M"
 # 新生代大小，默认：堆内存1/3（需显式设置）
 JVM_OPTS="$JVM_OPTS -Xmn512M"
-# 新老年代分配比例，默认情况下，新生代与老年代比例为1:2。NewRatio默认值是2。如果NewRatio修改成3，那么新生代与老年代比例就是1:1:3
+# 新老年代分配比例，默认情况下，新生代与老年代比例为1:2。NewRatio默认值是2。如果NewRatio修改成3，那么新生代与老年代比例就是1:3
 JVM_OPTS="$JVM_OPTS -XX:NewRatio=2"
 # 新生代分配比例，默认情况下Eden、From、To的比例是8:1:1。SurvivorRatio默认值是8，如果SurvivorRatio修改成4，那么其比例就是4:1:1
 JVM_OPTS="$JVM_OPTS -XX:SurvivorRatio=8"
@@ -76,6 +83,17 @@ JVM_OPTS="$JVM_OPTS -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$LOG_HOME/o
 JVM_OPTS="$JVM_OPTS -XX:ErrorFile=$LOG_HOME/hs_err_pid-$PID.log"
 # 发生致命错误时，记录栈信息、堆信息（没起效果，没有加到启动参数里，不知道是不是引号问题）
 #JVM_OPTS="$JVM_OPTS -XX:OnError=\"jstack $PID > $LOG_HOME/error-jstack-$PID.log;jmap -dump:format=b,file=$LOG_HOME/error-heapdump-$PID.hprof $PID\""
+
+# 阿里TTL，有功能性支持线程池传递上下文
+JVM_OPTS="$JVM_OPTS -javaagent:plugins/ttl/transmittable-thread-local-2.14.5.jar"
+# skywalking日志追踪
+JVM_OPTS="$JVM_OPTS
+-javaagent:plugins/skywalking-agent/skywalking-agent.jar
+-Dskywalking.agent.service_name=$PROJECT::$MODULE
+-Dskywalking.collector.backend_service=$SKYWALKING_COLLECTOR_BACKEND_SERVICE
+"
+# jmx监控
+JVM_OPTS="$JVM_OPTS -javaagent:plugins/prometheus/jmx_prometheus_javaagent-1.0.1.jar=$JMX_PORT:plugins/prometheus/jmx_prometheus_javaagent-config.yaml"
 
 # 应用参数
 APP_OPTS="--spring.profiles.active=$ENV"
