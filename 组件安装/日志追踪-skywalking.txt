@@ -59,3 +59,4 @@ skywalking-apm-sniffer：https://github.com/Aas-ee/skywalking-apm-sniffer，构�
 apm-spring-webflux-5.x-plugin-8.16.0.jar
 apm-spring-cloud-gateway-3.x-plugin-8.16.0.jar
 复制到/plugins（经测试，没起效果，后续再查原因）
+可能是skywalking 8.16.0兼容问题，升级后可能可解决，临时解决方案：看SkywalkingTraceFilter，仍然需要复制上面2个包到/plugins
