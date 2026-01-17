@@ -112,7 +112,7 @@ template:
 
 ### 5. 日志打印
 
-在 `logback-conf.xml` 中引用数据源日志配置文件：[logback-conf-datasource.xml](src/main/resources/logback-conf-datasource.xml)
+在 `logback-spring.xml` 中引用数据源日志配置文件：[logback-conf-datasource.xml](src/main/resources/logback-conf-datasource.xml)
 
 ```xml
 <!--引用数据源日志 -->

@@ -1,5 +1,6 @@
 package com.company.web.controller;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,7 +88,7 @@ public class AccountController {
 
 		String identifier = email;
 		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier);
-		if (userOauthResp != null) {
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
 			ExceptionUtil.throwException("邮箱已注册，可以直接登录！");
 		}
 
@@ -95,7 +96,7 @@ public class AccountController {
 	}
 
 	@PostMapping(value = "/reg/email")
-	public String regByEmail(@Valid @RequestBody RegByEmailReq regByEmailReq) {
+	public Map<String, String> regByEmail(@Valid @RequestBody RegByEmailReq regByEmailReq) {
 		String email = regByEmailReq.getEmail();
 		if (!RegexUtil.checkEmail(email)) {
 			ExceptionUtil.throwException("邮箱格式错误");
@@ -103,7 +104,7 @@ public class AccountController {
 
 		String identifier = email;
 		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.EMAIL, identifier);
-		if (userOauthResp != null) {
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
 			ExceptionUtil.throwException("邮箱已注册，可以直接登录！");
 		}
 
@@ -117,13 +118,14 @@ public class AccountController {
 		UserInfoReq userInfoReq = new UserInfoReq();
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.EMAIL);
 		userInfoReq.setIdentifier(email);
-		userInfoReq.setCertificate(PassWordUtil.md5(regByEmailReq.getPassword()));
+		userInfoReq.setCertificate(regByEmailReq.getCode());
+		userInfoReq.setPassword(PassWordUtil.md5(regByEmailReq.getPassword()));
 //		userInfoReq.setAvatar(null);
 //		userInfoReq.setNickname(null);
 		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
 		log.info("userId:{}", userInfoResp.getId());
 
-		return "注册成功";
+		return Collections.singletonMap("value", "注册成功");
 	}
 
 	@GetMapping(value = "/reg/verify/mobile")
@@ -134,7 +136,7 @@ public class AccountController {
 
 		String identifier = mobile;
         UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier);
-		if (userOauthResp != null) {
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
 			ExceptionUtil.throwException("手机号已注册，可以直接登录！");
 		}
 
@@ -142,7 +144,7 @@ public class AccountController {
 	}
 
 	@PostMapping(value = "/reg/mobile")
-	public String regByMobile(@Valid @RequestBody RegByMobileReq regByMobileReq) {
+	public Map<String, String> regByMobile(@Valid @RequestBody RegByMobileReq regByMobileReq) {
 		String mobile = regByMobileReq.getMobile();
 		if (!RegexUtil.checkMobile(mobile)) {
 			ExceptionUtil.throwException("手机号格式错误");
@@ -151,7 +153,7 @@ public class AccountController {
 		String identifier = mobile;
 		UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier)
 				;
-		if (userOauthResp != null) {
+		if (userOauthResp != null && userOauthResp.getUserId() != null) {
 			ExceptionUtil.throwException("手机号已注册，可以直接登录！");
 		}
 
@@ -165,13 +167,14 @@ public class AccountController {
 		UserInfoReq userInfoReq = new UserInfoReq();
 		userInfoReq.setIdentityType(UserOauthEnum.IdentityType.MOBILE);
 		userInfoReq.setIdentifier(identifier);
-		userInfoReq.setCertificate(PassWordUtil.md5(regByMobileReq.getPassword()));
+		userInfoReq.setCertificate(regByMobileReq.getCode());
+		userInfoReq.setPassword(PassWordUtil.md5(regByMobileReq.getPassword()));
 //		userInfoReq.setAvatar(null);
 //		userInfoReq.setNickname(null);
 		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
 		log.info("userId:{}", userInfoResp.getId());
 
-		return "注册成功";
+		return Collections.singletonMap("value", "注册成功");
 	}
 
 	@GetMapping(value = "/login/verify/email")
@@ -267,11 +270,11 @@ public class AccountController {
 
 	@RequireLogin
 	@PostMapping(value = "/logout")
-	public String logout(HttpServletRequest request) {
+	public Map<String, String> logout(HttpServletRequest request) {
 		String token = request.getHeader(headerToken);
 		token = TokenValueUtil.fixToken(tokenPrefix, token);
 		if (StringUtils.isBlank(token)) {
-			return "登出成功";
+			return Collections.singletonMap("value", "登出成功");
 		}
 
 		String device = tokenService.invalid(token);
@@ -283,6 +286,6 @@ public class AccountController {
 		params.put("httpContextHeader", HeaderContextUtil.httpContextHeader());
 		messageSender.sendBroadcastMessage(params, BroadcastConstants.USER_LOGOUT.EXCHANGE);
 
-		return "登出成功";
+		return Collections.singletonMap("value", "登出成功");
 	}
 }

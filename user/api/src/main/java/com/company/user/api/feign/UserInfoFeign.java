@@ -22,6 +22,6 @@ public interface UserInfoFeign {
 	@RequestMapping("/getById")
 	UserInfoResp getById(@RequestParam("id") Integer id);
 
-	@RequestMapping("/mapUidById")
-	Map<Integer, String> mapUidById(@RequestBody Collection<Integer> idList);
+	@RequestMapping("/mapNicknameById")
+	Map<Integer, String> mapNicknameById(@RequestBody Collection<Integer> idList);
 }

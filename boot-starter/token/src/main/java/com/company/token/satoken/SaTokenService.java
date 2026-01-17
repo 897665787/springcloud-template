@@ -28,7 +28,7 @@ public class SaTokenService implements TokenService {
 
 		StpUtil.logoutByTokenValue(token);
 
-		return tokenInfo.getLoginDevice();
+		return tokenInfo.getLoginDeviceType();
 	}
 
 	@Override

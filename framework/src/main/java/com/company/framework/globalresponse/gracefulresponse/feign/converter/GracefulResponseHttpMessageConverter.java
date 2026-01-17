@@ -26,7 +26,7 @@ import javafx.util.Pair;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * GracefulResponse HttpMessageConverter，用于处理GracefulResponse框架返回的数据格式
+ * GracefulResponse HttpMessageConverter，用于处理RestTemplate Feign返回的数据适配GracefulResponse
  */
 @Slf4j
 public class GracefulResponseHttpMessageConverter extends MappingJackson2HttpMessageConverter {
@@ -102,7 +102,7 @@ public class GracefulResponseHttpMessageConverter extends MappingJackson2HttpMes
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            response = (Response)objectMapper.readValue(inputStream, responseClass);
+            response = (Response)objectMapper.readValue(responseJson.toString(), responseClass);
         }
 
         if (response == null) {

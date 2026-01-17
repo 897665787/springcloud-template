@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Aspect
-@Component
+@Component("jobTraceAspect")
 public class TraceAspect {
 	@Autowired
 	private TraceManager traceManager;

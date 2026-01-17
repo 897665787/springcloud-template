@@ -22,10 +22,16 @@ public class MysqlOauthRepository implements OauthRepository {
 
 	@Override
 	public String getUserId(String identityType, String identifier) {
-		UserOauthResp userOauthResp = userOauthFeign
-				.selectOauth(UserOauthEnum.IdentityType.of(identityType), identifier);
-		return String.valueOf(userOauthResp.getUserId());
-	}
+        UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.of(identityType), identifier);
+        if (userOauthResp == null) {
+            return null;
+        }
+        Integer userId = userOauthResp.getUserId();
+        if (userId == null) {
+            return null;
+        }
+        return String.valueOf(userId);
+    }
 
 	@Override
 	public void bindOauth(String userId, String identityType, String identifier, String certificate) {
@@ -46,7 +52,14 @@ public class MysqlOauthRepository implements OauthRepository {
 		userInfoReq.setNickname(nickname);
 		userInfoReq.setAvatar(avatar);
 
-		UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
-		return String.valueOf(userInfoResp.getId());
+        UserInfoResp userInfoResp = userInfoFeign.findOrCreateUser(userInfoReq);
+        if (userInfoResp == null) {
+            return null;
+        }
+        Integer id = userInfoResp.getId();
+        if (id == null) {
+            return null;
+        }
+        return String.valueOf(id);
 	}
 }

@@ -26,7 +26,7 @@ CREATE TABLE `email_task_detail` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',
   `task_id` int(11) unsigned NOT NULL COMMENT 'email_task.id',
   `from_email` varchar(32) NOT NULL COMMENT '发件邮箱',
-  `to_email` varchar(32) NOT NULL COMMENT '收件邮箱',
+  `to_email` varchar(64) NOT NULL COMMENT '收件邮箱',
   `template_param_json` varchar(255) DEFAULT NULL COMMENT '模板参数json',
   `plan_send_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '计划发送时间',
   `actual_send_time` datetime DEFAULT NULL COMMENT '实际发送时间',

@@ -84,7 +84,7 @@ public class GracefulResponseDecoder extends SpringDecoder {
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            grResponse = (com.feiniaojin.gracefulresponse.data.Response)objectMapper.readValue(inputStream, responseClass);
+            grResponse = (com.feiniaojin.gracefulresponse.data.Response)objectMapper.readValue(responseJson.toString(), responseClass);
         }
 
         if (grResponse == null) {

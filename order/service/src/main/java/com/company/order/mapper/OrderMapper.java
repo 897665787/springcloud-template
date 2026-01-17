@@ -26,12 +26,12 @@ public interface OrderMapper extends BaseMapper<Order> {
 			+ " ON DUPLICATE KEY UPDATE"
 			+ " status = #{status},sub_status = #{subStatus},product_amount = #{productAmount},order_amount = #{orderAmount},reduce_amount = #{reduceAmount},need_pay_amount = #{needPayAmount},sub_order_url = #{subOrderUrl},attach = #{attach}")
 	Integer saveOrUpdate(Order order);
-	
-	@Select("select order_code from `order` where pay_time > #{payTimeBegin} and sub_status = #{subStatusEnum.code} order by id asc limit #{limit}")
+
+	@Select("select order_code from `order` where pay_time > #{payTimeBegin} and sub_status = #{subStatusEnum.status} order by id asc limit #{limit}")
 	List<String> select4OverSendSuccess(@Param("payTimeBegin") LocalDateTime payTimeBegin,
 			@Param("subStatusEnum") SubStatusEnum subStatusEnum, @Param("limit") Integer limit);
 
-	@Select("select order_code from `order` where finish_time > #{finishTimeBegin} and sub_status = #{subStatusEnum.code} order by id asc limit #{limit}")
+	@Select("select order_code from `order` where finish_time > #{finishTimeBegin} and sub_status = #{subStatusEnum.status} order by id asc limit #{limit}")
 	List<String> select4OverWaitReview(@Param("finishTimeBegin") LocalDateTime finishTimeBegin,
 			@Param("subStatusEnum") SubStatusEnum subStatusEnum, @Param("limit") Integer limit);
 }

@@ -17,7 +17,7 @@ public class MysqlOauthRepository implements OauthRepository {
 	@Override
 	public String getUserId(String identityType, String identifier) {
 		SysUserResp sysUserResp = sysUserFeign.getByAccount(identifier);
-		if (sysUserResp == null) {
+		if (sysUserResp == null || sysUserResp.getId() == null) {
 			ExceptionUtil.throwException("账号不存在");
 		}
 

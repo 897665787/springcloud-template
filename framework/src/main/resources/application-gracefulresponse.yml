@@ -2,7 +2,7 @@
 graceful-response:
   # 自定义Response类的全限定名，默认为空。
   # 配置response-class-full-name后，response-style将不再生效
-  response-class-full-name:
+  response-class-full-name: com.company.framework.globalresponse.gracefulresponse.defaults.DataNullResponseImplStyle1
   # 是否打印异常日志，默认为false
   print-exception-in-global-advice: true
   # Response风格，不配置默认为1

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -78,7 +79,16 @@ public class UserInfoController implements UserInfoFeign {
             UserInfo userInfo = new UserInfo().setNickname(nickname).setAvatar(avatar);
             userInfoMapper.insert(userInfo);
 
-            userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
+            // userOauthMapper.bindOauth(userInfo.getId(), identityType, identifier, userInfoReq.getCertificate());
+            userOauth = new UserOauth().setUserId(userInfo.getId()).setIdentityType(identityType.getCode())
+                .setIdentifier(identifier).setCertificate(userInfoReq.getCertificate());
+            userOauthMapper.insert(userOauth);
+            if (StringUtils.isNotBlank(userInfoReq.getPassword())) {
+                UserOauth userOauthPassword =
+                    new UserOauth().setUserId(userInfo.getId()).setIdentityType(UserOauthEnum.IdentityType.PASSWORD.getCode())
+                        .setIdentifier(userInfo.getId().toString()).setCertificate(userInfoReq.getPassword());
+                userOauthMapper.insert(userOauthPassword);
+            }
 
             // 发布注册事件
             Map<String, Object> params = Maps.newHashMap();
@@ -105,9 +115,9 @@ public class UserInfoController implements UserInfoFeign {
     }
 
     @Override
-    public Map<Integer, String> mapUidById(@RequestBody Collection<Integer> idList) {
+    public Map<Integer, String> mapNicknameById(@RequestBody Collection<Integer> idList) {
         List<UserInfo> userInfoList = userInfoMapper.selectBatchIds(idList);
-        Map<Integer, String> idUidMap = userInfoList.stream().collect(Collectors.toMap(UserInfo::getId, UserInfo::getUid));
-        return idUidMap;
+        Map<Integer, String> idNicknameMap = userInfoList.stream().collect(Collectors.toMap(UserInfo::getId, UserInfo::getNickname));
+        return idNicknameMap;
     }
 }

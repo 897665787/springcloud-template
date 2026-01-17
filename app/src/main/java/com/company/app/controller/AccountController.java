@@ -105,7 +105,7 @@ public class AccountController {
 
         String identifier = mobile;
         UserOauthResp userOauthResp = userOauthFeign.selectOauth(UserOauthEnum.IdentityType.MOBILE, identifier);
-		if (userOauthResp == null) {
+		if (userOauthResp == null || userOauthResp.getUserId() == null) {
 			ExceptionUtil.throwException("手机号未注册，请前往注册！");
 		}
 
