@@ -1,5 +1,6 @@
 package com.company.tool.service;
 
+import com.company.framework.i18n.MessageResolver;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class CommonI18nService extends ServiceImpl<CommonI18nMapper, CommonI18n>
      * 根据 业务类型(business_type) + 业务ID + locale 查询单条国际化文案。
      * <p>
      * 用于全局/系统消息场景：消息编码 code 作为 business_type，business_id 固定为 0
-     * （见 {@link com.company.framework.message.MessageResolver#GLOBAL_BUSINESS_ID}）。
+     * （见 {@link MessageResolver#GLOBAL_BUSINESS_ID}）。
      *
      * @param businessType 业务类型（消息编码）
      * @param businessId  业务ID（全局消息传 0）

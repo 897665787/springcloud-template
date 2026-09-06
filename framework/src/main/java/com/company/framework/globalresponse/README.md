@@ -47,7 +47,7 @@ globalresponse/
 
 ### 4. 国际化支持
 - 支持异常消息的国际化处理
-- 通过 IMessage 接口实现消息转换
+- 通过 MessageSource 接口实现消息转换
 - 支持异常参数替换和国际化显示
 
 ### 5. Feign 集成

@@ -3,7 +3,7 @@ package com.company.tool.i18n;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.framework.message.MessageResolver;
+import com.company.framework.i18n.MessageResolver;
 import com.company.tool.entity.CommonI18n;
 import com.company.tool.service.CommonI18nService;
 

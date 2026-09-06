@@ -15,15 +15,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/i8n")
 public class I18nController {
-//    @Autowired
-//    private IMessage message;
     @Autowired
     private MessageSource messageSource;
 
     @GetMapping(value = "/accept-language")
     public Map<String, String> acceptLanguage() {
-//        String hello1 = message.getMessage("test.hello", null, "Default message", LocaleContextHolder.getLocale());
-//        String hello2 = message.getMessage("test.hello.name", new Object[]{"zhangsan"}, "Default message", LocaleContextHolder.getLocale());
         String hello1 = messageSource.getMessage("test.hello", null, "Default message", LocaleContextHolder.getLocale());
         String hello2 = messageSource.getMessage("test.hello.name", new Object[]{"zhangsan"}, "Default message", LocaleContextHolder.getLocale());
         Map<String, String> result = Maps.newHashMap();

@@ -1,11 +1,9 @@
-package com.company.framework.message.impl;
+package com.company.framework.i18n;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import com.company.framework.message.MessageResolver;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

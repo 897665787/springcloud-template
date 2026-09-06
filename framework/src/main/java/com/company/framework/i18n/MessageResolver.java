@@ -1,4 +1,4 @@
-package com.company.framework.message;
+package com.company.framework.i18n;
 
 /**
  * 消息文案解析端口（表存储抽象）。
