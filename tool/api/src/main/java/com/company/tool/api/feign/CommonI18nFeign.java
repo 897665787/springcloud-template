@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.company.tool.api.constant.Constants;
-import com.company.tool.api.feign.fallback.ThrowExceptionFallback;
+import com.company.tool.api.feign.fallback.CommonI18nFeignFallback;
 import com.company.tool.api.request.CommonI18nReq;
 import com.company.tool.api.response.CommonI18nResp;
 
-@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/commonI18n", fallbackFactory = ThrowExceptionFallback.class)
+@FeignClient(value = Constants.FEIGNCLIENT_VALUE, path = "/commonI18n", fallbackFactory = CommonI18nFeignFallback.class)
 public interface CommonI18nFeign {
 
     /**
