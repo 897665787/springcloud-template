@@ -1,13 +1,11 @@
 package com.company.system.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import com.company.datasource.mybatisplus.activerecord.AuditableModel;
-import lombok.Data;
 
-import java.time.LocalDateTime;
+import io.github.jqdi.i18n.core.annotation.I18nField;
+import io.github.jqdi.i18n.core.annotation.I18nTable;
+import lombok.Data;
 
 /**
  * 参数配置
@@ -17,6 +15,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("sys_config")
+@I18nTable(i18nTable = "sys_config_i18n", i18nRelatedColumn = "sys_config_id", relatedValueFromField = "id")
 public class SysConfig extends AuditableModel<SysConfig> {
 
 	/**
@@ -37,6 +36,7 @@ public class SysConfig extends AuditableModel<SysConfig> {
 	/**
 	 * 值
 	 */
+    @I18nField(i18nColumn = "value")
 	private String value;
 
 	/**

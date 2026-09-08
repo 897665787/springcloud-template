@@ -1,6 +1,7 @@
 package com.company.framework.i18n;
 
-import org.springframework.beans.factory.ObjectProvider;
+import com.company.framework.cache.ICache;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +15,10 @@ public class I18nAutoConfiguration {
      */
     @Primary
     @Bean
-    public MessageSource mysqlMessageSource(MessageSource messageSource, ObjectProvider<MessageResolver> resolverProvider) {
-        MysqlMessageSource mysqlMessageSource = new MysqlMessageSource();
+    @ConditionalOnBean(MessageSourceResolver.class)
+    public MessageSource mysqlMessageSource(MessageSource messageSource, MessageSourceResolver messageSourceResolver,
+        ICache cache) {
+        MysqlMessageSource mysqlMessageSource = new MysqlMessageSource(messageSourceResolver, cache);
         mysqlMessageSource.setParentMessageSource(messageSource);
         return mysqlMessageSource;
     }
