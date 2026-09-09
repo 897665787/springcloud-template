@@ -5,6 +5,13 @@ spring:
     include: gracefulresponse,developer,threadpool,feign,resilience4j,sentinel,redis,rabbitmq,rocketmq,messagedriven,cachemanager,datasource,canal,elasticsearch # 项目中增加配置application-*.yml可覆盖boot-starter-*,framework的默认配置application-*.yml
   main:
     allow-bean-definition-overriding: true
+  messages:
+    # i18n国际化设置
+    basename: i18n/messages,i18n-framework/messages # 默认名称，可以写多个,用逗号分隔
+    encoding: UTF-8 # 国际化资源文件编码，默认UTF-8
+    fallback-to-system-locale: true # 找不到对应区域的语言时，是否回退到系统区域的语言，默认 true
+    always-use-message-format: false # 是否总是使用MessageFormat进行格式化，默认false
+    use-code-as-default-message: true # 找不到code时,是否直接返回code值，而不是抛异常，默认false，抛异常
   cloud:
     loadbalancer:
       eager-load: # spring-cloud-commons-3.1.8 没有eager-load，参考spring cloud高版本实现饥饿加载

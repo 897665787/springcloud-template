@@ -56,7 +56,7 @@ public class GrI18nResponseBodyAdvice extends AbstractResponseBodyAdvice impleme
             // 这里处理ArgsExceptionAdvice.fromGracefulResponseExceptionInstance记录的args，需要处理好参数替换，再响应给前端
             Object[] args = GracefulResponseExceptionArgsContext.getAndRemoveArgs();
 
-            String renderMsg = messageSource.getMessage(msg, args, locale);
+            String renderMsg = messageSource.getMessage(msg, args, msg, locale);
             //有国际化配置的才会替换，否则使用默认配置的
             if (StringUtils.hasText(renderMsg)) {
                 bodyStatus.setMsg(renderMsg);
