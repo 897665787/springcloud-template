@@ -63,7 +63,7 @@ public class UploadService {
             return upload(inputStream, basePath, fileName);
         } catch (IOException e) {
             log.error("IOException", e);
-            ExceptionUtil.throwException("上传失败");
+            ExceptionUtil.throwException("文件上传失败");
         }
         return null;
     }
