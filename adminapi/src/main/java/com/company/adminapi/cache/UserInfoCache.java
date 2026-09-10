@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class UserInfoCache {
 
@@ -24,7 +26,7 @@ public class UserInfoCache {
 				userInfoResp = new UserInfoResp();
 			}
 			return JsonUtil.toJsonString(userInfoResp);
-		}, UserInfoResp.class);
+		}, 600, TimeUnit.SECONDS, UserInfoResp.class);
 	}
 
 	@Cacheable(value = "adminapi:userinfo", key = "#id")
