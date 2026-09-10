@@ -8,6 +8,8 @@ import com.company.framework.util.JsonUtil;
 import com.company.user.entity.UserInfo;
 import com.company.user.service.UserInfoService;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class UserInfoCache {
     private static final String KEY_PATTERN = "user:userinfo:%s";
@@ -25,7 +27,7 @@ public class UserInfoCache {
                 userInfo = new UserInfo();
             }
             return JsonUtil.toJsonString(userInfo);
-        }, UserInfo.class);
+        }, 600, TimeUnit.SECONDS, UserInfo.class);
     }
 
     public void del(Integer id) {

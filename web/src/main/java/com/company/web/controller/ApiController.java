@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api")
@@ -60,7 +61,7 @@ public class ApiController {
 //			int a = 1/0;
 			return ""+System.currentTimeMillis();
 //			return null;
-		});
+        }, 600, TimeUnit.SECONDS);
 		System.out.println(string1);
 
 //		String string2 = RedisUtils.get("aaaaaaa", () -> {

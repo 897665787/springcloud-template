@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import cn.hutool.http.HttpUtil;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 public class SuningTimeService implements TimeService {
 
@@ -21,6 +23,6 @@ public class SuningTimeService implements TimeService {
 	public String getCacheTime() {
 		return cache.get("time", () -> {
 			return HttpUtil.get("http://quan.suning.com/getSysTime.do");
-		});
+		}, 600, TimeUnit.SECONDS);
 	}
 }

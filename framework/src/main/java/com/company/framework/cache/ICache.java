@@ -22,7 +22,7 @@ public interface ICache {
 
 	String get(String key);
 
-	String get(String key, Callable<String> valueLoader);
+	String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit);
 
 	boolean del(String key);
 
@@ -31,13 +31,13 @@ public interface ICache {
 		return JsonUtil.toEntity(value, clazz);
 	}
 
-	default <T> T get(String key, Callable<String> valueLoader, Class<T> clazz) {
-		String value = get(key, valueLoader);
+	default <T> T get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit, Class<T> clazz) {
+        String value = get(key, valueLoader, timeout, unit);
 		return JsonUtil.toEntity(value, clazz);
 	}
 
-	default <T> List<T> getList(String key, Callable<String> valueLoader, Class<T> clazz) {
-		String value = get(key, valueLoader);
+	default <T> List<T> getList(String key, Callable<String> valueLoader, long timeout, TimeUnit unit, Class<T> clazz) {
+		String value = get(key, valueLoader, timeout, unit);
 		return JsonUtil.toList(value, clazz);
 	}
 

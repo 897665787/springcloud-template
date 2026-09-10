@@ -8,6 +8,8 @@ import com.company.framework.util.JsonUtil;
 import com.company.tool.entity.AppVersion;
 import com.company.tool.service.AppVersionService;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class AppVersionCache {
     private static final String KEY_PATTERN = "tool:appversion:%s";
@@ -25,7 +27,7 @@ public class AppVersionCache {
                 appVersion = new AppVersion();
             }
             return JsonUtil.toJsonString(appVersion);
-        }, AppVersion.class);
+        }, 600, TimeUnit.SECONDS, AppVersion.class);
     }
 
     public void del(String appCode) {

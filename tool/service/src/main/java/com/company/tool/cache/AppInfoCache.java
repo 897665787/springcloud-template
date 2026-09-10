@@ -8,6 +8,8 @@ import com.company.framework.util.JsonUtil;
 import com.company.tool.entity.AppInfo;
 import com.company.tool.mapper.AppInfoMapper;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class AppInfoCache {
     private static final String KEY_PATTERN = "tool:appinfo:%s";
@@ -25,7 +27,7 @@ public class AppInfoCache {
                 appInfo = new AppInfo();
             }
             return JsonUtil.toJsonString(appInfo);
-        }, AppInfo.class);
+        }, 600, TimeUnit.SECONDS, AppInfo.class);
     }
 
     public void del(Integer id) {

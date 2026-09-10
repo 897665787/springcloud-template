@@ -44,7 +44,7 @@ public class CacheManagerCache implements ICache {
 	}
 
 	@Override
-	public String get(String key, Callable<String> valueLoader) {
+	public String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit) {
 		String value = null;
 		try {
             value =  cache.get(key, String.class);
@@ -100,7 +100,7 @@ public class CacheManagerCache implements ICache {
         try {
             lock4cache.lock();
 
-            String value = get(key, () -> "0");
+            String value = get(key, () -> "0", 0 ,null);
             long result = Long.parseLong(value) + delta;
             set(key, String.valueOf(result));
             return result;
