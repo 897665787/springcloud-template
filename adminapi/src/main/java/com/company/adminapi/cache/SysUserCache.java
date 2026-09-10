@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class SysUserCache {
 
@@ -24,7 +26,7 @@ public class SysUserCache {
                 sysUserResp = new SysUserResp();
             }
             return JsonUtil.toJsonString(sysUserResp);
-        }, SysUserResp.class);
+        },600, TimeUnit.SECONDS, SysUserResp.class);
     }
 
     @Cacheable(value = "admin:sysuser", key = "#id")
