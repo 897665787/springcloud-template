@@ -1,5 +1,6 @@
 package com.company.framework.cache.guava;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GuavaCache implements ICache {
     private Striped<Lock> stripedLock = Striped.lock(16);// 分段锁，减少锁竞争
 
-	private Cache<String, String> guavaCache = CacheBuilder.newBuilder()//
+	private Cache<String, Optional<String>> guavaCache = CacheBuilder.newBuilder()//
 			.maximumSize(10000)//
 			.expireAfterWrite(10, TimeUnit.SECONDS)//
 			.removalListener(listener -> {
@@ -33,29 +34,34 @@ public class GuavaCache implements ICache {
 
 	@Override
 	public void set(String key, String value) {
-		guavaCache.put(key, value);
+		guavaCache.put(key, Optional.ofNullable(value));
 	}
 
 	@Override
 	public void set(String key, String value, long timeout, TimeUnit unit) {
 		// guava缓存不支持灵活配置过期时间，所以忽略参数timeout、unit
-		guavaCache.put(key, value);
+		guavaCache.put(key, Optional.ofNullable(value));
 	}
 	
-	@Override
-	public String get(String key) {
-		return guavaCache.getIfPresent(key);
-	}
+    @Override
+    public String get(String key) {
+        Optional<String> optional = guavaCache.getIfPresent(key);
+        if (optional == null || !optional.isPresent()) {
+            return null;
+        }
+        return optional.get();
+    }
 	
 	@Override
-	public String get(String key, Callable<String> valueLoader) {
-		String value = null;
-		try {
-			value = guavaCache.get(key, valueLoader);
-		} catch (ExecutionException e) {
-			throw new ValueRetrievalException(e);
-		}
-		return value;
+	public String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit) {
+        String value = null;
+        try {
+            Optional<String> optional = guavaCache.get(key, () -> Optional.ofNullable(valueLoader.call()));
+            value = optional.orElse(null);
+        } catch (ExecutionException e) {
+            throw new ValueRetrievalException(e);
+        }
+        return value;
 	}
 
 	@Override
@@ -71,7 +77,7 @@ public class GuavaCache implements ICache {
 		try {
             lock4cache.lock();
 			
-			String value = get(key, () -> "0");
+			String value = get(key, () -> "0", 0, null);
 			long result = Long.parseLong(value) + delta;
 			set(key, String.valueOf(result));
 			return result;

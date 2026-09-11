@@ -102,7 +102,7 @@ gracefulresponse/
 
 ### GrI18nResponseBodyAdvice
 - 实现响应消息的国际化功能
-- 使用 IMessage 接口进行消息转换
+- 使用 MessageSource 接口进行消息转换
 - 处理异常参数替换和国际化显示
 
 ## 使用

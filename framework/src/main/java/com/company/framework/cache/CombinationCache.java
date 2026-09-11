@@ -57,10 +57,11 @@ public class CombinationCache implements ICache {
 		return breakerReturn(() -> primaryCache.get(key), () -> fallbackCache.get(key));
 	}
 
-	@Override
-	public String get(String key, Callable<String> valueLoader) {
-		return breakerReturn(() -> primaryCache.get(key, valueLoader), () -> fallbackCache.get(key, valueLoader));
-	}
+    @Override
+    public String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit) {
+        return breakerReturn(() -> primaryCache.get(key, valueLoader, timeout, unit),
+            () -> fallbackCache.get(key, valueLoader, timeout, unit));
+    }
 
 	@Override
 	public boolean del(String key) {

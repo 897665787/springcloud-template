@@ -17,6 +17,21 @@ CREATE TABLE `sys_config`  (
   UNIQUE INDEX `uniq_code`(`code`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '参数配置表';
 
+-- 参数配置国际化翻译表
+CREATE TABLE `sys_config_i18n` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `sys_config_id` int(11) NOT NULL COMMENT 'sys_config.id',
+  `locale` varchar(8) NOT NULL DEFAULT '' COMMENT '地区编码',
+  `value` varchar(512) NOT NULL DEFAULT '' COMMENT '值',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_sysconfigid_locale` (`sys_config_id`,`locale`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='参数配置-国际化';
+
 -- ----------------------------
 -- Table structure for sys_dept
 -- ----------------------------

@@ -1,24 +1,19 @@
 package com.company.framework.cache.cachemanger;
 
-import com.company.framework.cache.ICache;
-import com.company.framework.cache.exception.ValueRetrievalException;
-import com.google.common.util.concurrent.Striped;
-import io.lettuce.core.RedisException;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.data.redis.connection.PoolException;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+
+import com.company.framework.cache.ICache;
+import com.google.common.util.concurrent.Striped;
 
 /**
  * CacheManager 缓存
  */
 public class CacheManagerCache implements ICache {
-	private static final String NULL_VALUE = "null";// 缓存空值
-
     private Striped<Lock> stripedLock = Striped.lock(16);// 分段锁，减少锁竞争
 
     private Cache cache;
@@ -43,50 +38,10 @@ public class CacheManagerCache implements ICache {
 		return cache.get(key, String.class);
 	}
 
-	@Override
-	public String get(String key, Callable<String> valueLoader) {
-		String value = null;
-		try {
-            value =  cache.get(key, String.class);
-			if (value != null) {
-				if (NULL_VALUE.equals(value)) {
-					return null;
-				}
-				return value;
-			}
-
-			// redis没有问题的情况下，加载数据需要做同步操作，防止大量请求执行valueLoader获取数据
-            Lock lock4cache = stripedLock.get(key);
-            try {
-				lock4cache.lock();
-                value =  cache.get(key, String.class);
-				if (value != null) {
-					return value;
-				}
-
-				if (valueLoader != null) {
-					value = valueLoader.call();
-					String setValue = value;
-					if (setValue == null) {
-						setValue = NULL_VALUE;
-					}
-                    cache.put(key, setValue);
-				}
-			} finally {// 一定要在finally解锁
-				lock4cache.unlock();
-			}
-		} catch (Exception e) {
-			if (e instanceof PoolException//
-					|| e instanceof RedisException//
-					|| e.getCause() instanceof RedisException//
-			) {
-				throw new ValueRetrievalException(e);
-			} else {
-				throw new RuntimeException(e);
-			}
-		}
-		return value;
-	}
+    @Override
+    public String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit) {
+        return cache.get(key, valueLoader);
+    }
 
 	@Override
 	public boolean del(String key) {
@@ -100,7 +55,7 @@ public class CacheManagerCache implements ICache {
         try {
             lock4cache.lock();
 
-            String value = get(key, () -> "0");
+            String value = get(key, () -> "0", 0 ,null);
             long result = Long.parseLong(value) + delta;
             set(key, String.valueOf(result));
             return result;

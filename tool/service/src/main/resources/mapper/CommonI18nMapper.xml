@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.company.tool.mapper.CommonI18nMapper">
-    <select id="selectByBusinessTypeBusinessidsLocale" resultType="com.company.tool.entity.CommonI18n">
+    <select id="selectByBusinessTypeBusinessIdLocale" resultType="com.company.tool.entity.CommonI18n">
+        select * from common_i18n
+        where
+        business_type = #{businessType}
+        and business_id = #{businessId}
+        and locale = #{locale}
+        limit 1
+    </select>
+    <select id="selectByBusinessTypeBusinessIdsLocale" resultType="com.company.tool.entity.CommonI18n">
         select * from common_i18n
         where
         <choose>

@@ -47,7 +47,7 @@ public class RedisCache implements ICache {
 	}
 
 	@Override
-	public String get(String key, Callable<String> valueLoader) {
+	public String get(String key, Callable<String> valueLoader, long timeout, TimeUnit unit) {
 		String value = null;
 		try {
 			ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
@@ -75,7 +75,7 @@ public class RedisCache implements ICache {
 					if (setValue == null) {
 						setValue = NULL_VALUE;
 					}
-					opsForValue.set(key, setValue);
+					opsForValue.set(key, setValue, timeout, unit);
 				}
 			} finally {// 一定要在finally解锁
 				lock4cache.unlock();
