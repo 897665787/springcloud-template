@@ -29,7 +29,7 @@ public class DeviceController implements DeviceApi {
 
     @Override
     public Boolean isOnline(String deviceid, String appCode) {
-        if (StringUtils.isBlank(deviceid)) {
+        if (StringUtils.isAnyBlank(deviceid, appCode)) {
             return false;
         }
 
