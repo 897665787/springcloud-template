@@ -247,7 +247,7 @@ public class AccountController {
 	}
 
 	private String token(String userId) {
-		String device = SpringContextUtil.getProperty("spring.application.name"); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
+		String device = HeaderContextUtil.appCode(); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
 		TokenParams tokenParams = new TokenParams(userId, device);
 		String tokenValue = tokenService.generate(tokenParams);
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
