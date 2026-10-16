@@ -18,7 +18,7 @@ public class DeviceInfo {
 	private String deviceid;
 
 	/**
-	 * APP编码：app_info.app_code
+	 * 应用编码(写死到客户端)
 	 */
 	private String appCode;
 

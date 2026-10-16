@@ -17,7 +17,7 @@ import com.company.framework.constant.HeaderConstants;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
 
 /**
- * 填充appCode放回请求头中
+ * 如果请求头中没有appCode，则填充默认值
  */
 @Component
 @Order(CommonConstants.FilterOrdered.HTTP_CONTEXT + 1)
