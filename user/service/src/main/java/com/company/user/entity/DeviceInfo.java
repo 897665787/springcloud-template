@@ -16,7 +16,12 @@ public class DeviceInfo {
 	 * 设备ID
 	 */
 	private String deviceid;
-	
+
+	/**
+	 * APP编码：app_info.app_code
+	 */
+	private String appCode;
+
 	/**
 	 * 平台：app(APP)、mini(微信小程序)、h5(H5页面)、alimini(支付宝小程序)、alipaymini(支付宝小程序内H5)
 	 */

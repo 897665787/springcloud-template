@@ -1,15 +1,25 @@
 package com.company.tool.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.framework.context.HeaderContextUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.company.common.response.PageResp;
+import com.company.framework.util.PropertyUtils;
 import com.company.tool.api.interfaces.AppVersionApi;
+import com.company.tool.api.request.AppVersionReq;
+import com.company.tool.api.request.RemoveReq;
 import com.company.tool.api.response.AppVersionCheckResp;
+import com.company.tool.api.response.AppVersionResp;
 import com.company.tool.entity.AppVersion;
+import com.company.tool.feign.DeviceFeign;
 import com.company.tool.service.AppVersionService;
 
 import cn.hutool.core.text.CharSequenceUtil;
@@ -19,55 +29,127 @@ import cn.hutool.core.text.CharSequenceUtil;
 public class AppVersionController implements AppVersionApi {
     @Autowired
     private AppVersionService appVersionService;
+    @Autowired
+    private DeviceFeign deviceFeign;
+
+    private LambdaQueryWrapper<AppVersion> toQueryWrapper(String appCode, String version) {
+        LambdaQueryWrapper<AppVersion> wrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(appCode)) {
+            wrapper.eq(AppVersion::getAppCode, appCode);
+        }
+        if (StringUtils.isNotBlank(version)) {
+            wrapper.like(AppVersion::getVersion, version);
+        }
+        return wrapper;
+    }
+
+    @Override
+    public PageResp<AppVersionResp> page(Long current, Long size, String appCode, String version) {
+        LambdaQueryWrapper<AppVersion> queryWrapper = toQueryWrapper(appCode, version);
+
+        long count = appVersionService.count(queryWrapper);
+
+        queryWrapper.orderByDesc(AppVersion::getId);
+        List<AppVersion> list = appVersionService.list(PageDTO.of(current, size), queryWrapper);
+
+        List<AppVersionResp> respList = PropertyUtils.copyArrayProperties(list, AppVersionResp.class);
+        return PageResp.of(count, respList);
+    }
+
+    @Override
+    public List<AppVersionResp> list(String appCode, String version) {
+        LambdaQueryWrapper<AppVersion> queryWrapper = toQueryWrapper(appCode, version);
+
+        queryWrapper.orderByDesc(AppVersion::getId);
+        List<AppVersion> list = appVersionService.list(queryWrapper);
+
+        return PropertyUtils.copyArrayProperties(list, AppVersionResp.class);
+    }
+
+    @Override
+    public AppVersionResp query(Integer id) {
+        AppVersion appVersion = appVersionService.getById(id);
+        return PropertyUtils.copyProperties(appVersion, AppVersionResp.class);
+    }
+
+    @Override
+    public Boolean save(@RequestBody AppVersionReq req) {
+        AppVersion entity = PropertyUtils.copyProperties(req, AppVersion.class);
+        Long totalCount = deviceFeign.countByAppCode(req.getAppCode());
+        // 可以调整逻辑，比如获取最近1年有活跃的设备数
+        entity.setTotalCount(totalCount == null ? 0 : totalCount);
+        entity.setUpdateCount(0L);
+        return appVersionService.save(entity);
+    }
+
+    @Override
+    public Boolean update(@RequestBody AppVersionReq req) {
+        AppVersion entity = PropertyUtils.copyProperties(req, AppVersion.class);
+        return appVersionService.updateById(entity);
+    }
+
+    @Override
+    public Boolean remove(@RequestBody RemoveReq<Integer> req) {
+        if (req.getIdList() == null || req.getIdList().isEmpty()) {
+            return true;
+        }
+        return appVersionService.removeByIds(req.getIdList());
+    }
+
+    @Override
+    public Boolean statAllUpgradedDevices() {
+        return appVersionService.statAllUpgradedDevices();
+    }
 
     @Override
     public AppVersionCheckResp check(String appCode, String currentVersion) {
-        AppVersion latestAppVersion = appVersionService.selectLastByAppCode(appCode);
-        if (latestAppVersion == null) {
-            // 未找到应用版本信息，无需更新
-            return AppVersionCheckResp.noUpdate();
-        }
+        // 取最近1条全量版本记录
+        AppVersion lastFullVersion = appVersionService.selectLastFullByAppCode(appCode);
+        Integer lastFullVersionId = lastFullVersion != null ? lastFullVersion.getId() : 0;
+        /*
+         * 可能会存在多个灰度版本，如果有设备需要更新，那么优先新版本的灰度
+         */
+        // 取最近1条全量版本及之后的数据
+        List<AppVersion> appVersionList = appVersionService.selectByAppCodeGeId(appCode, lastFullVersionId);
+        for (AppVersion appVersion : appVersionList) {
+            String latestVersion = appVersion.getVersion();
+            String minSupportedVersion = appVersion.getMinSupportedVersion();
 
-        String latestVersion = latestAppVersion.getVersion();
-        String minSupportedVersion = latestAppVersion.getMinSupportedVersion();
+            if (CharSequenceUtil.compareVersion(currentVersion, latestVersion) >= 0) {
+                // 当前版本>=最新版本，无需更新
+                return AppVersionCheckResp.noUpdate();
+            }
 
-        if (CharSequenceUtil.compareVersion(currentVersion, latestVersion) >= 0) {
-            // 当前版本>=最新版本，无需更新
-            return AppVersionCheckResp.noUpdate();
-        }
+            if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
+                // 当前版本<最低支持版本，强制更新
+                return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
+                        appVersion.getReleaseNotes());
+            }
 
-        if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
-            // 当前版本<最低支持版本，强制更新
-            return AppVersionCheckResp.forceUpdate(latestVersion, latestAppVersion.getDownloadUrl(), latestAppVersion.getReleaseNotes());
-        }
-        // 不强制更新，但不一定提示更新，要看灰度情况
-        BigDecimal grayPercent = latestAppVersion.getGrayPercent();
-        if (grayPercent.compareTo(BigDecimal.ONE) >= 0) {
-            // 灰度比例达到100%，则全量
-            return AppVersionCheckResp.tipsUpdate(latestVersion, latestAppVersion.getDownloadUrl(), latestAppVersion.getReleaseNotes());
-        }
-        // 灰度比例未达到100%
-        Integer updateCount = latestAppVersion.getUpdateCount();
-        Integer totalCount = latestAppVersion.getTotalCount();
-        int grayCount = grayPercent.multiply(new BigDecimal(totalCount)).intValue();
-        if (updateCount < grayCount) {
-            // 更新量未超过灰度量
-            return AppVersionCheckResp.tipsUpdate(latestVersion, latestAppVersion.getDownloadUrl(), latestAppVersion.getReleaseNotes());
-        }
-        // 更新量超过灰度量
-        if (!continueUpdate()) {
-            // 不继续更新，不提示更新
-            return AppVersionCheckResp.noUpdate();
-        }
-        return AppVersionCheckResp.tipsUpdate(latestVersion, latestAppVersion.getDownloadUrl(), latestAppVersion.getReleaseNotes());
-    }
+            BigDecimal grayPercent = appVersion.getGrayPercent();
+            if (grayPercent.compareTo(BigDecimal.ONE) >= 0) {
+                // 灰度比例达到100%，代表全量，提示更新
+                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
+                        appVersion.getReleaseNotes());
+            }
 
-    private boolean continueUpdate() {
-        Integer userId = HeaderContextUtil.currentUserIdInt();
-        if (userId == null) {
-            return true;
+            // 待补充逻辑：白名单设备始终提示更新（优先于放量已满判断）
+
+            // 灰度比例未达到100%
+            Long updateCount = appVersion.getUpdateCount();
+            Long totalCount = appVersion.getTotalCount();
+            if (totalCount <= 0) {
+                // 无总量数据，无法放量控制，提示更新
+                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
+                        appVersion.getReleaseNotes());
+            }
+            int grayCount = grayPercent.multiply(new BigDecimal(totalCount)).intValue();
+            if (grayCount < updateCount) {
+                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
+                        appVersion.getReleaseNotes());
+            }
+            // 更新量已超过灰度量，继续找前1条数据判断
         }
-        // TODO: 实现白名单检查逻辑
-        return false;
+        return AppVersionCheckResp.noUpdate();
     }
 }

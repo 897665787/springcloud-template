@@ -54,14 +54,14 @@ public class AppVersion {
     private BigDecimal grayPercent;
 
     /**
-     * 更新量
+     * 总设备量（创建/发布时统计 device_info 设备数）
      */
-    private Integer totalCount;
+    private Long totalCount;
 
     /**
-     * 总量
+     * 已升级设备数（device_info.version = 本记录 version 的设备数）
      */
-    private Integer updateCount;
+    private Long updateCount;
 
 	private String remark;
 	private LocalDateTime createTime;
