@@ -133,29 +133,19 @@ public class AppVersionController implements AppVersionApi {
                         appVersion.getReleaseNotes());
             }
 
+            // 灰度无强更
             // 待补充逻辑：白名单设备始终提示更新（优先于放量已满判断）
 
             // 灰度比例未达到100%
             Long updateCount = appVersion.getUpdateCount();
             Long totalCount = appVersion.getTotalCount();
             if (totalCount <= 0) {
-                // 无总量数据，无法放量控制
-                if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
-                    // 当前版本<最低支持版本，强制更新
-                    return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
-                            appVersion.getReleaseNotes());
-                }
-                // 提示更新
+                // 无总量数据，无法放量控制，提示更新
                 return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
                         appVersion.getReleaseNotes());
             }
             int grayCount = grayPercent.multiply(new BigDecimal(totalCount)).intValue();
             if (updateCount < grayCount) {
-                if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
-                    // 当前版本<最低支持版本，强制更新
-                    return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
-                            appVersion.getReleaseNotes());
-                }
                 return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
                         appVersion.getReleaseNotes());
             }
