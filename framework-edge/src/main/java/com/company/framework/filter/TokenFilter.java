@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -16,9 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.company.framework.constant.CommonConstants;
 import com.company.framework.constant.HeaderConstants;
-import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.filter.request.HeaderMapRequestWrapper;
-import com.company.token.TokenParams;
 import com.company.token.TokenService;
 
 /**
@@ -49,7 +49,7 @@ public class TokenFilter extends OncePerRequestFilter {
 			if (userId == null) {
 				userId = StringUtils.EMPTY;// 注：为了防止直接在header设置用户ID，绕过认证，null情况下要设置用户ID为空串
 			}
-			device = Optional.ofNullable(tokenParams).map(TokenParams::getDevice).orElse(HeaderContextUtil.appCode());
+			device = Optional.ofNullable(tokenParams).map(TokenParams::getDevice).orElse(SpringContextUtil.getProperty("spring.application.name"));
 		}
 
         HeaderMapRequestWrapper headerRequest = new HeaderMapRequestWrapper(request);

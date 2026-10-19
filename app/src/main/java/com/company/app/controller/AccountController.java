@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,8 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.company.app.constants.Constants;
-import com.company.app.feign.UserOauthFeign;
-import com.company.app.feign.VerifyCodeFeign;
 import com.company.app.req.LoginByMobileReq;
 import com.company.app.req.LoginByWeixinAppReq;
 import com.company.app.resp.LoginResp;
@@ -27,10 +27,11 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
 import com.company.framework.util.RegexUtil;
-import com.company.token.TokenParams;
 import com.company.token.TokenService;
 import com.company.token.accesscontrol.annotation.RequireLogin;
+import com.company.app.feign.VerifyCodeFeign;
 import com.company.user.api.enums.UserOauthEnum;
+import com.company.app.feign.UserOauthFeign;
 import com.company.user.api.response.UserOauthResp;
 import com.google.common.collect.Maps;
 
@@ -130,7 +131,7 @@ public class AccountController {
 	}
 
 	private String token(String userId) {
-		String device = HeaderContextUtil.appCode(); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
+		String device = SpringContextUtil.getProperty("spring.application.name"); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
 		TokenParams tokenParams = new TokenParams(userId, device);
 		String tokenValue = tokenService.generate(tokenParams);
 		if (StringUtils.isNoneBlank(tokenPrefix)) {

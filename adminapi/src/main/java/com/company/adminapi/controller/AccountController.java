@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.company.framework.context.SpringContextUtil;
+import com.company.token.TokenParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,18 +16,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import com.company.adminapi.constants.Constants;
-import com.company.adminapi.feign.SysUserPasswordFeign;
-import com.company.adminapi.feign.VerifyCodeFeign;
 import com.company.adminapi.req.LoginReq;
 import com.company.adminapi.resp.LoginResp;
 import com.company.framework.context.HeaderContextUtil;
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.framework.messagedriven.MessageSender;
 import com.company.framework.messagedriven.constants.BroadcastConstants;
+import com.company.adminapi.feign.SysUserPasswordFeign;
 import com.company.system.api.response.SysUserPasswordTipsResp;
-import com.company.token.TokenParams;
 import com.company.token.TokenService;
 import com.company.token.accesscontrol.annotation.RequireLogin;
+import com.company.adminapi.feign.VerifyCodeFeign;
 import com.company.tool.api.response.CaptchaResp;
 import com.google.common.collect.Maps;
 
@@ -83,7 +84,7 @@ public class AccountController {
             ExceptionUtil.throwException(sysUserPasswordTipsResp.getPasswordTips());
         }
 
-		String device = HeaderContextUtil.appCode(); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
+		String device = SpringContextUtil.getProperty("spring.application.name"); // 此次登录的客户端设备类型, 用于[同端互斥登录]时指定此次登录的设备类型
 		TokenParams tokenParams = new TokenParams(String.valueOf(sysUserId), device);
 		String tokenValue = tokenService.generate(tokenParams);
 		if (StringUtils.isNoneBlank(tokenPrefix)) {
