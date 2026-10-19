@@ -31,6 +31,7 @@ public class SaveOperLogStrategy implements BaseStrategy<SysOperLogDto> {
 		sysOperLogReq.setStatus(params.getStatus());
 		sysOperLogReq.setErrorMsg(params.getErrorMsg());
 		sysOperLogReq.setCostTime(params.getCostTime());
+        sysOperLogReq.setOperTime(params.getOperTime());
 		sysOperLogFeign.save(sysOperLogReq);
 	}
 }

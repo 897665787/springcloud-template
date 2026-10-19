@@ -1,7 +1,5 @@
 package com.company.user.service;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +65,7 @@ public class UserService {
 		int insert = userMapper.insert(user);
 		System.out.println("insert:" + insert);
 		
-		City city = new City().setProvinceId(2L).setName("jiang").setStatus(1).setSeq(1).setCreateTime(LocalDateTime.now());
+		City city = new City().setProvinceId(2L).setName("jiang").setStatus(1).setSeq(1);
 		int insert2 = cityMapper.insert(city);
 		System.out.println("insert2:" + insert2);
 		

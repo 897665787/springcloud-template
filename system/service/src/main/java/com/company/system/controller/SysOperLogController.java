@@ -123,9 +123,6 @@ public class SysOperLogController implements SysOperLogApi {
 	@Override
 	public Boolean save(SysOperLogReq sysOperLogReq) {
 		SysOperLog sysOperLog = PropertyUtils.copyProperties(sysOperLogReq, SysOperLog.class);
-		Integer sysUserId = sysOperLogReq.getSysUserId();
-		sysOperLog.setCreateBy(sysUserId);
-		sysOperLog.setUpdateBy(sysUserId);
 		boolean success = sysOperLogService.save(sysOperLog);
 		return success;
 	}
