@@ -120,15 +120,15 @@ public class AppVersionController implements AppVersionApi {
                 return AppVersionCheckResp.noUpdate();
             }
 
-            if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
-                // 当前版本<最低支持版本，强制更新
-                return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
-                        appVersion.getReleaseNotes());
-            }
-
             BigDecimal grayPercent = appVersion.getGrayPercent();
             if (grayPercent.compareTo(BigDecimal.ONE) >= 0) {
-                // 灰度比例达到100%，代表全量，提示更新
+                // 灰度比例达到100%，代表全量
+                if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
+                    // 当前版本<最低支持版本，强制更新
+                    return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
+                            appVersion.getReleaseNotes());
+                }
+                // 提示更新
                 return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
                         appVersion.getReleaseNotes());
             }
@@ -139,12 +139,23 @@ public class AppVersionController implements AppVersionApi {
             Long updateCount = appVersion.getUpdateCount();
             Long totalCount = appVersion.getTotalCount();
             if (totalCount <= 0) {
-                // 无总量数据，无法放量控制，提示更新
+                // 无总量数据，无法放量控制
+                if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
+                    // 当前版本<最低支持版本，强制更新
+                    return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
+                            appVersion.getReleaseNotes());
+                }
+                // 提示更新
                 return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
                         appVersion.getReleaseNotes());
             }
             int grayCount = grayPercent.multiply(new BigDecimal(totalCount)).intValue();
-            if (grayCount < updateCount) {
+            if (updateCount < grayCount) {
+                if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
+                    // 当前版本<最低支持版本，强制更新
+                    return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
+                            appVersion.getReleaseNotes());
+                }
                 return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
                         appVersion.getReleaseNotes());
             }
