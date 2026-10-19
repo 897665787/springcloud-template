@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
+import com.company.datasource.mybatisplus.activerecord.AuditableModel;
+
 import io.github.jqdi.i18n.core.annotation.I18nField;
 import io.github.jqdi.i18n.core.annotation.I18nTable;
 import lombok.Data;
@@ -14,7 +16,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("app_version")
 @I18nTable(i18nTable = "app_version_i18n", i18nRelatedColumn = "app_version_id", relatedValueFromField = "id")
-public class AppVersion {
+public class AppVersion extends AuditableModel<AppVersion> {
 	private Integer id;
 
 	/**
@@ -64,8 +66,4 @@ public class AppVersion {
     private Long updateCount;
 
 	private String remark;
-	private LocalDateTime createTime;
-	private LocalDateTime updateTime;
-	private String createBy;
-	private String updateBy;
 }
