@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.company.tool.constant.Constants;
 import com.company.tool.entity.AppInfo;
 import com.company.tool.entity.AppVersion;
-import com.company.tool.feign.DeviceFeign;
+import com.company.tool.feign.client.DeviceFeign;
 import com.company.tool.mapper.AppInfoMapper;
 import com.company.tool.mapper.AppVersionMapper;
 

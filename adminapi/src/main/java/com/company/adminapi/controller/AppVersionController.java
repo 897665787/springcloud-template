@@ -5,7 +5,7 @@ import com.company.adminapi.annotation.RequirePermissions;
 import com.company.adminapi.enums.OperationLogEnum.BusinessType;
 
 import com.company.common.response.PageResp;
-import com.company.adminapi.feign.AppVersionFeign;
+import com.company.adminapi.feign.client.AppVersionFeign;
 import com.company.tool.api.request.AppVersionReq;
 import com.company.tool.api.request.RemoveReq;
 import com.company.tool.api.response.AppVersionResp;

@@ -19,7 +19,7 @@ import com.company.tool.api.request.RemoveReq;
 import com.company.tool.api.response.AppVersionCheckResp;
 import com.company.tool.api.response.AppVersionResp;
 import com.company.tool.entity.AppVersion;
-import com.company.tool.feign.DeviceFeign;
+import com.company.tool.feign.client.DeviceFeign;
 import com.company.tool.service.AppVersionService;
 
 import cn.hutool.core.text.CharSequenceUtil;

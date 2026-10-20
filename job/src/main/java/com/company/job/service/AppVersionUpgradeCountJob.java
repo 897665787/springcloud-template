@@ -3,7 +3,7 @@ package com.company.job.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.company.job.feign.AppVersionFeign;
+import com.company.job.feign.client.AppVersionFeign;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
