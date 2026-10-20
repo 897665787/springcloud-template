@@ -126,28 +126,34 @@ public class AppVersionController implements AppVersionApi {
                 if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
                     // 当前版本<最低支持版本，强制更新
                     return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
-                            appVersion.getReleaseNotes());
+                        appVersion.getReleaseNotes());
                 }
                 // 提示更新
-                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
-                        appVersion.getReleaseNotes());
+                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(), appVersion.getReleaseNotes());
             }
-
-            // 灰度无强更
-            // 待补充逻辑：白名单设备始终提示更新（优先于放量已满判断）
-
+            // 待补充逻辑：白名单设备始终提示更新（优先于灰度放量已满判断）
+            boolean isInWhiteList = false;
+            if (isInWhiteList) {
+                // 命中白名单
+                if (CharSequenceUtil.compareVersion(currentVersion, minSupportedVersion) < 0) {
+                    // 当前版本<最低支持版本，强制更新
+                    return AppVersionCheckResp.forceUpdate(latestVersion, appVersion.getDownloadUrl(),
+                        appVersion.getReleaseNotes());
+                }
+                // 提示更新
+                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(), appVersion.getReleaseNotes());
+            }
             // 灰度比例未达到100%
+            /*
+             * 灰度强更问题：可能会导致超出灰度比例范围的设备被强制更新
+             * 所以建议灰度无强更
+             */
             Long updateCount = appVersion.getUpdateCount();
             Long totalCount = appVersion.getTotalCount();
-            if (totalCount <= 0) {
-                // 无总量数据，无法放量控制，提示更新
-                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
-                        appVersion.getReleaseNotes());
-            }
             int grayCount = grayPercent.multiply(new BigDecimal(totalCount)).intValue();
             if (updateCount < grayCount) {
-                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(),
-                        appVersion.getReleaseNotes());
+                // 提示更新
+                return AppVersionCheckResp.tipsUpdate(latestVersion, appVersion.getDownloadUrl(), appVersion.getReleaseNotes());
             }
             // 更新量已超过灰度量，继续找前1条数据判断
         }

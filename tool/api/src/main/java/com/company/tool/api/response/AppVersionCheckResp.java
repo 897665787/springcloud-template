@@ -56,7 +56,7 @@ public class AppVersionCheckResp {
     }
 
     /**
-     * 更新强制
+     * 强制更新
      */
     public static AppVersionCheckResp forceUpdate(String latestVersion, String downloadUrl, String releaseNotes) {
         AppVersionCheckResp resp = new AppVersionCheckResp();
