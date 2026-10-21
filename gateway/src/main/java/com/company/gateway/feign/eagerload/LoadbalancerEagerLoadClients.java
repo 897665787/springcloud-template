@@ -1,4 +1,4 @@
-package com.company.gateway.feign;
+package com.company.gateway.feign.eagerload;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
