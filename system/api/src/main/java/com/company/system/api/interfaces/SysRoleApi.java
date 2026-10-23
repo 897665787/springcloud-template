@@ -2,6 +2,7 @@ package com.company.system.api.interfaces;
 
 
 import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysRoleGrantDeptReq;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.common.response.PageResp;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SysRoleApi {
 
@@ -27,6 +29,21 @@ public interface SysRoleApi {
 	@PostMapping("/save")
 	Boolean save(@RequestBody SysRoleReq sysRoleReq);
 
+	@PostMapping("/saveReturnId")
+	Integer saveReturnId(@RequestBody SysRoleReq sysRoleReq);
+
+	/**
+	 * 新增角色并授权菜单
+	 */
+	@PostMapping("/saveAndGrant")
+	Boolean saveAndGrant(@RequestBody SysRoleReq sysRoleReq);
+
+	/**
+	 * 修改角色并授权菜单
+	 */
+	@PostMapping("/updateAndGrant")
+	Boolean updateAndGrant(@RequestBody SysRoleReq sysRoleReq);
+
 	@PostMapping("/update")
 	Boolean update(@RequestBody SysRoleReq sysRoleReq);
 
@@ -35,5 +52,17 @@ public interface SysRoleApi {
 
 	@PostMapping("/grantMenu")
 	Boolean grantMenu(@RequestBody SysRoleGrantMenuReq req);
+
+	/**
+	 * 角色数据权限授权
+	 */
+	@PostMapping("/grantDept")
+	Boolean grantDept(@RequestBody SysRoleGrantDeptReq req);
+
+	/**
+	 * 查询角色已授权的部门id列表
+	 */
+	@GetMapping("/listDeptIdByRoleId")
+	Set<Integer> listDeptIdByRoleId(@RequestParam("roleId") Integer roleId);
 
 }

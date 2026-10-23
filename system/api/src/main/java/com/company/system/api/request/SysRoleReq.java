@@ -1,5 +1,7 @@
 package com.company.system.api.request;
 
+import java.util.Set;
+
 import lombok.Data;
 
 /**
@@ -50,5 +52,10 @@ public class SysRoleReq {
 	 * 备注
 	 */
 	private String remark;
+
+	/**
+	 * 授权的菜单id列表
+	 */
+	private Set<Integer> menuIds;
 
 }

@@ -139,4 +139,9 @@ public class SysLogininfoController implements SysLogininfoApi {
 		boolean success = sysLogininfoService.removeBatchByIds(req.getIdList());
 		return success;
 	}
+
+	@Override
+	public Boolean clean() {
+		return sysLogininfoService.remove(new QueryWrapper<>());
+	}
 }

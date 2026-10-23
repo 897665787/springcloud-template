@@ -19,9 +19,11 @@ import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.system.api.interfaces.SysUserPasswordApi;
 import com.company.system.api.request.RemindPasswordExpireReq;
 import com.company.system.api.request.SaveNewPasswordReq;
+import com.company.system.api.request.UpdatePasswordReq;
 import com.company.system.api.response.SysUserPasswordTipsResp;
 import com.company.system.entity.SysUser;
 import com.company.system.entity.SysUserPassword;
+import com.company.system.service.SysConfigService;
 import com.company.system.service.SysUserPasswordService;
 import com.company.system.service.SysUserService;
 import com.company.tool.api.enums.EmailEnum;
@@ -36,6 +38,7 @@ import com.company.tool.api.response.RetryerResp;
 import com.google.common.collect.Maps;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.crypto.SecureUtil;
 
 @RestController
 @RequestMapping("/sysUserPassword")
@@ -62,6 +65,12 @@ public class SysUserPasswordController implements SysUserPasswordApi {
 
 	@Value("${sys.password.expire.days:90}")
 	private Integer expireDays;
+
+	@Autowired
+	private SysConfigService sysConfigService;
+
+	// 初始密码配置项编码
+	private static final String DEFAULT_PASSWORD_CODE = "sys.user.initPassword";
 
 	@Override
 	public Map<String, String> getPasswordBySysUserId(Integer sysUserId) {
@@ -102,6 +111,40 @@ public class SysUserPasswordController implements SysUserPasswordApi {
 		resp.setPasswordTips("密码已过期，请联系管理员重置");
 		return resp;
     }
+
+	@Override
+	public Boolean changePassword(Integer sysUserId, UpdatePasswordReq updatePasswordReq) {
+		SysUserPassword sysUserPassword = sysUserPasswordService.getLastBySysUserId(sysUserId);
+		if (sysUserPassword == null) {
+			ExceptionUtil.throwException("密码未配置");
+		}
+		String oldPasswordMd5 = SecureUtil.md5(updatePasswordReq.getOldPassword());
+		if (!oldPasswordMd5.equals(sysUserPassword.getPassword())) {
+			ExceptionUtil.throwException("旧密码不正确");
+		}
+		SaveNewPasswordReq req = new SaveNewPasswordReq();
+		req.setSysUserId(sysUserId);
+		req.setPassword(SecureUtil.md5(updatePasswordReq.getNewPassword()));
+		this.saveNewPassword(req);
+		return true;
+	}
+
+	@Override
+	public Boolean resetPassword(SaveNewPasswordReq saveNewPasswordReq) {
+		// 管理员重置：密码为空时使用配置的初始密码
+		String password = saveNewPasswordReq.getPassword();
+		if (StringUtils.isBlank(password)) {
+			password = sysConfigService.getValueByCode(DEFAULT_PASSWORD_CODE);
+		}
+		if (StringUtils.isBlank(password)) {
+			ExceptionUtil.throwException("初始密码未配置");
+		}
+		SaveNewPasswordReq req = new SaveNewPasswordReq();
+		req.setSysUserId(saveNewPasswordReq.getSysUserId());
+		req.setPassword(SecureUtil.md5(password));
+		this.saveNewPassword(req);
+		return true;
+	}
 
 	@Override
 	public Void saveNewPassword(SaveNewPasswordReq saveNewPasswordReq) {

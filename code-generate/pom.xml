@@ -36,6 +36,13 @@
             <version>${boot-starter-datasource.version}</version>
         </dependency>
 
+        <!-- 系统服务契约（代码生成 DTO/接口复用） -->
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>template-system-api</artifactId>
+            <version>${system-api.version}</version>
+        </dependency>
+
         <!-- 代码生成 -->
         <!-- MyBatis Plus Generator -->
         <dependency>

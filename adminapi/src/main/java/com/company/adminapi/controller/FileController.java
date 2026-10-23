@@ -6,9 +6,12 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 import com.company.framework.globalresponse.ExceptionUtil;
 import com.company.adminapi.feign.client.FileFeign;
@@ -84,5 +87,24 @@ public class FileController {
 	@GetMapping("/url")
 	public Map<String, String> url(String fileKey) {
         return fileFeign.presignedUrl(fileKey);
+	}
+
+	/**
+	 * 下载文件（302 到文件服务的预签名地址，供 img/超链接直接引用）
+	 *
+	 * @param fileKey 文件标识
+	 * @param response 响应
+	 */
+	@GetMapping("/download")
+	public void download(String fileKey, HttpServletResponse response) throws IOException {
+		if (StringUtils.isBlank(fileKey)) {
+			ExceptionUtil.throwException("文件标识不能为空");
+		}
+		Map<String, String> urlResult = fileFeign.presignedUrl(fileKey);
+		String url = urlResult == null ? null : urlResult.get("value");
+		if (StringUtils.isBlank(url)) {
+			ExceptionUtil.throwException("文件不存在");
+		}
+		response.sendRedirect(url);
 	}
 }

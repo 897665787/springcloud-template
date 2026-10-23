@@ -32,41 +32,41 @@ public class SysOperLogController {
 	private SysOperLogFeign sysOperLogFeign;
 
 	@RespConverter(field = "sysUserId", dataSource = SysUserIdNicknameConverter.class)
-	@RequirePermissions("system:sysOperLog:query")
+	@RequirePermissions("monitor:operlog:query")
 	@GetMapping("/page")
 	public PageResp<SysOperLogResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		return sysOperLogFeign.page(current, size, sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 	}
 
-	@RequirePermissions("system:sysOperLog:query")
+	@RequirePermissions("monitor:operlog:query")
 	@GetMapping("/query")
 	public SysOperLogResp query(@NotNull Integer id) {
 		return sysOperLogFeign.query(id);
 	}
 
     @OperationLog(title = "操作日志记录保存", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:sysOperLog:save")
+	@RequirePermissions("monitor:operlog:remove")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody SysOperLogReq sysOperLogReq) {
 		return sysOperLogFeign.save(sysOperLogReq);
 	}
 
     @OperationLog(title = "操作日志记录更新", businessType = BusinessType.UPDATE)
-	@RequirePermissions("system:sysOperLog:update")
+	@RequirePermissions("monitor:operlog:remove")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody SysOperLogReq sysOperLogReq) {
 		return sysOperLogFeign.update(sysOperLogReq);
 	}
 
     @OperationLog(title = "操作日志记录删除", businessType = BusinessType.DELETE)
-	@RequirePermissions("system:sysOperLog:remove")
+	@RequirePermissions("monitor:operlog:remove")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysOperLogFeign.remove(req);
 	}
 
 	@OperationLog(title = "操作日志记录导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
-	@RequirePermissions("system:sysOperLog:export")
+	@RequirePermissions("monitor:operlog:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer sysUserId, String title, Integer businessType, String method, String requestMethod, String operUrl, String operIp, String operLocation, String operParam, String jsonResult, Integer status, String errorMsg, Integer costTime, String operTimeStart, String operTimeEnd, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		List<SysOperLogResp> listResp = sysOperLogFeign.list(sysUserId, title, businessType, method, requestMethod, operUrl, operIp, operLocation, operParam, jsonResult, status, errorMsg, costTime, operTimeStart, operTimeEnd, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
@@ -74,4 +74,14 @@ public class SysOperLogController {
 		ExcelUtil.write2httpResponse(response, "操作日志记录", SysOperLogExcel.class, excelList);
 	}
 
+
+	/**
+	 * 清空操作日志
+	 */
+	@OperationLog(title = "操作日志清空", businessType = BusinessType.CLEAN)
+	@RequirePermissions("monitor:operlog:remove")
+	@PostMapping("/clean")
+	public Boolean clean() {
+		return sysOperLogFeign.clean();
+	}
 }

@@ -18,6 +18,14 @@ public class SysUserRoleService extends ServiceImpl<SysUserRoleMapper, SysUserRo
 	}
 
 	@Transactional(rollbackFor = Exception.class)
+	public void revokeRole(Integer sysUserId, Set<Integer> roleIds) {
+		if (roleIds == null || roleIds.isEmpty()) {
+			return;
+		}
+		baseMapper.revoke(sysUserId, roleIds);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
 	public void assignRole(Integer sysUserId, Set<Integer> roleIds) {
 		Set<Integer> oldRoleIdSet = this.listRoleIdByUserId(sysUserId);
 		Set<Integer> roleIdsToDel = oldRoleIdSet.stream().filter(v -> !roleIds.contains(v)).collect(Collectors.toSet());

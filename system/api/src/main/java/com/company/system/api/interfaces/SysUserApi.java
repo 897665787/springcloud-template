@@ -5,6 +5,7 @@ import com.company.system.api.request.RemoveReq;
 import com.company.system.api.request.SysUserAssignRoleReq;
 import com.company.system.api.request.SysUserReq;
 import com.company.common.response.PageResp;
+import com.company.system.api.response.SysRoleResp;
 import com.company.system.api.response.SysUserInfoResp;
 import com.company.system.api.response.SysUserResp;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,18 @@ public interface SysUserApi {
 
 	@GetMapping("/getInfo")
 	SysUserInfoResp getInfo(@RequestParam("userId") Integer userId);
+
+	@PostMapping("/updateProfile")
+	Boolean updateProfile(@RequestParam("userId") Integer userId, @RequestBody SysUserReq sysUserReq);
+
+	@GetMapping("/pageUnallocatedByRole")
+	PageResp<SysUserResp> pageUnallocatedByRole(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam("roleId") Integer roleId, @RequestParam(value = "account", required = false) String account, @RequestParam(value = "nickname", required = false) String nickname, @RequestParam(value = "phonenumber", required = false) String phonenumber);
+
+	@GetMapping("/pageAllocatedByRole")
+	PageResp<SysUserResp> pageAllocatedByRole(@RequestParam(value = "current") Long current, @RequestParam(value = "size") Long size, @RequestParam("roleId") Integer roleId, @RequestParam(value = "account", required = false) String account, @RequestParam(value = "nickname", required = false) String nickname, @RequestParam(value = "phonenumber", required = false) String phonenumber);
+
+	@GetMapping("/getAuthRole")
+	List<SysRoleResp> getAuthRole(@RequestParam("userId") Integer userId);
 
 	@PostMapping("/getByBatchId")
 	List<SysUserResp> getByBatchId(@RequestBody List<Integer> ids);

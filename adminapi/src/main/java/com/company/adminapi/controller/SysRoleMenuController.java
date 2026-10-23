@@ -29,41 +29,41 @@ public class SysRoleMenuController {
 	@Autowired
 	private SysRoleMenuFeign sysRoleMenuFeign;
 
-	@RequirePermissions("system:sysRoleMenu:query")
+	@RequirePermissions("system:role:list")
 	@GetMapping("/page")
 	public PageResp<SysRoleMenuResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		return sysRoleMenuFeign.page(current, size, roleId, menuId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);
 	}
 
-	@RequirePermissions("system:sysRoleMenu:query")
+	@RequirePermissions("system:role:list")
 	@GetMapping("/query")
 	public SysRoleMenuResp query(@NotNull Integer id) {
 		return sysRoleMenuFeign.query(id);
 	}
 
     @OperationLog(title = "角色和菜单关联保存", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:sysRoleMenu:save")
+	@RequirePermissions("system:role:edit")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody SysRoleMenuReq sysRoleMenuReq) {
 		return sysRoleMenuFeign.save(sysRoleMenuReq);
 	}
 
     @OperationLog(title = "角色和菜单关联更新", businessType = BusinessType.UPDATE)
-	@RequirePermissions("system:sysRoleMenu:update")
+	@RequirePermissions("system:role:edit")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody SysRoleMenuReq sysRoleMenuReq) {
 		return sysRoleMenuFeign.update(sysRoleMenuReq);
 	}
 
     @OperationLog(title = "角色和菜单关联删除", businessType = BusinessType.DELETE)
-	@RequirePermissions("system:sysRoleMenu:remove")
+	@RequirePermissions("system:role:edit")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysRoleMenuFeign.remove(req);
 	}
 
 	@OperationLog(title = "角色和菜单关联导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
-	@RequirePermissions("system:sysRoleMenu:export")
+	@RequirePermissions("system:role:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer roleId, Integer menuId, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		List<SysRoleMenuResp> listResp = sysRoleMenuFeign.list(roleId, menuId, createTimeStart, createTimeEnd, updateTimeStart, updateTimeEnd);

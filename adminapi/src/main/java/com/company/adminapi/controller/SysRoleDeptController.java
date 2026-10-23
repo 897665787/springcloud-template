@@ -29,41 +29,41 @@ public class SysRoleDeptController {
 	@Autowired
 	private SysRoleDeptFeign sysRoleDeptFeign;
 
-	@RequirePermissions("system:sysRoleDept:query")
+	@RequirePermissions("system:role:list")
 	@GetMapping("/page")
 	public PageResp<SysRoleDeptResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer roleId, Integer deptId) {
 		return sysRoleDeptFeign.page(current, size, roleId, deptId);
 	}
 
-	@RequirePermissions("system:sysRoleDept:query")
+	@RequirePermissions("system:role:list")
 	@GetMapping("/query")
 	public SysRoleDeptResp query(@NotNull Integer id) {
 		return sysRoleDeptFeign.query(id);
 	}
 
     @OperationLog(title = "角色和菜单关联保存", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:sysRoleDept:save")
+	@RequirePermissions("system:role:edit")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody SysRoleDeptReq sysRoleDeptReq) {
 		return sysRoleDeptFeign.save(sysRoleDeptReq);
 	}
 
     @OperationLog(title = "角色和菜单关联更新", businessType = BusinessType.UPDATE)
-	@RequirePermissions("system:sysRoleDept:update")
+	@RequirePermissions("system:role:edit")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody SysRoleDeptReq sysRoleDeptReq) {
 		return sysRoleDeptFeign.update(sysRoleDeptReq);
 	}
 
     @OperationLog(title = "角色和菜单关联删除", businessType = BusinessType.DELETE)
-	@RequirePermissions("system:sysRoleDept:remove")
+	@RequirePermissions("system:role:edit")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysRoleDeptFeign.remove(req);
 	}
 
 	@OperationLog(title = "角色和菜单关联导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
-	@RequirePermissions("system:sysRoleDept:export")
+	@RequirePermissions("system:role:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer roleId, Integer deptId) {
 		List<SysRoleDeptResp> listResp = sysRoleDeptFeign.list(roleId, deptId);

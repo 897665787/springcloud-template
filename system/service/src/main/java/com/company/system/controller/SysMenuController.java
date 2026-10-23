@@ -1,7 +1,9 @@
 package com.company.system.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import com.company.system.dto.MenuTreeNode;
 import com.company.system.entity.SysMenu;
 import com.company.system.enums.SysMenuEnum;
 import com.company.system.service.SysMenuService;
+import com.company.system.service.SysRoleMenuService;
 import com.company.system.service.SysRoleService;
 
 @RestController
@@ -35,6 +38,8 @@ public class SysMenuController implements SysMenuApi {
 	private SysMenuService sysMenuService;
 	@Autowired
 	private SysRoleService sysRoleService;
+	@Autowired
+	private SysRoleMenuService sysRoleMenuService;
 
 	private QueryWrapper<SysMenu> toQueryWrapper(Integer parentId, String menuName, String menuType, String status,
 												 Integer visible, String perms, String createTimeStart, String createTimeEnd) {
@@ -165,5 +170,10 @@ public class SysMenuController implements SysMenuApi {
 		}
 
 		return routers;
+	}
+
+	@Override
+	public Set<Integer> listMenuIdByRoleId(Integer roleId) {
+		return sysRoleMenuService.listMenuIdByRoleIds(Collections.singleton(roleId));
 	}
 }

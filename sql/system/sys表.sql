@@ -280,3 +280,138 @@ CREATE TABLE `sys_user_role`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_userid_roleid`(`user_id`, `role_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '用户和角色关联表';
+
+-- ----------------------------
+-- Table structure for sys_post
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_post`;
+CREATE TABLE `sys_post`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `post_code` varchar(64) NOT NULL DEFAULT '' COMMENT '岗位编码',
+  `post_name` varchar(50) NOT NULL DEFAULT '' COMMENT '岗位名称',
+  `post_sort` int(4) NOT NULL DEFAULT 0 COMMENT '显示顺序',
+  `status` varchar(8) NOT NULL DEFAULT 'ON' COMMENT '状态(ON:正常,OFF:停用)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_postcode`(`post_code`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '岗位信息表';
+
+-- ----------------------------
+-- Table structure for sys_notice
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_notice`;
+CREATE TABLE `sys_notice`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `notice_title` varchar(50) NOT NULL DEFAULT '' COMMENT '公告标题',
+  `notice_type` char(1) NOT NULL DEFAULT '' COMMENT '公告类型(1:通知,2:公告)',
+  `notice_content` text NULL COMMENT '公告内容',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '公告状态(0:正常,1:关闭)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '通知公告表';
+
+-- ----------------------------
+-- Table structure for sys_job
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_job`;
+CREATE TABLE `sys_job`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `job_name` varchar(64) NOT NULL DEFAULT '' COMMENT '任务名称',
+  `job_group` varchar(64) NOT NULL DEFAULT 'DEFAULT' COMMENT '任务组名',
+  `invoke_target` varchar(500) NOT NULL DEFAULT '' COMMENT '调用目标字符串(beanName.methodName)',
+  `cron_expression` varchar(255) NOT NULL DEFAULT '' COMMENT 'cron执行表达式',
+  `misfire_policy` varchar(20) NOT NULL DEFAULT '3' COMMENT '计划执行错误策略(1:立即执行,2:执行一次,3:放弃执行)',
+  `concurrent` char(1) NOT NULL DEFAULT '1' COMMENT '是否并发执行(0:允许,1:禁止)',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态(0:正常,1:暂停)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '定时任务调度表';
+
+-- ----------------------------
+-- Table structure for sys_job_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_job_log`;
+CREATE TABLE `sys_job_log`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `job_name` varchar(64) NOT NULL DEFAULT '' COMMENT '任务名称',
+  `job_group` varchar(64) NOT NULL DEFAULT 'DEFAULT' COMMENT '任务组名',
+  `invoke_target` varchar(500) NOT NULL DEFAULT '' COMMENT '调用目标字符串',
+  `job_message` varchar(500) NOT NULL DEFAULT '' COMMENT '日志信息',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '执行状态(0:正常,1:失败)',
+  `exception_info` varchar(2000) NOT NULL DEFAULT '' COMMENT '异常信息',
+  `start_time` datetime NULL DEFAULT NULL COMMENT '执行开始时间',
+  `end_time` datetime NULL DEFAULT NULL COMMENT '执行结束时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '定时任务调度日志表';
+
+-- ----------------------------
+-- Table structure for sys_gen_table
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_gen_table`;
+CREATE TABLE `sys_gen_table`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `table_name` varchar(200) NOT NULL DEFAULT '' COMMENT '表名称',
+  `table_comment` varchar(500) NOT NULL DEFAULT '' COMMENT '表描述',
+  `class_name` varchar(100) NOT NULL DEFAULT '' COMMENT '实体类名称',
+  `tpl_category` varchar(200) NOT NULL DEFAULT 'crud' COMMENT '使用的模板(crud:单表, tree:树表, sub:主子表)',
+  `package_name` varchar(100) NULL DEFAULT NULL COMMENT '生成包路径',
+  `module_name` varchar(30) NULL DEFAULT NULL COMMENT '生成模块名',
+  `business_name` varchar(30) NULL DEFAULT NULL COMMENT '生成业务名',
+  `function_name` varchar(50) NULL DEFAULT NULL COMMENT '生成功能名',
+  `function_author` varchar(50) NULL DEFAULT NULL COMMENT '生成功能作者',
+  `gen_type` char(1) NOT NULL DEFAULT '0' COMMENT '生成代码方式(0:zip压缩包,1:自定义路径)',
+  `gen_path` varchar(200) NULL DEFAULT '/' COMMENT '生成路径(不填默认项目路径)',
+  `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_table_name`(`table_name`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '代码生成业务表';
+
+-- ----------------------------
+-- Table structure for sys_gen_table_column
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_gen_table_column`;
+CREATE TABLE `sys_gen_table_column`  (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `table_id` int(11) NULL DEFAULT NULL COMMENT '归属表id',
+  `column_name` varchar(200) NULL DEFAULT NULL COMMENT '列名称',
+  `column_comment` varchar(500) NULL DEFAULT NULL COMMENT '列描述',
+  `column_type` varchar(100) NULL DEFAULT NULL COMMENT '列类型',
+  `java_field` varchar(200) NULL DEFAULT NULL COMMENT 'java属性名',
+  `java_type` varchar(500) NULL DEFAULT NULL COMMENT 'java类型',
+  `is_pk` char(1) NULL DEFAULT NULL COMMENT '是否主键(1:是,0:否)',
+  `is_required` char(1) NULL DEFAULT NULL COMMENT '是否必填(1:是,0:否)',
+  `is_insert` char(1) NULL DEFAULT NULL COMMENT '是否为插入字段(1:是,0:否)',
+  `is_edit` char(1) NULL DEFAULT NULL COMMENT '是否编辑字段(1:是,0:否)',
+  `is_list` char(1) NULL DEFAULT NULL COMMENT '是否列表字段(1:是,0:否)',
+  `is_query` char(1) NULL DEFAULT NULL COMMENT '是否查询字段(1:是,0:否)',
+  `query_type` varchar(200) NULL DEFAULT 'EQ' COMMENT '查询方式(EQ:等于,NE:不等于,GT:大于,GTE:大于等于,LT:小于,LTE:小于等于,LIKE:模糊,BETWEEN:范围)',
+  `html_type` varchar(200) NULL DEFAULT NULL COMMENT '显示类型(input:文本框,textarea:文本域,select:下拉框,radio:单选框,checkbox:复选框,datetime:日期控件,imageUpload:图片上传,fileUpload:文件上传,editor:富文本控件)',
+  `dict_type` varchar(200) NULL DEFAULT '' COMMENT '字典类型',
+  `sort` int(11) NULL DEFAULT NULL COMMENT '排序',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` varchar(32) NOT NULL DEFAULT '' COMMENT '创建人',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `update_by` varchar(32) NOT NULL DEFAULT '' COMMENT '更新人',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_table_id`(`table_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COMMENT = '代码生成业务表字段';

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import cn.hutool.core.lang.tree.TreeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +45,7 @@ public class SysMenuController {
 	@Autowired
 	private SysMenuFeign sysMenuFeign;
 
-	@RequirePermissions("system:sysMenu:query")
+	@RequirePermissions("system:menu:list")
 	@GetMapping("/page")
 	public PageResp<SysMenuResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer parentId,
 											  String menuName, String menuType, String status, Integer visible, String perms,
@@ -52,61 +53,62 @@ public class SysMenuController {
 		return sysMenuFeign.page(current, size, parentId, menuName, menuType, status, visible, perms, createTimeStart, createTimeEnd);
 	}
 
-	@RequirePermissions("system:sysMenu:query")
+	@RequirePermissions("system:menu:list")
 	@GetMapping("/tree")
 	public List<SysMenuResp> tree(Integer parentId, String menuName, Integer orderNum, String menuType,
 										  String status, Integer visible, String perms,
 										  String createTimeStart, String createTimeEnd) {
 		List<SysMenuResp> sysMenuResps = sysMenuFeign.list(parentId, menuName, orderNum, menuType, status, visible, perms,
 				createTimeStart, createTimeEnd);
-		Map<Integer, SysMenuResp> menuMap = sysMenuResps.stream().collect(Collectors.toMap(SysMenuResp::getId, Function.identity()));
-		Set<Integer> childrenId = new HashSet<>();
-		sysMenuResps.forEach(menu -> {
-			if (menu.getParentId() == 0) {
-				return;
-			}
-			SysMenuResp parent = menuMap.get(menu.getParentId());
-			if (parent != null) {
-				if (parent.getChildrenList() == null) {
-					parent.setChildrenList(new ArrayList<>());
-				}
-				parent.getChildrenList().add(menu);
-				childrenId.add(menu.getId());
-			}
-		});
-		List<SysMenuResp> rootList = sysMenuResps.stream().filter(m -> !childrenId.contains(m.getId())).collect(Collectors.toList());
+        List<SysMenuResp> rootList = TreeUtil.build(sysMenuResps, 0, SysMenuResp::getId, SysMenuResp::getParentId, SysMenuResp::setChildrenList);
+//        Map<Integer, SysMenuResp> menuMap = sysMenuResps.stream().collect(Collectors.toMap(SysMenuResp::getId, Function.identity()));
+//		Set<Integer> childrenId = new HashSet<>();
+//		sysMenuResps.forEach(menu -> {
+//			if (menu.getParentId() == 0) {
+//				return;
+//			}
+//			SysMenuResp parent = menuMap.get(menu.getParentId());
+//			if (parent != null) {
+//				if (parent.getChildrenList() == null) {
+//					parent.setChildrenList(new ArrayList<>());
+//				}
+//				parent.getChildrenList().add(menu);
+//				childrenId.add(menu.getId());
+//			}
+//		});
+//		List<SysMenuResp> rootList = sysMenuResps.stream().filter(m -> !childrenId.contains(m.getId())).collect(Collectors.toList());
 		return rootList;
 	}
 
-	@RequirePermissions("system:sysMenu:query")
+	@RequirePermissions("system:menu:list")
 	@GetMapping("/query")
 	public SysMenuResp query(@NotNull Integer id) {
 		return sysMenuFeign.query(id);
 	}
 
 	@OperationLog(title = "菜单权限保存", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:sysMenu:save")
+	@RequirePermissions("system:menu:add")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody SysMenuReq sysMenuReq) {
 		return sysMenuFeign.save(sysMenuReq);
 	}
 
 	@OperationLog(title = "菜单权限更新", businessType = BusinessType.UPDATE)
-	@RequirePermissions("system:sysMenu:update")
+	@RequirePermissions("system:menu:edit")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody SysMenuReq sysMenuReq) {
 		return sysMenuFeign.update(sysMenuReq);
 	}
 
 	@OperationLog(title = "菜单权限删除", businessType = BusinessType.DELETE)
-	@RequirePermissions("system:sysMenu:remove")
+	@RequirePermissions("system:menu:remove")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysMenuFeign.remove(req);
 	}
 
 	@OperationLog(title = "菜单权限导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
-	@RequirePermissions("system:sysMenu:export")
+	@RequirePermissions("system:menu:list")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer parentId, String menuName, Integer orderNum, String menuType,
 					   String status, Integer visible, String perms, String createTimeStart, String createTimeEnd) {
@@ -123,4 +125,13 @@ public class SysMenuController {
 		return sysMenuFeign.getRouters(userId);
 	}
 
+
+	/**
+	 * 查询角色已授权的菜单id列表
+	 */
+	@RequirePermissions("system:menu:list")
+	@GetMapping("/listMenuIdByRoleId")
+	public Set<Integer> listMenuIdByRoleId(@NotNull Integer roleId) {
+		return sysMenuFeign.listMenuIdByRoleId(roleId);
+	}
 }

@@ -31,41 +31,41 @@ public class SysDictDataController {
 	@Autowired
 	private SysDictDataFeign sysDictDataFeign;
 
-	@RequirePermissions("system:sysDictData:query")
+	@RequirePermissions("system:dict:list")
 	@GetMapping("/page")
 	public PageResp<SysDictDataResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 		return sysDictDataFeign.page(current, size, dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark);
 	}
 
-	@RequirePermissions("system:sysDictData:query")
+	@RequirePermissions("system:dict:list")
 	@GetMapping("/query")
 	public SysDictDataResp query(@NotNull Integer id) {
 		return sysDictDataFeign.query(id);
 	}
 
     @OperationLog(title = "字典数据保存", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:sysDictData:save")
+	@RequirePermissions("system:dict:add")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody SysDictDataReq sysDictDataReq) {
 		return sysDictDataFeign.save(sysDictDataReq);
 	}
 
     @OperationLog(title = "字典数据更新", businessType = BusinessType.UPDATE)
-	@RequirePermissions("system:sysDictData:update")
+	@RequirePermissions("system:dict:edit")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody SysDictDataReq sysDictDataReq) {
 		return sysDictDataFeign.update(sysDictDataReq);
 	}
 
     @OperationLog(title = "字典数据删除", businessType = BusinessType.DELETE)
-	@RequirePermissions("system:sysDictData:remove")
+	@RequirePermissions("system:dict:remove")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysDictDataFeign.remove(req);
 	}
 
 	@OperationLog(title = "字典数据导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
-	@RequirePermissions("system:sysDictData:export")
+	@RequirePermissions("system:dict:export")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, String dictType, String dictCode, String dictValue, Integer dictSort, String isDefault, String status, String dictRemark) {
 		List<SysDictDataResp> listResp = sysDictDataFeign.list(dictType, dictCode, dictValue, dictSort, isDefault, status, dictRemark);

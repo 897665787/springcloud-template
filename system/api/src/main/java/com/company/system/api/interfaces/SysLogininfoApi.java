@@ -32,4 +32,11 @@ public interface SysLogininfoApi {
 	@PostMapping("/remove")
 	Boolean remove(@RequestBody RemoveReq<Integer> req);
 
+
+	/**
+	 * 清空全部记录
+	 */
+	@PostMapping("/clean")
+	Boolean clean();
+
 }

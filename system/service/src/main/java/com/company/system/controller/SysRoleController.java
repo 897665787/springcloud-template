@@ -17,10 +17,12 @@ import com.company.system.api.request.RemoveReq;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.api.interfaces.SysRoleApi;
+import com.company.system.api.request.SysRoleGrantDeptReq;
 import com.company.system.api.request.SysRoleGrantMenuReq;
 import com.company.system.api.request.SysRoleReq;
 import com.company.system.api.response.SysRoleResp;
 import com.company.system.entity.SysRole;
+import com.company.system.service.SysRoleDeptService;
 import com.company.system.service.SysRoleMenuService;
 import com.company.system.service.SysRoleService;
 
@@ -32,6 +34,8 @@ public class SysRoleController implements SysRoleApi {
 	private SysRoleService sysRoleService;
 	@Autowired
 	private SysRoleMenuService sysRoleMenuService;
+	@Autowired
+	private SysRoleDeptService sysRoleDeptService;
 
 	private QueryWrapper<SysRole> toQueryWrapper(String roleName, String roleKey, Integer roleSort, String dataScope, String status, String roleRemark, String createTimeStart, String createTimeEnd, String updateTimeStart, String updateTimeEnd) {
 		QueryWrapper<SysRole> queryWrapper = new QueryWrapper<>();
@@ -112,6 +116,31 @@ public class SysRoleController implements SysRoleApi {
 	}
 
 	@Override
+	public Boolean saveAndGrant(SysRoleReq sysRoleReq) {
+		Integer roleId = this.saveReturnId(sysRoleReq);
+		if (roleId != null && sysRoleReq.getMenuIds() != null) {
+			sysRoleMenuService.grantMenu(roleId, sysRoleReq.getMenuIds());
+		}
+		return true;
+	}
+
+	@Override
+	public Boolean updateAndGrant(SysRoleReq sysRoleReq) {
+		boolean success = this.update(sysRoleReq);
+		if (success && sysRoleReq.getId() != null && sysRoleReq.getMenuIds() != null) {
+			sysRoleMenuService.grantMenu(sysRoleReq.getId(), sysRoleReq.getMenuIds());
+		}
+		return success;
+	}
+
+	@Override
+	public Integer saveReturnId(SysRoleReq sysRoleReq) {
+		SysRole sysRole = PropertyUtils.copyProperties(sysRoleReq, SysRole.class);
+		sysRoleService.save(sysRole);
+		return sysRole.getId();
+	}
+
+	@Override
 	public Boolean update(SysRoleReq sysRoleReq) {
 		SysRole sysRole = PropertyUtils.copyProperties(sysRoleReq, SysRole.class);
 		boolean success = sysRoleService.updateById(sysRole);
@@ -132,5 +161,16 @@ public class SysRoleController implements SysRoleApi {
 	public Boolean grantMenu(@RequestBody SysRoleGrantMenuReq req) {
 		sysRoleMenuService.grantMenu(req.getRoleId(), req.getMenuIds());
 		return true;
+	}
+
+	@Override
+	public Boolean grantDept(@RequestBody SysRoleGrantDeptReq req) {
+		sysRoleDeptService.grantDept(req.getRoleId(), req.getDeptIds());
+		return true;
+	}
+
+	@Override
+	public Set<Integer> listDeptIdByRoleId(Integer roleId) {
+		return sysRoleDeptService.listDeptIdByRoleId(roleId);
 	}
 }

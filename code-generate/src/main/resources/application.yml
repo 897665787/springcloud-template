@@ -17,3 +17,6 @@ code:
     moduleName: order
     # 表名，多个表名用逗号分隔
     tableNames: sms_task
+    # 控制台交互式生成（默认关闭，避免以服务方式运行时阻塞启动）
+    console:
+      enabled: false

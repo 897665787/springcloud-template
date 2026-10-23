@@ -34,7 +34,17 @@ public class CodeGeneratorService {
      * @param moduleName 模块名
      */
     public void generateCode(String tableNames, String moduleName) {
-        String projectPath = System.getProperty("user.dir");
+        this.generateCode(tableNames, moduleName, System.getProperty("user.dir"));
+    }
+
+    /**
+     * 根据表名和模块名生成代码到指定根目录
+     *
+     * @param tableNames    表名，多个用逗号分隔
+     * @param moduleName    模块名
+     * @param projectPath   项目根目录（生成结果为 projectPath/moduleName/service/...）
+     */
+    public void generateCode(String tableNames, String moduleName, String projectPath) {
         String parentPackage = codeGeneratorConfig.getParentPackage();
         String parentPath = parentPackage.replace(".", "/");
         String outputPath = Paths.get(projectPath, moduleName, "service").toString();

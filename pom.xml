@@ -26,7 +26,7 @@
         <!-- 统一管理api jar版本 -->
         <tool-api.version>1.0.0${version.suffix}</tool-api.version>
         <user-api.version>1.0.0${version.suffix}</user-api.version>
-        <system-api.version>1.0.0${version.suffix}</system-api.version>
+        <system-api.version>1.0.1${version.suffix}</system-api.version>
         <order-api.version>1.0.0${version.suffix}</order-api.version>
         <im-api.version>1.0.0${version.suffix}</im-api.version>
 

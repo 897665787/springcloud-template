@@ -11,4 +11,5 @@ public interface FeignConstants {
     String SYSTEM = "template-system";
     String USER = "template-user";
     String ORDER = "template-order";
+    String CODE_GENERATE = "template-code-generate";
 }

@@ -142,4 +142,9 @@ public class SysOperLogController implements SysOperLogApi {
 		boolean success = sysOperLogService.removeBatchByIds(req.getIdList());
 		return success;
 	}
+
+	@Override
+	public Boolean clean() {
+		return sysOperLogService.remove(new QueryWrapper<>());
+	}
 }

@@ -2,6 +2,7 @@ package com.company.system.api.interfaces;
 
 
 import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysUserRoleBatchReq;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.common.response.PageResp;
 import com.company.system.api.response.SysUserRoleResp;
@@ -35,6 +36,18 @@ public interface SysUserRoleApi {
 
 	@PostMapping("/remove")
 	Boolean remove(@RequestBody RemoveReq<Integer> req);
+
+	/**
+	 * 批量授予角色（用于角色侧「添加用户」）
+	 */
+	@PostMapping("/assignRoleBatch")
+	Boolean assignRoleBatch(@RequestBody SysUserRoleBatchReq req);
+
+	/**
+	 * 批量取消角色授权（用于角色侧「取消授权」）
+	 */
+	@PostMapping("/revokeBatch")
+	Boolean revokeBatch(@RequestBody SysUserRoleBatchReq req);
 
 	@GetMapping("/hasPermission")
 	Boolean hasPermission(@RequestParam("userId") Integer userId,

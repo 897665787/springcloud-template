@@ -29,41 +29,41 @@ public class SysDeptController {
 	@Autowired
 	private SysDeptFeign sysDeptFeign;
 
-	@RequirePermissions("system:sysDept:query")
+	@RequirePermissions("system:dept:list")
 	@GetMapping("/page")
 	public PageResp<SysDeptResp> page(@NotNull @Min(value = 1) Long current, @NotNull Long size, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 		return sysDeptFeign.page(current, size, parentId, parentIds, name, orderNum, status);
 	}
 
-	@RequirePermissions("system:sysDept:query")
+	@RequirePermissions("system:dept:list")
 	@GetMapping("/query")
 	public SysDeptResp query(@NotNull Integer id) {
 		return sysDeptFeign.query(id);
 	}
 
     @OperationLog(title = "部门保存", businessType = BusinessType.INSERT)
-	@RequirePermissions("system:sysDept:save")
+	@RequirePermissions("system:dept:add")
 	@PostMapping("/save")
 	public Boolean save(@RequestBody SysDeptReq sysDeptReq) {
 		return sysDeptFeign.save(sysDeptReq);
 	}
 
     @OperationLog(title = "部门更新", businessType = BusinessType.UPDATE)
-	@RequirePermissions("system:sysDept:update")
+	@RequirePermissions("system:dept:edit")
 	@PostMapping("/update")
 	public Boolean update(@RequestBody SysDeptReq sysDeptReq) {
 		return sysDeptFeign.update(sysDeptReq);
 	}
 
     @OperationLog(title = "部门删除", businessType = BusinessType.DELETE)
-	@RequirePermissions("system:sysDept:remove")
+	@RequirePermissions("system:dept:remove")
 	@PostMapping("/remove")
 	public Boolean remove(@RequestBody RemoveReq<Integer> req) {
 		return sysDeptFeign.remove(req);
 	}
 
 	@OperationLog(title = "部门导出", businessType = BusinessType.EXPORT, isSaveResponseData = false)
-	@RequirePermissions("system:sysDept:export")
+	@RequirePermissions("system:dept:list")
 	@GetMapping("/export")
 	public void export(HttpServletResponse response, Integer parentId, String parentIds, String name, Integer orderNum, String status) {
 		List<SysDeptResp> listResp = sysDeptFeign.list(parentId, parentIds, name, orderNum, status);

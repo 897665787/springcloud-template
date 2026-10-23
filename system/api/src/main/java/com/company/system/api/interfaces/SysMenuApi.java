@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SysMenuApi {
 
@@ -51,4 +52,10 @@ public interface SysMenuApi {
 
 	@GetMapping("/getRouters")
 	List<RouterResp> getRouters(@RequestParam("UserId") Integer userId);
+
+	/**
+	 * 查询角色已授权的菜单id列表
+	 */
+	@GetMapping("/listMenuIdByRoleId")
+	Set<Integer> listMenuIdByRoleId(@RequestParam("roleId") Integer roleId);
 }

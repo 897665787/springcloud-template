@@ -1,5 +1,6 @@
 package com.company.system.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
+import com.google.common.collect.Sets;
 import com.company.common.response.PageResp;
 import com.company.framework.util.PropertyUtils;
 import com.company.system.constant.Constants;
 import com.company.system.api.interfaces.SysUserRoleApi;
 import com.company.system.api.request.RemoveReq;
+import com.company.system.api.request.SysUserRoleBatchReq;
 import com.company.system.api.request.SysUserRoleReq;
 import com.company.system.api.response.SysUserRoleResp;
 import com.company.system.entity.SysRole;
@@ -151,5 +154,38 @@ public class SysUserRoleController implements SysUserRoleApi {
 			return false;
 		}
 		return permsSet.contains(permission);
+	}
+
+	@Override
+	public Boolean assignRoleBatch(@RequestBody SysUserRoleBatchReq req) {
+		Set<Integer> roleIds = resolveRoleIds(req);
+		if (req.getUserIds() == null || req.getUserIds().isEmpty() || roleIds.isEmpty()) {
+			return true;
+		}
+		req.getUserIds().forEach(userId -> sysUserRoleService.assignRole(userId, roleIds));
+		return true;
+	}
+
+	@Override
+	public Boolean revokeBatch(@RequestBody SysUserRoleBatchReq req) {
+		Set<Integer> roleIds = resolveRoleIds(req);
+		if (req.getUserIds() == null || req.getUserIds().isEmpty() || roleIds.isEmpty()) {
+			return true;
+		}
+		req.getUserIds().forEach(userId -> sysUserRoleService.revokeRole(userId, roleIds));
+		return true;
+	}
+
+	/**
+	 * 兼容单个 roleId 与 roleIds 两种入参
+	 */
+	private Set<Integer> resolveRoleIds(SysUserRoleBatchReq req) {
+		if (req.getRoleIds() != null && !req.getRoleIds().isEmpty()) {
+			return req.getRoleIds();
+		}
+		if (req.getRoleId() != null) {
+			return Sets.newHashSet(req.getRoleId());
+		}
+		return Collections.emptySet();
 	}
 }
